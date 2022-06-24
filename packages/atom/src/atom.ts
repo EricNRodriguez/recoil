@@ -19,7 +19,11 @@ abstract class BaseAtom<T> implements Atom<T> {
 		return this.context;
 	}
 
-	public registerDependant(dependant: DerivedAtom<any>): void {
+	public trackCurrentDerivation(): void {
+		this.getContext().getCurrentDerivation().tapSome(this.registerDependant.bind(this));
+	}
+
+	private registerDependant(dependant: DerivedAtom<any>): void {
 		const dependantRef: WeakRef<DerivedAtom<any>> = new WeakRef<DerivedAtom<any>>(dependant);
 		if (!this.dependants.includes(dependantRef)) {
 			this.dependants.push(dependantRef);
@@ -97,7 +101,8 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 	}
 
 	public get(): T {
-		this.getContext().getCurrentDerivation().tapSome(this.registerDependant.bind(this));
+		this.trackCurrentDerivation();
+
 		return this.value;
 	}
 
@@ -124,7 +129,7 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 	}
 
 	public get(): T {
-		this.getContext().getCurrentDerivation().tapSome(this.registerDependant.bind(this));
+		this.trackCurrentDerivation();
 
 		return this.getContext().executeTrackedOp(
 			this,
