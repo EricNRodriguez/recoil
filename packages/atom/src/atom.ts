@@ -33,6 +33,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 	public kick(): void {
 		this.dirtyAllDependants();
 		this.unlatch();
+
 		this.scheduleEffects();
 	}
 
@@ -48,7 +49,8 @@ abstract class BaseAtom<T> implements Atom<T> {
 	// laziness is transparent
 	//
 	// think this through...
-	// TODO(ericr): think this through
+	// TODO(ericr): think this through - should we wait until the graph is stable? I dont think so, since
+	// we only react to sets.. so this should be ok??? Need to test...
 	private scheduleEffects(): void {
 		if (this.effects.length === 0) {
 			return;
@@ -139,9 +141,3 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 	}
 
 }
-
-
-
-
-
-
