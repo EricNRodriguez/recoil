@@ -1,4 +1,4 @@
-import {text, TextContent} from "./text";
+import {t, TextContent} from "./text";
 import {Atom, isAtom} from "../../atom";
 
 export type DivContent = Node;

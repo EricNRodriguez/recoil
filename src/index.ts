@@ -1,5 +1,5 @@
 import {buildFactory, AtomFactory, LeafAtom, DerivedAtom} from "../packages/atom";
-import {p, div, text, h1} from "../packages/dom_dsl";
+import {p, div, t, h1, h2} from "../packages/dom_dsl";
 
 const f: AtomFactory = buildFactory();
 
@@ -34,9 +34,16 @@ a.set(-10000);
 
 
 const app = div(
-    h1(text("h1")),
-    p(text("paragraph")),
-    text("text"),
+    h1(
+        t("h1")
+    ),
+    h2(
+        t(() => a.get().toString()),
+    ),
+    p(
+        t("paragraph"),
+    ),
+    t("text"),
     div(),
     p(),
 );

@@ -4,7 +4,7 @@ const atomFactory: AtomFactory = buildFactory();
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
-export const text = (content: TextContent): Text => {
+export const t = (content: TextContent): Text => {
     let textNode: Text;
     if (typeof content === "string") {
         textNode = document.createTextNode(content);

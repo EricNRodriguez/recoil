@@ -1,4 +1,4 @@
-import {text} from "./text";
+import {t} from "./text";
 
 type ParagraphContent = Text;
 
