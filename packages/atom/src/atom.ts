@@ -1,7 +1,7 @@
 import {Maybe} from "typescript-monads";
 import {IMaybe} from "typescript-monads/src/maybe/maybe.interface";
 import {Atom, DerivedAtom, LeafAtom, SideEffect} from "./atom.interface";
-import {Consumer, Producer} from "./util.interface";
+import {Producer} from "./util.interface";
 import {AtomContext} from "./context";
 import {StatefulSideEffectError} from "./error";
 import {WeakCollection} from "./weak_collection";

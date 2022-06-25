@@ -4,15 +4,17 @@ import {LeafAtom, DerivedAtom, Atom} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {AtomFactory} from "./factory.interface";
 
-export const buildFactory = (): AtomFactory => {
-    return new AtomFactoryImpl();
+export const buildFactory = (context?: AtomContext): AtomFactory => {
+    return new AtomFactoryImpl(context)
 };
 
 class AtomFactoryImpl implements AtomFactory {
+    private static readonly defaultGlobalAtomContext: AtomContext = new AtomContext();
+
     private readonly context: AtomContext;
 
     constructor(context?: AtomContext) {
-        this.context = context ?? new AtomContext();
+        this.context = context ?? AtomFactoryImpl.defaultGlobalAtomContext;
     }
 
     public buildAtom<T>(value: T): LeafAtom<T> {
@@ -31,7 +33,7 @@ class AtomFactoryImpl implements AtomFactory {
         // we register a noop effect, which will cause the derived atom
         // to eagerly evaluate immediately after every dirty
         atom.react(() => {});
-        // kick it to trigger the eager evaluation, which
+        // kick it to trigger the initial eager evaluation, which
         // will in turn track any deps that the effect will run against
         atom.kick();
     }
