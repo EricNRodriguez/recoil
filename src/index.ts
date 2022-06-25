@@ -1,5 +1,6 @@
 import {buildFactory, AtomFactory, LeafAtom, DerivedAtom} from "../packages/atom";
 import {p, div, t, h1, h2} from "../packages/dom_dsl";
+import {runApp} from "../packages/dom_dsl/src/run_app";
 
 const f: AtomFactory = buildFactory();
 
@@ -32,7 +33,6 @@ console.log(cInUI);
 
 a.set(-10000);
 
-
 const app = div(
     h1(
         t("h1")
@@ -46,7 +46,15 @@ const app = div(
     t("text"),
     div().withClassName('shit'),
     p(),
-).withClassName("root-div");
+).withClassName("root-div").withId("root-id");
+
+console.log(app.id);
+console.log(app.className);
+
+runApp(
+    document.getElementById("root") as HTMLElement,
+    app,
+);
 
 
 

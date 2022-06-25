@@ -5,9 +5,7 @@ export const div = (...children: DivContent[]): Element => {
         "div"
     );
 
-    for (let child of children) {
-        element.appendChild(child);
-    }
+    children.forEach(element.appendChild.bind(element));
 
     return element;
 };

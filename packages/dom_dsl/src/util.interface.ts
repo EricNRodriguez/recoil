@@ -1,3 +1,3 @@
-interface Supplier<T> {
+export interface Supplier<T> {
     (): T;
 }

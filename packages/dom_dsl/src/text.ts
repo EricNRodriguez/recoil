@@ -1,4 +1,5 @@
 import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
+import {Supplier} from "./util.interface";
 
 const atomFactory: AtomFactory = buildFactory();
 
