@@ -1,12 +1,12 @@
 export type HeaderContent = Text;
 
 interface HeaderBuilder {
-    (content: HeaderContent): HTMLHeadingElement;
+    (content: HeaderContent): Element;
 }
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
-    return (content: HeaderContent): HTMLHeadingElement => {
-        const element: HTMLHeadingElement = document.createElement(`h${headerNumber}`) as HTMLHeadingElement;
+    return (content: HeaderContent): Element => {
+        const element: Element = document.createElement(`h${headerNumber}`) as Element;
 
         element.appendChild(content);
 

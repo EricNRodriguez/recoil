@@ -1,9 +1,6 @@
-import {t, TextContent} from "./text";
-import {Atom, isAtom} from "../../atom";
+export type DivContent = Node | Element;
 
-export type DivContent = Node;
-
-export const div = (...children: DivContent[]): HTMLDivElement => {
+export const div = (...children: DivContent[]): Element => {
     const element: HTMLDivElement = document.createElement(
         "div"
     );

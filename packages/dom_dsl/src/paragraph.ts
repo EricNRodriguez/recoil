@@ -2,8 +2,8 @@ import {t} from "./text";
 
 type ParagraphContent = Text;
 
-export const p = (...children: ParagraphContent[]): HTMLDivElement => {
-    const element: HTMLParagraphElement = document.createElement(
+export const p = (...children: ParagraphContent[]): Element => {
+    const element: Element = document.createElement(
         "p"
     );
 

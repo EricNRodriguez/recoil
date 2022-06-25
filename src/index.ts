@@ -36,7 +36,7 @@ a.set(-10000);
 const app = div(
     h1(
         t("h1")
-    ),
+    ).withClassName("6"),
     h2(
         t(() => a.get().toString()),
     ),
@@ -44,9 +44,9 @@ const app = div(
         t("paragraph"),
     ),
     t("text"),
-    div(),
+    div().withClassName('shit'),
     p(),
-);
+).withClassName("root-div");
 
 
 
