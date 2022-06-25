@@ -34,9 +34,16 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	public dirty(): void {
+		// we want to walk backwards through the dag and run our affects from children before parents,
+		// however we also want to retain the new deps acquired from the get call made when running effects
+		// (i.e. the eager eval). One way to get around this is to dirty the parents, but schedule the
+		// effects to run in a FIFO manner, which is conveniently achieved via the event loop
+		queueMicrotask(
+			this.scheduleEffects.bind(this)
+		);
+
 		this.dirtyAllDependants();
 		this.dependants.reset();
-		this.scheduleEffects();
 	}
 
 	private scheduleEffects(): void {
