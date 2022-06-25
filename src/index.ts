@@ -19,42 +19,40 @@ c.react((value: number): void => {
     console.log(`effect on c: ${value}`);
 });
 
-console.log(c.get());
-a.set(5);
+c.get();
+
+console.log("=====");
+
+a.set(0);
+
+console.log("=======");
+
 b.set(5);
-console.log(c.get());
+a.set(2);
 
-let cInUI: number | null = null;
-f.createEffect((): void => {
-    cInUI = c.get();
-});
-
-console.log(cInUI);
-
-a.set(-10000);
-
-const app = div(
-    h1(
-        t("h1")
-    ).withClassName("6"),
-    h2(
-        t(() => a.get().toString()),
-    ),
-    p(
-        t("paragraph"),
-    ),
-    t("text"),
-    div().withClassName('shit'),
-    p(),
-).withClassName("root-div").withId("root-id");
-
-console.log(app.id);
-console.log(app.className);
-
-runApp(
-    document.getElementById("root") as HTMLElement,
-    app,
-);
+//
+// const app = div(
+//     h1(
+//         t("h1")
+//     ).withClassName("6"),
+//     h2(
+//         t(() => a.get().toString()),
+//     ),
+//     p(
+//         t("paragraph"),
+//     ),
+//     t("text"),
+//     div().withClassName('shit'),
+//     p(),
+// ).withClassName("root-div").withId("root-id");
+//
+// console.log(app.id);
+// console.log(app.className);
+//
+// runApp(
+//     document.getElementById("root") as HTMLElement,
+//     app,
+// );
 
 
 
