@@ -33,7 +33,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 		);
 	}
 
-	public kick(): void {
+	public dirty(): void {
 		this.dirtyAllDependants();
 		this.dependants.reset();
 		this.scheduleEffects();
@@ -53,7 +53,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 
 	private dirtyAllDependants(): void {
 		this.dependants.forEach(
-			(dependant: DerivedAtom<any>) => dependant.kick(),
+			(dependant: DerivedAtom<any>) => dependant.dirty(),
 		);
 	}
 
@@ -102,7 +102,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 
 		// intentionally kicking AFTER setting, since
 		// we want our effects to run with the new values
-		this.kick();
+		this.dirty();
 	}
 
 	private checkSetIsNotASideEffect(): void {
@@ -135,9 +135,9 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 		return this.value.valueOrThrow("value should be some after derivation");
 	}
 
-	public kick() {
+	public dirty() {
 		this.discardCachedValue();
-		super.kick();
+		super.dirty();
 	}
 
 	private discardCachedValue() {

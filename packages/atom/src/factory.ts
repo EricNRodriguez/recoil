@@ -35,6 +35,6 @@ class AtomFactoryImpl implements AtomFactory {
         atom.react(() => {});
         // kick it to trigger the initial eager evaluation, which
         // will in turn track any deps that the effect will run against
-        atom.kick();
+        atom.dirty();
     }
 }

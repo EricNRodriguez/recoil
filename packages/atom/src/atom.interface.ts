@@ -1,7 +1,7 @@
 export interface Atom<T> {
     get(): T;
     getUntracked(): T;
-    kick(): void;
+    dirty(): void;
     react(effect: SideEffect<T>): void;
 }
 
