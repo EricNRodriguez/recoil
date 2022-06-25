@@ -79,8 +79,13 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	private applyToDependants(apply: Consumer<DerivedAtom<any>>): void {
+		this.dependants.forEach((dependantRef: WeakRef<DerivedAtom<any>>): void => {
+			const atom: DerivedAtom<any> | undefined = dependantRef.deref();
+			if (atom !== undefined) {
+				apply(atom);
+			}
+		});
 		this.removeGCdDependants();
-		this.dependants.forEach(d => apply(d.deref()));
 	}
 
 	private removeGCdDependants(): void {
@@ -96,7 +101,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	private buildCachedEffect<T>(effect: SideEffect<T>): SideEffect<T> {
-		let prevValue = null;
+		let prevValue: T | null = null;
 		return (newValue: T): void => {
 			if (newValue !== prevValue) {
 				prevValue = newValue;
@@ -107,7 +112,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 }
 
 export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
-	private value: T = null;
+	private value: T;
 
 	constructor(value: T, context: AtomContext) {
 		super(context);
