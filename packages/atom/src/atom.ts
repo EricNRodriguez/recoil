@@ -3,6 +3,7 @@ import {IMaybe} from "typescript-monads/src/maybe/maybe.interface";
 import {Atom, DerivedAtom, LeafAtom, SideEffect} from "./atom.interface";
 import {Consumer, Producer} from "./util.interface";
 import {AtomContext} from "./context";
+import {StatefulSideEffectError} from "./error";
 
 class DependantAtomCollection {
 	private dependants: WeakRef<DerivedAtom<any>>[] = [];
@@ -49,7 +50,6 @@ abstract class BaseAtom<T> implements Atom<T> {
 	private readonly dependants: DependantAtomCollection = new DependantAtomCollection();
 	private readonly effects: SideEffect<T>[] = [];
 	private readonly context: AtomContext;
-
 
 	protected constructor(context: AtomContext) {
 		this.context = context;
@@ -128,6 +128,8 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 	}
 
 	public set(value: T) {
+		this.checkSetIsNotASideEffect();
+
 		if (value === this.value) {
 			return;
 		}
@@ -137,6 +139,12 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 		// intentionally kicking AFTER setting, since
 		// we want our effects to run with the new values
 		this.kick();
+	}
+
+	private checkSetIsNotASideEffect(): void {
+		if (this.getContext().getCurrentDerivation().isSome()) {
+			throw new StatefulSideEffectError("stateful set called on leaf atom during derivation");
+		}
 	}
 }
 

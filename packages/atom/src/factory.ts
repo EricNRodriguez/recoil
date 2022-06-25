@@ -24,7 +24,10 @@ class AtomFactoryImpl implements AtomFactory {
     }
 
     public createEffect(effect: Runnable): void {
-        const atom: DerivedAtom<void> = this.deriveAtom(effect);
+        const atom: DerivedAtom<number> = this.deriveAtom((): number => {
+            effect();
+            return 0;
+        });
         // we register a noop effect, which will cause the derived atom
         // to eagerly evaluate immediately after every dirty
         atom.react(() => {});
