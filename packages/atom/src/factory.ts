@@ -1,6 +1,6 @@
 import {AtomContext} from "./context";
 import {Producer, Runnable} from "./util.interface";
-import {LeafAtom, DerivedAtom, Atom} from "./atom.interface";
+import {LeafAtom, DerivedAtom} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {AtomFactory} from "./factory.interface";
 

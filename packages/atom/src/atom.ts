@@ -6,6 +6,10 @@ import {AtomContext} from "./context";
 import {StatefulSideEffectError} from "./error";
 import {WeakCollection} from "./weak_collection";
 
+export const isAtom = (obj: Object): boolean => {
+	return 'get' in obj && 'getUntracked' in obj && 'kick' in obj && 'react' in obj;
+};
+
 abstract class BaseAtom<T> implements Atom<T> {
 	private readonly dependants: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
 	private readonly effects: SideEffect<T>[] = [];

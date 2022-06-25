@@ -1,0 +1,3 @@
+interface Supplier<T> {
+    (): T;
+}
