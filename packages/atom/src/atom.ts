@@ -4,50 +4,10 @@ import {Atom, DerivedAtom, LeafAtom, SideEffect} from "./atom.interface";
 import {Consumer, Producer} from "./util.interface";
 import {AtomContext} from "./context";
 import {StatefulSideEffectError} from "./error";
-
-class DependantAtomCollection {
-	private dependants: WeakRef<DerivedAtom<any>>[] = [];
-	private dependantSet: WeakSet<DerivedAtom<any>> = new WeakSet([]);
-
-	public register(dependant: DerivedAtom<any>): void {
-		if (this.dependantSet.has(dependant)) {
-			return;
-		}
-
-		const dependantRef: WeakRef<DerivedAtom<any>> = new WeakRef<DerivedAtom<any>>(dependant);
-		this.dependantSet.add(dependant);
-		this.dependants.push(dependantRef);
-	}
-
-	public reset() {
-		this.dependants.forEach((dependantRef: WeakRef<DerivedAtom<any>>): void => {
-			const dependant: DerivedAtom<any> | undefined = dependantRef.deref();
-			if (dependant !== undefined) {
-				this.dependantSet.delete(dependant);
-			}
-		});
-		this.dependants = [];
-	}
-
-	public forEach(consumer: Consumer<DerivedAtom<any>>): void {
-		this.dependants.forEach((dependantRef: WeakRef<DerivedAtom<any>>): void => {
-			const atom: DerivedAtom<any> | undefined = dependantRef.deref();
-			if (atom !== undefined) {
-				consumer(atom);
-			}
-		});
-		this.removeGCdDependants();
-	}
-
-	private removeGCdDependants(): void {
-		this.dependants = this.dependants.filter(
-			(dependantRef: WeakRef<DerivedAtom<any>>) => dependantRef.deref() !== undefined
-		)
-	}
-}
+import {WeakCollection} from "./weak_collection";
 
 abstract class BaseAtom<T> implements Atom<T> {
-	private readonly dependants: DependantAtomCollection = new DependantAtomCollection();
+	private readonly dependants: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
 	private readonly effects: SideEffect<T>[] = [];
 	private readonly context: AtomContext;
 
