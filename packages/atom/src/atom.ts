@@ -1,11 +1,11 @@
 import {Maybe} from "typescript-monads";
 import {IMaybe} from "typescript-monads/src/maybe/maybe.interface";
-import {Atom, DerivedAtom, LeafAtom} from "./atom.interface";
+import {Atom, DerivedAtom, LeafAtom, SideEffect} from "./atom.interface";
 import {Consumer, Producer} from "./util.interface";
 import {AtomContext} from "./context";
 
 abstract class BaseAtom<T> implements Atom<T> {
-	private readonly effects: Consumer<T>[] = [];
+	private readonly effects: SideEffect<T>[] = [];
 	private dependants: WeakRef<DerivedAtom<any>>[] = [];
 	private readonly context: AtomContext;
 
@@ -15,11 +15,13 @@ abstract class BaseAtom<T> implements Atom<T> {
 
 	abstract get(): T;
 
+	abstract getUntracked(): T;
+
 	public getContext(): AtomContext {
 		return this.context;
 	}
 
-	public trackCurrentDerivation(): void {
+	public latchToCurrentDerivation(): void {
 		this.getContext().getCurrentDerivation().tapSome(this.registerDependant.bind(this));
 	}
 
@@ -37,7 +39,6 @@ abstract class BaseAtom<T> implements Atom<T> {
 	public kick(): void {
 		this.dirtyAllDependants();
 		this.unlatch();
-
 		this.scheduleEffects();
 	}
 
@@ -60,9 +61,10 @@ abstract class BaseAtom<T> implements Atom<T> {
 			return;
 		}
 
+		// we want this to track, since the effects should be re-run whenever deps change
 		const value: T = this.get();
 		this.effects.forEach(
-			(effect: Consumer<T>) => effect(value),
+			(effect: SideEffect<T>) => effect(value),
 		);
 	}
 
@@ -87,8 +89,20 @@ abstract class BaseAtom<T> implements Atom<T> {
 		)
 	}
 
-	public react(effect: Consumer<T>): void {
-		this.effects.push(effect);
+	public react(effect: SideEffect<T>): void {
+		this.effects.push(
+			this.buildCachedEffect(effect),
+		);
+	}
+
+	private buildCachedEffect<T>(effect: SideEffect<T>): SideEffect<T> {
+		let prevValue = null;
+		return (newValue: T): void => {
+			if (newValue !== prevValue) {
+				prevValue = newValue;
+				effect(newValue);
+			}
+		};
 	}
 }
 
@@ -101,8 +115,11 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 	}
 
 	public get(): T {
-		this.trackCurrentDerivation();
+		this.latchToCurrentDerivation();
+		return this.getUntracked();
+	}
 
+	public getUntracked(): T {
 		return this.value;
 	}
 
@@ -129,15 +146,11 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 	}
 
 	public get(): T {
-		this.trackCurrentDerivation();
-
-		return this.getContext().executeTrackedOp(
-			this,
-			() => this.getUntracked(),
-		);
+		this.latchToCurrentDerivation();
+		return this.getContext().executeScopedDerivation(this);
 	}
 
-	private getUntracked(): T {
+	public getUntracked(): T {
 		if (this.value.isNone()) {
 			this.value = Maybe.some(this.deriveValue());
 		}
@@ -145,4 +158,12 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 		return this.value.valueOrThrow("value should be some after derivation");
 	}
 
+	public kick() {
+		this.discardCachedValue();
+		super.kick();
+	}
+
+	private discardCachedValue() {
+		this.value = Maybe.none();
+	}
 }

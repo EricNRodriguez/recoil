@@ -1,9 +1,8 @@
-import {Producer, Consumer, Runnable} from "./util.interface";
-
 export interface Atom<T> {
     get(): T;
+    getUntracked(): T;
     kick(): void;
-    react(effect: Consumer<T>): void;
+    react(effect: SideEffect<T>): void;
 }
 
 export interface LeafAtom<T> extends Atom<T> {
@@ -11,3 +10,7 @@ export interface LeafAtom<T> extends Atom<T> {
 }
 
 export interface DerivedAtom<T> extends Atom<T> {}
+
+export interface SideEffect<T> {
+    (value: T): void;
+}
