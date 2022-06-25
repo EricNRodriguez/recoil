@@ -7,7 +7,7 @@ import {StatefulSideEffectError} from "./error";
 import {WeakCollection} from "./weak_collection";
 
 export const isAtom = (obj: Object): boolean => {
-	return 'get' in obj && 'getUntracked' in obj && 'kick' in obj && 'react' in obj;
+	return 'get' in obj && 'getUntracked' in obj && 'dirty' in obj && 'react' in obj;
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
