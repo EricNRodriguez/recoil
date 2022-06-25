@@ -4,10 +4,52 @@ import {Atom, DerivedAtom, LeafAtom, SideEffect} from "./atom.interface";
 import {Consumer, Producer} from "./util.interface";
 import {AtomContext} from "./context";
 
-abstract class BaseAtom<T> implements Atom<T> {
-	private readonly effects: SideEffect<T>[] = [];
+class DependantAtomCollection {
 	private dependants: WeakRef<DerivedAtom<any>>[] = [];
+	private dependantSet: WeakSet<DerivedAtom<any>> = new WeakSet([]);
+
+	public register(dependant: DerivedAtom<any>): void {
+		if (this.dependantSet.has(dependant)) {
+			return;
+		}
+
+		const dependantRef: WeakRef<DerivedAtom<any>> = new WeakRef<DerivedAtom<any>>(dependant);
+		this.dependantSet.add(dependant);
+		this.dependants.push(dependantRef);
+	}
+
+	public reset() {
+		this.dependants.forEach((dependantRef: WeakRef<DerivedAtom<any>>): void => {
+			const dependant: DerivedAtom<any> | undefined = dependantRef.deref();
+			if (dependant !== undefined) {
+				this.dependantSet.delete(dependant);
+			}
+		});
+		this.dependants = [];
+	}
+
+	public forEach(consumer: Consumer<DerivedAtom<any>>): void {
+		this.dependants.forEach((dependantRef: WeakRef<DerivedAtom<any>>): void => {
+			const atom: DerivedAtom<any> | undefined = dependantRef.deref();
+			if (atom !== undefined) {
+				consumer(atom);
+			}
+		});
+		this.removeGCdDependants();
+	}
+
+	private removeGCdDependants(): void {
+		this.dependants = this.dependants.filter(
+			(dependantRef: WeakRef<DerivedAtom<any>>) => dependantRef.deref() !== undefined
+		)
+	}
+}
+
+abstract class BaseAtom<T> implements Atom<T> {
+	private readonly dependants: DependantAtomCollection = new DependantAtomCollection();
+	private readonly effects: SideEffect<T>[] = [];
 	private readonly context: AtomContext;
+
 
 	protected constructor(context: AtomContext) {
 		this.context = context;
@@ -22,40 +64,17 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	public latchToCurrentDerivation(): void {
-		this.getContext().getCurrentDerivation().tapSome(this.registerDependant.bind(this));
+		this.getContext().getCurrentDerivation().tapSome(
+			this.dependants.register.bind(this.dependants)
+		);
 	}
 
-	private registerDependant(dependant: DerivedAtom<any>): void {
-		const dependantRef: WeakRef<DerivedAtom<any>> = new WeakRef<DerivedAtom<any>>(dependant);
-		if (!this.dependants.includes(dependantRef)) {
-			this.dependants.push(dependantRef);
-		}
-	}
-
-	// kick:
-	// -> dirty all deps
-	// -> ignore them
-	// -> re-derive if there are effects
 	public kick(): void {
 		this.dirtyAllDependants();
-		this.unlatch();
+		this.dependants.reset();
 		this.scheduleEffects();
 	}
 
-	// we need to be very careful here, since we can easily end up
-	// spamming effects...
-	//
-	// the solution is to schedule them to happen AFTER the call stack goes to zero
-	//
-	// but what happens if those effects cause derivations, which in turn cause more effects?
-	//
-	// wait... derivations dont cause effects, only sets do...
-	//
-	// laziness is transparent
-	//
-	// think this through...
-	// TODO(ericr): think this through - should we wait until the graph is stable? I dont think so, since
-	// we only react to sets.. so this should be ok??? Need to test...
 	private scheduleEffects(): void {
 		if (this.effects.length === 0) {
 			return;
@@ -69,35 +88,15 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	private dirtyAllDependants(): void {
-		this.applyToDependants(
+		this.dependants.forEach(
 			(dependant: DerivedAtom<any>) => dependant.kick(),
 		);
 	}
 
-	private unlatch(): void {
-		this.dependants = [];
-	}
-
-	private applyToDependants(apply: Consumer<DerivedAtom<any>>): void {
-		this.dependants.forEach((dependantRef: WeakRef<DerivedAtom<any>>): void => {
-			const atom: DerivedAtom<any> | undefined = dependantRef.deref();
-			if (atom !== undefined) {
-				apply(atom);
-			}
-		});
-		this.removeGCdDependants();
-	}
-
-	private removeGCdDependants(): void {
-		this.dependants = this.dependants.filter(
-			(dependantRef: WeakRef<DerivedAtom<any>>) => dependantRef.deref() !== undefined
-		)
-	}
-
 	public react(effect: SideEffect<T>): void {
-		this.effects.push(
-			this.buildCachedEffect(effect),
-		);
+		const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
+		cachedEffect(this.get());
+		this.effects.push(cachedEffect);
 	}
 
 	private buildCachedEffect<T>(effect: SideEffect<T>): SideEffect<T> {

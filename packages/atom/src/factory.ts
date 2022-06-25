@@ -1,10 +1,14 @@
 import {AtomContext} from "./context";
 import {Producer, Runnable} from "./util.interface";
-import {LeafAtom, DerivedAtom} from "./atom.interface";
+import {LeafAtom, DerivedAtom, Atom} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {AtomFactory} from "./factory.interface";
 
-export class AtomFactoryImpl implements AtomFactory {
+export const buildFactory = (): AtomFactory => {
+    return new AtomFactoryImpl();
+};
+
+class AtomFactoryImpl implements AtomFactory {
     private readonly context: AtomContext;
 
     constructor(context?: AtomContext) {
