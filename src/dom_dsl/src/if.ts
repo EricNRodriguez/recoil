@@ -2,6 +2,8 @@ import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
 import {removeAllChildren, replaceChildren} from "./dom_utils";
 import {Reference} from "../../atom/src/factory.interface";
+import {NodeBuilder} from "./builder/node_builder.interface";
+import {unwrapNodesFromBuilder} from "./builder/builder_util";
 
 const atomFactory: AtomFactory = buildFactory();
 
@@ -16,11 +18,14 @@ const effectRefs: WeakMap<Node, Reference> = new WeakMap();
 // to the calling code
 export const ifElse = (
     condition: IfElseCondition,
-    ifTrue: Node,
-    ifFalse?: Node,
+    ifTrue: Node | NodeBuilder,
+    ifFalse?: Node | NodeBuilder,
 ): Node  => {
+    const ifTrueUnwrapped: Node = unwrapNodesFromBuilder<Node>(ifTrue) as Node;
+    const ifFalseUnwrapped: Node | undefined = unwrapNodesFromBuilder(ifFalse) as Node | undefined;
+
     if (typeof condition === "boolean") {
-        return staticIfElse(condition, ifTrue, ifFalse);
+        return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
     }
 
     const anchor: HTMLElement = document.createElement("div");
@@ -33,7 +38,7 @@ export const ifElse = (
             (condition as Atom<boolean>).get() :
             (condition as Supplier<boolean>)();
 
-        const node = state ? ifTrue : ifFalse;
+        const node = state ? ifTrueUnwrapped : ifFalseUnwrapped;
         replaceChildren(
             anchor,
             node,

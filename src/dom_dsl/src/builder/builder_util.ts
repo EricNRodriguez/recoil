@@ -4,7 +4,11 @@ export const isNodeBuilder = (content: any): boolean => {
     return "build" in content;
 }
 
-export const unwrapNodesFromBuilder = <T>(content: T | NodeBuilder): T | Node => {
+export const unwrapNodesFromBuilder = <T>(content: T | NodeBuilder | null | undefined): T | Node | null | undefined => {
+    if (content === null || content === undefined) {
+        return content;
+    }
+
     if (isNodeBuilder(content)) {
         return (content as NodeBuilder).build();
     }
