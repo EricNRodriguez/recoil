@@ -2,10 +2,15 @@ import {Consumer} from "./util.interface";
 
 export class WeakCollection<T extends Object> {
     private items: WeakRef<T>[] = [];
-    private itemsSet: WeakSet<T> = new WeakSet([]);
+    // private itemsSet: WeakSet<T> = new WeakSet([]);
+    private itemsSet: Set<T> = new Set<T>();
 
-    public getItems(): WeakRef<T>[] {
-        return [...this.items];
+    public getItems(): T[] {
+        return [...this.items
+            .map((ref: WeakRef<T>): T | undefined => ref.deref())
+            .filter((item: T | undefined): boolean => item !== undefined)
+            .map((item: T | undefined): T => item!)
+        ];
     }
 
     public register(item: T): void {

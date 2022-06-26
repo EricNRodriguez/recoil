@@ -11,10 +11,10 @@ export const isAtom = (obj: Object): boolean => {
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
-	private readonly parents: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
+	readonly parents: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
 	private readonly effects: SideEffect<T>[] = [];
 	private readonly context: AtomContext;
-	private numChildrenNotReady: number = 0;
+	public numChildrenNotReady: number = 0;
 
 	protected constructor(context: AtomContext) {
 		this.context = context;
@@ -25,42 +25,15 @@ abstract class BaseAtom<T> implements Atom<T> {
 	abstract getUntracked(): T;
 
 	public invalidate(): void {
-		this.dirtyAllParents();
-		this.notifyParentsThatChildIsReady();
-	}
-
-	public dirty() {
-		if (this.numChildrenNotReady === 0) {
-			this.dirtyAllParents();
-		}
-
-		this.numChildrenNotReady++;
-	}
-
-	public notifyParentsThatChildIsReady(): void {
 		this.parents.forEach((parent: Atom<any>): void => {
+			(parent as BaseAtom<any>).dirty();
 			(parent as BaseAtom<any>).childReady();
 		});
 	}
 
-	public childReady() {
-		this.numChildrenNotReady--;
+	abstract dirty(): void;
 
-		if (this.numChildrenNotReady === 0) {
-			const prevParents: WeakRef<Atom<any>>[] = this.parents.getItems();
-			this.parents.reset();
-
-			this.scheduleEffects();
-
-			prevParents.forEach((parent: WeakRef<Atom<any>>): void => {
-				if (parent.deref() === undefined) {
-					return;
-				}
-				(parent.deref() as BaseAtom<any>).dirty();
-				(parent.deref() as BaseAtom<any>).childReady();
-			});
-		}
-	}
+	abstract childReady(): void;
 
 	public getContext(): AtomContext {
 		return this.context;
@@ -72,7 +45,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 		);
 	}
 
-	private scheduleEffects(): void {
+	public scheduleEffects(): void {
 		if (this.effects.length === 0) {
 			return;
 		}
@@ -81,12 +54,6 @@ abstract class BaseAtom<T> implements Atom<T> {
 		const value: T = this.get();
 		this.effects.forEach(
 			(effect: SideEffect<T>) => effect(value),
-		);
-	}
-
-	private dirtyAllParents(): void {
-		this.parents.forEach(
-			(parent: DerivedAtom<any>) => (parent as BaseAtom<any>).dirty(),
 		);
 	}
 
@@ -136,9 +103,21 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 		// intentionally kicking AFTER setting, since
 		// we want our effects to run with the new values
 		this.dirty();
-		this.notifyParentsThatChildIsReady();
-
 	}
+
+	public dirty() {
+		const prevParents: Atom<any>[] = this.parents.getItems();
+		this.parents.reset();
+
+		this.scheduleEffects();
+
+		prevParents.forEach((parent: Atom<any>): void => {
+			(parent as BaseAtom<any>).dirty();
+			(parent as BaseAtom<any>).childReady();
+		});
+	}
+
+	public childReady() {}
 
 	private checkSetIsNotASideEffect(): void {
 		if (this.getContext().getCurrentDerivation().isSome()) {
@@ -170,9 +149,31 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 		return this.value.valueOrThrow("value should be some after derivation");
 	}
 
+	public childReady() {
+		this.numChildrenNotReady--;
+
+		if (this.numChildrenNotReady === 0) {
+			const prevParents: Atom<any>[] = this.parents.getItems();
+			this.parents.reset();
+
+			this.scheduleEffects();
+
+			prevParents.forEach((parent: Atom<any>): void => {
+				(parent as BaseAtom<any>).childReady();
+			});
+		}
+	}
+
 	public dirty() {
 		this.discardCachedValue();
-		super.dirty();
+
+		if (this.numChildrenNotReady === 0) {
+			this.parents.forEach((parent: Atom<any>): void => {
+				(parent as BaseAtom<any>).dirty();
+			});
+		}
+
+		this.numChildrenNotReady++;
 	}
 
 	private discardCachedValue() {
