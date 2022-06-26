@@ -11,9 +11,10 @@ export const isAtom = (obj: Object): boolean => {
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
-	private readonly dependants: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
+	private readonly parents: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
 	private readonly effects: SideEffect<T>[] = [];
 	private readonly context: AtomContext;
+	private numChildrenNotReady: number = 0;
 
 	protected constructor(context: AtomContext) {
 		this.context = context;
@@ -23,27 +24,38 @@ abstract class BaseAtom<T> implements Atom<T> {
 
 	abstract getUntracked(): T;
 
+	public dirty() {
+		if (this.numChildrenNotReady === 0) {
+			this.dirtyAllParents();
+		}
+
+		this.numChildrenNotReady++;
+	}
+
+	public childReady() {
+		this.numChildrenNotReady--;
+
+		if (this.numChildrenNotReady === 0) {
+			this.scheduleEffects();
+			this.notifyParentsThatChildIsReady();
+		}
+	}
+
+	public notifyParentsThatChildIsReady() {
+		this.parents.forEach((parent: DerivedAtom<any>): void => {
+			(parent as BaseAtom<any>).childReady();
+		});
+		this.parents.reset();
+	}
+
 	public getContext(): AtomContext {
 		return this.context;
 	}
 
 	public latchToCurrentDerivation(): void {
 		this.getContext().getCurrentDerivation().tapSome(
-			this.dependants.register.bind(this.dependants)
+			this.parents.register.bind(this.parents)
 		);
-	}
-
-	public dirty(): void {
-		// we want to walk backwards through the dag and run our affects from children before parents,
-		// however we also want to retain the new deps acquired from the get call made when running effects
-		// (i.e. the eager eval). One way to get around this is to dirty the parents, but schedule the
-		// effects to run in a FIFO manner, which is conveniently achieved via the event loop
-		queueMicrotask(
-			this.scheduleEffects.bind(this)
-		);
-
-		this.dirtyAllDependants();
-		this.dependants.reset();
 	}
 
 	private scheduleEffects(): void {
@@ -58,9 +70,9 @@ abstract class BaseAtom<T> implements Atom<T> {
 		);
 	}
 
-	private dirtyAllDependants(): void {
-		this.dependants.forEach(
-			(dependant: DerivedAtom<any>) => dependant.dirty(),
+	private dirtyAllParents(): void {
+		this.parents.forEach(
+			(parent: DerivedAtom<any>) => parent.dirty(),
 		);
 	}
 
@@ -110,6 +122,8 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 		// intentionally kicking AFTER setting, since
 		// we want our effects to run with the new values
 		this.dirty();
+		this.notifyParentsThatChildIsReady();
+
 	}
 
 	private checkSetIsNotASideEffect(): void {
