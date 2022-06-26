@@ -8,5 +8,5 @@ export interface ElementBuilder extends NodeBuilder{
     withClass(className: string | Atom<string> | Supplier<string>): ElementBuilder;
     withId(id: string): ElementBuilder;
     withClickHandler(handler: Runnable): ElementBuilder;
-    withChildren(...children: Element[]): ElementBuilder;
+    withChildren(...children: (Node | null | undefined)[]): ElementBuilder;
 }

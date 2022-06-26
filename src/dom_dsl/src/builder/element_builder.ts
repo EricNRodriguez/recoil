@@ -40,8 +40,8 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withChildren(...children: Node[]): ElementBuilder {
-        this.element.replaceChildren(...children);
+    public withChildren(...children: (Node | null | undefined)[]): ElementBuilder {
+        this.element.replaceChildren(...children.filter((child: Node | null | undefined): boolean => child !== null && child !== undefined) as Node[]);
         return this;
     }
 
