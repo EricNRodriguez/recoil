@@ -15,20 +15,34 @@ export const ifElse = (
         return staticIfElse(condition, ifTrue, ifFalse);
     }
 
-    const commentAnchor: Comment = new Comment("ifElse-anchor");
+    const anchor: HTMLElement = document.createElement("div");
+    anchor.style.setProperty("display", "contents");
+
+    let mountedNode: Node | undefined = undefined;
 
     atomFactory.createEffect((): void => {
-       const state: boolean = isAtom(condition) ?
-           (condition as Atom<boolean>).get() :
-           (condition as Supplier<boolean>)();
+        const state: boolean = isAtom(condition) ?
+            (condition as Atom<boolean>).get() :
+            (condition as Supplier<boolean>)();
 
-       removeAllChildren(commentAnchor);
-       commentAnchor.appendChild(
-           state ? ifTrue : ifFalse ?? new Comment("noop-false")
-       );
+        const node = state ? ifTrue : ifFalse;
+        if (node === mountedNode) {
+            return;
+        }
+
+        if (mountedNode !== undefined) {
+            anchor.replaceChildren();
+        }
+        if (node === undefined || node === null) {
+            return;
+        }
+
+        anchor.appendChild(node);
+
+        mountedNode = node;
     });
 
-    return commentAnchor;
+    return anchor;
 };
 
 const staticIfElse = (

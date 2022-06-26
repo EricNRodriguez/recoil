@@ -42,7 +42,7 @@ class AtomFactoryImpl implements AtomFactory {
         // we want to keep this atom alive, and since the DAG only stores weak references,
         // we ensure that it is always in memory.
         //
-        // without this, the effect may get collected, even when the atoms its dependent on
+        // without this, the effect may get collected, even when the atoms its depende:wqnt on
         // remain in memory
         this.effectRefs.add(atom);
     }
