@@ -4,6 +4,10 @@ export class WeakCollection<T extends Object> {
     private items: WeakRef<T>[] = [];
     private itemsSet: WeakSet<T> = new WeakSet([]);
 
+    public getItems(): WeakRef<T>[] {
+        return [...this.items];
+    }
+
     public register(item: T): void {
         if (this.itemsSet.has(item)) {
             return;

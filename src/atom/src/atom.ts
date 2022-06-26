@@ -7,7 +7,7 @@ import {StatefulSideEffectError} from "./error";
 import {WeakCollection} from "./weak_collection";
 
 export const isAtom = (obj: Object): boolean => {
-	return 'get' in obj && 'getUntracked' in obj && 'dirty' in obj && 'react' in obj;
+	return 'get' in obj && 'getUntracked' in obj && 'invalidate' in obj && 'react' in obj;
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
@@ -24,6 +24,11 @@ abstract class BaseAtom<T> implements Atom<T> {
 
 	abstract getUntracked(): T;
 
+	public invalidate(): void {
+		this.dirtyAllParents();
+		this.notifyParentsThatChildIsReady();
+	}
+
 	public dirty() {
 		if (this.numChildrenNotReady === 0) {
 			this.dirtyAllParents();
@@ -32,20 +37,29 @@ abstract class BaseAtom<T> implements Atom<T> {
 		this.numChildrenNotReady++;
 	}
 
+	public notifyParentsThatChildIsReady(): void {
+		this.parents.forEach((parent: Atom<any>): void => {
+			(parent as BaseAtom<any>).childReady();
+		});
+	}
+
 	public childReady() {
 		this.numChildrenNotReady--;
 
 		if (this.numChildrenNotReady === 0) {
-			this.scheduleEffects();
-			this.notifyParentsThatChildIsReady();
-		}
-	}
+			const prevParents: WeakRef<Atom<any>>[] = this.parents.getItems();
+			this.parents.reset();
 
-	public notifyParentsThatChildIsReady() {
-		this.parents.forEach((parent: DerivedAtom<any>): void => {
-			(parent as BaseAtom<any>).childReady();
-		});
-		this.parents.reset();
+			this.scheduleEffects();
+
+			prevParents.forEach((parent: WeakRef<Atom<any>>): void => {
+				if (parent.deref() === undefined) {
+					return;
+				}
+				(parent.deref() as BaseAtom<any>).dirty();
+				(parent.deref() as BaseAtom<any>).childReady();
+			});
+		}
 	}
 
 	public getContext(): AtomContext {
@@ -72,7 +86,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 
 	private dirtyAllParents(): void {
 		this.parents.forEach(
-			(parent: DerivedAtom<any>) => parent.dirty(),
+			(parent: DerivedAtom<any>) => (parent as BaseAtom<any>).dirty(),
 		);
 	}
 
