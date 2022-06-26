@@ -6,6 +6,11 @@ const atomFactory: AtomFactory = buildFactory();
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
+// TODO(ericr): inject view providers, rather than
+// raw references, since this will leak lots of memory
+//
+// this component can keep weak references, however that should be transparent
+// to the calling code
 export const ifElse = (
     condition: IfElseCondition,
     ifTrue: Node,

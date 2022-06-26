@@ -2,7 +2,7 @@ import {AtomContext} from "./context";
 import {Producer, Runnable} from "./util.interface";
 import {LeafAtom, DerivedAtom} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
-import {AtomFactory} from "./factory.interface";
+import {AtomFactory, Reference} from "./factory.interface";
 import {Atom} from "./atom.interface";
 
 export const buildFactory = (context?: AtomContext): AtomFactory => {
@@ -13,7 +13,6 @@ class AtomFactoryImpl implements AtomFactory {
     private static readonly defaultGlobalAtomContext: AtomContext = new AtomContext();
 
     private readonly context: AtomContext;
-    private readonly effectRefs: Set<Atom<any>> = new Set<Atom<any>>();
 
     constructor(context?: AtomContext) {
         this.context = context ?? AtomFactoryImpl.defaultGlobalAtomContext;
@@ -27,7 +26,7 @@ class AtomFactoryImpl implements AtomFactory {
         return new DerivedAtomImpl(deriveValue, this.context);
     }
 
-    public createEffect(effect: Runnable): void {
+    public createEffect(effect: Runnable): Reference {
         const atom: DerivedAtom<number> = this.deriveAtom((): number => {
             effect();
             return 0;
@@ -39,11 +38,8 @@ class AtomFactoryImpl implements AtomFactory {
         // will in turn track any deps that the effect will run against
         atom.get();
 
-        // we want to keep this atom alive, and since the DAG only stores weak references,
-        // we ensure that it is always in memory.
-        //
-        // without this, the effect may get collected, even when the atoms its depende:wqnt on
-        // remain in memory
-        this.effectRefs.add(atom);
+        // since the DAG edges are all weak, there is nothing keeping this atom
+        // alive. Hence, the caller is responsible for keeping it in scope.
+        return atom;
     }
 }
