@@ -1,13 +1,9 @@
-import {t} from "./text";
+import {ElementBuilderImpl} from "./builder/element_builder";
+import {ElementBuilder} from "./builder/element_builder.interface";
 
 type ParagraphContent = Text;
 
-export const p = (...children: ParagraphContent[]): Element => {
-    const element: Element = document.createElement(
-        "p"
-    );
-
-    children.forEach(element.appendChild.bind(element));
-
-    return element;
+export const p = (...children: ParagraphContent[]): ElementBuilder => {
+    return new ElementBuilderImpl("p")
+        .withChildren(...children);
 };

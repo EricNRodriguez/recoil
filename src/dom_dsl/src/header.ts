@@ -1,16 +1,16 @@
+import {ElementBuilderImpl} from "./builder/element_builder";
+import {ElementBuilder} from "./builder/element_builder.interface";
+
 export type HeaderContent = Text;
 
 interface HeaderBuilder {
-    (content: HeaderContent): Element;
+    (content: HeaderContent): ElementBuilder;
 }
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
-    return (content: HeaderContent): Element => {
-        const element: Element = document.createElement(`h${headerNumber}`) as Element;
-
-        element.appendChild(content);
-
-        return element;
+    return (content: HeaderContent): ElementBuilder => {
+        return new ElementBuilderImpl(`h${headerNumber}`)
+            .withChildren(content);
     };
 };
 
