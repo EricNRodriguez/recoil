@@ -1,10 +1,13 @@
 import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
-import {removeAllChildren} from "./dom_utils";
+import {removeAllChildren, replaceChildren} from "./dom_utils";
+import {Reference} from "../../atom/src/factory.interface";
 
 const atomFactory: AtomFactory = buildFactory();
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
+
+const effectRefs: WeakMap<Node, Reference> = new WeakMap();
 
 // TODO(ericr): inject view providers, rather than
 // raw references, since this will leak lots of memory
@@ -25,27 +28,20 @@ export const ifElse = (
 
     let mountedNode: Node | undefined = undefined;
 
-    atomFactory.createEffect((): void => {
+    const effectRef: Reference = atomFactory.createEffect((): void => {
         const state: boolean = isAtom(condition) ?
             (condition as Atom<boolean>).get() :
             (condition as Supplier<boolean>)();
 
         const node = state ? ifTrue : ifFalse;
-        if (node === mountedNode) {
-            return;
-        }
-
-        if (mountedNode !== undefined) {
-            anchor.replaceChildren();
-        }
-        if (node === undefined || node === null) {
-            return;
-        }
-
-        anchor.appendChild(node);
+        replaceChildren(
+            anchor,
+            node,
+        )
 
         mountedNode = node;
     });
+    effectRefs.set(anchor, effectRef);
 
     return anchor;
 };
