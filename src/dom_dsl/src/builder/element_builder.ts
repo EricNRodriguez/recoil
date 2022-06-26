@@ -7,7 +7,7 @@ import {Reference} from "../../../atom/src/factory.interface";
 
 export class ElementBuilderImpl implements ElementBuilder {
     private readonly element: HTMLElement;
-    private readonly effectRefs: WeakMap<HTMLElement, Reference> = new WeakMap();
+    private static readonly effectRefs: WeakMap<HTMLElement, Reference> = new WeakMap();
 
     constructor(tag: string) {
         this.element = document.createElement(tag);
@@ -25,7 +25,7 @@ export class ElementBuilderImpl implements ElementBuilder {
 
                 this.element.className = `${prevClassName} ${newClassName}`;
             })
-            this.effectRefs.set(this.element, effectRef);
+            ElementBuilderImpl.effectRefs.set(this.element, effectRef);
         }
         return this;
     }
