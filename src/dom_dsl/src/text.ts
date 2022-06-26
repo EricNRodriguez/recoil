@@ -19,6 +19,13 @@ export const t = (content: TextContent): Text => {
     return textNode;
 };
 
+// a registry used to keep the source in memory until the text node
+// is free for garbage collection
+//
+// this is important, as we are providing a reactive hook, rather than a callback,
+// which means that there are no references
+const sourceRefs: WeakMap<Text, BindedTextNodeSource> = new WeakMap();
+
 type BindedTextNodeSource = Supplier<string> | Atom<string>;
 
 const createBindedTextNode = (source: BindedTextNodeSource): Text => {
@@ -36,6 +43,8 @@ const createBindedTextNode = (source: BindedTextNodeSource): Text => {
         // TODO(ericr): be more specific with a fall through
         throw new Error();
     }
+
+    sourceRefs.set(textNode, source);
 
     return textNode;
 };

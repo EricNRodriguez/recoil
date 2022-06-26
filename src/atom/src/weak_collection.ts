@@ -2,8 +2,7 @@ import {Consumer} from "./util.interface";
 
 export class WeakCollection<T extends Object> {
     private items: WeakRef<T>[] = [];
-    // private itemsSet: WeakSet<T> = new WeakSet([]);
-    private itemsSet: Set<T> = new Set<T>();
+    private itemsSet: WeakSet<T> = new WeakSet([]);
 
     public getItems(): T[] {
         return [...this.items

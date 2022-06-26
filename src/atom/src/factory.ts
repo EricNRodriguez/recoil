@@ -3,6 +3,7 @@ import {Producer, Runnable} from "./util.interface";
 import {LeafAtom, DerivedAtom} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {AtomFactory} from "./factory.interface";
+import {Atom} from "./atom.interface";
 
 export const buildFactory = (context?: AtomContext): AtomFactory => {
     return new AtomFactoryImpl(context)
@@ -12,6 +13,7 @@ class AtomFactoryImpl implements AtomFactory {
     private static readonly defaultGlobalAtomContext: AtomContext = new AtomContext();
 
     private readonly context: AtomContext;
+    private readonly effectRefs: Set<Atom<any>> = new Set<Atom<any>>();
 
     constructor(context?: AtomContext) {
         this.context = context ?? AtomFactoryImpl.defaultGlobalAtomContext;
@@ -35,6 +37,13 @@ class AtomFactoryImpl implements AtomFactory {
         atom.react(() => {});
         // kick it to trigger the initial eager evaluation, which
         // will in turn track any deps that the effect will run against
-        atom.invalidate();
+        atom.get();
+
+        // we want to keep this atom alive, and since the DAG only stores weak references,
+        // we ensure that it is always in memory.
+        //
+        // without this, the effect may get collected, even when the atoms its dependent on
+        // remain in memory
+        this.effectRefs.add(atom);
     }
 }
