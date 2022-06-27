@@ -1,6 +1,6 @@
 import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
-import {removeAllChildren, replaceChildren} from "./dom_utils";
+import {bindScope, removeAllChildren, replaceChildren} from "./dom_utils";
 import {Reference} from "../../atom/src/factory.interface";
 import {NodeBuilder} from "./builder/node_builder.interface";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
@@ -8,8 +8,6 @@ import {unwrapNodesFromBuilder} from "./builder/builder_util";
 const atomFactory: AtomFactory = buildFactory();
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
-
-const effectRefs: WeakMap<Node, Reference> = new WeakMap();
 
 // TODO(ericr): inject view providers, rather than
 // raw references, since this will leak lots of memory
@@ -46,7 +44,7 @@ export const ifElse = (
 
         mountedNode = node;
     });
-    effectRefs.set(anchor, effectRef);
+    bindScope(anchor, effectRef);
 
     return anchor;
 };

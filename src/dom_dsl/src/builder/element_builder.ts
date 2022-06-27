@@ -1,13 +1,12 @@
-import {NodeBuilder} from "./node_builder.interface";
 import {Runnable} from "../../../atom/src/util.interface";
 import {ElementBuilder} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, buildFactory, isAtom} from "../../../atom";
 import {Reference} from "../../../atom/src/factory.interface";
+import {bindScope} from "../dom_utils";
 
 export class ElementBuilderImpl implements ElementBuilder {
     private readonly element: HTMLElement;
-    private static readonly effectRefs: WeakMap<HTMLElement, Reference> = new WeakMap();
 
     constructor(tag: string) {
         this.element = document.createElement(tag);
@@ -25,7 +24,7 @@ export class ElementBuilderImpl implements ElementBuilder {
 
                 this.element.className = `${prevClassName} ${newClassName}`;
             })
-            ElementBuilderImpl.effectRefs.set(this.element, effectRef);
+            bindScope(this.element, effectRef);
         }
         return this;
     }

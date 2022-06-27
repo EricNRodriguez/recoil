@@ -1,8 +1,9 @@
 import {Function, Supplier} from "./util.interface";
 import {AtomFactory, buildFactory} from "../../atom";
-import {removeAllChildren} from "./dom_utils";
+import {bindScope, removeAllChildren} from "./dom_utils";
 import {NodeBuilder} from "./builder/node_builder.interface";
-import {isNodeBuilder, unwrapNodesFromBuilder} from "./builder/builder_util";
+import {unwrapNodesFromBuilder} from "./builder/builder_util";
+import {Reference} from "../../atom/src/factory.interface";
 
 const atomFactory: AtomFactory = buildFactory();
 
@@ -10,12 +11,12 @@ export const foreach = <T extends Object>(getItems: Supplier<T[]>, buildElement:
     const elementCache: WeakMap<T, Node> = new WeakMap();
 
     const commentAnchor: Comment = document.createComment("foreach-anchor");
-    atomFactory.createEffect((): void => {
+    const effectRef: Reference = atomFactory.createEffect((): void => {
         removeAllChildren(commentAnchor);
 
         getItems().forEach((item: T): void => {
             if (!elementCache.has(item)) {
-                const builtItem: Node = unwrapNodesFromBuilder<Node>(buildElement(item));
+                const builtItem: Node = unwrapNodesFromBuilder<Node>(buildElement(item)) as Node;
                 elementCache.set(item, builtItem);
             }
 
@@ -25,5 +26,6 @@ export const foreach = <T extends Object>(getItems: Supplier<T[]>, buildElement:
         });
     });
 
+    bindScope(commentAnchor, effectRef);
     return commentAnchor;
 };
