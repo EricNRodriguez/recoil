@@ -1,6 +1,6 @@
 import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
-import {bindScope, removeAllChildren, replaceChildren} from "./dom_utils";
+import {bindScope, replaceChildren} from "./dom_utils";
 import {Reference} from "../../atom/src/factory.interface";
 import {NodeBuilder} from "./builder/node_builder.interface";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
