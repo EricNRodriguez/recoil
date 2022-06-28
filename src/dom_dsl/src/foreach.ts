@@ -2,7 +2,6 @@ import {Function, Supplier} from "./util.interface";
 import {AtomFactory, buildFactory} from "../../atom";
 import {bindScope, replaceChildren} from "./dom_utils";
 import {NodeBuilder} from "./builder/node_builder.interface";
-import {Reference} from "../../atom/src/factory.interface";
 import {frag} from "./frag";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {IndexedItem} from "./indexed_item.interface";
@@ -10,12 +9,34 @@ import {getItem, getKey} from "./indexed_item_lense";
 
 const atomFactory: AtomFactory = buildFactory();
 
-export const foreach = <T extends Object>(getItems: Supplier<IndexedItem<T>[]>, buildElement: Function<T, Node | NodeBuilder>): Node => {
+export const foreach = <T extends Object>(
+    getItems: Supplier<IndexedItem<T>[]>,
+    buildElement: Function<T, Node | NodeBuilder>
+): Node => {
     const anchor = frag();
 
+    bindScope(
+        anchor,
+        atomFactory.createEffect(
+            buildUpdateAnchorSideEffect(
+                anchor,
+                getItems,
+                buildElement
+            ),
+        ),
+    );
+
+    return anchor;
+};
+
+const buildUpdateAnchorSideEffect = <T>(
+    anchor: Element,
+    getItems: Supplier<IndexedItem<T>[]>,
+    buildElement: Function<T, Node | NodeBuilder>
+): () => void => {
     const currentlyRenderedItems: Map<string, Node | undefined | null> = new Map();
 
-    const effectRef: Reference = atomFactory.createEffect((): void => {
+    return (): void => {
         const nextGenerationOfItems: IndexedItem<T>[] = getItems();
 
         const nextGenerationOfItemsIndex: Set<string> = new Set<string>(
@@ -46,8 +67,5 @@ export const foreach = <T extends Object>(getItems: Supplier<IndexedItem<T>[]>, 
             anchor,
             ...newItemSet
         );
-    });
-
-    bindScope(anchor, effectRef);
-    return anchor;
+    };
 };
