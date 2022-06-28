@@ -7,12 +7,8 @@ export const removeAllChildren = (node: Node): void => {
 }
 
 export const replaceChildren = (node: Element, ...children: (Node | undefined | null)[]): void => {
-    const nonNullChildren: Node[] = children.filter(
-        (child: Node | null | undefined): boolean => child !== null && child !== undefined
-    ) as Node[];
-
     node.replaceChildren(
-        ...nonNullChildren,
+        ...removeNullAndUndefinedItems(children),
     );
 };
 
@@ -40,3 +36,7 @@ export const bindScope = (node: Node, reference: Reference): void => {
 
     scopeContext.get(node)!.add(reference);
 };
+
+export const removeNullAndUndefinedItems = <T>(items: (T | null | undefined)[]): T[] => {
+    return items.filter((item: T | null | undefined): boolean => item !== null && item !== undefined) as T[];
+}
