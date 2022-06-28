@@ -1,19 +1,14 @@
 import {Function, Supplier} from "./util.interface";
 import {AtomFactory, buildFactory} from "../../atom";
-import {bindScope, removeNullAndUndefinedItems, replaceChildren, removeAllChildren} from "./dom_utils";
+import {bindScope, replaceChildren} from "./dom_utils";
 import {NodeBuilder} from "./builder/node_builder.interface";
 import {Reference} from "../../atom/src/factory.interface";
 import {frag} from "./frag";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
+import {IndexedItem} from "./indexed_item.interface";
+import {getItem, getKey} from "./indexed_item_lense";
 
 const atomFactory: AtomFactory = buildFactory();
-
-// key value pair used for efficient indexing of existing built elements
-export type IndexedItem<T> = [string, T];
-
-// utility lenses for unboxing index and item from an IndexedItem
-const getKey = <T>(item: IndexedItem<T>): string => item[0];
-const getItem = <T>(item: IndexedItem<T>): T => item[1];
 
 export const foreach = <T extends Object>(getItems: Supplier<IndexedItem<T>[]>, buildElement: Function<T, Node | NodeBuilder>): Node => {
     const anchor = frag();

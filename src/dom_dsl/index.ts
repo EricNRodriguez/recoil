@@ -4,7 +4,8 @@ export {t} from "./src/text";
 export {h1, h2, h3, h4, h5, h6} from "./src/header";
 export {hr} from "./src/hr";
 export {br} from "./src/br";
-export {foreach, IndexedItem} from "./src/foreach";
+export {foreach} from "./src/foreach";
+export {IndexedItem} from "./src/indexed_item.interface";
 export {ifElse} from "./src/if";
 export {} from "./src/element_ext";
 export {runApp} from "./src/run_app"
