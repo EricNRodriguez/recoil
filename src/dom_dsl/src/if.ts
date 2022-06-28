@@ -4,6 +4,8 @@ import {bindScope, removeAllChildren, replaceChildren} from "./dom_utils";
 import {Reference} from "../../atom/src/factory.interface";
 import {NodeBuilder} from "./builder/node_builder.interface";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
+import {ElementBuilder} from "./builder/element_builder.interface";
+import {frag} from "./frag";
 
 const atomFactory: AtomFactory = buildFactory();
 
@@ -26,8 +28,7 @@ export const ifElse = (
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
     }
 
-    const anchor: HTMLElement = document.createElement("div");
-    anchor.style.setProperty("display", "contents");
+    const anchor: Element = frag();
 
     let mountedNode: Node | undefined = undefined;
 

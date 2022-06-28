@@ -1,5 +1,5 @@
 import {Runnable} from "../../../atom/src/util.interface";
-import {ElementBuilder} from "./element_builder.interface";
+import {ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, buildFactory, isAtom} from "../../../atom";
 import {Reference} from "../../../atom/src/factory.interface";
@@ -44,7 +44,15 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public build(): Node {
+    public withStyle(style: ElementStyle): ElementBuilder {
+        Object.entries(style).forEach(([property, value]: [string, string]): void => {
+           this.element.style.setProperty(property, value);
+        });
+        return this;
+    }
+
+
+    public build(): Element {
         return this.element;
     }
 }
