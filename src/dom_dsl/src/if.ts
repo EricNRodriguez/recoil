@@ -37,6 +37,11 @@ export const ifElse = (
             (condition as Supplier<boolean>)();
 
         const node = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+
+        if (node === mountedNode) {
+            return;
+        }
+
         replaceChildren(
             anchor,
             node,

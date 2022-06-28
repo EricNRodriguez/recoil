@@ -63,6 +63,7 @@ const buildUpdateAnchorSideEffect = <T>(
             .map(currentlyRenderedItems.get.bind(currentlyRenderedItems))
             .map(unwrapNodesFromBuilder<Node>);
 
+
         replaceChildren(
             anchor,
             ...newItemSet
