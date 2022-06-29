@@ -2,16 +2,22 @@ import {DerivedAtom} from "./atom.interface";
 import {buildFactory} from "./factory";
 
 export const derivation = (): string | any => {
-    const registry: WeakMap<Object, DerivedAtom<any>> = new WeakMap();
+    return (target: Object, propertyKey: string, descriptor: PropertyDescriptor): any => {
+        const registry: WeakMap<Object, DerivedAtom<any>> = new WeakMap();
+        const originalFn = descriptor.value;
 
-    return function (this: Object, target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
-        if (!registry.has(this)) {
-            registry.set(
-                this,
-                buildFactory().deriveAtom(descriptor.value),
-            );
-        }
-
-        return registry.get(this)!.get();
-    };
+        descriptor.value = function (...args: any[]): any {
+            if (!registry.has(this)) {
+                registry.set(
+                    this,
+                    buildFactory().deriveAtom(
+                        () => {
+                            return originalFn.apply(this, args);
+                        },
+                    ),
+                );
+            }
+            return registry.get(this)!.get();
+        };
+    }
 };
