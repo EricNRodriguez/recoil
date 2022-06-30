@@ -11,27 +11,23 @@ export const isAtom = (obj: Object): boolean => {
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
-	readonly parents: WeakCollection<Atom<any>> = new WeakCollection<Atom<any>>();
+	readonly parents: WeakCollection<DerivedAtomImpl<any>> = new WeakCollection<DerivedAtomImpl<any>>();
+	private readonly context: AtomContext<DerivedAtomImpl<any>> = new AtomContext<DerivedAtomImpl<any>>();
 	private readonly effects: SideEffect<T>[] = [];
-	private readonly context: AtomContext;
 	public numChildrenNotReady: number = 0;
-
-	protected constructor(context: AtomContext) {
-		this.context = context;
-	}
 
 	abstract get(): T;
 
 	abstract getUntracked(): T;
 
 	public invalidate(): void {
-		this.parents.forEach((parent: Atom<any>): void => {
-			(parent as DerivedAtomImpl<any>).dirty();
-			(parent as DerivedAtomImpl<any>).childReady();
+		this.parents.forEach((parent: DerivedAtomImpl<any>): void => {
+			parent.dirty();
+			parent.childReady();
 		});
 	}
 
-	public getContext(): AtomContext {
+	protected getContext(): AtomContext<DerivedAtomImpl<any>> {
 		return this.context;
 	}
 
@@ -73,8 +69,8 @@ abstract class BaseAtom<T> implements Atom<T> {
 export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 	private value: T;
 
-	constructor(value: T, context: AtomContext) {
-		super(context);
+	constructor(value: T) {
+		super();
 		this.value = value;
 	}
 
@@ -108,8 +104,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 		this.scheduleEffects();
 
 		prevParents.forEach((parent: Atom<any>): void => {
-			(parent as DerivedAtomImpl<any>).dirty();
-			(parent as DerivedAtomImpl<any>).childReady();
+			parent.invalidate();
 		});
 	}
 
@@ -124,14 +119,23 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 	private value: IMaybe<T> = Maybe.none();
 	private readonly deriveValue: Producer<T>;
 
-	constructor(deriveValue: Producer<T>, context: AtomContext) {
-		super(context);
+	constructor(deriveValue: Producer<T>) {
+		super();
 		this.deriveValue = deriveValue;
 	}
 
 	public get(): T {
 		this.latchToCurrentDerivation();
-		return this.getContext().executeScopedDerivation(this);
+		return this.executeScopedDerivation();
+	}
+
+	private executeScopedDerivation(): T {
+		try {
+			this.getContext().pushDerivation(this);
+			return this.getUntracked();
+		} finally {
+			this.getContext().popDerivation();
+		}
 	}
 
 	public getUntracked(): T {

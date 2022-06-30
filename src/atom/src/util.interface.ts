@@ -10,3 +10,7 @@ export interface Runnable {
     (): void;
 }
 
+export interface Function<I, O> {
+    (value: I): O;
+}
+

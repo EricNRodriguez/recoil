@@ -2,12 +2,12 @@ import {IMaybe} from "typescript-monads/src/maybe/maybe.interface";
 import {Maybe} from "typescript-monads";
 import {DerivedAtom} from "./atom.interface";
 
-export class AtomContext {
-    private callStack: DerivedAtom<any>[] = [];
+export class AtomContext<T extends DerivedAtom<Object>> {
+    private callStack: T[] = [];
 
-    public getCurrentDerivation(): IMaybe<DerivedAtom<any>> {
+    public getCurrentDerivation(): IMaybe<T> {
         if (this.callStack.length === 0) {
-            return Maybe.none<DerivedAtom<any>>();
+            return Maybe.none<T>();
         }
 
         return Maybe.some(
@@ -15,12 +15,11 @@ export class AtomContext {
         );
     }
 
-    public executeScopedDerivation<T>(atom: DerivedAtom<T>): T {
-        this.callStack.push(atom);
-        try {
-            return atom.getUntracked();
-        } finally {
-            this.callStack.pop();
-        }
+    public pushDerivation(derivation: T): void {
+        this.callStack.push(derivation);
+    }
+
+    public popDerivation(): void {
+        this.callStack.pop();
     }
 }
