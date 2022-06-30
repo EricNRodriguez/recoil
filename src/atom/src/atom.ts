@@ -31,8 +31,6 @@ abstract class BaseAtom<T> implements Atom<T> {
 		});
 	}
 
-	abstract dirty(): void;
-
 	public getContext(): AtomContext {
 		return this.context;
 	}
@@ -115,8 +113,6 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 		});
 	}
 
-	public childReady() {}
-
 	private checkSetIsNotASideEffect(): void {
 		if (this.getContext().getCurrentDerivation().isSome()) {
 			throw new StatefulSideEffectError("stateful set called on leaf atom during derivation");
@@ -167,7 +163,7 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 
 		if (this.numChildrenNotReady === 0) {
 			this.parents.forEach((parent: Atom<any>): void => {
-				(parent as BaseAtom<any>).dirty();
+				(parent as DerivedAtomImpl<any>).dirty();
 			});
 		}
 
