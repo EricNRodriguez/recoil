@@ -11,14 +11,21 @@ export const isAtom = (obj: Object): boolean => {
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
-	readonly parents: WeakCollection<DerivedAtomImpl<any>> = new WeakCollection<DerivedAtomImpl<any>>();
-	private readonly context: AtomContext<DerivedAtomImpl<any>> = new AtomContext<DerivedAtomImpl<any>>();
+	private readonly parents: WeakCollection<DerivedAtomImpl<Object>> = new WeakCollection<DerivedAtomImpl<Object>>();
+	private readonly context: AtomContext<DerivedAtomImpl<Object>> = new AtomContext<DerivedAtomImpl<Object>>();
 	private readonly effects: SideEffect<T>[] = [];
-	public numChildrenNotReady: number = 0;
 
 	abstract get(): T;
 
 	abstract getUntracked(): T;
+
+	protected getParents(): DerivedAtomImpl<any>[] {
+		return this.parents.getItems();
+	}
+
+	protected forgetParents(): void {
+		this.parents.reset();
+	}
 
 	public invalidate(): void {
 		this.parents.forEach((parent: DerivedAtomImpl<any>): void => {
@@ -98,8 +105,8 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 	}
 
 	public dirty() {
-		const prevParents: Atom<any>[] = this.parents.getItems();
-		this.parents.reset();
+		const prevParents: Atom<any>[] = this.getParents();
+		this.forgetParents();
 
 		this.scheduleEffects();
 
@@ -118,6 +125,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 	private value: IMaybe<T> = Maybe.none();
 	private readonly deriveValue: Producer<T>;
+	private numChildrenNotReady: number = 0;
 
 	constructor(deriveValue: Producer<T>) {
 		super();
@@ -151,13 +159,13 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 		this.numChildrenNotReady--;
 
 		if (this.numChildrenNotReady === 0) {
-			const prevParents: Atom<any>[] = this.parents.getItems();
-			this.parents.reset();
+			const prevParents: DerivedAtomImpl<any>[] = this.getParents();
+			this.forgetParents();
 
 			this.scheduleEffects();
 
-			prevParents.forEach((parent: Atom<any>): void => {
-				(parent as DerivedAtomImpl<any>).childReady();
+			prevParents.forEach((parent: DerivedAtomImpl<any>): void => {
+				parent.childReady();
 			});
 		}
 	}
@@ -166,8 +174,8 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 		this.discardCachedValue();
 
 		if (this.numChildrenNotReady === 0) {
-			this.parents.forEach((parent: Atom<any>): void => {
-				(parent as DerivedAtomImpl<any>).dirty();
+			this.getParents().forEach((parent: DerivedAtomImpl<any>): void => {
+				parent.dirty();
 			});
 		}
 
