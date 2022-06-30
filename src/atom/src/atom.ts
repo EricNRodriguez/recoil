@@ -26,14 +26,12 @@ abstract class BaseAtom<T> implements Atom<T> {
 
 	public invalidate(): void {
 		this.parents.forEach((parent: Atom<any>): void => {
-			(parent as BaseAtom<any>).dirty();
-			(parent as BaseAtom<any>).childReady();
+			(parent as DerivedAtomImpl<any>).dirty();
+			(parent as DerivedAtomImpl<any>).childReady();
 		});
 	}
 
 	abstract dirty(): void;
-
-	abstract childReady(): void;
 
 	public getContext(): AtomContext {
 		return this.context;
@@ -112,8 +110,8 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 		this.scheduleEffects();
 
 		prevParents.forEach((parent: Atom<any>): void => {
-			(parent as BaseAtom<any>).dirty();
-			(parent as BaseAtom<any>).childReady();
+			(parent as DerivedAtomImpl<any>).dirty();
+			(parent as DerivedAtomImpl<any>).childReady();
 		});
 	}
 
@@ -159,7 +157,7 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
 			this.scheduleEffects();
 
 			prevParents.forEach((parent: Atom<any>): void => {
-				(parent as BaseAtom<any>).childReady();
+				(parent as DerivedAtomImpl<any>).childReady();
 			});
 		}
 	}
