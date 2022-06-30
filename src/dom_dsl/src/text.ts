@@ -1,9 +1,6 @@
-import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
+import {Atom, runEffect, Reference, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
-import {Reference} from "../../atom/src/factory.interface";
 import {bindScope} from "./dom_utils";
-
-const atomFactory: AtomFactory = buildFactory();
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
@@ -33,7 +30,7 @@ const createBindedTextNode = (source: BindedTextNodeSource): Text => {
         });
         sourceRef = source;
     } else if (typeof source === "function") {
-        sourceRef = atomFactory.createEffect((): void => {
+        sourceRef = runEffect((): void => {
             textNode.textContent = source();
         });
     } else {

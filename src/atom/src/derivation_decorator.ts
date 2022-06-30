@@ -1,5 +1,5 @@
 import {DerivedAtom} from "./atom.interface";
-import {buildFactory} from "./factory";
+import {deriveState} from "./api";
 
 export const derivation = (): string | any => {
     return (target: Object, propertyKey: string, descriptor: PropertyDescriptor): any => {
@@ -10,7 +10,7 @@ export const derivation = (): string | any => {
             if (!registry.has(this)) {
                 registry.set(
                     this,
-                    buildFactory().deriveAtom(
+                    deriveState(
                         () => {
                             return originalFn.apply(this, args);
                         },

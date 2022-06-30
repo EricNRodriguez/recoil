@@ -1,13 +1,11 @@
 import {Function, Supplier} from "./util.interface";
-import {AtomFactory, buildFactory} from "../../atom";
 import {bindScope, replaceChildren} from "./dom_utils";
 import {NodeBuilder} from "./builder/node_builder.interface";
 import {frag} from "./frag";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {IndexedItem} from "./indexed_item.interface";
 import {getItem, getKey} from "./indexed_item_lense";
-
-const atomFactory: AtomFactory = buildFactory();
+import {runEffect} from "../../atom";
 
 export const foreach = <T extends Object>(
     getItems: Supplier<IndexedItem<T>[]>,
@@ -17,7 +15,7 @@ export const foreach = <T extends Object>(
 
     bindScope(
         anchor,
-        atomFactory.createEffect(
+        runEffect(
             buildUpdateAnchorSideEffect(
                 anchor,
                 getItems,

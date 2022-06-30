@@ -1,5 +1,5 @@
 import {LeafAtom} from "./atom.interface";
-import {buildFactory} from "./factory";
+import {createState} from "./api";
 
 export const atom = (): void | any => {
     const registry: WeakMap<Object, LeafAtom<any>> = new WeakMap<Object, LeafAtom<any>>();
@@ -10,7 +10,7 @@ export const atom = (): void | any => {
                 if (!registry.has(this)) {
                     registry.set(
                         this,
-                        buildFactory().buildAtom(newVal)
+                        createState(newVal),
                     );
                 } else {
                     registry.get(this)!.set(newVal);

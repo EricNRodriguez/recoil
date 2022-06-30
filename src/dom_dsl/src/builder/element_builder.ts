@@ -1,8 +1,7 @@
 import {Runnable} from "../../../atom/src/util.interface";
 import {ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
-import {Atom, buildFactory, isAtom} from "../../../atom";
-import {Reference} from "../../../atom/src/factory.interface";
+import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {bindScope} from "../dom_utils";
 
 export class ElementBuilderImpl implements ElementBuilder {
@@ -17,7 +16,7 @@ export class ElementBuilderImpl implements ElementBuilder {
             this.element.className = `${this.element.className} ${className}`;
         } else {
             const prevClassName = this.element.className;
-            const effectRef: Reference = buildFactory().createEffect((): void => {
+            const effectRef: Reference = runEffect((): void => {
                 const newClassName: string = isAtom(className) ?
                     (className as Atom<any>).get() :
                     (className as Supplier<string>)();

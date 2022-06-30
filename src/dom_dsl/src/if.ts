@@ -1,12 +1,9 @@
-import {Atom, AtomFactory, buildFactory, isAtom} from "../../atom";
+import {Atom, createState, deriveState, runEffect, isAtom, Reference} from "../../atom";
 import {Supplier} from "./util.interface";
 import {bindScope, replaceChildren} from "./dom_utils";
-import {Reference} from "../../atom/src/factory.interface";
 import {NodeBuilder} from "./builder/node_builder.interface";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {frag} from "./frag";
-
-const atomFactory: AtomFactory = buildFactory();
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -31,7 +28,7 @@ export const ifElse = (
 
     let mountedNode: Node | undefined = undefined;
 
-    const effectRef: Reference = atomFactory.createEffect((): void => {
+    const effectRef: Reference = runEffect((): void => {
         const state: boolean = isAtom(condition) ?
             (condition as Atom<boolean>).get() :
             (condition as Supplier<boolean>)();

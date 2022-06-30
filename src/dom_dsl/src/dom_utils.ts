@@ -1,4 +1,4 @@
-import {Reference} from "../../atom/src/factory.interface";
+import {Reference} from "../../atom";
 
 export const removeAllChildren = (node: Node): void => {
     while (node.firstChild !== null) {
