@@ -123,8 +123,9 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 }
 
 export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
-	private value: IMaybe<T> = Maybe.none();
 	private readonly deriveValue: Producer<T>;
+
+	private value: IMaybe<T> = Maybe.none();
 	private numChildrenNotReady: number = 0;
 
 	constructor(deriveValue: Producer<T>) {
