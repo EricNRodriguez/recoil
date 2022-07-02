@@ -6,7 +6,7 @@ export type FragContent = MaybeNodeOrNodeBuilder;
 export const frag = (...children: FragContent[]): Element => {
     return div(...children)
         .withStyle({
-            "display": "contnet",
+            "display": "contents",
         })
         .build();
 }
