@@ -48,6 +48,11 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
+    public withTitle(title: string): ElementBuilder {
+        this.element.title = title;
+        return this;
+    }
+
     public withStyle(style: ElementStyle): ElementBuilder {
         Object.entries(style).forEach(([property, value]: [string, string]): void => {
            this.element.style.setProperty(property, value);

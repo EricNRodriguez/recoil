@@ -11,5 +11,6 @@ export interface ElementBuilder extends NodeBuilder{
     withId(id: string): ElementBuilder;
     withClickHandler(handler: Runnable): ElementBuilder;
     withChildren(...children: (Node | null | undefined)[]): ElementBuilder;
+    withTitle(title: string): ElementBuilder;
     withStyle(style: ElementStyle): ElementBuilder;
 }
