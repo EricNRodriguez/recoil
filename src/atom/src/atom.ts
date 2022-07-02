@@ -11,8 +11,8 @@ export const isAtom = (obj: Object): boolean => {
 };
 
 abstract class BaseAtom<T> implements Atom<T> {
+	private static readonly context: AtomContext<DerivedAtomImpl<Object>> = new AtomContext<DerivedAtomImpl<Object>>();
 	private readonly parents: WeakCollection<DerivedAtomImpl<Object>> = new WeakCollection<DerivedAtomImpl<Object>>();
-	private readonly context: AtomContext<DerivedAtomImpl<Object>> = new AtomContext<DerivedAtomImpl<Object>>();
 	private readonly effects: SideEffect<T>[] = [];
 
 	abstract get(): T;
@@ -35,7 +35,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	protected getContext(): AtomContext<DerivedAtomImpl<any>> {
-		return this.context;
+		return BaseAtom.context;
 	}
 
 	public latchToCurrentDerivation(): void {
