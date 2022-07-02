@@ -1,7 +1,7 @@
 import {ElementBuilderImpl} from "./builder/element_builder";
 import {ElementBuilder} from "./builder/element_builder.interface";
 
-export type HeaderContent = Text;
+export type HeaderContent = Text | string;
 
 interface HeaderBuilder {
     (content: HeaderContent): ElementBuilder;
