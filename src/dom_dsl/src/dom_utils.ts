@@ -1,4 +1,5 @@
 import {Reference} from "../../atom";
+import {MaybeNode} from "./node.interface";
 
 export const removeAllChildren = (node: Node): void => {
     while (node.firstChild !== null) {
@@ -6,7 +7,7 @@ export const removeAllChildren = (node: Node): void => {
     }
 }
 
-export const replaceChildren = (node: Element, ...children: (Node | undefined | null)[]): void => {
+export const replaceChildren = (node: Element, ...children: (MaybeNode)[]): void => {
     node.replaceChildren(
         ...removeNullAndUndefinedItems(children),
     );

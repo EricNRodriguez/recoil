@@ -3,7 +3,7 @@ import {Supplier} from "./util.interface";
 import {bindScope, replaceChildren} from "./dom_utils";
 import {unwrapNodesFromProvider} from "./builder/builder_util";
 import {frag} from "./frag";
-import {MaybeNodeOrNodeBuilder} from "./node.interface";
+import {MaybeNode, MaybeNodeOrNodeBuilder} from "./node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -16,8 +16,8 @@ export const ifElse = (
 ): Node  => {
     ifFalse ??= () => undefined;
 
-    const ifTrueUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifTrue);
-    const ifFalseUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifFalse);
+    const ifTrueUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(ifTrue);
+    const ifFalseUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(ifFalse);
 
     if (typeof condition === "boolean") {
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
@@ -38,8 +38,8 @@ export const ifElse = (
 
         currentRenderedState = state;
 
-        const nodeSupplier: Supplier<Node | null | undefined> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
-        const node: Node | null | undefined = nodeSupplier();
+        const nodeSupplier: Supplier<MaybeNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+        const node: MaybeNode = nodeSupplier();
 
         replaceChildren(
             anchor,
@@ -53,8 +53,8 @@ export const ifElse = (
 
 const staticIfElse = (
     condition: boolean,
-    ifTrue: Supplier<Node | null | undefined>,
-    ifFalse: Supplier<Node | null | undefined>,
+    ifTrue: Supplier<MaybeNode>,
+    ifFalse: Supplier<MaybeNode>,
 ): Node => {
     return frag(
         condition ? ifTrue() : ifFalse()
