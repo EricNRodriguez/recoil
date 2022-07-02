@@ -14,9 +14,10 @@ export const ifElse = (
     ifTrue: NodeProvider,
     ifFalse?: NodeProvider,
 ): Node  => {
+    ifFalse ??= () => undefined;
 
     const ifTrueUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifTrue);
-    const ifFalseUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifFalse ?? (() => null));
+    const ifFalseUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifFalse);
 
     if (typeof condition === "boolean") {
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
