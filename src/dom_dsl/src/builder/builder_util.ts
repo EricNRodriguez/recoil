@@ -3,7 +3,7 @@ import {Supplier} from "../util.interface";
 import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
 
 export const isNodeBuilder = (content: any): boolean => {
-    return "build" in content;
+    return content !== null && content !== undefined && "build" in content;
 }
 
 export const unwrapNodesFromBuilder = <T>(content: T | NodeBuilder | null | undefined): T | MaybeNode => {
