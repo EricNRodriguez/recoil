@@ -1,19 +1,19 @@
-import {Atom, createState, deriveState, runEffect, isAtom, Reference} from "../../atom";
+import {Atom, runEffect, isAtom, Reference} from "../../atom";
 import {Supplier} from "./util.interface";
 import {bindScope, replaceChildren} from "./dom_utils";
-import {NodeBuilder} from "./builder/node_builder.interface";
-import {unwrapNodesFromBuilder, unwrapNodesFromProvider} from "./builder/builder_util";
+import {unwrapNodesFromProvider} from "./builder/builder_util";
 import {frag} from "./frag";
+import {MaybeNodeOrNodeBuilder} from "./node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
-export type NodeProvider = Supplier<Node | NodeBuilder | null | undefined>;
+export type NodeProvider = Supplier<MaybeNodeOrNodeBuilder>;
 
 export const ifElse = (
     condition: IfElseCondition,
     ifTrue: NodeProvider,
     ifFalse?: NodeProvider,
-): Node | null | undefined  => {
+): Node  => {
 
     const ifTrueUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifTrue);
     const ifFalseUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifFalse ?? (() => null));
@@ -54,10 +54,8 @@ const staticIfElse = (
     condition: boolean,
     ifTrue: Supplier<Node | null | undefined>,
     ifFalse: Supplier<Node | null | undefined>,
-): Node | null | undefined => {
-    if (condition) {
-        return ifTrue();
-    } else {
-        return ifFalse();
-    }
+): Node => {
+    return frag(
+        condition ? ifTrue() : ifFalse()
+    );
 }

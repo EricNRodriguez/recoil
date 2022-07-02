@@ -6,10 +6,11 @@ import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {IndexedItem} from "./indexed_item.interface";
 import {getItem, getKey} from "./indexed_item_lense";
 import {runEffect} from "../../atom";
+import {MaybeNode, MaybeNodeOrNodeBuilder} from "./node.interface";
 
 export const foreach = <T extends Object>(
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, Node | NodeBuilder>
+    buildElement: Function<T, MaybeNodeOrNodeBuilder>
 ): Node => {
     const anchor = frag();
 
@@ -30,9 +31,9 @@ export const foreach = <T extends Object>(
 const buildUpdateAnchorSideEffect = <T>(
     anchor: Element,
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, Node | NodeBuilder>
+    buildElement: Function<T, MaybeNodeOrNodeBuilder>
 ): () => void => {
-    const currentlyRenderedItems: Map<string, Node | undefined | null> = new Map();
+    const currentlyRenderedItems: Map<string, MaybeNode> = new Map();
 
     return (): void => {
         const nextGenerationOfItems: IndexedItem<T>[] = getItems();

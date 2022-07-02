@@ -1,9 +1,9 @@
-import {NodeBuilder} from "./builder/node_builder.interface";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {ElementBuilder} from "./builder/element_builder.interface";
 import {ElementBuilderImpl} from "./builder/element_builder";
+import {MaybeNodeOrNodeBuilder} from "./node.interface";
 
-export type DivContent = Node | Element | NodeBuilder;
+export type DivContent = MaybeNodeOrNodeBuilder;
 
 export const div = (...children: DivContent[]): ElementBuilder => {
     return new ElementBuilderImpl("div")
