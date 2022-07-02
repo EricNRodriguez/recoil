@@ -105,13 +105,14 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
 	}
 
 	public dirty() {
-		const prevParents: Atom<any>[] = this.getParents();
+		const prevParents: DerivedAtomImpl<any>[] = this.getParents();
 		this.forgetParents();
 
 		this.scheduleEffects();
 
-		prevParents.forEach((parent: Atom<any>): void => {
-			parent.invalidate();
+		prevParents.forEach((parent: DerivedAtomImpl<any>): void => {
+			parent.dirty();
+			parent.childReady();
 		});
 	}
 
