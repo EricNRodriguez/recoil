@@ -2,23 +2,21 @@ import {Atom, createState, deriveState, runEffect, isAtom, Reference} from "../.
 import {Supplier} from "./util.interface";
 import {bindScope, replaceChildren} from "./dom_utils";
 import {NodeBuilder} from "./builder/node_builder.interface";
-import {unwrapNodesFromBuilder} from "./builder/builder_util";
+import {unwrapNodesFromBuilder, unwrapNodesFromProvider} from "./builder/builder_util";
 import {frag} from "./frag";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
-// TODO(ericr): inject view providers, rather than
-// raw references, since this will leak lots of memory
-//
-// this component can keep weak references, however that should be transparent
-// to the calling code
+export type NodeProvider = Supplier<Node | NodeBuilder | null | undefined>;
+
 export const ifElse = (
     condition: IfElseCondition,
-    ifTrue: Node | NodeBuilder,
-    ifFalse?: Node | NodeBuilder,
-): Node  => {
-    const ifTrueUnwrapped: Node = unwrapNodesFromBuilder<Node>(ifTrue) as Node;
-    const ifFalseUnwrapped: Node | undefined = unwrapNodesFromBuilder(ifFalse) as Node | undefined;
+    ifTrue: NodeProvider,
+    ifFalse?: NodeProvider,
+): Node | null | undefined  => {
+
+    const ifTrueUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifTrue);
+    const ifFalseUnwrapped: Supplier<Node | null | undefined> = unwrapNodesFromProvider(ifFalse ?? (() => null));
 
     if (typeof condition === "boolean") {
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
@@ -26,14 +24,15 @@ export const ifElse = (
 
     const anchor: Element = frag();
 
-    let mountedNode: Node | undefined = undefined;
+    let mountedNode: Node | null | undefined = undefined;
 
     const effectRef: Reference = runEffect((): void => {
         const state: boolean = isAtom(condition) ?
             (condition as Atom<boolean>).get() :
             (condition as Supplier<boolean>)();
 
-        const node = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+        const nodeSupplier: Supplier<Node | null | undefined> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+        const node: Node | null | undefined = nodeSupplier();
 
         if (node === mountedNode) {
             return;
@@ -53,12 +52,12 @@ export const ifElse = (
 
 const staticIfElse = (
     condition: boolean,
-    ifTrue: Node,
-    ifFalse?: Node,
-): Node => {
+    ifTrue: Supplier<Node | null | undefined>,
+    ifFalse: Supplier<Node | null | undefined>,
+): Node | null | undefined => {
     if (condition) {
-        return ifTrue;
+        return ifTrue();
     } else {
-        return ifFalse ?? new Comment();
+        return ifFalse();
     }
 }
