@@ -3,6 +3,8 @@ import {ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {bindScope} from "../dom_utils";
+import {MaybeNode} from "../node.interface";
+import {t} from "../text";
 
 export class ElementBuilderImpl implements ElementBuilder {
     private readonly element: HTMLElement;
@@ -38,8 +40,11 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withChildren(...children: (Node | null | undefined)[]): ElementBuilder {
-        this.element.replaceChildren(...children.filter((child: Node | null | undefined): boolean => child !== null && child !== undefined) as Node[]);
+    public withChildren(...children: (MaybeNode | string)[]): ElementBuilder {
+        this.element.replaceChildren(
+            ...children
+                .map((child: MaybeNode | string): MaybeNode => typeof child === "string" ? t(child) : child as MaybeNode)
+                .filter((child: MaybeNode): boolean => child !== null && child !== undefined) as Node[]);
         return this;
     }
 

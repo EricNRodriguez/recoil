@@ -1,6 +1,5 @@
 import {Function, Supplier} from "./util.interface";
 import {bindScope, replaceChildren} from "./dom_utils";
-import {NodeBuilder} from "./builder/node_builder.interface";
 import {frag} from "./frag";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {IndexedItem} from "./indexed_item.interface";
