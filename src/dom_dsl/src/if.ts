@@ -24,26 +24,26 @@ export const ifElse = (
 
     const anchor: Element = frag();
 
-    let mountedNode: Node | null | undefined = undefined;
+    let currentRenderedState: boolean;
 
     const effectRef: Reference = runEffect((): void => {
         const state: boolean = isAtom(condition) ?
             (condition as Atom<boolean>).get() :
             (condition as Supplier<boolean>)();
 
-        const nodeSupplier: Supplier<Node | null | undefined> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
-        const node: Node | null | undefined = nodeSupplier();
-
-        if (node === mountedNode) {
+        if (state === currentRenderedState) {
             return;
         }
+
+        currentRenderedState = state;
+
+        const nodeSupplier: Supplier<Node | null | undefined> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+        const node: Node | null | undefined = nodeSupplier();
 
         replaceChildren(
             anchor,
             node,
         )
-
-        mountedNode = node;
     });
     bindScope(anchor, effectRef);
 
