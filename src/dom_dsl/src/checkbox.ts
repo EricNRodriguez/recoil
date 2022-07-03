@@ -14,19 +14,6 @@ export type CheckboxArguments = {
 export const checkbox = (args: CheckboxArguments): ElementBuilder => {
     const checkboxElement = document.createElement("input");
 
-    // we want to trigger a re-bind once the onclick handle is executed.
-    // this is important in the instance when the onClick handler does some
-    // validation and decides to not toggle, but the default behaviour of the
-    // checkbox element is to toggle.
-    const originalOnClick = args.onClick;
-    args.onClick = (): void => {
-        originalOnClick();
-
-        const isChecked: boolean | null = args.isChecked();
-        checkboxElement.checked = isChecked === true;
-        checkboxElement.indeterminate = isChecked === null;
-    };
-
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
     bindScope(
@@ -59,7 +46,19 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
         );
     }
 
+    // we want to trigger a re-bind once the onclick handle is executed.
+    // this is important in the instance when the onClick handler does some
+    // validation and decides to not toggle, but the default behaviour of the
+    // checkbox element is to toggle.
+    const originalOnClick = args.onClick;
+    args.onClick = (): void => {
+        originalOnClick();
+
+        const isChecked: boolean | null = args.isChecked();
+        checkboxElement.checked = isChecked === true;
+        checkboxElement.indeterminate = isChecked === null;
+    };
+
     return new ElementBuilderImpl(checkboxElement)
-        .withAttribute("type", "checkbox")
-        .withClickHandler((event: Event): void => args.onClick());
+        .withAttribute("type", "checkbox");
 };
