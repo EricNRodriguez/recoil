@@ -10,5 +10,5 @@ export const textInput = (args: TextInputArgs): ElementBuilder => {
     const inputElement = document.createElement("input");
     return new ElementBuilderImpl(inputElement)
         .withAttribute("type", "text")
-        .withEventHandler("input", () => args.onInput(inputElement.textContent));
+        .withEventHandler("input", () => args.onInput(inputElement.value));
 };
