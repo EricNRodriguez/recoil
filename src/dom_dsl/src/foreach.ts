@@ -1,5 +1,5 @@
 import {Function, Supplier} from "./util.interface";
-import {bindScope, replaceChildren} from "./dom_utils";
+import {appendChildren, bindScope, removeChildren, replaceChildren} from "./dom_utils";
 import {frag} from "./frag";
 import {unwrapNodesFromBuilder} from "./builder/builder_util";
 import {IndexedItem} from "./indexed_item.interface";
@@ -32,39 +32,37 @@ const buildUpdateAnchorSideEffect = <T>(
     getItems: Supplier<IndexedItem<T>[]>,
     buildElement: Function<T, MaybeNodeOrNodeBuilder>
 ): () => void => {
-    const currentlyRenderedItems: Map<string, MaybeNode> = new Map();
+    let currentItemOrder: string[] = [];
+    let currentItemIndex: Map<string, MaybeNode> = new Map();
 
     return (): void => {
-        const nextGenerationOfItems: IndexedItem<T>[] = getItems();
-
-        const nextGenerationOfItemsIndex: Set<string> = new Set<string>(
-            nextGenerationOfItems.map(getKey)
+        const newItems: IndexedItem<T>[] = getItems();
+        const newItemOrder: string[] = newItems.map(getKey);
+        const newItemNodesIndex: Map<string, MaybeNode> = new Map(
+            newItems.map((item: IndexedItem<T>): [string, MaybeNode] => [
+                getKey(item),
+                currentItemIndex.get(getKey(item)) ?? unwrapNodesFromBuilder<Node>(buildElement(getItem(item))),
+            ]),
         );
 
-        for (let itemKey of currentlyRenderedItems.keys()) {
-            if (!nextGenerationOfItemsIndex.has(itemKey)) {
-                currentlyRenderedItems.delete(itemKey);
-            }
+        let firstNonEqualIndex: number = 0;
+        while (firstNonEqualIndex < currentItemOrder.length &&
+               firstNonEqualIndex < newItems.length &&
+            currentItemOrder[firstNonEqualIndex] === newItemOrder[firstNonEqualIndex]) {
+            ++firstNonEqualIndex;
         }
 
-        for (let indexedItem of nextGenerationOfItems) {
-            if (!currentlyRenderedItems.has(getKey(indexedItem))) {
-                currentlyRenderedItems.set(
-                    getKey(indexedItem),
-                    unwrapNodesFromBuilder(buildElement(getItem(indexedItem)))
-                );
-            }
-        }
-
-        const newItemSet = nextGenerationOfItems
-            .map(getKey)
-            .map(currentlyRenderedItems.get.bind(currentlyRenderedItems))
-            .map(unwrapNodesFromBuilder<Node>);
-
-
-        replaceChildren(
+        removeChildren(
             anchor,
-            ...newItemSet
+            currentItemOrder.slice(firstNonEqualIndex).map((index: string): MaybeNode => currentItemIndex.get(index)),
         );
+
+        appendChildren(
+            anchor,
+            newItemOrder.slice(firstNonEqualIndex).map((index: string): MaybeNode => newItemNodesIndex.get(index))
+        );
+
+        currentItemOrder = newItemOrder;
+        currentItemIndex = newItemNodesIndex;
     };
 };

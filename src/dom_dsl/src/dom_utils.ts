@@ -13,6 +13,20 @@ export const replaceChildren = (node: Element, ...children: (MaybeNode)[]): void
     );
 };
 
+export const removeChildren = (node: Element, children: MaybeNode[]): void => {
+    removeNullAndUndefinedItems(children)
+        .forEach((child: Node): void => {
+            node.removeChild(child)
+        });
+};
+
+export const appendChildren = (node: Element, children: MaybeNode[]): void => {
+    removeNullAndUndefinedItems(children)
+        .forEach((child: Node): void => {
+            node.appendChild(child);
+        });
+};
+
 // A registry used to keep references in memory for the lifetime of the node.
 //
 // This is intended to be used to bind the scope of side effects to the DOM nodes
