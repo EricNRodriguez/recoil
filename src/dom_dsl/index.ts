@@ -4,6 +4,7 @@ export {t} from "./src/text";
 export {h1, h2, h3, h4, h5, h6} from "./src/header";
 export {button} from "./src/button";
 export {checkbox} from "./src/checkbox";
+export {textInput} from "./src/text_input";
 export {hr} from "./src/hr";
 export {br} from "./src/br";
 export {foreach} from "./src/foreach";

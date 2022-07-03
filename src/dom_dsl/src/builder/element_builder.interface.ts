@@ -9,6 +9,7 @@ export type ElementStyle = {[key: string]: string};
 export interface ElementBuilder extends NodeBuilder{
     withClass(className: string | Atom<string> | Supplier<string>): ElementBuilder;
     withId(id: string): ElementBuilder;
+    withEventHandler(eventType: string, handler: Consumer<Event>): ElementBuilder;
     withClickHandler(handler: Consumer<MouseEvent>): ElementBuilder;
     withAttribute(attribute: string, value: string): ElementBuilder;
     withChildren(...children: (MaybeNode | string)[]): ElementBuilder;

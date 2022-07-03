@@ -45,6 +45,12 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
+    public withEventHandler(eventType: string, handler: Consumer<Event>): ElementBuilder {
+        this.element.addEventListener(eventType, handler);
+        return this;
+    }
+
+
     public withChildren(...children: (MaybeNode | string)[]): ElementBuilder {
         this.element.replaceChildren(
             ...children

@@ -21,6 +21,7 @@ export {
     hr,
     br,
     checkbox,
+    textInput,
     button,
     ifElse,
     foreach,
