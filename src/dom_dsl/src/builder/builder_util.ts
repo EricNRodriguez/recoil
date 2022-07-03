@@ -1,7 +1,6 @@
 import {NodeBuilder} from "./node_builder.interface";
 import {Supplier} from "../util.interface";
 import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
-import {IfElseContent, NodeProvider} from "../if";
 
 export const isNodeBuilder = (content: any): boolean => {
     return content !== null && content !== undefined && "build" in content;
