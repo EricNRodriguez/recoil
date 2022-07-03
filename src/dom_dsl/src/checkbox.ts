@@ -46,10 +46,10 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
         );
     }
 
+    // required to prevent the default behaviour of the checkbox changing state on click
+    checkboxElement.onclick = () => false;
 
     return new ElementBuilderImpl(checkboxElement)
         .withAttribute("type", "checkbox")
-        // required to prevent the default behaviour of the checkbox changing state on click
-        .withAttribute("click", "return false;")
         .withClickHandler((event: Event): void => args.onClick());
 };
