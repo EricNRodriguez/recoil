@@ -9,7 +9,6 @@ import {Function} from "../util.interface";
 
 export class ElementBuilderImpl implements ElementBuilder {
     private readonly element: HTMLElement;
-    private clickHandlerDecorator: Function<Consumer<MouseEvent>, Consumer<MouseEvent>> = (fn: Consumer<MouseEvent>) => fn;
 
     constructor(element: string | HTMLElement) {
         if (typeof element === "string") {
@@ -42,9 +41,7 @@ export class ElementBuilderImpl implements ElementBuilder {
     }
 
     public withClickHandler(handler: Consumer<MouseEvent>): ElementBuilder {
-        this.element.addEventListener("click",
-            this.clickHandlerDecorator(handler)
-        );
+        this.element.addEventListener("click", handler);
         return this;
     }
 
@@ -76,11 +73,6 @@ export class ElementBuilderImpl implements ElementBuilder {
 
     public withBindedDependant(object: Object): ElementBuilder {
         bindScope(this.element, object);
-        return this;
-    }
-
-    public withClickHandleDecorator(decorator: Function<Consumer<MouseEvent>, Consumer<MouseEvent>>): ElementBuilder {
-        this.clickHandlerDecorator = (fn: Consumer<MouseEvent>) => decorator(this.clickHandlerDecorator(fn));
         return this;
     }
 

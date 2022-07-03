@@ -10,7 +10,6 @@ export interface ElementBuilder extends NodeBuilder{
     withClass(className: string | Atom<string> | Supplier<string>): ElementBuilder;
     withId(id: string): ElementBuilder;
     withClickHandler(handler: Consumer<MouseEvent>): ElementBuilder;
-    withClickHandleDecorator(decorator: Function<Consumer<MouseEvent>, Consumer<MouseEvent>>): ElementBuilder;
     withAttribute(attribute: string, value: string): ElementBuilder;
     withChildren(...children: (MaybeNode | string)[]): ElementBuilder;
     withTitle(title: string): ElementBuilder;
