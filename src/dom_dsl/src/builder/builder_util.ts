@@ -1,6 +1,7 @@
 import {NodeBuilder} from "./node_builder.interface";
 import {Supplier} from "../util.interface";
 import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
+import {IfElseContent, NodeProvider} from "../if";
 
 export const isNodeBuilder = (content: any): boolean => {
     return content !== null && content !== undefined && "build" in content;
@@ -27,4 +28,12 @@ export const unwrapNodesFromProvider = (provider: Supplier<MaybeNodeOrNodeBuilde
             return value as MaybeNode;
         }
     };
+};
+
+export const wrapStaticContentInProvider = <T>(content: T | Supplier<T>): Supplier<T> => {
+    if (typeof content === "function") {
+        return content as Supplier<T>;
+    } else {
+        return (): T => content;
+    }
 };

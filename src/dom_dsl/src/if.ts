@@ -1,23 +1,27 @@
 import {Atom, runEffect, isAtom, Reference} from "../../atom";
 import {Supplier} from "./util.interface";
 import {bindScope, replaceChildren} from "./dom_utils";
-import {unwrapNodesFromProvider} from "./builder/builder_util";
+import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "./builder/builder_util";
 import {frag} from "./frag";
 import {MaybeNode, MaybeNodeOrNodeBuilder} from "./node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
-export type NodeProvider = Supplier<MaybeNodeOrNodeBuilder>;
+export type IfElseContent = MaybeNodeOrNodeBuilder | Supplier<MaybeNodeOrNodeBuilder>;
 
 export const ifElse = (
     condition: IfElseCondition,
-    ifTrue: NodeProvider,
-    ifFalse?: NodeProvider,
+    ifTrue: IfElseContent,
+    ifFalse?: IfElseContent,
 ): Node  => {
-    ifFalse ??= () => undefined;
+    ifFalse ??= undefined;
 
-    const ifTrueUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(ifTrue);
-    const ifFalseUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(ifFalse);
+    const ifTrueUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(
+        wrapStaticContentInProvider(ifTrue)
+    );
+    const ifFalseUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(
+        wrapStaticContentInProvider(ifFalse)
+    );
 
     if (typeof condition === "boolean") {
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
@@ -59,4 +63,4 @@ const staticIfElse = (
     return frag(
         condition ? ifTrue() : ifFalse()
     );
-}
+};
