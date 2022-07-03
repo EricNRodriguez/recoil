@@ -1,16 +1,22 @@
-import {Runnable} from "../../../atom/src/util.interface";
+import {Consumer, Runnable} from "../../../atom/src/util.interface";
 import {ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {bindScope} from "../dom_utils";
 import {MaybeNode} from "../node.interface";
 import {t} from "../text";
+import {Function} from "../util.interface";
 
 export class ElementBuilderImpl implements ElementBuilder {
     private readonly element: HTMLElement;
+    private clickHandlerDecorator: Function<Consumer<MouseEvent>, Consumer<MouseEvent>> = (fn: Consumer<MouseEvent>) => fn;
 
-    constructor(tag: string) {
-        this.element = document.createElement(tag);
+    constructor(element: string | HTMLElement) {
+        if (typeof element === "string") {
+            this.element = document.createElement(element);
+        } else {
+            this.element = element;
+        }
     }
 
     public withClass(className: string | Atom<string> | Supplier<string>): ElementBuilder {
@@ -35,8 +41,10 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withClickHandler(handler: Runnable): ElementBuilder {
-        this.element.addEventListener("click", handler);
+    public withClickHandler(handler: Consumer<MouseEvent>): ElementBuilder {
+        this.element.addEventListener("click",
+            this.clickHandlerDecorator(handler)
+        );
         return this;
     }
 
@@ -66,6 +74,15 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
+    public withBindedDependant(object: Object): ElementBuilder {
+        bindScope(this.element, object);
+        return this;
+    }
+
+    public withClickHandleDecorator(decorator: Function<Consumer<MouseEvent>, Consumer<MouseEvent>>): ElementBuilder {
+        this.clickHandlerDecorator = (fn: Consumer<MouseEvent>) => decorator(this.clickHandlerDecorator(fn));
+        return this;
+    }
 
     public build(): Element {
         return this.element;

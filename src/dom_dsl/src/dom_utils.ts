@@ -1,5 +1,6 @@
 import {Reference} from "../../atom";
 import {MaybeNode} from "./node.interface";
+import {Consumer} from "../../atom/src/util.interface";
 
 export const removeAllChildren = (node: Node): void => {
     while (node.firstChild !== null) {
@@ -25,6 +26,13 @@ export const appendChildren = (node: Element, children: MaybeNode[]): void => {
         .forEach((child: Node): void => {
             node.appendChild(child);
         });
+};
+
+export const preventEventDefault = <T extends Event>(handler: Consumer<T>): Consumer<T> => {
+    return (event: T): void => {
+        event.preventDefault();
+        return handler(event);
+    };
 };
 
 // A registry used to keep references in memory for the lifetime of the node.

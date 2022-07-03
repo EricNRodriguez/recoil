@@ -20,6 +20,7 @@ export {
     h6,
     hr,
     br,
+    checkbox,
     button,
     ifElse,
     foreach,
