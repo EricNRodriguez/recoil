@@ -10,6 +10,7 @@ export {hr} from "./src/hr";
 export {br} from "./src/br";
 export {foreach} from "./src/foreach";
 export {IndexedItem} from "./src/indexed_item.interface";
+export {form, FormTarget} from "./src/form";
 export {ifElse} from "./src/if";
 export {} from "./src/element_ext";
 export {runApp} from "./src/run_app"

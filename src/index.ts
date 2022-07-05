@@ -22,6 +22,8 @@ export {
     br,
     checkbox,
     radioButton,
+    form,
+    FormTarget,
     textInput,
     button,
     ifElse,
