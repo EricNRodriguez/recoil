@@ -34,5 +34,9 @@ export {
     runApp,
     NodeBuilder,
     ElementBuilder,
-    IndexedItem
+    IndexedItem,
+    RadioButtonBuilder,
+    RadioButtonArguments,
+    CheckboxBuilder,
+    CheckboxArguments
 } from "./dom_dsl";

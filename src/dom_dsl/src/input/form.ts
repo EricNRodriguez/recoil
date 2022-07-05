@@ -1,7 +1,7 @@
-import {ElementBuilder} from "./builder/element_builder.interface";
-import {ElementBuilderImpl} from "./builder/element_builder";
-import {MaybeNodeOrNodeBuilder} from "./node.interface";
-import {unwrapNodesFromBuilder} from "./builder/builder_util";
+import {ElementBuilder} from "../builder/element_builder.interface";
+import {ElementBuilderImpl} from "../builder/element_builder";
+import {MaybeNodeOrNodeBuilder} from "../node.interface";
+import {unwrapNodesFromBuilder} from "../builder/builder_util";
 
 export enum FormTarget {
   BLANK= "_blank",

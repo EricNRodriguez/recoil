@@ -1,11 +1,11 @@
-import {Function, Supplier} from "./util.interface";
-import {appendChildren, bindScope, removeChildren, replaceChildren} from "./dom_utils";
-import {frag} from "./frag";
-import {unwrapNodesFromBuilder} from "./builder/builder_util";
-import {IndexedItem} from "./indexed_item.interface";
-import {getItem, getKey} from "./indexed_item_lense";
-import {runEffect} from "../../atom";
-import {MaybeNode, MaybeNodeOrNodeBuilder} from "./node.interface";
+import {Function, Supplier} from "../util.interface";
+import {appendChildren, bindScope, removeChildren, replaceChildren} from "../dom_utils";
+import {frag} from "../frag";
+import {unwrapNodesFromBuilder} from "../builder/builder_util";
+import {IndexedItem} from "../indexed_item.interface";
+import {getItem, getKey} from "../indexed_item_lense";
+import {runEffect} from "../../../atom";
+import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
 
 export const foreach = <T extends Object>(
     getItems: Supplier<IndexedItem<T>[]>,

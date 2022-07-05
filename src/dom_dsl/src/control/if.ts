@@ -1,9 +1,9 @@
-import {Atom, runEffect, isAtom, Reference} from "../../atom";
-import {Supplier} from "./util.interface";
-import {bindScope, replaceChildren} from "./dom_utils";
-import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "./builder/builder_util";
-import {frag} from "./frag";
-import {MaybeNode, MaybeNodeOrNodeBuilder} from "./node.interface";
+import {Atom, runEffect, isAtom, Reference} from "../../../atom";
+import {Supplier} from "../util.interface";
+import {bindScope, replaceChildren} from "../dom_utils";
+import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "../builder/builder_util";
+import {frag} from "../frag";
+import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 

@@ -1,18 +1,16 @@
-import {ElementBuilder} from "./builder/element_builder.interface";
-import {ElementBuilderImpl} from "./builder/element_builder";
-import {runEffect} from "../../atom";
-import {bindScope} from "./dom_utils";
-import {Supplier} from "./util.interface";
-import {Runnable} from "../../atom/src/util.interface";
+import {ElementBuilderImpl} from "../builder/element_builder";
+import {runEffect} from "../../../atom";
+import {bindScope} from "../dom_utils";
+import {Supplier} from "../util.interface";
+import {Runnable} from "../../../atom/src/util.interface";
 
 export type CheckboxArguments = {
     isChecked: Supplier<boolean | null>,
     isEnabled?: Supplier<boolean>,
     onClick: Runnable,
-    name?: string
 };
 
-export const checkbox = (args: CheckboxArguments): ElementBuilder => {
+export const checkbox = (args: CheckboxArguments): CheckboxBuilder => {
     const checkboxElement = document.createElement("input");
 
     // binding effect for checked attribute
@@ -60,7 +58,18 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
         checkboxElement.indeterminate = isChecked === null;
     };
 
-    return new ElementBuilderImpl(checkboxElement)
-        .withAttribute("type", "checkbox")
-        .withAttribute("name", args.name ?? "");
+    return new CheckboxBuilder(checkboxElement);
 };
+
+export class CheckboxBuilder extends ElementBuilderImpl {
+    constructor(element: string | HTMLElement) {
+        super(element);
+        this.withAttribute("type", "checkbox");
+    }
+
+    public withName(name: string): CheckboxBuilder {
+        this.withAttribute("name", name);
+        return this;
+    }
+
+}
