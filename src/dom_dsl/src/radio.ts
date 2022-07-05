@@ -34,7 +34,7 @@ export const radioButton = (args: RadioButtonArguments): ElementBuilder => {
     // validation and decides to not toggle, but the default behaviour of the
     // element is to toggle.
     const originalOnClick = args.onClick;
-    args.onClick = (): void => {
+    radioButtonElement.onclick = (): void => {
         originalOnClick();
 
         radioButtonElement.checked = args.isChecked();

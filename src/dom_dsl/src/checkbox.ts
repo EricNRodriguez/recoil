@@ -52,7 +52,7 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
     // validation and decides to not toggle, but the default behaviour of the
     // checkbox element is to toggle.
     const originalOnClick = args.onClick;
-    args.onClick = (): void => {
+    checkboxElement.onclick = (): void => {
         originalOnClick();
 
         const isChecked: boolean | null = args.isChecked();
