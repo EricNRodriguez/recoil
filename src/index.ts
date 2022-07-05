@@ -21,6 +21,7 @@ export {
     hr,
     br,
     checkbox,
+    radioButton,
     textInput,
     button,
     ifElse,

@@ -9,6 +9,7 @@ export type CheckboxArguments = {
     isChecked: Supplier<boolean | null>,
     isEnabled?: Supplier<boolean>,
     onClick: Runnable,
+    name?: string
 };
 
 export const checkbox = (args: CheckboxArguments): ElementBuilder => {
@@ -60,5 +61,6 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
     };
 
     return new ElementBuilderImpl(checkboxElement)
-        .withAttribute("type", "checkbox");
+        .withAttribute("type", "checkbox")
+        .withAttribute("name", args.name ?? "");
 };
