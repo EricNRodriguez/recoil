@@ -59,5 +59,6 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
         checkboxElement.indeterminate = isChecked === null;
     };
 
-    return new ElementBuilderImpl(checkboxElement);
+    return new ElementBuilderImpl(checkboxElement)
+        .withAttribute("type", "checkbox");
 };

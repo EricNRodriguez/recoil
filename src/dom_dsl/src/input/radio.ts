@@ -39,5 +39,6 @@ export const radioButton = (args: RadioButtonArguments): ElementBuilder => {
         radioButtonElement.checked = args.isChecked();
     };
 
-    return new ElementBuilderImpl(radioButtonElement);
+    return new ElementBuilderImpl(radioButtonElement)
+        .withAttribute("type", "radio");
 };
