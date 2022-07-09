@@ -22,6 +22,7 @@ export {
     br,
     checkbox,
     radioButton,
+    input,
     form,
     label,
     LabelContent,

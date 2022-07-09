@@ -20,3 +20,4 @@ export {runApp} from "./src/run_app"
 export {ElementBuilder} from "./src/builder/element_builder.interface";
 export {NodeBuilder} from "./src/builder/node_builder.interface";
 export {label, LabelContent} from "./src/input/label";
+export {input} from "./src/input/input";
