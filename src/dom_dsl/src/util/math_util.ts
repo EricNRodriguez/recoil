@@ -7,11 +7,10 @@ export type ClampArgs = {
 
 export const clamp = (args: ClampArgs): number => {
     return Math.max(
-        args.max ?? Number.NEGATIVE_INFINITY,
+        args.min ?? Number.NEGATIVE_INFINITY,
         Math.min(
-            args.min ?? Number.POSITIVE_INFINITY,
+            args.max ?? Number.POSITIVE_INFINITY,
             args.val,
-
-        )
+        ),
     );
 };
