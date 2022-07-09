@@ -8,10 +8,9 @@ import {Runnable} from "../../../atom/src/util.interface";
 export type RadioButtonArguments = {
     isChecked: Supplier<boolean>,
     onClick: Runnable,
-    value?: string,
 };
 
-export const radioButton = (args: RadioButtonArguments): RadioButtonBuilder => {
+export const radioButton = (args: RadioButtonArguments): ElementBuilder => {
     const radioButtonElement = document.createElement("input");
 
     // binding effect for checked attribute
@@ -40,30 +39,5 @@ export const radioButton = (args: RadioButtonArguments): RadioButtonBuilder => {
         radioButtonElement.checked = args.isChecked();
     };
 
-    return new RadioButtonBuilder(radioButtonElement)
-        .withValue(args.value ?? "");
+    return new ElementBuilderImpl(radioButtonElement);
 };
-
-export class RadioButtonBuilder extends ElementBuilderImpl {
-
-    constructor(element: string | HTMLElement) {
-        super(element);
-        this.withAttribute("type", "radio");
-    }
-
-    public withName(name: string): RadioButtonBuilder {
-        this.withAttribute("name", name);
-        return this;
-    }
-
-    public withRequired(required: boolean): RadioButtonBuilder {
-        this.withAttribute("required", required.toString());
-        return this;
-    }
-
-    public withValue(value: string): RadioButtonBuilder {
-        this.withAttribute("value", value);
-        return this;
-    }
-
-}

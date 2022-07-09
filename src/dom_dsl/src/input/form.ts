@@ -10,7 +10,6 @@ export enum FormTarget {
   TOP = "_top",
 }
 
-
 export const form = (...content: MaybeNodeOrNodeBuilder[]): ElementBuilder => {
   return new ElementBuilderImpl("form")
       .withChildren(...content.map(unwrapNodesFromBuilder<Node>));

@@ -35,8 +35,6 @@ export {
     NodeBuilder,
     ElementBuilder,
     IndexedItem,
-    RadioButtonBuilder,
     RadioButtonArguments,
-    CheckboxBuilder,
     CheckboxArguments
 } from "./dom_dsl";

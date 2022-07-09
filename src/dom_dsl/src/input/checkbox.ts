@@ -3,6 +3,7 @@ import {runEffect} from "../../../atom";
 import {bindScope} from "../dom_utils";
 import {Supplier} from "../util.interface";
 import {Runnable} from "../../../atom/src/util.interface";
+import {ElementBuilder} from "../builder/element_builder.interface";
 
 export type CheckboxArguments = {
     isChecked: Supplier<boolean | null>,
@@ -10,7 +11,7 @@ export type CheckboxArguments = {
     onClick: Runnable,
 };
 
-export const checkbox = (args: CheckboxArguments): CheckboxBuilder => {
+export const checkbox = (args: CheckboxArguments): ElementBuilder => {
     const checkboxElement = document.createElement("input");
 
     // binding effect for checked attribute
@@ -58,18 +59,5 @@ export const checkbox = (args: CheckboxArguments): CheckboxBuilder => {
         checkboxElement.indeterminate = isChecked === null;
     };
 
-    return new CheckboxBuilder(checkboxElement);
+    return new ElementBuilderImpl(checkboxElement);
 };
-
-export class CheckboxBuilder extends ElementBuilderImpl {
-    constructor(element: string | HTMLElement) {
-        super(element);
-        this.withAttribute("type", "checkbox");
-    }
-
-    public withName(name: string): CheckboxBuilder {
-        this.withAttribute("name", name);
-        return this;
-    }
-
-}
