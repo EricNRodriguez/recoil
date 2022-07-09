@@ -23,6 +23,8 @@ export {
     checkbox,
     radioButton,
     input,
+    numberInput,
+    NumberInputArgs,
     form,
     label,
     LabelContent,

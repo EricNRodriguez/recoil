@@ -6,6 +6,10 @@ export interface Consumer<T> {
     (value: T): void;
 }
 
+export interface BiConsumer<A,B> {
+    (a: A, b: B): void;
+}
+
 export interface Runnable {
     (): void;
 }

@@ -1,4 +1,4 @@
-import {Consumer, Runnable} from "../../../atom/src/util.interface";
+import {BiConsumer, Consumer, Runnable} from "../../../atom/src/util.interface";
 import {Attribute, ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
@@ -64,11 +64,10 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withEventHandler(eventType: string, handler: Consumer<Event>): ElementBuilder {
-        this.element.addEventListener(eventType, handler);
+    public withEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): ElementBuilder {
+        this.element.addEventListener(eventType, (event: Event): void => handler(event, this.element));
         return this;
     }
-
 
     public withChildren(...children: (MaybeNode | string)[]): ElementBuilder {
         this.element.replaceChildren(
