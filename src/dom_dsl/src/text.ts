@@ -1,6 +1,6 @@
 import {Atom, runEffect, Reference, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
-import {bindScope} from "./dom_utils";
+import {bindScope} from "./util/dom_utils";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 

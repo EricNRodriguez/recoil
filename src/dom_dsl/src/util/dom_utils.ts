@@ -1,6 +1,6 @@
-import {Reference} from "../../atom";
-import {MaybeNode} from "./node.interface";
-import {Consumer} from "../../atom/src/util.interface";
+import {Reference} from "../../../atom";
+import {MaybeNode} from "../node.interface";
+import {Consumer} from "../../../atom/src/util.interface";
 
 export const removeAllChildren = (node: Node): void => {
     while (node.firstChild !== null) {

@@ -2,7 +2,7 @@ import {BiConsumer, Consumer, Runnable} from "../../../atom/src/util.interface";
 import {Attribute, ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
-import {bindScope} from "../dom_utils";
+import {bindScope} from "../util/dom_utils";
 import {MaybeNode} from "../node.interface";
 import {t} from "../text";
 import {Function} from "../util.interface";

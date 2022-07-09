@@ -1,6 +1,6 @@
 import {ElementBuilderImpl} from "../builder/element_builder";
 import {runEffect} from "../../../atom";
-import {bindScope} from "../dom_utils";
+import {bindScope} from "../util/dom_utils";
 import {Supplier} from "../util.interface";
 import {Runnable} from "../../../atom/src/util.interface";
 import {ElementBuilder} from "../builder/element_builder.interface";

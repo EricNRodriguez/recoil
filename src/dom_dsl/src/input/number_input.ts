@@ -1,7 +1,8 @@
 import {ElementBuilder} from "../builder/element_builder.interface";
 import {ElementBuilderImpl} from "../builder/element_builder";
 import {Consumer} from "../../../atom/src/util.interface";
-import {notNullOrUndefined} from "../dom_utils";
+import {notNullOrUndefined} from "../util/dom_utils";
+import {clamp} from "../util/math_util";
 
 export type NumberInputArgs = {
     max?: number,
@@ -16,7 +17,13 @@ export const numberInput = (args: NumberInputArgs): ElementBuilder => {
     if (notNullOrUndefined(args.onInput)) {
         builder.withEventHandler("input", (e: Event, element: HTMLElement): void => {
             const inputElement: HTMLInputElement = element as HTMLInputElement;
-            args.onInput!(inputElement.valueAsNumber);
+            args.onInput!(
+                clamp({
+                    max: args.max,
+                    min: args.min,
+                    val: inputElement.valueAsNumber,
+                })
+            );
         });
     }
 
