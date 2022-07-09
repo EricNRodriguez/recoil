@@ -28,7 +28,7 @@ export const numberInput = (args: NumberInputArgs): ElementBuilder => {
     }
 
     if (notNullOrUndefined(args.max)) {
-        builder.withAttribute("max", args.max!.toString);
+        builder.withAttribute("max", args.max!.toString());
     }
 
     if (notNullOrUndefined(args.min)) {
