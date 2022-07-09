@@ -1,14 +1,15 @@
 import {Consumer, Runnable} from "../../../atom/src/util.interface";
-import {ElementBuilder, ElementStyle} from "./element_builder.interface";
+import {Attribute, ElementBuilder, ElementStyle} from "./element_builder.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {bindScope} from "../dom_utils";
 import {MaybeNode} from "../node.interface";
 import {t} from "../text";
 import {Function} from "../util.interface";
+import {a} from "../anchor";
 
 export class ElementBuilderImpl implements ElementBuilder {
-    private readonly element: HTMLElement;
+    private element: HTMLElement;
 
     constructor(element: string | HTMLElement) {
         if (typeof element === "string") {
@@ -18,25 +19,43 @@ export class ElementBuilderImpl implements ElementBuilder {
         }
     }
 
-    public withClass(className: string | Atom<string> | Supplier<string>): ElementBuilder {
-        if (typeof className === "string") {
-            this.element.className = `${this.element.className} ${className}`;
-        } else {
-            const prevClassName = this.element.className;
-            const effectRef: Reference = runEffect((): void => {
-                const newClassName: string = isAtom(className) ?
-                    (className as Atom<any>).get() :
-                    (className as Supplier<string>)();
-
-                this.element.className = `${prevClassName} ${newClassName}`;
-            })
-            bindScope(this.element, effectRef);
+    public withAttribute(attribute: string, value: Attribute): ElementBuilder {
+        if (isAtom(value)) {
+            return this.withAtomicAttribute(attribute, value as Atom<string>);
+        } else if (typeof value === "function") {
+            return this.withSuppliedAttribute(attribute, value);
+        } else if (typeof value === "string") {
+            this.setAttribute(attribute, value);
+            return this;
         }
-        return this;
+
+        // TODO(ericr): replace with specific fall through error
+        throw new Error("unsupported attribute type");
     }
 
-    public withId(id: string): ElementBuilder {
-        this.element.id = id;
+    private setAttribute(attribute: string, value: string): void {
+        this.element.setAttribute(attribute, value);
+    }
+
+    private withAtomicAttribute(attribute: string, value: Atom<string>): ElementBuilder {
+        value.react((value: string): void => {
+            this.setAttribute(attribute, value);
+        });
+        return this
+    }
+
+    private withSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): ElementBuilder {
+        let currentAttributeValue: string;
+        bindScope(
+            this.element,
+            runEffect((): void => {
+                const value: string = valueSupplier();
+                if (value !== currentAttributeValue) {
+                    currentAttributeValue = value;
+                    this.setAttribute(attribute, value);
+                }
+            }),
+        );
         return this;
     }
 
@@ -59,17 +78,6 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withTitle(title: string): ElementBuilder {
-        this.element.title = title;
-        return this;
-    }
-
-    public withAttribute(attribute: string, value: string): ElementBuilder {
-        this.element.setAttribute(attribute, value);
-        return this;
-    }
-
-
     public withStyle(style: ElementStyle): ElementBuilder {
         Object.entries(style).forEach(([property, value]: [string, string]): void => {
            this.element.style.setProperty(property, value);
@@ -77,8 +85,8 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withBindedDependant(object: Object): ElementBuilder {
-        bindScope(this.element, object);
+    public map(fn: Function<HTMLElement, HTMLElement>): ElementBuilder {
+        this.element = fn(this.element);
         return this;
     }
 
