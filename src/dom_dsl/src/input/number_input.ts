@@ -17,13 +17,19 @@ export const numberInput = (args: NumberInputArgs): ElementBuilder => {
     if (notNullOrUndefined(args.onInput)) {
         builder.withEventHandler("input", (e: Event, element: HTMLElement): void => {
             const inputElement: HTMLInputElement = element as HTMLInputElement;
-            args.onInput!(
-                clamp({
-                    max: args.max,
-                    min: args.min,
-                    val: inputElement.valueAsNumber,
-                })
-            );
+
+            const rawValue: number = inputElement.valueAsNumber;
+            const clampedValue: number = clamp({
+                max: args.max,
+                min: args.min,
+                val: inputElement.valueAsNumber,
+            });
+
+            if (rawValue !== clampedValue) {
+                inputElement.valueAsNumber = clampedValue;
+            }
+
+            args.onInput!(clampedValue);
         });
     }
 
