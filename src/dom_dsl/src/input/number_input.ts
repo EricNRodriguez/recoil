@@ -19,6 +19,11 @@ export const numberInput = (args: NumberInputArgs): ElementBuilder => {
             const inputElement: HTMLInputElement = element as HTMLInputElement;
 
             const rawValue: number = inputElement.valueAsNumber;
+
+            if (Number.isNaN(rawValue)) {
+                return;
+            }
+
             const clampedValue: number = clamp({
                 max: args.max,
                 min: args.min,
