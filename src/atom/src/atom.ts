@@ -98,17 +98,7 @@ abstract class BaseAtom<T> implements Atom<T> {
 	public react(effect: SideEffect<T>): SideEffectRef {
 		const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
 
-		const ref = this.effects.registerEffect(cachedEffect);
-
-		return {
-			activate: () => {
-				ref.activate();
-				this.invalidate();
-			},
-			deactivate: () => {
-				ref.deactivate();
-			}
-		}
+		return this.effects.registerEffect(cachedEffect);
 	}
 
 	private buildCachedEffect(effect: SideEffect<T>): SideEffect<T> {
