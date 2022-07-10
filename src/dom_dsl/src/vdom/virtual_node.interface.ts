@@ -1,5 +1,8 @@
-export interface VNode {
+import {Consumer} from "../../../atom/src/util.interface";
+
+export interface VNode<T> {
     mount(): void;
     unmount(): void;
-    getRaw(): Node;
+    registerEffect(effect: Consumer<T>): VNode<T>;
+    getRaw(): T;
 }

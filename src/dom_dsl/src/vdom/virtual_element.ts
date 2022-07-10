@@ -5,124 +5,102 @@ import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
 import {bindScope, replaceChildren} from "../util/dom_utils";
 import {unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
+import {VNodeImpl} from "./virtual_node";
+
 
 // A lightweight wrapper around a DOM element
-export class VElementImpl implements VElement {
-    private readonly element: HTMLElement;
-    private readonly children: VNode[] = [];
-    private readonly rootEffects: Set<SideEffectRef> = new Set<SideEffectRef>();
+export class VElementImpl  implements VElement<HTMLElement, VElementImpl> {
+    private readonly vNode: VNode<HTMLElement>;
+    private readonly children: VNode<any>[] = [];
 
     constructor(element: string | HTMLElement) {
-        if (typeof element === "string") {
-            this.element = document.createElement(element);
-        } else {
-            this.element = element;
-        }
+        this.vNode = new VNodeImpl(
+            (typeof element === "string") ?
+                document.createElement(element) :
+                element as HTMLElement
+        );
+
     }
 
-    public registerEffect(effect: Consumer<VElement>): VElement {
-        const ref: SideEffectRef = runEffect((): void => effect(this));
-        this.rootEffects.add(ref);
-        return this;
-    }
+    public setChildren(...children: VNode<any>[]): VElementImpl {
 
-    public mount() {
-        this.activateEffects();
-    }
-
-    public unmount() {
-        this.deactivateEffects();
-    }
-
-    private activateEffects(): void {
-        this.rootEffects.forEach((ref: SideEffectRef): void => {
-            ref.activate();
-        });
-    }
-
-    private deactivateEffects(): void {
-        this.rootEffects.forEach((ref: SideEffectRef): void => {
-            ref.deactivate();
-        });
-    }
-
-    public setAttribute(attribute: string, value: Attribute): VElement {
-        if (isAtom(value)) {
-            return this.setAtomicAttribute(attribute, value as Atom<string>);
-        } else if (typeof value === "function") {
-            return this.setSuppliedAttribute(attribute, value);
-        } else if (typeof value === "string") {
-            return this.setStaticAttribute(attribute, value);
-        }
-
-        // TODO(ericr): replace with specific fall through error
-        throw new Error("unsupported attribute type");
-    }
-
-    private setStaticAttribute(attribute: string, value: string): VElement {
-        this.element.setAttribute(attribute, value);
-        return this;
-    }
-
-    private setAtomicAttribute(attribute: string, value: Atom<string>): VElement {
-        const ref: SideEffectRef = value.react((value: string): void => {
-            this.setStaticAttribute(attribute, value);
-        });
-        this.rootEffects.add(ref);
-
-        bindScope(this.element, ref);
-
-        return this
-    }
-
-    private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElement {
-        let currentAttributeValue: string;
-        const ref: SideEffectRef = runEffect((): void => {
-            const value: string = valueSupplier();
-            if (value !== currentAttributeValue) {
-                currentAttributeValue = value;
-                this.setStaticAttribute(attribute, value);
-            }
-        });
-        this.rootEffects.add(ref);
-
-        bindScope(this.element, ref);
-
-        return this;
-    }
-
-    public setClickHandler(handler: Consumer<MouseEvent>): VElement {
-        this.element.addEventListener("click", handler);
-        return this;
-    }
-
-    public addEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement {
-        this.element.addEventListener(eventType, (event: Event): void => handler(event, this.element));
-        return this;
-    }
-
-    public setChildren(...children: VNode[]): VElement {
         this.children.length = 0;
         this.children.push(
             ...children
         );
-
-        replaceChildren(
-            this.element,
-            ...children.map(unwrapVNode<Node>),
-        );
+        //
+        // replaceChildren(
+        //     this.getRaw(),
+        //     ...children.map(unwrapVNode<Node>),
+        // );
 
         return this;
     }
 
-    public setStyle(style: ElementStyle): VElement {
-        Object.entries(style).forEach(([property, value]: [string, string]): void => {
-           this.element.style.setProperty(property, value);
-        });
-        return this;
+    public getRaw(): HTMLElement {
+        return document.createElement("div");
     }
 
-    public getRaw(): Element {
-        return this.element;
-    }
+    //
+    // public setAttribute(attribute: string, value: Attribute): H {
+    //     if (isAtom(value)) {
+    //         return this.setAtomicAttribute(attribute, value as Atom<string>);
+    //     } else if (typeof value === "function") {
+    //         return this.setSuppliedAttribute(attribute, value);
+    //     } else if (typeof value === "string") {
+    //         return this.setStaticAttribute(attribute, value);
+    //     }
+    //
+    //     // TODO(ericr): replace with specific fall through error
+    //     throw new Error("unsupported attribute type");
+    // }
+    //
+    // private setStaticAttribute(attribute: string, value: string): VElementImpl<T> {
+    //     this.getRaw().setAttribute(attribute, value);
+    //     return this;
+    // }
+    //
+    // private setAtomicAttribute(attribute: string, value: Atom<string>): VElementImpl<T> {
+    //     const ref: SideEffectRef = value.react((value: string): void => {
+    //         this.setStaticAttribute(attribute, value);
+    //     });
+    //     this.rootEffects.add(ref);
+    //
+    //     bindScope(this.getRaw(), ref);
+    //
+    //     return this
+    // }
+    //
+    // private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElementImpl<T> {
+    //     let currentAttributeValue: string;
+    //     const ref: SideEffectRef = runEffect((): void => {
+    //         const value: string = valueSupplier();
+    //         if (value !== currentAttributeValue) {
+    //             currentAttributeValue = value;
+    //             this.setStaticAttribute(attribute, value);
+    //         }
+    //     });
+    //     this.rootEffects.add(ref);
+    //
+    //     bindScope(this.getRaw(), ref);
+    //
+    //     return this;
+    // }
+    //
+    // public setClickHandler(handler: Consumer<MouseEvent>): VElementImpl<T> {
+    //     // this.getRaw().addEventListener("click", handler);
+    //     return this;
+    // }
+    //
+    // public addEventHandler(eventType: string, handler: BiConsumer<Event, Element>): VElementImpl<T> {
+    //     this.getRaw().addEventListener(eventType, (event: Event): void => handler(event, this.getRaw()));
+    //     return this;
+    // }
+    //
+    // public setStyle(style: ElementStyle): VElementImpl<T> {
+    //     Object.entries(style).forEach(([property, value]: [string, string]): void => {
+    //        this.getRaw().style.setProperty(property, value);
+    //     });
+    //     return this;
+    // }
 }
