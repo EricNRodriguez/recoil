@@ -10,7 +10,9 @@ export enum FormTarget {
   TOP = "_top",
 }
 
-export const form = (...content: MaybeNodeOrVNode[]): VElement => {
+export const form = (...content: MaybeNodeOrVNode[]): HtmlVElement => {
   return new HtmlVElement("form")
-      .setChildren(...content.map(unwrapVNode<Node>));
+      .setChildren(
+        ...content
+      );
 };

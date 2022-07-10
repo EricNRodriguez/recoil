@@ -10,7 +10,7 @@ export type RadioButtonArguments = {
     onClick: Runnable,
 };
 
-export const radioButton = (args: RadioButtonArguments): VElement => {
+export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
     const radioButtonElement = document.createElement("input");
 
     // binding effect for checked attribute

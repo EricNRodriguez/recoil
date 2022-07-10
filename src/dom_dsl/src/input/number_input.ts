@@ -10,8 +10,8 @@ export type NumberInputArgs = {
     onInput?: Consumer<number>,
 };
 
-export const numberInput = (args: NumberInputArgs): VElement => {
-    const builder: VElement = new HtmlVElement("input")
+export const numberInput = (args: NumberInputArgs): HtmlVElement => {
+    const builder: HtmlVElement = new HtmlVElement("input")
         .setAttribute("type", "number");
 
     if (notNullOrUndefined(args.onInput)) {
