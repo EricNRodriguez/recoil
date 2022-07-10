@@ -19,8 +19,27 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         );
     }
 
-    public setChildren(...children: VNode<any, any>[]): VElementImpl {
+    public mount(): VElementImpl {
+        super.mount();
 
+        this.children.forEach((child: VNode<any, any>): void => {
+            child.mount();
+        });
+
+        return this;
+    }
+
+    public unmount(): VElementImpl {
+        super.unmount();
+
+        this.children.forEach((child: VNode<any, any>): void => {
+            child.unmount();
+        });
+
+        return this;
+    }
+
+    public setChildren(...children: VNode<any, any>[]): VElementImpl {
         this.children.length = 0;
         this.children.push(
             ...children

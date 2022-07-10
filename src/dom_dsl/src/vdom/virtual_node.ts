@@ -1,5 +1,5 @@
 import {VNode} from "./virtual_node.interface";
-import {runEffect, SideEffectRef} from "../../../atom";
+import {SideEffectRef} from "../../../atom";
 
 export class VNodeImpl<A extends Node, B extends VNodeImpl<A, B>> implements VNode<A, B> {
     private readonly node: A;
@@ -14,12 +14,14 @@ export class VNodeImpl<A extends Node, B extends VNodeImpl<A, B>> implements VNo
         return this;
     }
 
-    public mount() {
+    public mount(): VNodeImpl<A, B> {
         this.activateEffects();
+        return this;
     }
 
-    public unmount() {
+    public unmount(): VNodeImpl<A, B> {
         this.deactivateEffects();
+        return this;
     }
 
     private activateEffects(): void {
