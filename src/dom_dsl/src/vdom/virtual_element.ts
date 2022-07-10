@@ -2,14 +2,17 @@ import {BiConsumer, Consumer, Runnable} from "../../../atom/src/util.interface";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
-import {bindScope} from "../util/dom_utils";
+import {bindScope, replaceChildren} from "../util/dom_utils";
 import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {t} from "../text";
 import {Function} from "../util.interface";
 import {a} from "../anchor";
-import {unwrapVNode} from "./vdom_util";
+import {unwrapVNode, wrapRawText} from "./vdom_util";
+import {VNodeImpl} from "./virtual_node";
+import {VNode} from "./virtual_node.interface";
 
 export class VElementImpl implements VElement {
+    private readonly children: VNode[] = [];
     private element: HTMLElement;
 
     constructor(element: string | HTMLElement) {
@@ -70,10 +73,16 @@ export class VElementImpl implements VElement {
         return this;
     }
 
-    public withChildren(...children: (MaybeNodeOrVNode | string)[]): VElement {
-        const processedChildren: MaybeNode[] = children
-            .map(unwrapVNode<MaybeNode | string>)
-            .map((child: MaybeNode | string): MaybeNode => typeof child === "string" ? t(child) : child as MaybeNode);
+    public withChildren(...children: VNode[]): VElement {
+        this.children.length = 0;
+        this.children.push(
+            ...children
+        );
+
+        replaceChildren(
+            this.element,
+            ...children.map(unwrapVNode<Node>),
+        );
 
         return this;
     }

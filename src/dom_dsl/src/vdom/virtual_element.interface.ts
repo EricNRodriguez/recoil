@@ -12,7 +12,7 @@ export interface VElement extends VNode{
     withEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement
     withClickHandler(handler: Consumer<MouseEvent>): VElement;
     withAttribute(attribute: string, value: Attribute): VElement;
-    withChildren(...children: (MaybeNode | string)[]): VElement;
+    withChildren(...children: VNode[]): VElement;
     withStyle(style: ElementStyle): VElement;
     getRaw(): Element;
 }
