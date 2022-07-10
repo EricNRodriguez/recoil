@@ -1,17 +1,16 @@
 import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
-import {Atom, runEffect, isAtom} from "../../../atom";
+import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
 import {bindScope, replaceChildren} from "../util/dom_utils";
 import {unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
-import {EffectRegistry} from "./effect_context";
 
 // A lightweight wrapper around a DOM element
 export class VElementImpl implements VElement {
     private readonly element: HTMLElement;
     private readonly children: VNode[] = [];
-    private readonly effects: EffectRegistry = new EffectRegistry();
+    private readonly rootEffects: Set<SideEffectRef> = new Set<SideEffectRef>();
 
     constructor(element: string | HTMLElement) {
         if (typeof element === "string") {
@@ -22,37 +21,51 @@ export class VElementImpl implements VElement {
     }
 
     public mount() {
+        this.activateEffects();
     }
 
     public unmount() {
+        this.deactivateEffects();
+    }
+
+    private activateEffects(): void {
+        this.rootEffects.forEach((ref: SideEffectRef): void => {
+            ref.activate();
+        });
+    }
+
+    private deactivateEffects(): void {
+        this.rootEffects.forEach((ref: SideEffectRef): void => {
+            ref.deactivate();
+        });
     }
 
     public setAttribute(attribute: string, value: Attribute): VElement {
         if (isAtom(value)) {
-            return this.withAtomicAttribute(attribute, value as Atom<string>);
+            return this.setAtomicAttribute(attribute, value as Atom<string>);
         } else if (typeof value === "function") {
-            return this.withSuppliedAttribute(attribute, value);
+            return this.setSuppliedAttribute(attribute, value);
         } else if (typeof value === "string") {
-            this.setAttributeOLD(attribute, value);
-            return this;
+            return this.setStaticAttribute(attribute, value);
         }
 
         // TODO(ericr): replace with specific fall through error
         throw new Error("unsupported attribute type");
     }
 
-    private setAttributeOLD(attribute: string, value: string): void {
+    private setStaticAttribute(attribute: string, value: string): VElement {
         this.element.setAttribute(attribute, value);
+        return this;
     }
 
-    private withAtomicAttribute(attribute: string, value: Atom<string>): VElement {
+    private setAtomicAttribute(attribute: string, value: Atom<string>): VElement {
         value.react((value: string): void => {
-            this.setAttributeOLD(attribute, value);
+            this.setStaticAttribute(attribute, value);
         });
         return this
     }
 
-    private withSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElement {
+    private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElement {
         let currentAttributeValue: string;
         bindScope(
             this.element,
@@ -60,7 +73,7 @@ export class VElementImpl implements VElement {
                 const value: string = valueSupplier();
                 if (value !== currentAttributeValue) {
                     currentAttributeValue = value;
-                    this.setAttributeOLD(attribute, value);
+                    this.setStaticAttribute(attribute, value);
                 }
             }),
         );
