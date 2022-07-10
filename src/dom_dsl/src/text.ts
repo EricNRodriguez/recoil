@@ -1,15 +1,13 @@
-import {Atom, runEffect, Reference, isAtom} from "../../atom";
+import {Atom, runEffect, Reference, isAtom, SideEffectRef} from "../../atom";
 import {Supplier} from "./util.interface";
-import {bindScope} from "./util/dom_utils";
 import {HtmlVNode} from "./vdom/virtual_node";
-import {VNode} from "./vdom/virtual_node.interface";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
 export const t = (content: TextContent): HtmlVNode => {
-    let textNode: Text;
+    let textNode: HtmlVNode;
     if (typeof content === "string") {
-        textNode = document.createTextNode(content);
+        textNode = new HtmlVNode(document.createTextNode(content));
     } else if (isAtom(content) || typeof content === "function") {
         textNode = createBindedTextNode(content);
     } else {
@@ -17,20 +15,19 @@ export const t = (content: TextContent): HtmlVNode => {
         throw new Error();
     }
 
-    return new HtmlVNode(textNode);
+    return textNode;
 };
 
 type BindedTextNodeSource = Supplier<string> | Atom<string>;
 
-const createBindedTextNode = (source: BindedTextNodeSource): Text => {
+const createBindedTextNode = (source: BindedTextNodeSource): HtmlVNode => {
     const textNode: Text = document.createTextNode("");
 
-    let sourceRef: Reference = null;
+    let sourceRef: SideEffectRef;
     if (isAtom(source)) {
-        (source as Atom<string>).react((value: string): void => {
+        sourceRef = (source as Atom<string>).react((value: string): void => {
             textNode.textContent = value;
         });
-        sourceRef = source;
     } else if (typeof source === "function") {
         sourceRef = runEffect((): void => {
             textNode.textContent = source();
@@ -40,8 +37,6 @@ const createBindedTextNode = (source: BindedTextNodeSource): Text => {
         throw new Error();
     }
 
-    // bind the effect to the scope of the text node
-    bindScope(textNode, sourceRef);
-
-    return textNode;
+    return new HtmlVNode(textNode)
+        .registerEffect(sourceRef);
 };

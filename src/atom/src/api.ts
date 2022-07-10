@@ -17,9 +17,9 @@ export const runEffect = (effect: Runnable): SideEffectRef => {
     // to eagerly evaluate immediately after every dirty
     const sideEffectRef: SideEffectRef = atom.react(() => {});
 
-    // kick it to trigger the initial eager evaluation, which
-    // will in turn track any deps that the effect will run against
-    atom.get();
+    // // kick it to trigger the initial eager evaluation, which
+    // // will in turn track any deps that the effect will run against
+    // atom.get();
 
     // since the DAG edges are all weak, there is nothing keeping this atom
     // alive. Hence, the caller is responsible for keeping it in scope by

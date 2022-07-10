@@ -44,6 +44,8 @@ class SideEffectRegistry<T> {
 	private deactivateEffect(effect: SideEffect<T>): void {
 		this.activeEffects.delete(effect);
 		this.inactiveEffects.add(effect);
+
+		console.log(`deactivated effect: we now have ${this.activeEffects.size} active effects and ${this.inactiveEffects.size} inactive effects`);
 	}
 }
 
@@ -96,7 +98,17 @@ abstract class BaseAtom<T> implements Atom<T> {
 	public react(effect: SideEffect<T>): SideEffectRef {
 		const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
 
-		return this.effects.registerEffect(cachedEffect);
+		const ref = this.effects.registerEffect(cachedEffect);
+
+		return {
+			activate: () => {
+				ref.activate();
+				this.invalidate();
+			},
+			deactivate: () => {
+				ref.deactivate();
+			}
+		}
 	}
 
 	private buildCachedEffect(effect: SideEffect<T>): SideEffect<T> {
