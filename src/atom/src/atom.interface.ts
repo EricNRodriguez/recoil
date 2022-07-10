@@ -1,8 +1,13 @@
+export interface SideEffectRef {
+    activate(): void;
+    deactivate(): void;
+}
+
 export interface Atom<T> {
     get(): T;
     getUntracked(): T;
     invalidate(): void;
-    react(effect: SideEffect<T>): void;
+    react(effect: SideEffect<T>): SideEffectRef;
 }
 
 export interface LeafAtom<T> extends Atom<T> {

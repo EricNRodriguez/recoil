@@ -1,6 +1,6 @@
 import {Maybe} from "typescript-monads";
 import {IMaybe} from "typescript-monads/src/maybe/maybe.interface";
-import {Atom, DerivedAtom, LeafAtom, SideEffect} from "./atom.interface";
+import {Atom, DerivedAtom, LeafAtom, SideEffect, SideEffectRef} from "./atom.interface";
 import {Producer} from "./util.interface";
 import {AtomContext} from "./context";
 import {StatefulSideEffectError} from "./error";
@@ -10,10 +10,47 @@ export const isAtom = (obj: any): boolean => {
 	return obj instanceof Object && 'get' in obj && 'getUntracked' in obj && 'invalidate' in obj && 'react' in obj;
 };
 
+class SideEffectRegistry<T> {
+	private readonly activeEffects: Set<SideEffect<T>> = new Set();
+	private readonly inactiveEffects: Set<SideEffect<T>> = new Set();
+
+	public registerEffect(effect: SideEffect<T>): SideEffectRef {
+		if (this.activeEffects.has(effect) || this.inactiveEffects.has(effect)) {
+			// TODO(ericr): use a more specific error
+			throw new Error("duplicate registration of side effect");
+		}
+
+		this.activeEffects.add(effect);
+
+		return {
+			activate: () => this.activateEffect(effect),
+			deactivate: () => this.deactivateEffect(effect),
+		};
+	}
+
+	public hasActiveEffects(): boolean {
+		return this.activeEffects.size !== 0;
+	}
+
+	public getActiveEffects(): SideEffect<T>[] {
+		return Array.from(this.activeEffects);
+	}
+
+	private activateEffect(effect: SideEffect<T>): void {
+		this.inactiveEffects.delete(effect);
+		this.activeEffects.add(effect);
+	}
+
+	private deactivateEffect(effect: SideEffect<T>): void {
+		this.activeEffects.delete(effect);
+		this.inactiveEffects.add(effect);
+	}
+}
+
 abstract class BaseAtom<T> implements Atom<T> {
 	private static readonly context: AtomContext<DerivedAtomImpl<Object>> = new AtomContext<DerivedAtomImpl<Object>>();
 	private readonly parents: WeakCollection<DerivedAtomImpl<Object>> = new WeakCollection<DerivedAtomImpl<Object>>();
-	private readonly effects: SideEffect<T>[] = [];
+	private readonly effects: SideEffectRegistry<T> = new SideEffectRegistry<T>();
 
 	abstract get(): T;
 
@@ -45,31 +82,35 @@ abstract class BaseAtom<T> implements Atom<T> {
 	}
 
 	public scheduleEffects(): void {
-		if (this.effects.length === 0) {
+		if (!this.effects.hasActiveEffects()) {
 			return;
 		}
 
 		// we want this to track, since the effects should be re-run whenever deps change
 		const value: T = this.get();
-		this.effects.forEach(
+		this.effects.getActiveEffects().forEach(
 			(effect: SideEffect<T>) => effect(value),
 		);
 	}
 
-	public react(effect: SideEffect<T>): void {
+	public react(effect: SideEffect<T>): SideEffectRef {
 		const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
-		cachedEffect(this.get());
-		this.effects.push(cachedEffect);
+
+		return this.effects.registerEffect(cachedEffect);
 	}
 
-	private buildCachedEffect<T>(effect: SideEffect<T>): SideEffect<T> {
+	private buildCachedEffect(effect: SideEffect<T>): SideEffect<T> {
 		let prevValue: T | null = null;
-		return (newValue: T): void => {
+		const cachedEffect: SideEffect<T> = (newValue: T): void => {
 			if (newValue !== prevValue) {
 				prevValue = newValue;
 				effect(newValue);
 			}
 		};
+
+		cachedEffect(this.get());
+
+		return cachedEffect;
 	}
 }
 
