@@ -11,7 +11,7 @@ export type CheckboxArguments = {
     onClick: Runnable,
 };
 
-export const checkbox = (args: CheckboxArguments): VElement => {
+export const checkbox = (args: CheckboxArguments): HtmlVElement => {
     const checkboxElement = document.createElement("input");
 
     // binding effect for checked attribute
