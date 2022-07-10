@@ -3,11 +3,11 @@ import {Supplier} from "../util.interface";
 import {bindScope, replaceChildren} from "../util/dom_utils";
 import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "../vdom/vdom_util";
 import {frag} from "../frag";
-import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
+import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
-export type IfElseContent = MaybeNodeOrNodeBuilder | Supplier<MaybeNodeOrNodeBuilder>;
+export type IfElseContent = MaybeNodeOrVNode | Supplier<MaybeNodeOrVNode>;
 
 export const ifElse = (
     condition: IfElseCondition,

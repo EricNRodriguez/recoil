@@ -1,15 +1,15 @@
 import {Function, Supplier} from "../util.interface";
 import {appendChildren, bindScope, removeChildren, replaceChildren} from "../util/dom_utils";
 import {frag} from "../frag";
-import {unwrapNodesFromBuilder} from "../vdom/vdom_util";
+import {unwrapVNode} from "../vdom/vdom_util";
 import {IndexedItem} from "../indexed_item.interface";
 import {getItem, getKey} from "../indexed_item_lense";
 import {runEffect} from "../../../atom";
-import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
+import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 
 export const foreach = <T extends Object>(
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, MaybeNodeOrNodeBuilder>
+    buildElement: Function<T, MaybeNodeOrVNode>
 ): Node => {
     const anchor = frag();
 
@@ -30,7 +30,7 @@ export const foreach = <T extends Object>(
 const buildUpdateAnchorSideEffect = <T>(
     anchor: Element,
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, MaybeNodeOrNodeBuilder>
+    buildElement: Function<T, MaybeNodeOrVNode>
 ): () => void => {
     let currentItemOrder: string[] = [];
     let currentItemIndex: Map<string, MaybeNode> = new Map();
@@ -41,7 +41,7 @@ const buildUpdateAnchorSideEffect = <T>(
         const newItemNodesIndex: Map<string, MaybeNode> = new Map(
             newItems.map((item: IndexedItem<T>): [string, MaybeNode] => [
                 getKey(item),
-                currentItemIndex.get(getKey(item)) ?? unwrapNodesFromBuilder<Node>(buildElement(getItem(item))),
+                currentItemIndex.get(getKey(item)) ?? unwrapVNode<Node>(buildElement(getItem(item))),
             ]),
         );
 

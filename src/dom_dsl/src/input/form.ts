@@ -1,7 +1,7 @@
 import {VElement} from "../vdom/virtual_element.interface";
 import {VElementImpl} from "../vdom/virtual_element";
-import {MaybeNodeOrNodeBuilder} from "../node.interface";
-import {unwrapNodesFromBuilder} from "../vdom/vdom_util";
+import {MaybeNodeOrVNode} from "../node.interface";
+import {unwrapVNode} from "../vdom/vdom_util";
 
 export enum FormTarget {
   BLANK= "_blank",
@@ -10,7 +10,7 @@ export enum FormTarget {
   TOP = "_top",
 }
 
-export const form = (...content: MaybeNodeOrNodeBuilder[]): VElement => {
+export const form = (...content: MaybeNodeOrVNode[]): VElement => {
   return new VElementImpl("form")
-      .withChildren(...content.map(unwrapNodesFromBuilder<Node>));
+      .withChildren(...content.map(unwrapVNode<Node>));
 };

@@ -1,7 +1,7 @@
 import {div} from "./div";
-import {MaybeNodeOrNodeBuilder} from "./node.interface";
+import {MaybeNodeOrVNode} from "./node.interface";
 
-export type FragContent = MaybeNodeOrNodeBuilder;
+export type FragContent = MaybeNodeOrVNode;
 
 export const frag = (...children: FragContent[]): Element => {
     return div(...children)

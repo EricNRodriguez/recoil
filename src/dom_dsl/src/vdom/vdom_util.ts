@@ -1,27 +1,27 @@
 import {VNode} from "./virtual_node.interface";
 import {Supplier} from "../util.interface";
-import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
+import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 
-export const isNodeBuilder = (content: any): boolean => {
-    return content !== null && content !== undefined && "build" in content;
+export const isVNode = (content: any): boolean => {
+    return content instanceof Object && "build" in content;
 }
 
-export const unwrapNodesFromBuilder = <T>(content: T | VNode | null | undefined): T | MaybeNode => {
+export const unwrapVNode = <T>(content: T | VNode | null | undefined): T | MaybeNode => {
     if (content === null || content === undefined) {
         return content;
     }
 
-    if (isNodeBuilder(content)) {
+    if (isVNode(content)) {
         return (content as VNode).getRaw();
     }
 
     return content as T;
 };
 
-export const unwrapNodesFromProvider = (provider: Supplier<MaybeNodeOrNodeBuilder>): Supplier<MaybeNode> => {
+export const unwrapNodesFromProvider = (provider: Supplier<MaybeNodeOrVNode>): Supplier<MaybeNode> => {
     return (): MaybeNode => {
         const value = provider();
-        if (isNodeBuilder(value)) {
+        if (isVNode(value)) {
             return (value as VNode).getRaw();
         } else {
             return value as MaybeNode;
