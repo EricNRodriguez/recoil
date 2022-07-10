@@ -9,7 +9,7 @@ export type ButtonArgs = {
     onClick: Consumer<MouseEvent>,
 };
 
-export const button = (args: ButtonArgs): VElement => {
+export const button = (args: ButtonArgs): HtmlVElement => {
     return new HtmlVElement("button")
         .setAttribute("type", "button")
         .setChildren(args.content)
