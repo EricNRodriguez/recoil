@@ -9,12 +9,11 @@ export type ElementStyle = {[key: string]: string};
 
 export type Attribute = string | Supplier<string> | Atom<string>;
 
-export interface VElement<A extends Element, B extends VElement<A,B>> {
-    // addEventHandler(eventType: string, handler: BiConsumer<Event, T>): VElement<T>
-    // setClickHandler(handler: Consumer<MouseEvent>): VElement<T>;
-    // setAttribute(attribute: string, value: Attribute): VElement<T>;
-    // setStyle(style: ElementStyle): VElement<T>;
-    // registerEffect(effect: Consumer<T>): VElement<T>;
-    setChildren(...children: VNode<any>[]): B;
+export interface VElement<A extends Element, B extends VElement<A,B>> extends VNode<A, B>{
+    addEventHandler(eventType: string, handler: BiConsumer<Event, A>): B
+    setClickHandler(handler: Consumer<MouseEvent>): B;
+    setAttribute(attribute: string, value: Attribute): B;
+    setStyle(style: ElementStyle): B;
+    setChildren(...children: VNode<any, VNode<any, any>>[]): B;
     getRaw(): A;
 }

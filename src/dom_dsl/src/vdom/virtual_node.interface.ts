@@ -1,8 +1,8 @@
-import {Consumer} from "../../../atom/src/util.interface";
+import {SideEffectRef} from "../../../atom";
 
-export interface VNode<T> {
+export interface VNode<A extends Node, B extends VNode<A, B>> {
     mount(): void;
     unmount(): void;
-    registerEffect(effect: Consumer<T>): VNode<T>;
-    getRaw(): T;
+    registerEffect(effect: SideEffectRef): VNode<A,B>;
+    getRaw(): A;
 }

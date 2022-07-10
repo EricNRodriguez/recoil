@@ -1,18 +1,15 @@
 import {VNode} from "./virtual_node.interface";
 import {runEffect, SideEffectRef} from "../../../atom";
-import {Consumer} from "../../../atom/src/util.interface";
-import {VElement} from "./virtual_element.interface";
 
-export class VNodeImpl<T extends Node> implements VNode<Node> {
-    private readonly node: T;
+export class VNodeImpl<A extends Node, B extends VNodeImpl<A, B>> implements VNode<A, B> {
+    private readonly node: A;
     private readonly rootEffects: Set<SideEffectRef> = new Set<SideEffectRef>();
 
-    constructor(node: T) {
+    constructor(node: A) {
         this.node = node;
     }
 
-    public registerEffect(effect: Consumer<T>): VNodeImpl<T> {
-        const ref: SideEffectRef = runEffect((): void => effect(this.getRaw()));
+    public registerEffect(ref: SideEffectRef): VNodeImpl<A, B> {
         this.rootEffects.add(ref);
         return this;
     }
@@ -37,7 +34,7 @@ export class VNodeImpl<T extends Node> implements VNode<Node> {
         });
     }
 
-    public getRaw(): T {
+    public getRaw(): A {
         return this.node;
     }
 }
