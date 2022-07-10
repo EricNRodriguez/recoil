@@ -1,8 +1,9 @@
 import {HtmlVElement} from "./vdom/virtual_element";
 import {VElement} from "./vdom/virtual_element.interface";
 import {wrapRawText} from "./vdom/vdom_util";
+import {HtmlVNode} from "./vdom/virtual_node";
 
-export type HeaderContent = Text | string;
+export type HeaderContent = HtmlVNode | string;
 
 interface HeaderBuilder {
     (content: HeaderContent): HtmlVElement;

@@ -45,5 +45,7 @@ export {
     VElement,
     IndexedItem,
     RadioButtonArguments,
-    CheckboxArguments
+    CheckboxArguments,
+    HtmlVElement,
+    HtmlVNode
 } from "./dom_dsl";

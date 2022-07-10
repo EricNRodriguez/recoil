@@ -4,31 +4,32 @@ import {frag} from "../frag";
 import {unwrapMaybeVNode, unwrapVNode} from "../vdom/vdom_util";
 import {IndexedItem} from "../indexed_item.interface";
 import {getItem, getKey} from "../indexed_item_lense";
-import {runEffect} from "../../../atom";
+import {runEffect, SideEffectRef} from "../../../atom";
 import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
+import {HtmlVNode} from "../vdom/virtual_node";
+import {HtmlVElement} from "../vdom/virtual_element";
 
 export const foreach = <T extends Object>(
     getItems: Supplier<IndexedItem<T>[]>,
     buildElement: Function<T, MaybeNodeOrVNode>
-): Node => {
+): HtmlVNode => {
     const anchor = frag();
 
-    bindScope(
-        anchor,
+    anchor.registerEffect(
         runEffect(
             buildUpdateAnchorSideEffect(
                 anchor,
                 getItems,
-                buildElement
-            ),
-        ),
+                buildElement,
+            )
+        )
     );
 
     return anchor;
 };
 
 const buildUpdateAnchorSideEffect = <T>(
-    anchor: Element,
+    anchor: HtmlVElement,
     getItems: Supplier<IndexedItem<T>[]>,
     buildElement: Function<T, MaybeNodeOrVNode>
 ): () => void => {
@@ -52,20 +53,8 @@ const buildUpdateAnchorSideEffect = <T>(
             ++firstNonEqualIndex;
         }
 
-        removeChildren(
-            anchor,
-            currentItemOrder
-                .slice(firstNonEqualIndex)
-                .map((index: string): MaybeNodeOrVNode => currentItemIndex.get(index))
-                .map(unwrapMaybeVNode)
-        );
-
-        appendChildren(
-            anchor,
-            newItemOrder
-                .slice(firstNonEqualIndex)
-                .map((index: string): MaybeNodeOrVNode => newItemNodesIndex.get(index))
-                .map(unwrapMaybeVNode)
+        anchor.setChildren(
+            ...currentItemOrder.slice(firstNonEqualIndex)
         );
 
         currentItemOrder = newItemOrder;

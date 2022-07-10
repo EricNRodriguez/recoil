@@ -22,3 +22,5 @@ export {VNode} from "./src/vdom/virtual_node.interface";
 export {label, LabelContent} from "./src/input/label";
 export {input} from "./src/input/input";
 export {numberInput, NumberInputArgs} from "./src/input/number_input";
+export {HtmlVNode} from "./src/vdom/virtual_node";
+export {HtmlVElement} from "./src/vdom/virtual_element";
