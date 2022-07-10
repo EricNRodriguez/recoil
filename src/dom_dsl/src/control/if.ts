@@ -4,6 +4,7 @@ import {bindScope, replaceChildren} from "../util/dom_utils";
 import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "../vdom/vdom_util";
 import {frag} from "../frag";
 import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
+import {HtmlVElement} from "../vdom/virtual_element";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -13,7 +14,7 @@ export const ifElse = (
     condition: IfElseCondition,
     ifTrue: IfElseContent,
     ifFalse?: IfElseContent,
-): Node  => {
+): HtmlVElement  => {
     ifFalse ??= undefined;
 
     const ifTrueUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(
@@ -27,30 +28,30 @@ export const ifElse = (
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
     }
 
-    const anchor: Element = frag();
+    const anchor: HtmlVElement = frag();
 
     let currentRenderedState: boolean;
 
-    const effectRef: Reference = runEffect((): void => {
-        const state: boolean = isAtom(condition) ?
-            (condition as Atom<boolean>).get() :
-            (condition as Supplier<boolean>)();
+    anchor.registerEffect(
+        runEffect((): void => {
+            const state: boolean = isAtom(condition) ?
+                (condition as Atom<boolean>).get() :
+                (condition as Supplier<boolean>)();
 
-        if (state === currentRenderedState) {
-            return;
-        }
+            if (state === currentRenderedState) {
+                return;
+            }
 
-        currentRenderedState = state;
+            currentRenderedState = state;
 
-        const nodeSupplier: Supplier<MaybeNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
-        const node: MaybeNode = nodeSupplier();
+            const nodeSupplier: Supplier<MaybeNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+            const node: MaybeNode = nodeSupplier();
 
-        replaceChildren(
-            anchor,
-            node,
-        )
-    });
-    bindScope(anchor, effectRef);
+            anchor.setChildren(
+                node,
+            )
+        })
+    );
 
     return anchor;
 };
@@ -59,7 +60,7 @@ const staticIfElse = (
     condition: boolean,
     ifTrue: Supplier<MaybeNode>,
     ifFalse: Supplier<MaybeNode>,
-): Node => {
+): HtmlVElement => {
     return frag(
         condition ? ifTrue() : ifFalse()
     );
