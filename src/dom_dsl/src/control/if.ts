@@ -6,6 +6,7 @@ import {frag} from "../frag";
 import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {HtmlVElement} from "../vdom/virtual_element";
 import {VNode} from "../vdom/virtual_node.interface";
+import {HtmlVNode} from "../vdom/virtual_node";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -41,7 +42,7 @@ export const ifElse = (
             }
 
             if (isVNode(currentRenderedItem)) {
-                (currentRenderedItem as VNode<any, any>).unmount();
+                (currentRenderedItem as HtmlVNode).unmount();
             }
 
             currentRenderedState = state;
@@ -49,6 +50,7 @@ export const ifElse = (
             const nodeSupplier: Supplier<MaybeNodeOrVNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
             currentRenderedItem = nodeSupplier();
 
+            (currentRenderedItem as HtmlVNode).mount();
             anchor.setChildren(
                 currentRenderedItem,
             )
