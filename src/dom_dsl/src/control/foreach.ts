@@ -1,7 +1,7 @@
 import {Function, Supplier} from "../util.interface";
 import {appendChildren, bindScope, removeChildren, replaceChildren} from "../util/dom_utils";
 import {frag} from "../frag";
-import {unwrapVNode} from "../vdom/vdom_util";
+import {unwrapMaybeVNode, unwrapVNode} from "../vdom/vdom_util";
 import {IndexedItem} from "../indexed_item.interface";
 import {getItem, getKey} from "../indexed_item_lense";
 import {runEffect} from "../../../atom";
@@ -33,15 +33,15 @@ const buildUpdateAnchorSideEffect = <T>(
     buildElement: Function<T, MaybeNodeOrVNode>
 ): () => void => {
     let currentItemOrder: string[] = [];
-    let currentItemIndex: Map<string, MaybeNode> = new Map();
+    let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
 
     return (): void => {
         const newItems: IndexedItem<T>[] = getItems();
         const newItemOrder: string[] = newItems.map(getKey);
-        const newItemNodesIndex: Map<string, MaybeNode> = new Map(
-            newItems.map((item: IndexedItem<T>): [string, MaybeNode] => [
+        const newItemNodesIndex: Map<string, MaybeNodeOrVNode> = new Map(
+            newItems.map((item: IndexedItem<T>): [string, MaybeNodeOrVNode] => [
                 getKey(item),
-                currentItemIndex.get(getKey(item)) ?? unwrapVNode<Node>(buildElement(getItem(item))),
+                currentItemIndex.get(getKey(item)) ?? buildElement(getItem(item)),
             ]),
         );
 
@@ -54,12 +54,18 @@ const buildUpdateAnchorSideEffect = <T>(
 
         removeChildren(
             anchor,
-            currentItemOrder.slice(firstNonEqualIndex).map((index: string): MaybeNode => currentItemIndex.get(index)),
+            currentItemOrder
+                .slice(firstNonEqualIndex)
+                .map((index: string): MaybeNodeOrVNode => currentItemIndex.get(index))
+                .map(unwrapMaybeVNode)
         );
 
         appendChildren(
             anchor,
-            newItemOrder.slice(firstNonEqualIndex).map((index: string): MaybeNode => newItemNodesIndex.get(index))
+            newItemOrder
+                .slice(firstNonEqualIndex)
+                .map((index: string): MaybeNodeOrVNode => newItemNodesIndex.get(index))
+                .map(unwrapMaybeVNode)
         );
 
         currentItemOrder = newItemOrder;

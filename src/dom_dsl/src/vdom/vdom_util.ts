@@ -4,6 +4,7 @@ import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {t} from "../text";
 import {HtmlVNode} from "./virtual_node";
 import {HtmlVElement} from "./virtual_element";
+import {notNullOrUndefined} from "../util/dom_utils";
 
 export const isVNode = (content: any): boolean => {
     return content instanceof Object && "build" in content;
@@ -19,6 +20,16 @@ export const unwrapVNode = (content: Node | VNode<any, any>): Node => {
     }
 
     return content as Node;
+};
+
+export const unwrapMaybeVNode = (content: Node | VNode<any, any> | null | undefined): MaybeNode => {
+      if (!notNullOrUndefined(content)) {
+          return content as (null | undefined);
+      } else {
+          return unwrapVNode(content as (Node | VNode<any, any>));
+      }
+
+
 };
 
 export const unwrapNodesFromProvider = (provider: Supplier<MaybeNodeOrVNode>): Supplier<MaybeNode> => {
