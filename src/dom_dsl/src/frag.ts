@@ -8,5 +8,5 @@ export const frag = (...children: FragContent[]): Element => {
         .withStyle({
             "display": "contents",
         })
-        .build();
+        .getRaw();
 }

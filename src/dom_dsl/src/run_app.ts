@@ -1,6 +1,6 @@
 import {unwrapNodesFromBuilder} from "./vdom/vdom_util";
-import {NodeBuilder} from "./vdom/virtual_node.interface";
+import {VNode} from "./vdom/virtual_node.interface";
 
-export const runApp = (anchor: Element, app: Node | NodeBuilder): void => {
+export const runApp = (anchor: Element, app: Node | VNode): void => {
     anchor.replaceChildren(unwrapNodesFromBuilder<Node>(app) as Node);
 };

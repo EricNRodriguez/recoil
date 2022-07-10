@@ -1,5 +1,5 @@
-import {ElementBuilder} from "../vdom/virtual_element.interface";
-import {ElementBuilderImpl} from "../vdom/virtual_element";
+import {VElement} from "../vdom/virtual_element.interface";
+import {VElementImpl} from "../vdom/virtual_element";
 import {Consumer} from "../../../atom/src/util.interface";
 import {notNullOrUndefined} from "../util/dom_utils";
 import {clamp} from "../util/math_util";
@@ -10,8 +10,8 @@ export type NumberInputArgs = {
     onInput?: Consumer<number>,
 };
 
-export const numberInput = (args: NumberInputArgs): ElementBuilder => {
-    const builder: ElementBuilder = new ElementBuilderImpl("input")
+export const numberInput = (args: NumberInputArgs): VElement => {
+    const builder: VElement = new VElementImpl("input")
         .withAttribute("type", "number");
 
     if (notNullOrUndefined(args.onInput)) {

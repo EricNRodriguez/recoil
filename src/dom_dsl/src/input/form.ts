@@ -1,5 +1,5 @@
-import {ElementBuilder} from "../vdom/virtual_element.interface";
-import {ElementBuilderImpl} from "../vdom/virtual_element";
+import {VElement} from "../vdom/virtual_element.interface";
+import {VElementImpl} from "../vdom/virtual_element";
 import {MaybeNodeOrNodeBuilder} from "../node.interface";
 import {unwrapNodesFromBuilder} from "../vdom/vdom_util";
 
@@ -10,7 +10,7 @@ export enum FormTarget {
   TOP = "_top",
 }
 
-export const form = (...content: MaybeNodeOrNodeBuilder[]): ElementBuilder => {
-  return new ElementBuilderImpl("form")
+export const form = (...content: MaybeNodeOrNodeBuilder[]): VElement => {
+  return new VElementImpl("form")
       .withChildren(...content.map(unwrapNodesFromBuilder<Node>));
 };

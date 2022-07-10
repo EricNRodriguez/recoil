@@ -1,3 +1,3 @@
-export interface NodeBuilder {
-    build(): Node;
+export interface VNode {
+    getRaw(): Node;
 }

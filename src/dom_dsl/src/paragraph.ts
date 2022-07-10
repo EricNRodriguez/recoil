@@ -1,9 +1,9 @@
-import {ElementBuilderImpl} from "./vdom/virtual_element";
-import {ElementBuilder} from "./vdom/virtual_element.interface";
+import {VElementImpl} from "./vdom/virtual_element";
+import {VElement} from "./vdom/virtual_element.interface";
 
 type ParagraphContent = Text | string;
 
-export const p = (...children: ParagraphContent[]): ElementBuilder => {
-    return new ElementBuilderImpl("p")
+export const p = (...children: ParagraphContent[]): VElement => {
+    return new VElementImpl("p")
         .withChildren(...children);
 };

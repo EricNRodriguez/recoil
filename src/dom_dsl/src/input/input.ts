@@ -1,6 +1,6 @@
-import {ElementBuilder} from "../vdom/virtual_element.interface";
-import {ElementBuilderImpl} from "../vdom/virtual_element";
+import {VElement} from "../vdom/virtual_element.interface";
+import {VElementImpl} from "../vdom/virtual_element";
 
-export const input = (): ElementBuilder => {
-    return new ElementBuilderImpl("input");
+export const input = (): VElement => {
+    return new VElementImpl("input");
 }

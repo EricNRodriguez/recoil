@@ -41,8 +41,8 @@ export {
     AnchorContent,
     link,
     runApp,
-    NodeBuilder,
-    ElementBuilder,
+    VNode,
+    VElement,
     IndexedItem,
     RadioButtonArguments,
     CheckboxArguments

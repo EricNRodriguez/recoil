@@ -1,9 +1,9 @@
-import {ElementBuilderImpl} from "../vdom/virtual_element";
+import {VElementImpl} from "../vdom/virtual_element";
 import {runEffect} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
 import {Supplier} from "../util.interface";
 import {Runnable} from "../../../atom/src/util.interface";
-import {ElementBuilder} from "../vdom/virtual_element.interface";
+import {VElement} from "../vdom/virtual_element.interface";
 
 export type CheckboxArguments = {
     isChecked: Supplier<boolean | null>,
@@ -11,7 +11,7 @@ export type CheckboxArguments = {
     onClick: Runnable,
 };
 
-export const checkbox = (args: CheckboxArguments): ElementBuilder => {
+export const checkbox = (args: CheckboxArguments): VElement => {
     const checkboxElement = document.createElement("input");
 
     // binding effect for checked attribute
@@ -59,6 +59,6 @@ export const checkbox = (args: CheckboxArguments): ElementBuilder => {
         checkboxElement.indeterminate = isChecked === null;
     };
 
-    return new ElementBuilderImpl(checkboxElement)
+    return new VElementImpl(checkboxElement)
         .withAttribute("type", "checkbox");
 };

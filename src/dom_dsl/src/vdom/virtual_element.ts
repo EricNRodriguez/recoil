@@ -1,5 +1,5 @@
 import {BiConsumer, Consumer, Runnable} from "../../../atom/src/util.interface";
-import {Attribute, ElementBuilder, ElementStyle} from "./virtual_element.interface";
+import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
@@ -8,7 +8,7 @@ import {t} from "../text";
 import {Function} from "../util.interface";
 import {a} from "../anchor";
 
-export class ElementBuilderImpl implements ElementBuilder {
+export class VElementImpl implements VElement {
     private element: HTMLElement;
 
     constructor(element: string | HTMLElement) {
@@ -19,7 +19,7 @@ export class ElementBuilderImpl implements ElementBuilder {
         }
     }
 
-    public withAttribute(attribute: string, value: Attribute): ElementBuilder {
+    public withAttribute(attribute: string, value: Attribute): VElement {
         if (isAtom(value)) {
             return this.withAtomicAttribute(attribute, value as Atom<string>);
         } else if (typeof value === "function") {
@@ -37,14 +37,14 @@ export class ElementBuilderImpl implements ElementBuilder {
         this.element.setAttribute(attribute, value);
     }
 
-    private withAtomicAttribute(attribute: string, value: Atom<string>): ElementBuilder {
+    private withAtomicAttribute(attribute: string, value: Atom<string>): VElement {
         value.react((value: string): void => {
             this.setAttribute(attribute, value);
         });
         return this
     }
 
-    private withSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): ElementBuilder {
+    private withSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElement {
         let currentAttributeValue: string;
         bindScope(
             this.element,
@@ -59,17 +59,17 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withClickHandler(handler: Consumer<MouseEvent>): ElementBuilder {
+    public withClickHandler(handler: Consumer<MouseEvent>): VElement {
         this.element.addEventListener("click", handler);
         return this;
     }
 
-    public withEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): ElementBuilder {
+    public withEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement {
         this.element.addEventListener(eventType, (event: Event): void => handler(event, this.element));
         return this;
     }
 
-    public withChildren(...children: (MaybeNode | string)[]): ElementBuilder {
+    public withChildren(...children: (MaybeNode | string)[]): VElement {
         this.element.replaceChildren(
             ...children
                 .map((child: MaybeNode | string): MaybeNode => typeof child === "string" ? t(child) : child as MaybeNode)
@@ -77,19 +77,19 @@ export class ElementBuilderImpl implements ElementBuilder {
         return this;
     }
 
-    public withStyle(style: ElementStyle): ElementBuilder {
+    public withStyle(style: ElementStyle): VElement {
         Object.entries(style).forEach(([property, value]: [string, string]): void => {
            this.element.style.setProperty(property, value);
         });
         return this;
     }
 
-    public map(fn: Function<HTMLElement, HTMLElement>): ElementBuilder {
+    public map(fn: Function<HTMLElement, HTMLElement>): VElement {
         this.element = fn(this.element);
         return this;
     }
 
-    public build(): Element {
+    public getRaw(): Element {
         return this.element;
     }
 }

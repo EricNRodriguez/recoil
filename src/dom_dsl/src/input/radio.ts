@@ -1,5 +1,5 @@
-import {ElementBuilder} from "../vdom/virtual_element.interface";
-import {ElementBuilderImpl} from "../vdom/virtual_element";
+import {VElement} from "../vdom/virtual_element.interface";
+import {VElementImpl} from "../vdom/virtual_element";
 import {runEffect} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
 import {Supplier} from "../util.interface";
@@ -10,7 +10,7 @@ export type RadioButtonArguments = {
     onClick: Runnable,
 };
 
-export const radioButton = (args: RadioButtonArguments): ElementBuilder => {
+export const radioButton = (args: RadioButtonArguments): VElement => {
     const radioButtonElement = document.createElement("input");
 
     // binding effect for checked attribute
@@ -39,6 +39,6 @@ export const radioButton = (args: RadioButtonArguments): ElementBuilder => {
         radioButtonElement.checked = args.isChecked();
     };
 
-    return new ElementBuilderImpl(radioButtonElement)
+    return new VElementImpl(radioButtonElement)
         .withAttribute("type", "radio");
 };
