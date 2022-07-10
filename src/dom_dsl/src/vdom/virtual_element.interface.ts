@@ -9,7 +9,7 @@ export type ElementStyle = {[key: string]: string};
 
 export type Attribute = string | Supplier<string> | Atom<string>;
 
-export interface VElement<A extends Element, B extends VElement<A,B>> extends VNode<A, B>{
+export interface VElement<A, B extends VElement<A,B>> extends VNode<A, B>{
     addEventHandler(eventType: string, handler: BiConsumer<Event, A>): B
     setClickHandler(handler: Consumer<MouseEvent>): B;
     setAttribute(attribute: string, value: Attribute): B;
