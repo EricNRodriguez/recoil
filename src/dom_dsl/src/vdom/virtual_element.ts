@@ -7,7 +7,7 @@ import {unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
 import {EffectRegistry} from "./effect_context";
 
-
+// A lightweight wrapper around a DOM element
 export class VElementImpl implements VElement {
     private readonly element: HTMLElement;
     private readonly children: VNode[] = [];
