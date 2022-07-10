@@ -1,10 +1,11 @@
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {Supplier} from "../util.interface";
-import {bindScope, replaceChildren} from "../util/dom_utils";
-import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "../vdom/vdom_util";
+import {bindScope, notNullOrUndefined, replaceChildren} from "../util/dom_utils";
+import {isVNode, unwrapNodesFromProvider, unwrapVNode, wrapStaticContentInProvider} from "../vdom/vdom_util";
 import {frag} from "../frag";
 import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {HtmlVElement} from "../vdom/virtual_element";
+import {VNode} from "../vdom/virtual_node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -17,12 +18,8 @@ export const ifElse = (
 ): HtmlVElement  => {
     ifFalse ??= undefined;
 
-    const ifTrueUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(
-        wrapStaticContentInProvider(ifTrue)
-    );
-    const ifFalseUnwrapped: Supplier<MaybeNode> = unwrapNodesFromProvider(
-        wrapStaticContentInProvider(ifFalse)
-    );
+    const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> = wrapStaticContentInProvider(ifTrue);
+    const ifFalseUnwrapped: Supplier<MaybeNodeOrVNode> = wrapStaticContentInProvider(ifFalse);
 
     if (typeof condition === "boolean") {
         return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
@@ -31,6 +28,7 @@ export const ifElse = (
     const anchor: HtmlVElement = frag();
 
     let currentRenderedState: boolean;
+    let currentRenderedItem: MaybeNodeOrVNode;
 
     anchor.registerEffect(
         runEffect((): void => {
@@ -42,13 +40,17 @@ export const ifElse = (
                 return;
             }
 
+            if (isVNode(currentRenderedItem)) {
+                (currentRenderedItem as VNode<any, any>).unmount();
+            }
+
             currentRenderedState = state;
 
-            const nodeSupplier: Supplier<MaybeNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
-            const node: MaybeNode = nodeSupplier();
+            const nodeSupplier: Supplier<MaybeNodeOrVNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+            currentRenderedItem = nodeSupplier();
 
             anchor.setChildren(
-                node,
+                currentRenderedItem,
             )
         })
     );
@@ -58,10 +60,16 @@ export const ifElse = (
 
 const staticIfElse = (
     condition: boolean,
-    ifTrue: Supplier<MaybeNode>,
-    ifFalse: Supplier<MaybeNode>,
+    ifTrue: Supplier<MaybeNodeOrVNode>,
+    ifFalse: Supplier<MaybeNodeOrVNode>,
 ): HtmlVElement => {
-    return frag(
-        condition ? ifTrue() : ifFalse()
-    );
+    const anchor = frag();
+
+    const content: MaybeNodeOrVNode = condition ? ifTrue() : ifFalse();
+    if (notNullOrUndefined(content)) {
+        anchor.setChildren(
+            condition ? ifTrue() : ifFalse(),
+        )
+    }
+    return anchor;
 };

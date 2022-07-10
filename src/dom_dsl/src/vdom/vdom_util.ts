@@ -28,8 +28,6 @@ export const unwrapMaybeVNode = (content: Node | VNode<any, any> | null | undefi
       } else {
           return unwrapVNode(content as (Node | VNode<any, any>));
       }
-
-
 };
 
 export const unwrapNodesFromProvider = (provider: Supplier<MaybeNodeOrVNode>): Supplier<MaybeNode> => {
