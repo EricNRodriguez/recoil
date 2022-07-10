@@ -50,7 +50,10 @@ export const ifElse = (
             const nodeSupplier: Supplier<MaybeNodeOrVNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
             currentRenderedItem = nodeSupplier();
 
-            (currentRenderedItem as HtmlVNode).mount();
+            if (notNullOrUndefined(currentRenderedItem)) {
+                (currentRenderedItem as HtmlVNode).mount();
+            }
+
             anchor.setChildren(
                 currentRenderedItem,
             )
