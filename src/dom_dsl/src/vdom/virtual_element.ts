@@ -10,7 +10,7 @@ import {HtmlVNode} from "./virtual_node";
 import {t} from "../text";
 
 // A lightweight wrapper around a DOM element
-export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement> {
+export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement>, HtmlVNode {
     private readonly children: VNode<any, any>[] = [];
 
     constructor(element: string | HTMLElement) {
