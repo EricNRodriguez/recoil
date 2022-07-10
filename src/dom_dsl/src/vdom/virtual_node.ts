@@ -1,7 +1,7 @@
 import {VNode} from "./virtual_node.interface";
 import {SideEffectRef} from "../../../atom";
 
-export class VNodeImpl<A extends Node, B extends VNodeImpl<A, B>> implements VNode<A, B> {
+export class HtmlVNode<A extends Node, B extends HtmlVNode<A, B>> implements VNode<A, B> {
     private readonly node: A;
     private readonly rootEffects: Set<SideEffectRef> = new Set<SideEffectRef>();
 
@@ -9,17 +9,17 @@ export class VNodeImpl<A extends Node, B extends VNodeImpl<A, B>> implements VNo
         this.node = node;
     }
 
-    public registerEffect(ref: SideEffectRef): VNodeImpl<A, B> {
+    public registerEffect(ref: SideEffectRef): HtmlVNode<A, B> {
         this.rootEffects.add(ref);
         return this;
     }
 
-    public mount(): VNodeImpl<A, B> {
+    public mount(): HtmlVNode<A, B> {
         this.activateEffects();
         return this;
     }
 
-    public unmount(): VNodeImpl<A, B> {
+    public unmount(): HtmlVNode<A, B> {
         this.deactivateEffects();
         return this;
     }

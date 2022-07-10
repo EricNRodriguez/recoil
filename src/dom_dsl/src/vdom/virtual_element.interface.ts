@@ -3,7 +3,7 @@ import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {MaybeNode} from "../node.interface";
 import {Supplier} from "../util.interface";
 import {Atom} from "../../../atom";
-import {VElementImpl} from "./virtual_element";
+import {HtmlVElement} from "./virtual_element";
 
 export type ElementStyle = {[key: string]: string};
 

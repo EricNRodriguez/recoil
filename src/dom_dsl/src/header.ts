@@ -1,4 +1,4 @@
-import {VElementImpl} from "./vdom/virtual_element";
+import {HtmlVElement} from "./vdom/virtual_element";
 import {VElement} from "./vdom/virtual_element.interface";
 
 export type HeaderContent = Text | string;
@@ -9,7 +9,7 @@ interface HeaderBuilder {
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
     return (content: HeaderContent): VElement => {
-        return new VElementImpl(`h${headerNumber}`)
+        return new HtmlVElement(`h${headerNumber}`)
             .setChildren(content);
     };
 };

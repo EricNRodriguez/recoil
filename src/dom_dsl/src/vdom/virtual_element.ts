@@ -5,10 +5,10 @@ import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
 import {bindScope, replaceChildren} from "../util/dom_utils";
 import {unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
-import {VNodeImpl} from "./virtual_node";
+import {HtmlVNode} from "./virtual_node";
 
 // A lightweight wrapper around a DOM element
-export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implements VElement<HTMLElement, VElementImpl> {
+export class HtmlVElement extends HtmlVNode<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement> {
     private readonly children: VNode<any, any>[] = [];
 
     constructor(element: string | HTMLElement) {
@@ -19,7 +19,7 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         );
     }
 
-    public mount(): VElementImpl {
+    public mount(): HtmlVElement {
         super.mount();
 
         this.children.forEach((child: VNode<any, any>): void => {
@@ -29,7 +29,7 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         return this;
     }
 
-    public unmount(): VElementImpl {
+    public unmount(): HtmlVElement {
         super.unmount();
 
         this.children.forEach((child: VNode<any, any>): void => {
@@ -39,7 +39,7 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         return this;
     }
 
-    public setChildren(...children: VNode<any, any>[]): VElementImpl {
+    public setChildren(...children: VNode<any, any>[]): HtmlVElement {
         this.children.length = 0;
         this.children.push(
             ...children
@@ -53,8 +53,7 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         return this;
     }
 
-
-    public setAttribute(attribute: string, value: Attribute): VElementImpl {
+    public setAttribute(attribute: string, value: Attribute): HtmlVElement {
         if (isAtom(value)) {
             return this.setAtomicAttribute(attribute, value as Atom<string>);
         } else if (typeof value === "function") {
@@ -67,12 +66,12 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         throw new Error("unsupported attribute type");
     }
 
-    private setStaticAttribute(attribute: string, value: string): VElementImpl {
+    private setStaticAttribute(attribute: string, value: string): HtmlVElement {
         this.getRaw().setAttribute(attribute, value);
         return this;
     }
 
-    private setAtomicAttribute(attribute: string, value: Atom<string>): VElementImpl {
+    private setAtomicAttribute(attribute: string, value: Atom<string>): HtmlVElement {
         const ref: SideEffectRef = value.react((value: string): void => {
             this.setStaticAttribute(attribute, value);
         });
@@ -83,7 +82,7 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         return this
     }
 
-    private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElementImpl {
+    private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): HtmlVElement {
         let currentAttributeValue: string;
         const ref: SideEffectRef = runEffect((): void => {
             const value: string = valueSupplier();
@@ -99,17 +98,17 @@ export class VElementImpl extends VNodeImpl<HTMLElement, VElementImpl> implement
         return this;
     }
 
-    public setClickHandler(handler: Consumer<MouseEvent>): VElementImpl {
+    public setClickHandler(handler: Consumer<MouseEvent>): HtmlVElement {
         this.getRaw().addEventListener("click", handler);
         return this;
     }
 
-    public addEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElementImpl {
+    public addEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): HtmlVElement {
         this.getRaw().addEventListener(eventType, (event: Event): void => handler(event, this.getRaw()));
         return this;
     }
 
-    public setStyle(style: ElementStyle): VElementImpl {
+    public setStyle(style: ElementStyle): HtmlVElement {
         Object.entries(style).forEach(([property, value]: [string, string]): void => {
            this.getRaw().style.setProperty(property, value);
         });

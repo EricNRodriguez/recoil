@@ -1,5 +1,5 @@
 import {VElement} from "../vdom/virtual_element.interface";
-import {VElementImpl} from "../vdom/virtual_element";
+import {HtmlVElement} from "../vdom/virtual_element";
 import {MaybeNodeOrVNode} from "../node.interface";
 import {unwrapVNode} from "../vdom/vdom_util";
 
@@ -11,6 +11,6 @@ export enum FormTarget {
 }
 
 export const form = (...content: MaybeNodeOrVNode[]): VElement => {
-  return new VElementImpl("form")
+  return new HtmlVElement("form")
       .setChildren(...content.map(unwrapVNode<Node>));
 };

@@ -1,4 +1,4 @@
-import {VElementImpl} from "../vdom/virtual_element";
+import {HtmlVElement} from "../vdom/virtual_element";
 import {runEffect} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
 import {Supplier} from "../util.interface";
@@ -59,6 +59,6 @@ export const checkbox = (args: CheckboxArguments): VElement => {
         checkboxElement.indeterminate = isChecked === null;
     };
 
-    return new VElementImpl(checkboxElement)
+    return new HtmlVElement(checkboxElement)
         .setAttribute("type", "checkbox");
 };
