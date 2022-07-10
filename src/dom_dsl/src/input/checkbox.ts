@@ -12,12 +12,12 @@ export type CheckboxArguments = {
 };
 
 export const checkbox = (args: CheckboxArguments): HtmlVElement => {
-    const checkboxElement = document.createElement("input");
+    const checkboxElement: HtmlVElement = new HtmlVElement("input")
+        .setAttribute("type", "checkbox");
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    bindScope(
-        checkboxElement,
+    checkboxElement.registerEffect(
         runEffect((): void => {
             const isChecked: boolean | null = args.isChecked();
             if (prevCheckedValue === isChecked) {
@@ -25,24 +25,23 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
             }
 
             prevCheckedValue = isChecked;
-            checkboxElement.checked = isChecked === true;
-            checkboxElement.indeterminate = isChecked === null;
+            (checkboxElement.getRaw() as HTMLInputElement).checked = isChecked === true;
+            (checkboxElement.getRaw() as HTMLInputElement).indeterminate = isChecked === null;
         }),
     );
 
     if (args.isEnabled !== undefined) {
         // binding effect for enabled attribute
         let prevEnabledValue: boolean;
-        bindScope(
-            checkboxElement,
+        checkboxElement.registerEffect(
             runEffect((): void => {
                 const isEnabled: boolean = args.isEnabled!();
                 if (prevEnabledValue === isEnabled) {
                     return;
                 }
                 prevEnabledValue = isEnabled;
-                checkboxElement.disabled = !isEnabled;
-            }),
+                (checkboxElement.getRaw() as HTMLInputElement).disabled = !isEnabled;
+            })
         );
     }
 
@@ -51,14 +50,13 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
     // validation and decides to not toggle, but the default behaviour of the
     // checkbox element is to toggle.
     const originalOnClick = args.onClick;
-    checkboxElement.onclick = (): void => {
+    (checkboxElement.getRaw() as HTMLInputElement).onclick = (): void => {
         originalOnClick();
 
         const isChecked: boolean | null = args.isChecked();
-        checkboxElement.checked = isChecked === true;
-        checkboxElement.indeterminate = isChecked === null;
+        (checkboxElement.getRaw() as HTMLInputElement).checked = isChecked === true;
+        (checkboxElement.getRaw() as HTMLInputElement).indeterminate = isChecked === null;
     };
 
-    return new HtmlVElement(checkboxElement)
-        .setAttribute("type", "checkbox");
+    return checkboxElement;
 };

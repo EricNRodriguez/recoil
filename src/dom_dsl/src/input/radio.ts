@@ -11,12 +11,12 @@ export type RadioButtonArguments = {
 };
 
 export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
-    const radioButtonElement = document.createElement("input");
+    const radioButtonElement: HtmlVElement = new HtmlVElement("input")
+        .setAttribute("type", "radio");
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    bindScope(
-        radioButtonElement,
+    radioButtonElement.registerEffect(
         runEffect((): void => {
             const isChecked: boolean | null = args.isChecked();
             if (prevCheckedValue === isChecked) {
@@ -24,8 +24,8 @@ export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
             }
 
             prevCheckedValue = isChecked;
-            radioButtonElement.checked = isChecked;
-        }),
+            (radioButtonElement.getRaw() as HTMLInputElement).checked = isChecked;
+        })
     );
 
     // we want to trigger a re-bind once the onclick handle is executed.
@@ -33,12 +33,11 @@ export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
     // validation and decides to not toggle, but the default behaviour of the
     // element is to toggle.
     const originalOnClick = args.onClick;
-    radioButtonElement.onclick = (): void => {
+    (radioButtonElement.getRaw() as HTMLInputElement).onclick = (): void => {
         originalOnClick();
 
-        radioButtonElement.checked = args.isChecked();
+        (radioButtonElement.getRaw() as HTMLInputElement).checked = args.isChecked();
     };
 
-    return new HtmlVElement(radioButtonElement)
-        .setAttribute("type", "radio");
+    return radioButtonElement;
 };
