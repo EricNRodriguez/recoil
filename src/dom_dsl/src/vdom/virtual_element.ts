@@ -11,8 +11,13 @@ import {unwrapVNode, wrapRawText} from "./vdom_util";
 import {VNodeImpl} from "./virtual_node";
 import {VNode} from "./virtual_node.interface";
 
+import {runEffect, SideEffectRef} from "../../../atom";
+import {EffectRegistry} from "./effect_context";
+
+
 export class VElementImpl implements VElement {
     private readonly children: VNode[] = [];
+    private readonly effects: EffectRegistry = new EffectRegistry();
     private element: HTMLElement;
 
     constructor(element: string | HTMLElement) {
