@@ -3,10 +3,11 @@ import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
-import {MaybeNode} from "../node.interface";
+import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {t} from "../text";
 import {Function} from "../util.interface";
 import {a} from "../anchor";
+import {unwrapVNode} from "./vdom_util";
 
 export class VElementImpl implements VElement {
     private element: HTMLElement;
@@ -69,11 +70,11 @@ export class VElementImpl implements VElement {
         return this;
     }
 
-    public withChildren(...children: (MaybeNode | string)[]): VElement {
-        this.element.replaceChildren(
-            ...children
-                .map((child: MaybeNode | string): MaybeNode => typeof child === "string" ? t(child) : child as MaybeNode)
-                .filter((child: MaybeNode): boolean => child !== null && child !== undefined) as Node[]);
+    public withChildren(...children: (MaybeNodeOrVNode | string)[]): VElement {
+        const processedChildren: MaybeNode[] = children
+            .map(unwrapVNode<MaybeNode | string>)
+            .map((child: MaybeNode | string): MaybeNode => typeof child === "string" ? t(child) : child as MaybeNode);
+
         return this;
     }
 

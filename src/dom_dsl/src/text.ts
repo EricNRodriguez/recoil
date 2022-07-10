@@ -1,10 +1,12 @@
 import {Atom, runEffect, Reference, isAtom} from "../../atom";
 import {Supplier} from "./util.interface";
 import {bindScope} from "./util/dom_utils";
+import {VNodeImpl} from "./vdom/virtual_node";
+import {VNode} from "./vdom/virtual_node.interface";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
-export const t = (content: TextContent): Text => {
+export const t = (content: TextContent): VNode => {
     let textNode: Text;
     if (typeof content === "string") {
         textNode = document.createTextNode(content);
@@ -15,7 +17,7 @@ export const t = (content: TextContent): Text => {
         throw new Error();
     }
 
-    return textNode;
+    return new VNodeImpl(textNode);
 };
 
 type BindedTextNodeSource = Supplier<string> | Atom<string>;

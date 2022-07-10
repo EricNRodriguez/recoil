@@ -1,6 +1,7 @@
 import {VNode} from "./virtual_node.interface";
 import {Supplier} from "../util.interface";
 import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
+import {t} from "../text";
 
 export const isVNode = (content: any): boolean => {
     return content instanceof Object && "build" in content;
@@ -36,3 +37,11 @@ export const wrapStaticContentInProvider = <T>(content: T | Supplier<T>): Suppli
         return (): T => content;
     }
 };
+
+export const wrapRawText = <T>(content: T | string): T | VNode => {
+    if (typeof content === "string") {
+        return t(content as string);
+    } else {
+        return content as T;
+    }
+}
