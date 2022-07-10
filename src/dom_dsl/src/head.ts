@@ -7,7 +7,7 @@ export type HeadContent = MaybeNodeOrVNode
 
 export const head = (...content: MaybeNodeOrVNode[]): VElement => {
     return new VElementImpl("head")
-        .withChildren(
+        .setChildren(
             ...content.map(unwrapVNode<Node>)
         );
 };

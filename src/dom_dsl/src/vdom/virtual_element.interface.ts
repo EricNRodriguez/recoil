@@ -9,10 +9,10 @@ export type ElementStyle = {[key: string]: string};
 export type Attribute = string | Supplier<string> | Atom<string>;
 
 export interface VElement extends VNode{
-    withEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement
-    withClickHandler(handler: Consumer<MouseEvent>): VElement;
-    withAttribute(attribute: string, value: Attribute): VElement;
-    withChildren(...children: VNode[]): VElement;
-    withStyle(style: ElementStyle): VElement;
+    addEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement
+    setClickHandler(handler: Consumer<MouseEvent>): VElement;
+    setAttribute(attribute: string, value: Attribute): VElement;
+    setChildren(...children: VNode[]): VElement;
+    setStyle(style: ElementStyle): VElement;
     getRaw(): Element;
 }

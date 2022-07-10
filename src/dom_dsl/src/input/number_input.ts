@@ -12,10 +12,10 @@ export type NumberInputArgs = {
 
 export const numberInput = (args: NumberInputArgs): VElement => {
     const builder: VElement = new VElementImpl("input")
-        .withAttribute("type", "number");
+        .setAttribute("type", "number");
 
     if (notNullOrUndefined(args.onInput)) {
-        builder.withEventHandler("input", (e: Event, element: HTMLElement): void => {
+        builder.addEventHandler("input", (e: Event, element: HTMLElement): void => {
             const inputElement: HTMLInputElement = element as HTMLInputElement;
 
             const rawValue: number = inputElement.valueAsNumber;
@@ -39,11 +39,11 @@ export const numberInput = (args: NumberInputArgs): VElement => {
     }
 
     if (notNullOrUndefined(args.max)) {
-        builder.withAttribute("max", args.max!.toString());
+        builder.setAttribute("max", args.max!.toString());
     }
 
     if (notNullOrUndefined(args.min)) {
-        builder.withAttribute("min", args.min!.toString());
+        builder.setAttribute("min", args.min!.toString());
     }
 
     return builder;

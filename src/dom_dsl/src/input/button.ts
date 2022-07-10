@@ -11,7 +11,7 @@ export type ButtonArgs = {
 
 export const button = (args: ButtonArgs): VElement => {
     return new VElementImpl("button")
-        .withAttribute("type", "button")
-        .withChildren(args.content)
-        .withClickHandler(args.onClick);
+        .setAttribute("type", "button")
+        .setChildren(args.content)
+        .setClickHandler(args.onClick);
 };

@@ -12,5 +12,5 @@ export enum FormTarget {
 
 export const form = (...content: MaybeNodeOrVNode[]): VElement => {
   return new VElementImpl("form")
-      .withChildren(...content.map(unwrapVNode<Node>));
+      .setChildren(...content.map(unwrapVNode<Node>));
 };

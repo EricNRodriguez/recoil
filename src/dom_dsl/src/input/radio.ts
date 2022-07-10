@@ -40,5 +40,5 @@ export const radioButton = (args: RadioButtonArguments): VElement => {
     };
 
     return new VElementImpl(radioButtonElement)
-        .withAttribute("type", "radio");
+        .setAttribute("type", "radio");
 };

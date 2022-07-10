@@ -29,13 +29,13 @@ export class VElementImpl implements VElement {
     public unmount() {
     }
 
-    public withAttribute(attribute: string, value: Attribute): VElement {
+    public setAttribute(attribute: string, value: Attribute): VElement {
         if (isAtom(value)) {
             return this.withAtomicAttribute(attribute, value as Atom<string>);
         } else if (typeof value === "function") {
             return this.withSuppliedAttribute(attribute, value);
         } else if (typeof value === "string") {
-            this.setAttribute(attribute, value);
+            this.setAttributeOLD(attribute, value);
             return this;
         }
 
@@ -43,13 +43,13 @@ export class VElementImpl implements VElement {
         throw new Error("unsupported attribute type");
     }
 
-    private setAttribute(attribute: string, value: string): void {
+    private setAttributeOLD(attribute: string, value: string): void {
         this.element.setAttribute(attribute, value);
     }
 
     private withAtomicAttribute(attribute: string, value: Atom<string>): VElement {
         value.react((value: string): void => {
-            this.setAttribute(attribute, value);
+            this.setAttributeOLD(attribute, value);
         });
         return this
     }
@@ -62,24 +62,24 @@ export class VElementImpl implements VElement {
                 const value: string = valueSupplier();
                 if (value !== currentAttributeValue) {
                     currentAttributeValue = value;
-                    this.setAttribute(attribute, value);
+                    this.setAttributeOLD(attribute, value);
                 }
             }),
         );
         return this;
     }
 
-    public withClickHandler(handler: Consumer<MouseEvent>): VElement {
+    public setClickHandler(handler: Consumer<MouseEvent>): VElement {
         this.element.addEventListener("click", handler);
         return this;
     }
 
-    public withEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement {
+    public addEventHandler(eventType: string, handler: BiConsumer<Event, HTMLElement>): VElement {
         this.element.addEventListener(eventType, (event: Event): void => handler(event, this.element));
         return this;
     }
 
-    public withChildren(...children: VNode[]): VElement {
+    public setChildren(...children: VNode[]): VElement {
         this.children.length = 0;
         this.children.push(
             ...children
@@ -93,7 +93,7 @@ export class VElementImpl implements VElement {
         return this;
     }
 
-    public withStyle(style: ElementStyle): VElement {
+    public setStyle(style: ElementStyle): VElement {
         Object.entries(style).forEach(([property, value]: [string, string]): void => {
            this.element.style.setProperty(property, value);
         });

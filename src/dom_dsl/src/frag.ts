@@ -5,7 +5,7 @@ export type FragContent = MaybeNodeOrVNode;
 
 export const frag = (...children: FragContent[]): Element => {
     return div(...children)
-        .withStyle({
+        .setStyle({
             "display": "contents",
         })
         .getRaw();

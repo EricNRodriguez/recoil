@@ -6,5 +6,5 @@ export type LabelContent = TextContent;
 
 export const label = (content: LabelContent): VElement => {
     return new VElementImpl("label")
-        .withChildren(t(content));
+        .setChildren(t(content));
 }

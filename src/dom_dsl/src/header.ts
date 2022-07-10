@@ -10,7 +10,7 @@ interface HeaderBuilder {
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
     return (content: HeaderContent): VElement => {
         return new VElementImpl(`h${headerNumber}`)
-            .withChildren(content);
+            .setChildren(content);
     };
 };
 

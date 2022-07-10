@@ -5,5 +5,5 @@ type ParagraphContent = Text | string;
 
 export const p = (...children: ParagraphContent[]): VElement => {
     return new VElementImpl("p")
-        .withChildren(...children);
+        .setChildren(...children);
 };

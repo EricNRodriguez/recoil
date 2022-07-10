@@ -7,7 +7,7 @@ export type DivContent = MaybeNodeOrVNode | string;
 
 export const div = (...children: DivContent[]): VElement => {
     return new VElementImpl("div")
-        .withChildren(
+        .setChildren(
             ...children.map(unwrapVNode<Node | string>)
         );
 };

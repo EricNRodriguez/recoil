@@ -60,5 +60,5 @@ export const checkbox = (args: CheckboxArguments): VElement => {
     };
 
     return new VElementImpl(checkboxElement)
-        .withAttribute("type", "checkbox");
+        .setAttribute("type", "checkbox");
 };

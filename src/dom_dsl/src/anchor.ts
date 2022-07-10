@@ -6,5 +6,5 @@ export type AnchorContent = TextContent
 
 export const a = (content: AnchorContent): VElement => {
     return new VElementImpl("a")
-        .withChildren(t(content));
+        .setChildren(t(content));
 }

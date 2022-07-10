@@ -9,6 +9,6 @@ export type TextInputArgs = {
 export const textInput = (args: TextInputArgs): VElement => {
     const inputElement = document.createElement("input");
     return new VElementImpl(inputElement)
-        .withAttribute("type", "text")
-        .withEventHandler("input", () => args.onInput(inputElement.value));
+        .setAttribute("type", "text")
+        .addEventHandler("input", () => args.onInput(inputElement.value));
 };
