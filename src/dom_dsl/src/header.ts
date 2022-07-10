@@ -1,16 +1,19 @@
 import {HtmlVElement} from "./vdom/virtual_element";
 import {VElement} from "./vdom/virtual_element.interface";
+import {wrapRawText} from "./vdom/vdom_util";
 
 export type HeaderContent = Text | string;
 
 interface HeaderBuilder {
-    (content: HeaderContent): VElement;
+    (content: HeaderContent): HtmlVElement;
 }
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
-    return (content: HeaderContent): VElement => {
+    return (content: HeaderContent): HtmlVElement => {
         return new HtmlVElement(`h${headerNumber}`)
-            .setChildren(content);
+            .setChildren(
+                wrapRawText(content),
+            );
     };
 };
 

@@ -5,10 +5,11 @@ import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
 import {bindScope, replaceChildren} from "../util/dom_utils";
 import {unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
+import {VNodeBase} from "./virtual_node_base";
 import {HtmlVNode} from "./virtual_node";
 
 // A lightweight wrapper around a DOM element
-export class HtmlVElement extends HtmlVNode<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement> {
+export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement> {
     private readonly children: VNode<any, any>[] = [];
 
     constructor(element: string | HTMLElement) {
@@ -39,7 +40,7 @@ export class HtmlVElement extends HtmlVNode<HTMLElement, HtmlVElement> implement
         return this;
     }
 
-    public setChildren(...children: VNode<any, any>[]): HtmlVElement {
+    public setChildren(...children: (VNode<any, any> | Node | string)[]): HtmlVElement {
         this.children.length = 0;
         this.children.push(
             ...children
@@ -47,7 +48,7 @@ export class HtmlVElement extends HtmlVNode<HTMLElement, HtmlVElement> implement
 
         replaceChildren(
             this.getRaw(),
-            ...children.map(unwrapVNode<Node>),
+            ...children.map(unwrapVNode),
         );
 
         return this;

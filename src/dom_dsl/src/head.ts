@@ -5,9 +5,9 @@ import {unwrapVNode} from "./vdom/vdom_util";
 
 export type HeadContent = MaybeNodeOrVNode
 
-export const head = (...content: MaybeNodeOrVNode[]): VElement => {
+export const head = (...content: MaybeNodeOrVNode[]): HtmlVElement => {
     return new HtmlVElement("head")
         .setChildren(
-            ...content.map(unwrapVNode<Node>)
+            ...content,
         );
 };
