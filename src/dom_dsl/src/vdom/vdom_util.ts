@@ -7,7 +7,7 @@ import {HtmlVElement} from "./virtual_element";
 import {notNullOrUndefined} from "../util/dom_utils";
 
 export const isVNode = (content: any): boolean => {
-    return content instanceof Object && "build" in content;
+    return content instanceof Object && "getRaw" in content;
 }
 
 export const unwrapVNode = (content: Node | VNode<any, any>): Node => {
