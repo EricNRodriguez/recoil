@@ -12,7 +12,7 @@ const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
     return (content: HeaderContent): HtmlVElement => {
         return new HtmlVElement(`h${headerNumber}`)
             .setChildren(
-                wrapRawText(content),
+                content
             );
     };
 };

@@ -6,7 +6,7 @@ import {VNode} from "./vdom/virtual_node.interface";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
-export const t = (content: TextContent): VNode => {
+export const t = (content: TextContent): HtmlVNode => {
     let textNode: Text;
     if (typeof content === "string") {
         textNode = document.createTextNode(content);

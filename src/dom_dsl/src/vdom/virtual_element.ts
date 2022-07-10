@@ -2,11 +2,12 @@ import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
-import {bindScope, replaceChildren} from "../util/dom_utils";
-import {unwrapVNode} from "./vdom_util";
+import {bindScope, notNullOrUndefined, replaceChildren} from "../util/dom_utils";
+import {isVNode, unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
 import {VNodeBase} from "./virtual_node_base";
 import {HtmlVNode} from "./virtual_node";
+import {t} from "../text";
 
 // A lightweight wrapper around a DOM element
 export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement> {
@@ -40,15 +41,26 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
         return this;
     }
 
-    public setChildren(...children: (VNode<any, any> | Node | string)[]): HtmlVElement {
+    public setChildren(...children: (VNode<any, any> | Node | string | null | undefined)[]): HtmlVElement {
+        const processedChildren: VNode<any, any>[] = children
+            .filter(notNullOrUndefined)
+            .map((child): VNode<any, any> => {
+                if (typeof child === "string") {
+                    return t(child as string);
+                } else if (isVNode(child)) {
+                    return child as VNode<any, any>;
+                } else {
+                    return new HtmlVNode(child as Node);
+                }
+            });
         this.children.length = 0;
         this.children.push(
-            ...children
+            ...processedChildren
         );
 
         replaceChildren(
             this.getRaw(),
-            ...children.map(unwrapVNode),
+            ...processedChildren.map(unwrapVNode),
         );
 
         return this;

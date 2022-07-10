@@ -6,7 +6,7 @@ export type TextInputArgs = {
     onInput: Consumer<string | null>,
 }
 
-export const textInput = (args: TextInputArgs): VElement => {
+export const textInput = (args: TextInputArgs): HtmlVElement => {
     const inputElement = document.createElement("input");
     return new HtmlVElement(inputElement)
         .setAttribute("type", "text")

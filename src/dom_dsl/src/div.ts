@@ -10,7 +10,5 @@ export const div = (...children: DivContent[]): HtmlVElement => {
     return new HtmlVElement("div")
         .setChildren(
             ...children
-                .filter(notNullOrUndefined)
-                .map(wrapRawText)
         );
 };
