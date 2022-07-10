@@ -1,5 +1,6 @@
 import {VNode} from "./virtual_node.interface";
 import {SideEffectRef} from "../../../atom";
+import {bindScope} from "../util/dom_utils";
 
 export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A, B> {
     private readonly node: A;
@@ -11,6 +12,10 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
 
     public registerEffect(ref: SideEffectRef): VNodeBase<A, B> {
         this.rootEffects.add(ref);
+        bindScope(
+            this.node,
+            ref
+        );
         return this;
     }
 

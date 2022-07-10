@@ -2,7 +2,7 @@ import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
-import {bindScope, notNullOrUndefined, replaceChildren} from "../util/dom_utils";
+import {notNullOrUndefined, replaceChildren} from "../util/dom_utils";
 import {isVNode, unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
 import {VNodeBase} from "./virtual_node_base";
@@ -90,8 +90,6 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
         });
         this.registerEffect(ref);
 
-        bindScope(this.getRaw(), ref);
-
         return this
     }
 
@@ -105,8 +103,6 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
             }
         });
         this.registerEffect(ref);
-
-        bindScope(this.getRaw(), ref);
 
         return this;
     }

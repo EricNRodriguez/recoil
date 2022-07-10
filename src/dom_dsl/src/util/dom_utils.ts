@@ -50,9 +50,9 @@ export const preventEventDefault = <T extends Event>(handler: Consumer<T>): Cons
 // so won't they cause a circular reference and never be collected by the weak
 // map? Well turns out js weak maps are valid ephemerons, so this is a non-issue.
 // https://blog.mozilla.org/sfink/2022/06/09/ephemeron-tables-aka-javascript-weakmaps/
-const scopeContext: WeakMap<Node, Set<Reference>> = new WeakMap();
+const scopeContext: WeakMap<any, Set<Reference>> = new WeakMap();
 
-export const bindScope = (node: Node, reference: Reference): void => {
+export const bindScope = (node: any, reference: Reference): void => {
     if (!scopeContext.has(node)) {
         scopeContext.set(node, new Set());
     }
