@@ -20,6 +20,12 @@ export class VElementImpl implements VElement {
         }
     }
 
+    public registerEffect(effect: Consumer<VElement>): VElement {
+        const ref: SideEffectRef = runEffect((): void => effect(this));
+        this.rootEffects.add(ref);
+        return this;
+    }
+
     public mount() {
         this.activateEffects();
     }
@@ -59,24 +65,29 @@ export class VElementImpl implements VElement {
     }
 
     private setAtomicAttribute(attribute: string, value: Atom<string>): VElement {
-        value.react((value: string): void => {
+        const ref: SideEffectRef = value.react((value: string): void => {
             this.setStaticAttribute(attribute, value);
         });
+        this.rootEffects.add(ref);
+
+        bindScope(this.element, ref);
+
         return this
     }
 
     private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): VElement {
         let currentAttributeValue: string;
-        bindScope(
-            this.element,
-            runEffect((): void => {
-                const value: string = valueSupplier();
-                if (value !== currentAttributeValue) {
-                    currentAttributeValue = value;
-                    this.setStaticAttribute(attribute, value);
-                }
-            }),
-        );
+        const ref: SideEffectRef = runEffect((): void => {
+            const value: string = valueSupplier();
+            if (value !== currentAttributeValue) {
+                currentAttributeValue = value;
+                this.setStaticAttribute(attribute, value);
+            }
+        });
+        this.rootEffects.add(ref);
+
+        bindScope(this.element, ref);
+
         return this;
     }
 

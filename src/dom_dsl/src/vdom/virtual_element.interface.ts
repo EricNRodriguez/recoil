@@ -14,5 +14,6 @@ export interface VElement extends VNode{
     setAttribute(attribute: string, value: Attribute): VElement;
     setChildren(...children: VNode[]): VElement;
     setStyle(style: ElementStyle): VElement;
+    registerEffect(effect: Consumer<VElement>): VElement;
     getRaw(): Element;
 }
