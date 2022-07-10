@@ -1,4 +1,4 @@
-import {NodeBuilder} from "./node_builder.interface";
+import {NodeBuilder} from "./virtual_node.interface";
 import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {MaybeNode} from "../node.interface";
 import {Supplier} from "../util.interface";

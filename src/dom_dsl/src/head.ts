@@ -1,7 +1,7 @@
 import {MaybeNode, MaybeNodeOrNodeBuilder} from "./node.interface";
-import {ElementBuilder} from "./builder/element_builder.interface";
-import {ElementBuilderImpl} from "./builder/element_builder";
-import {unwrapNodesFromBuilder} from "./builder/builder_util";
+import {ElementBuilder} from "./vdom/virtual_element.interface";
+import {ElementBuilderImpl} from "./vdom/virtual_element";
+import {unwrapNodesFromBuilder} from "./vdom/vdom_util";
 
 export type HeadContent = MaybeNodeOrNodeBuilder
 

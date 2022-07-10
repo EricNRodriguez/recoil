@@ -1,7 +1,7 @@
 import {Atom, runEffect, isAtom, Reference} from "../../../atom";
 import {Supplier} from "../util.interface";
 import {bindScope, replaceChildren} from "../util/dom_utils";
-import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "../builder/builder_util";
+import {unwrapNodesFromProvider, wrapStaticContentInProvider} from "../vdom/vdom_util";
 import {frag} from "../frag";
 import {MaybeNode, MaybeNodeOrNodeBuilder} from "../node.interface";
 

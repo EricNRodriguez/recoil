@@ -1,5 +1,5 @@
-import {ElementBuilder} from "../builder/element_builder.interface";
-import {ElementBuilderImpl} from "../builder/element_builder";
+import {ElementBuilder} from "../vdom/virtual_element.interface";
+import {ElementBuilderImpl} from "../vdom/virtual_element";
 import {runEffect} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
 import {Supplier} from "../util.interface";

@@ -1,6 +1,6 @@
-import {unwrapNodesFromBuilder} from "./builder/builder_util";
-import {ElementBuilder} from "./builder/element_builder.interface";
-import {ElementBuilderImpl} from "./builder/element_builder";
+import {unwrapNodesFromBuilder} from "./vdom/vdom_util";
+import {ElementBuilder} from "./vdom/virtual_element.interface";
+import {ElementBuilderImpl} from "./vdom/virtual_element";
 import {MaybeNodeOrNodeBuilder} from "./node.interface";
 
 export type DivContent = MaybeNodeOrNodeBuilder | string;

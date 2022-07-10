@@ -1,5 +1,5 @@
-import {ElementBuilderImpl} from "./builder/element_builder";
-import {ElementBuilder} from "./builder/element_builder.interface";
+import {ElementBuilderImpl} from "./vdom/virtual_element";
+import {ElementBuilder} from "./vdom/virtual_element.interface";
 
 type ParagraphContent = Text | string;
 

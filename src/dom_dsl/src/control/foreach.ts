@@ -1,7 +1,7 @@
 import {Function, Supplier} from "../util.interface";
 import {appendChildren, bindScope, removeChildren, replaceChildren} from "../util/dom_utils";
 import {frag} from "../frag";
-import {unwrapNodesFromBuilder} from "../builder/builder_util";
+import {unwrapNodesFromBuilder} from "../vdom/vdom_util";
 import {IndexedItem} from "../indexed_item.interface";
 import {getItem, getKey} from "../indexed_item_lense";
 import {runEffect} from "../../../atom";

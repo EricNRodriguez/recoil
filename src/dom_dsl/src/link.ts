@@ -1,5 +1,5 @@
-import {ElementBuilder} from "./builder/element_builder.interface";
-import {ElementBuilderImpl} from "./builder/element_builder";
+import {ElementBuilder} from "./vdom/virtual_element.interface";
+import {ElementBuilderImpl} from "./vdom/virtual_element";
 
 export const link = (): ElementBuilder => {
   return new ElementBuilderImpl("link");
