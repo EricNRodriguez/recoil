@@ -23,6 +23,12 @@ export class VElementImpl implements VElement {
         }
     }
 
+    public mount() {
+    }
+
+    public unmount() {
+    }
+
     public withAttribute(attribute: string, value: Attribute): VElement {
         if (isAtom(value)) {
             return this.withAtomicAttribute(attribute, value as Atom<string>);

@@ -7,6 +7,10 @@ export class VNodeImpl implements VNode {
         this.node = node;
     }
 
+    public mount() {}
+
+    public unmount() {}
+
     public getRaw(): Node {
         return this.node;
     }
