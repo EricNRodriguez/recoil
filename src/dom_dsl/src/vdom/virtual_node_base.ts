@@ -5,14 +5,14 @@ import {bindScope} from "../util/dom_utils";
 export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A, B> {
     private readonly node: A;
     private readonly rootEffects: Set<SideEffectRef> = new Set<SideEffectRef>();
-    private isMounted: boolean = false;
+    private currentlyMounted: boolean = false;
 
     constructor(node: A) {
         this.node = node;
     }
 
     public registerEffect(effectRef: SideEffectRef): VNodeBase<A, B> {
-        if (this.isMounted) {
+        if (this.currentlyMounted) {
             effectRef.activate();
         } else {
             effectRef.deactivate();
@@ -26,15 +26,19 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         return this;
     }
 
+    public isMounted(): boolean {
+        return this.currentlyMounted;
+    }
+
     public mount(): VNodeBase<A, B> {
-        this.isMounted = true;
+        this.currentlyMounted = true;
 
         this.activateEffects();
         return this;
     }
 
     public unmount(): VNodeBase<A, B> {
-        this.isMounted = false;
+        this.currentlyMounted = false;
 
         this.deactivateEffects();
         return this;

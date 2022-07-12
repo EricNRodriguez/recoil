@@ -54,7 +54,9 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
                 } else {
                     return new HtmlVNode(child as Node);
                 }
-            }).map((newChild: VNode<any, any>): VNode<any, any> => newChild.mount());
+            }).map((newChild: VNode<any, any>): VNode<any, any> => {
+                return this.isMounted() ? newChild.mount() : newChild.unmount();
+            });
         this.children.length = 0;
         this.children.push(
             ...processedChildren
