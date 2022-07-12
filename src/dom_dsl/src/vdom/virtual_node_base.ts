@@ -13,9 +13,9 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
 
     public registerEffect(effectRef: SideEffectRef): VNodeBase<A, B> {
         if (this.isMounted) {
-            effectRef.deactivate();
-        } else {
             effectRef.activate();
+        } else {
+            effectRef.deactivate();
         }
 
         this.rootEffects.add(effectRef);
