@@ -80,6 +80,8 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
             childrenToRemove,
         );
 
+        this.children.length = offset;
+
         return this;
     }
 

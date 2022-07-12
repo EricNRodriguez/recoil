@@ -54,7 +54,11 @@ const buildUpdateAnchorSideEffect = <T>(
         }
 
         anchor.deleteChildren(firstNonEqualIndex);
-        anchor.appendChildren(currentItemOrder.slice(firstNonEqualIndex));
+        anchor.appendChildren(
+            newItemOrder
+                .slice(firstNonEqualIndex)
+                .map(key => newItemNodesIndex.get(key))
+        );
 
         currentItemOrder = newItemOrder;
         currentItemIndex = newItemNodesIndex;
