@@ -30,17 +30,6 @@ export const unwrapMaybeVNode = (content: Node | VNode<any, any> | null | undefi
       }
 };
 
-export const unwrapNodesFromProvider = (provider: Supplier<MaybeNodeOrVNode>): Supplier<MaybeNode> => {
-    return (): MaybeNode => {
-        const value = provider();
-        if (isVNode(value)) {
-            return (value as HtmlVNode).getRaw();
-        } else {
-            return value as MaybeNode;
-        }
-    };
-};
-
 export const wrapStaticContentInProvider = <T>(content: T | Supplier<T>): Supplier<T> => {
     if (typeof content === "function") {
         return content as Supplier<T>;
