@@ -15,5 +15,7 @@ export interface VElement<A, B extends VElement<A,B>> extends VNode<A, B>{
     setAttribute(attribute: string, value: Attribute): B;
     setStyle(style: ElementStyle): B;
     setChildren(...children: (VNode<any, VNode<any, any>> | string)[]): B;
+    deleteChildren(offset: number): B;
+    appendChildren(children: (VNode<any, any> | Node | string | null | undefined)[]): B;
     getRaw(): A;
 }

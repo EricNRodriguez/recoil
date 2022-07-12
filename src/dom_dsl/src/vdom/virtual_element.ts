@@ -2,7 +2,7 @@ import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
 import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
-import {notNullOrUndefined, replaceChildren} from "../util/dom_utils";
+import {appendChildren, notNullOrUndefined, removeChildren, replaceChildren} from "../util/dom_utils";
 import {isVNode, unwrapVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
 import {VNodeBase} from "./virtual_node_base";
@@ -65,6 +65,46 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
         replaceChildren(
             this.getRaw(),
             ...processedChildren.map(unwrapVNode),
+        );
+
+        return this;
+    }
+
+    public deleteChildren(offset: number): HtmlVElement {
+        const childrenToRemove: Node[] = this.children.slice(offset)
+            .map((child: VNode<any, any>): VNode<any, any> => child.unmount())
+            .map((child: VNode<any, any>): Node => child.getRaw());
+
+        removeChildren(
+            this.getRaw(),
+            childrenToRemove,
+        );
+
+        return this;
+    }
+
+    public appendChildren(children: (VNode<any, any> | Node | string | null | undefined)[]): HtmlVElement {
+        const processedChildren: VNode<any, any>[] = children
+            .filter(notNullOrUndefined)
+            .map((child): VNode<any, any> => {
+                if (typeof child === "string") {
+                    return t(child as string);
+                } else if (isVNode(child)) {
+                    return child as VNode<any, any>;
+                } else {
+                    return new HtmlVNode(child as Node);
+                }
+            }).map((newChild: VNode<any, any>): VNode<any, any> => {
+                return this.isMounted() ? newChild.mount() : newChild.unmount();
+            });
+
+        this.children.push(
+            ...processedChildren
+        );
+
+        appendChildren(
+            this.getRaw(),
+            processedChildren.map(unwrapVNode),
         );
 
         return this;
