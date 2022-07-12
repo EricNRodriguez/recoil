@@ -25,6 +25,7 @@ class SideEffectRegistry<T> {
 		this.activeEffects.add(effect);
 
 		return {
+			// todo - we need to call get on this effect once its re-activated. Note we could so some tricky optimization around nod versions but this will be fine for now
 			activate: () => this.activateEffect(effect),
 			deactivate: () => this.deactivateEffect(effect),
 		};
@@ -98,7 +99,20 @@ abstract class BaseAtom<T> implements Atom<T> {
 	public react(effect: SideEffect<T>): SideEffectRef {
 		const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
 
-		return this.effects.registerEffect(cachedEffect);
+		const ref: SideEffectRef = this.effects.registerEffect(cachedEffect);
+
+		return {
+			activate: () => {
+				ref.activate();
+				// TODO(ericr): this shouldnt always be run, but rather only when the version number of this
+				// nod has increased since the last run. For now it is fine, since profiling hasnt revealed issues
+				// + we get it for free due to the buildCachedEffect wrapper
+				effect(this.get());
+			},
+			deactivate: () => {
+				ref.deactivate();
+			}
+		}
 	}
 
 	private buildCachedEffect(effect: SideEffect<T>): SideEffect<T> {
