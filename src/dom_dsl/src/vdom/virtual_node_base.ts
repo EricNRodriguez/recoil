@@ -10,11 +10,11 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.node = node;
     }
 
-    public registerEffect(ref: SideEffectRef): VNodeBase<A, B> {
-        this.rootEffects.add(ref);
+    public registerEffect(effectRef: SideEffectRef): VNodeBase<A, B> {
+        this.rootEffects.add(effectRef);
         bindScope(
             this.node,
-            ref
+            effectRef
         );
         return this;
     }

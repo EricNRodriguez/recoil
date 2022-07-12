@@ -6,6 +6,7 @@ import {frag} from "../frag";
 import {MaybeNodeOrVNode} from "../node.interface";
 import {HtmlVElement} from "../vdom/virtual_element";
 import {HtmlVNode} from "../vdom/virtual_node";
+import {VNode} from "../vdom/virtual_node.interface";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -17,6 +18,14 @@ export const ifElse = (
     ifFalse?: IfElseContent,
 ): HtmlVElement  => {
     ifFalse ??= undefined;
+
+    if (notNullOrUndefined(ifTrue) && isVNode(ifTrue)) {
+        (ifTrue as VNode<any, any>).unmount();
+    }
+
+    if (notNullOrUndefined(ifFalse) && isVNode(ifFalse)) {
+        (ifFalse as VNode<any, any>).unmount();
+    }
 
     const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> = wrapStaticContentInProvider(ifTrue);
     const ifFalseUnwrapped: Supplier<MaybeNodeOrVNode> = wrapStaticContentInProvider(ifFalse);
