@@ -42,6 +42,8 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
     }
 
     public setChildren(...children: (VNode<any, any> | Node | string | null | undefined)[]): HtmlVElement {
+        this.children.forEach((oldChild: VNode<any, any>): VNode<any, any> => oldChild.unmount());
+
         const processedChildren: VNode<any, any>[] = children
             .filter(notNullOrUndefined)
             .map((child): VNode<any, any> => {
@@ -52,7 +54,7 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
                 } else {
                     return new HtmlVNode(child as Node);
                 }
-            });
+            }).map((newChild: VNode<any, any>): VNode<any, any> => newChild.mount());
         this.children.length = 0;
         this.children.push(
             ...processedChildren

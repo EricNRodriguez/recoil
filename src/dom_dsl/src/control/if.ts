@@ -19,14 +19,6 @@ export const ifElse = (
 ): HtmlVElement  => {
     ifFalse ??= undefined;
 
-    if (notNullOrUndefined(ifTrue) && isVNode(ifTrue)) {
-        (ifTrue as VNode<any, any>).unmount();
-    }
-
-    if (notNullOrUndefined(ifFalse) && isVNode(ifFalse)) {
-        (ifFalse as VNode<any, any>).unmount();
-    }
-
     const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> = wrapStaticContentInProvider(ifTrue);
     const ifFalseUnwrapped: Supplier<MaybeNodeOrVNode> = wrapStaticContentInProvider(ifFalse);
 
@@ -49,18 +41,10 @@ export const ifElse = (
                 return;
             }
 
-            if (isVNode(currentRenderedItem)) {
-                (currentRenderedItem as HtmlVNode).unmount();
-            }
-
             currentRenderedState = state;
 
             const nodeSupplier: Supplier<MaybeNodeOrVNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
             currentRenderedItem = nodeSupplier();
-
-            if (notNullOrUndefined(currentRenderedItem)) {
-                (currentRenderedItem as HtmlVNode).mount();
-            }
 
             anchor.setChildren(
                 currentRenderedItem,
