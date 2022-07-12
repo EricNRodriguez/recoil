@@ -16,19 +16,13 @@ class SideEffectRegistry<T> {
 	private readonly activeEffects: Set<SideEffect<T>> = new Set();
 	private readonly inactiveEffects: Set<SideEffect<T>> = new Set();
 
-	public registerEffect(effect: SideEffect<T>): SideEffectRef {
+	public registerEffect(effect: SideEffect<T>): void {
 		if (this.activeEffects.has(effect) || this.inactiveEffects.has(effect)) {
 			// TODO(ericr): use a more specific error
 			throw new Error("duplicate registration of side effect");
 		}
 
 		this.activeEffects.add(effect);
-
-		return {
-			// todo - we need to call get on this effect once its re-activated. Note we could so some tricky optimization around nod versions but this will be fine for now
-			activate: () => this.activateEffect(effect),
-			deactivate: () => this.deactivateEffect(effect),
-		};
 	}
 
 	public hasActiveEffects(): boolean {
@@ -39,12 +33,12 @@ class SideEffectRegistry<T> {
 		return Array.from(this.activeEffects);
 	}
 
-	private activateEffect(effect: SideEffect<T>): void {
+	public activateEffect(effect: SideEffect<T>): void {
 		this.inactiveEffects.delete(effect);
 		this.activeEffects.add(effect);
 	}
 
-	private deactivateEffect(effect: SideEffect<T>): void {
+	public deactivateEffect(effect: SideEffect<T>): void {
 		this.activeEffects.delete(effect);
 		this.inactiveEffects.add(effect);
 	}
@@ -99,18 +93,18 @@ abstract class BaseAtom<T> implements Atom<T> {
 	public react(effect: SideEffect<T>): SideEffectRef {
 		const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
 
-		const ref: SideEffectRef = this.effects.registerEffect(cachedEffect);
+		this.effects.registerEffect(cachedEffect);
 
 		return {
 			activate: () => {
-				ref.activate();
+				this.effects.activateEffect(cachedEffect);
 				// TODO(ericr): this shouldnt always be run, but rather only when the version number of this
 				// nod has increased since the last run. For now it is fine, since profiling hasnt revealed issues
 				// + we get it for free due to the buildCachedEffect wrapper
 				effect(this.get());
 			},
 			deactivate: () => {
-				ref.deactivate();
+				this.effects.deactivateEffect(cachedEffect);
 			}
 		}
 	}
