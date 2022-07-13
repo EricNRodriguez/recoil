@@ -48,23 +48,17 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
             .filter(notNullOrUndefined) as VNode<any, any>[];
 
         this.children.length = 0;
-        this.children.push(...newChildren);
 
-        this.syncMountStatusOfChildren();
-        this.syncDomChildren();
-
-        return this;
-    }
-
-    private syncDomChildren(): void {
         replaceChildren(
             this.getRaw(),
-            ...this.getRawChildren()
+            ...[]
         );
-    }
 
-    private getRawChildren(): Node[] {
-        return this.children.map(unwrapVNode);
+        this.pushNewChildren(
+            newChildren
+        );
+
+        return this;
     }
 
     private syncMountStatusOfChildren(): void {
@@ -107,6 +101,9 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
     }
 
     private pushNewChildren(newChildren: VNode<any, any>[]): void {
+        this.children.push(
+            ...newChildren
+        );
         newChildren.forEach(this.insertChildIntoDom.bind(this));
         this.syncMountStatusOfChildren();
     }
