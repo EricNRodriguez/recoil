@@ -2,7 +2,6 @@ import {Function, Supplier} from "../util.interface";
 import {frag} from "../frag";
 import {IndexedItem} from "../indexed_item.interface";
 import {getItem, getKey} from "../indexed_item_lense";
-import {runEffect} from "../../../atom";
 import {MaybeNodeOrVNode} from "../node.interface";
 import {HtmlVNode} from "../vdom/virtual_node";
 import {HtmlVElement} from "../vdom/virtual_element";
