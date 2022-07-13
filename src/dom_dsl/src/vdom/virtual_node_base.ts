@@ -17,6 +17,7 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         const effectRef: SideEffectRef = runEffect((): void => {
             effect();
         });
+        this.rootEffects.add(effectRef);
 
         this.isMounted() ? effectRef.activate() : effectRef.deactivate();
 

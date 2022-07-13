@@ -42,14 +42,4 @@ export const wrapInVNode = (node: (VNode<any, any> | Node | string | null | unde
     } else {
         return new HtmlVNode(node as Node);
     }
-
-
-}
-
-export const wrapRawText = <T extends Node>(content: HtmlVNode | string): HtmlVNode => {
-    if (typeof content === "string") {
-        return t(content as string);
-    } else {
-        return content as HtmlVNode;
-    }
 }
