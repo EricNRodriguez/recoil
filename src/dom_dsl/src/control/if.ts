@@ -31,26 +31,24 @@ export const ifElse = (
     let currentRenderedState: boolean;
     let currentRenderedItem: MaybeNodeOrVNode;
 
-    anchor.registerEffect(
-        runEffect((): void => {
-            const state: boolean = isAtom(condition) ?
-                (condition as Atom<boolean>).get() :
-                (condition as Supplier<boolean>)();
+    anchor.registerSideEffect((): void => {
+        const state: boolean = isAtom(condition) ?
+            (condition as Atom<boolean>).get() :
+            (condition as Supplier<boolean>)();
 
-            if (state === currentRenderedState) {
-                return;
-            }
+        if (state === currentRenderedState) {
+            return;
+        }
 
-            currentRenderedState = state;
+        currentRenderedState = state;
 
-            const nodeSupplier: Supplier<MaybeNodeOrVNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
-            currentRenderedItem = nodeSupplier();
+        const nodeSupplier: Supplier<MaybeNodeOrVNode> = state ? ifTrueUnwrapped : ifFalseUnwrapped;
+        currentRenderedItem = nodeSupplier();
 
-            anchor.setChildren(
-                currentRenderedItem,
-            )
-        })
-    );
+        anchor.setChildren(
+            currentRenderedItem,
+        )
+    });
 
     return anchor;
 };

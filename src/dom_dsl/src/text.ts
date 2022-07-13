@@ -1,4 +1,4 @@
-import {Atom, runEffect, Reference, isAtom, SideEffectRef} from "../../atom";
+import {Atom, runEffect, isAtom, SideEffectRef} from "../../atom";
 import {Supplier} from "./util.interface";
 import {HtmlVNode} from "./vdom/virtual_node";
 
@@ -21,22 +21,20 @@ export const t = (content: TextContent): HtmlVNode => {
 type BindedTextNodeSource = Supplier<string> | Atom<string>;
 
 const createBindedTextNode = (source: BindedTextNodeSource): HtmlVNode => {
-    const textNode: Text = document.createTextNode("");
+    const vNode: HtmlVNode = new HtmlVNode(document.createTextNode(""))
 
-    let sourceRef: SideEffectRef;
     if (isAtom(source)) {
-        sourceRef = (source as Atom<string>).react((value: string): void => {
-            textNode.textContent = value;
+        vNode.registerSideEffect((): void => {
+            vNode.getRaw().textContent = (source as Atom<string>).get();
         });
     } else if (typeof source === "function") {
-        sourceRef = runEffect((): void => {
-            textNode.textContent = source();
+        vNode.registerSideEffect((): void => {
+            vNode.getRaw().textContent = source();
         });
     } else {
         // TODO(ericr): be more specific with a fall through
         throw new Error();
     }
 
-    return new HtmlVNode(textNode)
-        .registerEffect(sourceRef);
+    return vNode;
 };

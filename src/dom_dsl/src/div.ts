@@ -1,8 +1,5 @@
-import {unwrapVNode, wrapRawText} from "./vdom/vdom_util";
-import {VElement} from "./vdom/virtual_element.interface";
 import {HtmlVElement} from "./vdom/virtual_element";
 import {MaybeNodeOrVNode} from "./node.interface";
-import {notNullOrUndefined} from "./util/dom_utils";
 
 export type DivContent = MaybeNodeOrVNode | string;
 

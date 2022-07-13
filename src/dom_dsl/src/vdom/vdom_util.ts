@@ -4,7 +4,7 @@ import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {t} from "../text";
 import {HtmlVNode} from "./virtual_node";
 import {HtmlVElement} from "./virtual_element";
-import {notNullOrUndefined} from "../util/dom_utils";
+import {notNullOrUndefined, nullOrUndefined} from "../util/dom_utils";
 
 export const isVNode = (content: any): boolean => {
     return content instanceof Object && "getRaw" in content;
@@ -22,14 +22,6 @@ export const unwrapVNode = (content: Node | VNode<any, any>): Node => {
     return content as Node;
 };
 
-export const unwrapMaybeVNode = (content: Node | VNode<any, any> | null | undefined): MaybeNode => {
-      if (!notNullOrUndefined(content)) {
-          return content as (null | undefined);
-      } else {
-          return unwrapVNode(content as (Node | VNode<any, any>));
-      }
-};
-
 export const wrapStaticContentInProvider = <T>(content: T | Supplier<T>): Supplier<T> => {
     if (typeof content === "function") {
         return content as Supplier<T>;
@@ -37,6 +29,22 @@ export const wrapStaticContentInProvider = <T>(content: T | Supplier<T>): Suppli
         return (): T => content;
     }
 };
+
+export const wrapInVNode = (node: (VNode<any, any> | Node | string | null | undefined)): VNode<any, any> | null | undefined => {
+    if (nullOrUndefined(node)) {
+        return node as (null | undefined);
+    }
+
+    if (isVNode(node)) {
+        return node as VNode<any, any>;
+    } else if (typeof node === "string") {
+        return t(node as string);
+    } else {
+        return new HtmlVNode(node as Node);
+    }
+
+
+}
 
 export const wrapRawText = <T extends Node>(content: HtmlVNode | string): HtmlVNode => {
     if (typeof content === "string") {

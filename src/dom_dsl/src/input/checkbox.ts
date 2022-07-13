@@ -17,8 +17,7 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    checkboxElement.registerEffect(
-        runEffect((): void => {
+    checkboxElement.registerSideEffect((): void => {
             const isChecked: boolean | null = args.isChecked();
             if (prevCheckedValue === isChecked) {
                 return;
@@ -27,21 +26,20 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
             prevCheckedValue = isChecked;
             (checkboxElement.getRaw() as HTMLInputElement).checked = isChecked === true;
             (checkboxElement.getRaw() as HTMLInputElement).indeterminate = isChecked === null;
-        }),
+        }
     );
 
     if (args.isEnabled !== undefined) {
         // binding effect for enabled attribute
         let prevEnabledValue: boolean;
-        checkboxElement.registerEffect(
-            runEffect((): void => {
+        checkboxElement.registerSideEffect((): void => {
                 const isEnabled: boolean = args.isEnabled!();
                 if (prevEnabledValue === isEnabled) {
                     return;
                 }
                 prevEnabledValue = isEnabled;
                 (checkboxElement.getRaw() as HTMLInputElement).disabled = !isEnabled;
-            })
+            }
         );
     }
 

@@ -1,6 +1,7 @@
 import {VNode} from "./virtual_node.interface";
-import {SideEffectRef} from "../../../atom";
+import {runEffect, SideEffectRef} from "../../../atom";
 import {bindScope} from "../util/dom_utils";
+import {Runnable} from "../../../atom/src/util.interface";
 
 export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A, B> {
     private readonly node: A;
@@ -11,18 +12,19 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.node = node;
     }
 
-    public registerEffect(effectRef: SideEffectRef): VNodeBase<A, B> {
-        if (this.currentlyMounted) {
-            effectRef.activate();
-        } else {
-            effectRef.deactivate();
-        }
+    public registerSideEffect(effect: Runnable): VNodeBase<A, B> {
+        // TODO(ericr): consider an optional arg to avoid eager eval... think it through
+        const effectRef: SideEffectRef = runEffect((): void => {
+            effect();
+        });
 
-        this.rootEffects.add(effectRef);
+        this.isMounted() ? effectRef.activate() : effectRef.deactivate();
+
         bindScope(
-            this.node,
+            this.getRaw(),
             effectRef
         );
+
         return this;
     }
 

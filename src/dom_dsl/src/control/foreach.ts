@@ -13,14 +13,8 @@ export const foreach = <T extends Object>(
 ): HtmlVNode => {
     const anchor = frag();
 
-    anchor.registerEffect(
-        runEffect(
-            buildUpdateAnchorSideEffect(
-                anchor,
-                getItems,
-                buildElement,
-            )
-        )
+    anchor.registerSideEffect(
+        buildUpdateAnchorSideEffect(anchor, getItems, buildElement)
     );
 
     return anchor;

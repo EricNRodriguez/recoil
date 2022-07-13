@@ -1,4 +1,3 @@
-import {VElement} from "./vdom/virtual_element.interface";
 import {HtmlVElement} from "./vdom/virtual_element";
 import {Consumer} from "../../atom/src/util.interface";
 

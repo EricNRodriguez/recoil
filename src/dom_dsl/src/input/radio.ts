@@ -16,8 +16,7 @@ export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    radioButtonElement.registerEffect(
-        runEffect((): void => {
+    radioButtonElement.registerSideEffect((): void => {
             const isChecked: boolean | null = args.isChecked();
             if (prevCheckedValue === isChecked) {
                 return;
@@ -25,7 +24,7 @@ export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
 
             prevCheckedValue = isChecked;
             (radioButtonElement.getRaw() as HTMLInputElement).checked = isChecked;
-        })
+        }
     );
 
     // we want to trigger a re-bind once the onclick handle is executed.

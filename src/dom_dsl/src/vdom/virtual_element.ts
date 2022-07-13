@@ -1,13 +1,12 @@
 import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
 import {Supplier} from "../util.interface";
-import {Atom, runEffect, isAtom, SideEffectRef} from "../../../atom";
+import {Atom, isAtom} from "../../../atom";
 import {appendChildren, notNullOrUndefined, removeChildren, replaceChildren} from "../util/dom_utils";
-import {isVNode, unwrapVNode} from "./vdom_util";
+import {unwrapVNode, wrapInVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
 import {VNodeBase} from "./virtual_node_base";
 import {HtmlVNode} from "./virtual_node";
-import {t} from "../text";
 
 // A lightweight wrapper around a DOM element
 export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implements VElement<HTMLElement, HtmlVElement>, HtmlVNode {
@@ -42,32 +41,42 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
     }
 
     public setChildren(...children: (VNode<any, any> | Node | string | null | undefined)[]): HtmlVElement {
-        this.children.forEach((oldChild: VNode<any, any>): VNode<any, any> => oldChild.unmount());
+        this.unmountCurrentChildren();
 
-        const processedChildren: VNode<any, any>[] = children
-            .filter(notNullOrUndefined)
-            .map((child): VNode<any, any> => {
-                if (typeof child === "string") {
-                    return t(child as string);
-                } else if (isVNode(child)) {
-                    return child as VNode<any, any>;
-                } else {
-                    return new HtmlVNode(child as Node);
-                }
-            }).map((newChild: VNode<any, any>): VNode<any, any> => {
-                return this.isMounted() ? newChild.mount() : newChild.unmount();
-            });
+        const newChildren: VNode<any, any>[] = children
+            .map(wrapInVNode)
+            .filter(notNullOrUndefined) as VNode<any, any>[];
+
         this.children.length = 0;
-        this.children.push(
-            ...processedChildren
-        );
+        this.children.push(...newChildren);
 
-        replaceChildren(
-            this.getRaw(),
-            ...processedChildren.map(unwrapVNode),
-        );
+        this.syncMountStatusOfChildren();
+        this.syncDomChildren();
 
         return this;
+    }
+
+    private syncDomChildren(): void {
+        replaceChildren(
+            this.getRaw(),
+            ...this.getRawChildren()
+        );
+    }
+
+    private getRawChildren(): Node[] {
+        return this.children.map(unwrapVNode);
+    }
+
+    private syncMountStatusOfChildren(): void {
+        this.children.forEach((child: VNode<any, any>): void => {
+            if (this.isMounted() !== child.isMounted()) {
+                this.isMounted() ? child.mount() : child.unmount();
+            }
+        })
+    }
+
+    private unmountCurrentChildren(): void {
+        this.children.forEach((oldChild: VNode<any, any>): VNode<any, any> => oldChild.unmount());
     }
 
     public deleteChildren(offset: number): HtmlVElement {
@@ -86,30 +95,27 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
     }
 
     public appendChildren(children: (VNode<any, any> | Node | string | null | undefined)[]): HtmlVElement {
-        const processedChildren: VNode<any, any>[] = children
-            .filter(notNullOrUndefined)
-            .map((child): VNode<any, any> => {
-                if (typeof child === "string") {
-                    return t(child as string);
-                } else if (isVNode(child)) {
-                    return child as VNode<any, any>;
-                } else {
-                    return new HtmlVNode(child as Node);
-                }
-            }).map((newChild: VNode<any, any>): VNode<any, any> => {
-                return this.isMounted() ? newChild.mount() : newChild.unmount();
-            });
+        const newChildren: VNode<any, any>[] = children
+            .map(wrapInVNode)
+            .filter(notNullOrUndefined) as VNode<any, any>[];
 
-        this.children.push(
-            ...processedChildren
-        );
-
-        appendChildren(
-            this.getRaw(),
-            processedChildren.map(unwrapVNode),
+        this.pushNewChildren(
+            newChildren
         );
 
         return this;
+    }
+
+    private pushNewChildren(newChildren: VNode<any, any>[]): void {
+        newChildren.forEach(this.insertChildIntoDom.bind(this));
+        this.syncMountStatusOfChildren();
+    }
+
+    private insertChildIntoDom(child: VNode<any, any>): void {
+        appendChildren(
+            this.getRaw(),
+            [child].map(unwrapVNode),
+        );
     }
 
     public setAttribute(attribute: string, value: Attribute): HtmlVElement {
@@ -131,24 +137,23 @@ export class HtmlVElement extends VNodeBase<HTMLElement, HtmlVElement> implement
     }
 
     private setAtomicAttribute(attribute: string, value: Atom<string>): HtmlVElement {
-        const ref: SideEffectRef = value.react((value: string): void => {
-            this.setStaticAttribute(attribute, value);
-        });
-        this.registerEffect(ref);
+        this.registerSideEffect((): void => {
+            this.setAttribute(attribute, value.get());
+            value.get();
+        })
 
-        return this
+        return this;
     }
 
     private setSuppliedAttribute(attribute: string, valueSupplier: Supplier<string>): HtmlVElement {
         let currentAttributeValue: string;
-        const ref: SideEffectRef = runEffect((): void => {
+        this.registerSideEffect((): void => {
             const value: string = valueSupplier();
             if (value !== currentAttributeValue) {
                 currentAttributeValue = value;
                 this.setStaticAttribute(attribute, value);
             }
         });
-        this.registerEffect(ref);
 
         return this;
     }
