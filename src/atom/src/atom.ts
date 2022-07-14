@@ -10,8 +10,6 @@ export const isAtom = (obj: any): boolean => {
 	return obj instanceof Object && 'get' in obj && 'getUntracked' in obj && 'invalidate' in obj && 'react' in obj;
 };
 
-// TODO(ericr): even though this is an internal registry, it is worth holding weak refs
-// to avoid future regressions.
 class SideEffectRegistry<T> {
 	private readonly activeEffects: Set<SideEffect<T>> = new Set();
 	private readonly inactiveEffects: Set<SideEffect<T>> = new Set();
