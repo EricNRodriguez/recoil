@@ -1,7 +1,4 @@
-import {VElement} from "../vdom/virtual_element.interface";
 import {HtmlVElement} from "../vdom/virtual_element";
-import {runEffect} from "../../../atom";
-import {bindScope} from "../util/dom_utils";
 import {Supplier} from "../util.interface";
 import {Runnable} from "../../../atom/src/util.interface";
 

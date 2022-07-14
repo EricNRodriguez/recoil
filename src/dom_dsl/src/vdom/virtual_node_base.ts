@@ -1,6 +1,5 @@
 import {VNode} from "./virtual_node.interface";
 import {runEffect, SideEffectRef} from "../../../atom";
-import {bindScope} from "../util/dom_utils";
 import {Runnable} from "../../../atom/src/util.interface";
 
 export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A, B> {
@@ -23,11 +22,6 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.rootEffects.add(effectRef);
 
         this.isMounted() ? effectRef.activate() : effectRef.deactivate();
-
-        bindScope(
-            this.getRaw(),
-            effectRef
-        );
 
         return this;
     }
