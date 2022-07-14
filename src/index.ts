@@ -2,13 +2,13 @@ export {
     createState,
     deriveState,
     runEffect,
-    Reference,
+    createScope,
     Atom,
     LeafAtom,
     DerivedAtom,
     isAtom,
     atom,
-    derivation
+    derivation,
 } from "./atom";
 
 export {

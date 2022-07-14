@@ -10,11 +10,12 @@ export const derivation = (): string | any => {
             if (!registry.has(this)) {
                 registry.set(
                     this,
-                    deriveState(
-                        () => {
+                    deriveState({
+                        deriveValue: () => {
                             return originalFn.apply(this, args);
                         },
-                    ),
+                        autoScope: false,
+                    }),
                 );
             }
             return registry.get(this)!.get();

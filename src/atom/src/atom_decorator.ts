@@ -10,7 +10,10 @@ export const atom = (): void | any => {
                 if (!registry.has(this)) {
                     registry.set(
                         this,
-                        createState(newVal),
+                        createState({
+                            value: newVal,
+                            autoScope: false,
+                        }),
                     );
                 } else {
                     registry.get(this)!.set(newVal);
