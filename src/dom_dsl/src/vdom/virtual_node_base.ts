@@ -11,6 +11,10 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.node = node;
     }
 
+    // registers an effect that should be activated/deactivated as the
+    // element is mounted/unmounted from the dom.
+    //
+    // registration should be treated as a change of ownership of the effect
     public registerSideEffect(effect: Runnable): VNodeBase<A, B> {
         // TODO(ericr): consider an optional arg to avoid eager eval... think it through
         const effectRef: SideEffectRef = runEffect({
