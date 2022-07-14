@@ -66,24 +66,23 @@ export const createScope = <F extends (...args: any[]) => O, O extends Object>(f
 
         try {
             var returnVal: O = fn(...args);
+            if (nullOrUndefined(returnVal)) {
+                // TODO(ericr): use a more specific error type
+                throw new Error("withScope expects a return value that is neither null or undefined");
+            }
+
+            if (!returnVal.hasOwnProperty(privateProperty)) {
+                (returnVal as any)[privateProperty] = [];
+            }
+
+            currentScope!.forEach((object: Object): void => {
+                (returnVal as any)[privateProperty].push(object);
+            });
+
+            return returnVal;
         } finally {
             currentScope = parentScope;
         }
-
-        if (nullOrUndefined(returnVal)) {
-            // TODO(ericr): use a more specific error type
-            throw new Error("withScope expects a return value that is neither null or undefined");
-        }
-
-        if (!returnVal.hasOwnProperty(privateProperty)) {
-            (returnVal as any)[privateProperty] = [];
-        }
-
-        currentScope!.forEach((object: Object): void => {
-            (returnVal as any)[privateProperty].push(object);
-        });
-
-        return returnVal;
     });
 }
 
