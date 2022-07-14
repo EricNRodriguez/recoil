@@ -15,7 +15,7 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
     public registerSideEffect(effect: Runnable): VNodeBase<A, B> {
         // TODO(ericr): consider an optional arg to avoid eager eval... think it through
         const effectRef: SideEffectRef = runEffect({
-            effect:  (): void => {
+            effect: (): void => {
                 effect();
             },
             autoScope: false,

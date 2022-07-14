@@ -55,7 +55,7 @@ class Scope {
 // clearly in the public API - more so now that autoScope defaults to true!
 let currentScope: Scope = new Scope();
 
-// decorates the provided function such that all atoms and effects created within will
+// decorates the provided function such that all auto-scoped atoms and effects created within will
 // life for at-least as long as the return value
 export const createScope = <F extends (...args: any[]) => O, O extends Object>(fn: F): F => {
     const privateProperty: string = '$$$recoilWithScopeDependant';
