@@ -73,10 +73,12 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
     }
 
     public registerOnMountHook(hook: Runnable): VNode<A, B> {
+        this.onMountHooks.add(hook);
         return this;
     }
 
     public registerOnUnmountHook(hook: Runnable): VNode<A, B> {
+        this.onUnmountHooks.add(hook);
         return this;
     }
 
