@@ -1,4 +1,4 @@
-import {Function, Supplier} from "../util.interface";
+import {Function, Supplier} from "../../../util/src/function.interface";
 import {frag} from "../frag";
 import {IndexedItem} from "../indexed_item.interface";
 import {getItem, getKey} from "../indexed_item_lense";

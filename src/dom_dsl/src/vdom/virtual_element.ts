@@ -1,8 +1,8 @@
-import {BiConsumer, Consumer} from "../../../atom/src/util.interface";
+import {BiConsumer, Consumer, notNullOrUndefined} from "../../../util";
 import {Attribute, VElement, ElementStyle} from "./virtual_element.interface";
-import {Supplier} from "../util.interface";
+import {Supplier} from "../../../util";
 import {Atom, isAtom} from "../../../atom";
-import {appendChildren, notNullOrUndefined, removeChildren, replaceChildren} from "../util/dom_utils";
+import {appendChildren, removeChildren, replaceChildren} from "../util/dom_utils";
 import {unwrapVNode, wrapInVNode} from "./vdom_util";
 import {VNode} from "./virtual_node.interface";
 import {VNodeBase} from "./virtual_node_base";

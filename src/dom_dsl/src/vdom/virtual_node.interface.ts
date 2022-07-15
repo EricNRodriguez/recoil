@@ -1,4 +1,4 @@
-import {Runnable} from "../../../atom/src/util.interface";
+import {Runnable} from "../../../util";
 
 // A lightweight wrapper around a raw node
 export interface VNode<A, B extends VNode<A, B>> {

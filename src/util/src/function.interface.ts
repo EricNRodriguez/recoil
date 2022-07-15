@@ -1,3 +1,10 @@
+export interface Supplier<T> {
+    (): T;
+}
+
+export interface Function<I,O> {
+    (input: I): O;
+}
 export interface Producer<T> {
     (): T;
 }

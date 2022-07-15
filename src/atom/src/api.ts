@@ -1,7 +1,7 @@
 import {LeafAtom, DerivedAtom, SideEffectRef} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {Atom} from "./atom.interface";
-import {Consumer, Producer, Runnable} from "./util.interface";
+import {Consumer, Producer, Runnable} from "../../util/index";
 
 export type FetchStateArgs<T> = {
     producer: Producer<Promise<T>>,

@@ -1,10 +1,7 @@
 import {VNode} from "./virtual_node.interface";
-import {Supplier} from "../util.interface";
-import {MaybeNode, MaybeNodeOrVNode} from "../node.interface";
 import {t} from "../text";
 import {HtmlVNode} from "./virtual_node";
-import {HtmlVElement} from "./virtual_element";
-import {notNullOrUndefined, nullOrUndefined} from "../util/dom_utils";
+import {nullOrUndefined, Supplier} from "../../../util";
 
 export const isVNode = (content: any): boolean => {
     return content instanceof Object && "getRaw" in content;

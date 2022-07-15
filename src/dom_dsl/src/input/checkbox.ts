@@ -1,6 +1,5 @@
 import {HtmlVElement} from "../vdom/virtual_element";
-import {Supplier} from "../util.interface";
-import {Runnable} from "../../../atom/src/util.interface";
+import {Runnable, Supplier} from "../../../util/src/function.interface";
 
 export type CheckboxArguments = {
     isChecked: Supplier<boolean | null>,

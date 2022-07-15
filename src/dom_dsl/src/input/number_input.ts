@@ -1,7 +1,6 @@
 import {HtmlVElement} from "../vdom/virtual_element";
-import {Consumer} from "../../../atom/src/util.interface";
-import {notNullOrUndefined} from "../util/dom_utils";
-import {clamp} from "../util/math_util";
+import {clamp} from "../../../util/src/math";
+import {Consumer, notNullOrUndefined} from "../../../util";
 
 export type NumberInputArgs = {
     max?: number,
