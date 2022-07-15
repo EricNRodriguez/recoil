@@ -2,59 +2,27 @@ import {LeafAtom, DerivedAtom, SideEffectRef} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {Atom} from "./atom.interface";
 import {Supplier} from "../../dom_dsl/src/util.interface";
-import {AsyncProducer, Consumer, Function, Producer, Runnable} from "./util.interface";
+import {Consumer, Producer, Runnable} from "./util.interface";
 import {nullOrUndefined} from "../../dom_dsl/src/util/dom_utils";
-
 
 export type FetchStateArgs<T> = {
     producer: Producer<Promise<T>>,
     autoScope?: boolean,
 }
 
+// TODO(ericr): Support aborting
 export const fetchState = <T>({producer, autoScope = true}: FetchStateArgs<T>): Atom<T | undefined> => {
     const atom = createState<T | undefined>({value: undefined, autoScope: autoScope});
 
-    const derivation = deriveState<Promise<T>>({deriveValue: producer, autoScope: autoScope});
+    const derivation = deriveState<Promise<T>>({deriveValue: producer, autoScope: false});
     derivation.react((futureVal: Promise<T>): void => {
         futureVal.then((val: T): void => atom.set(val));
     });
 
-    // hack to keep the derivation alive with the atom
-    (atom as any).$$$recoilSomethingIdkYetHack = atom;
+    (atom as any).$$$recoilFetchStateDerivation = atom;
 
     return atom;
 };
-
-// // this is a wrapper that allows us to fetch resources from the UI but use them semi-synchronously
-// export const fetchState = <T>(fn: AsyncProducer<T>): Atom<T | undefined> => { // think twice about exposing an external interface in your api...
-//     const atom = createState<T | undefined>(undefined);
-//
-//     // this will trigger the atom to update
-//     //
-//     // should throw an error if it has a non-undefined value when it does resolve..., or we allow the caller to provide a default?
-//     fn().then(atom.set.bind(atom));
-//
-//     return atom;
-// }
-//
-// // this is the scope that the thing binds to
-// let componentScope = new Scope(); // this will never go out of memory
-//
-// // NOTE: this shouldnt be here at all.... this wrapper should be inside the dom dsl module.
-// export const createComponent = (fn: any): any => {
-//     return (...args: any): any => {
-//         const outerComponentScope = componentScope;
-//         componentScope = new ComponentScope();
-//
-//         const component = fn(...args);
-//
-//         for all resources binded to componentScope.getResources()
-//             bind them to component.getRaw()
-//
-//         componentScope = outerComponentScope;
-//         return component;
-//     };
-// };
 
 class Scope {
     private objects: Set<Object> = new Set<Object>();
