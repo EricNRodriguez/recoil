@@ -2,11 +2,11 @@ import {Runnable} from "../../../atom/src/util.interface";
 
 // A lightweight wrapper around a raw node
 export interface VNode<A, B extends VNode<A, B>> {
-    mount(): VNode<A, B>;
-    unmount(): VNode<A, B>;
+    mount(): B;
+    unmount(): B;
     isMounted(): boolean;
-    registerSideEffect(effect: Runnable): VNode<A, B>;
-    registerOnMountHook(hook: Runnable): VNode<A, B>;
-    registerOnUnmountHook(hook: Runnable): VNode<A, B>;
+    registerSideEffect(effect: Runnable): B;
+    registerOnMountHook(hook: Runnable): B;
+    registerOnUnmountHook(hook: Runnable): B;
     getRaw(): A;
 }

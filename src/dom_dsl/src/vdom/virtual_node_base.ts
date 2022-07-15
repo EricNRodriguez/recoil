@@ -17,7 +17,7 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
     // element is mounted/unmounted from the dom.
     //
     // registration should be treated as a change of ownership of the effect
-    public registerSideEffect(effect: Runnable): VNodeBase<A, B> {
+    public registerSideEffect(effect: Runnable): B {
         // TODO(ericr): consider an optional arg to avoid eager eval... think it through
         const effectRef: SideEffectRef = runEffect({
             effect: (): void => {
@@ -29,27 +29,27 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
 
         this.isMounted() ? effectRef.activate() : effectRef.deactivate();
 
-        return this;
+        return this as unknown as B;
     }
 
     public isMounted(): boolean {
         return this.currentlyMounted;
     }
 
-    public mount(): VNodeBase<A, B> {
+    public mount(): B {
         this.currentlyMounted = true;
 
         this.activateEffects();
         this.runMountHooks();
-        return this;
+        return this as unknown as B;
     }
 
-    public unmount(): VNodeBase<A, B> {
+    public unmount(): B {
         this.currentlyMounted = false;
 
         this.deactivateEffects();
         this.runUnmountHooks();
-        return this;
+        return this as unknown as B;
     }
 
     private activateEffects(): void {
@@ -72,14 +72,16 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.onMountHooks.forEach(hook => hook());
     }
 
-    public registerOnMountHook(hook: Runnable): VNodeBase<A, B> {
+    public registerOnMountHook(hook: Runnable): B {
         this.onMountHooks.add(hook);
-        return this;
+
+        return this as unknown as B;
     }
 
-    public registerOnUnmountHook(hook: Runnable): VNodeBase<A, B> {
+    public registerOnUnmountHook(hook: Runnable): B {
         this.onUnmountHooks.add(hook);
-        return this;
+
+        return this as unknown as B;
     }
 
     public getRaw(): A {
