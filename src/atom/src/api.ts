@@ -1,9 +1,7 @@
 import {LeafAtom, DerivedAtom, SideEffectRef} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {Atom} from "./atom.interface";
-import {Supplier} from "../../dom_dsl/src/util.interface";
 import {Consumer, Producer, Runnable} from "./util.interface";
-import {nullOrUndefined} from "../../dom_dsl/src/util/dom_utils";
 
 export type FetchStateArgs<T> = {
     producer: Producer<Promise<T>>,
@@ -51,7 +49,7 @@ export const createScope = <F extends (...args: any[]) => O, O extends Object>(f
 
         try {
             var returnVal: O = fn(...args);
-            if (nullOrUndefined(returnVal)) {
+            if (returnVal === undefined) {
                 // TODO(ericr): use a more specific error type
                 throw new Error("withScope expects a return value that is neither null or undefined");
             }
@@ -88,7 +86,7 @@ export const createState = <T>({value, autoScope = true}: CreateStateArgs<T>): L
 
 
 export type DeriveStateArgs<T> = {
-    deriveValue: Supplier<T>,
+    deriveValue: Producer<T>,
     autoScope?: boolean,
 }
 
