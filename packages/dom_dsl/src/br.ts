@@ -1,5 +1,5 @@
-import {HtmlVElement} from "./vdom/virtual_element";
+import { HtmlVElement } from "./vdom/virtual_element";
 
 export const br = (): HtmlVElement => {
-    return new HtmlVElement("br");
+  return new HtmlVElement("br");
 };

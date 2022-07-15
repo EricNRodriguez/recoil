@@ -1,16 +1,16 @@
-import {HtmlVElement} from "../vdom/virtual_element";
-import {Consumer} from "../../../util";
+import { HtmlVElement } from "../vdom/virtual_element";
+import { Consumer } from "../../../util";
 
 export type ButtonContent = Text | string;
 
 export type ButtonArgs = {
-    content: ButtonContent,
-    onClick: Consumer<MouseEvent>,
+  content: ButtonContent;
+  onClick: Consumer<MouseEvent>;
 };
 
 export const button = (args: ButtonArgs): HtmlVElement => {
-    return new HtmlVElement("button")
-        .setAttribute("type", "button")
-        .setChildren(args.content)
-        .setClickHandler(args.onClick);
+  return new HtmlVElement("button")
+    .setAttribute("type", "button")
+    .setChildren(args.content)
+    .setClickHandler(args.onClick);
 };

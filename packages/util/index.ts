@@ -1,15 +1,15 @@
 export {
-    Supplier,
-    Consumer,
-    BiConsumer,
-    Producer,
-    AsyncProducer,
-    Function,
-    Runnable,
+  Supplier,
+  Consumer,
+  BiConsumer,
+  Producer,
+  AsyncProducer,
+  Function,
+  Runnable,
 } from "./src/function.interface";
 
 export {
-    notNullOrUndefined,
-    nullOrUndefined,
-    removeNullAndUndefinedItems,
+  notNullOrUndefined,
+  nullOrUndefined,
+  removeNullAndUndefinedItems,
 } from "./src/type_check";

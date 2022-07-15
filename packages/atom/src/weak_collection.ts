@@ -1,50 +1,51 @@
-import {Consumer} from "../../util";
+import { Consumer } from "../../util";
 
 export class WeakCollection<T extends Object> {
-    private items: WeakRef<T>[] = [];
-    private itemsSet: WeakSet<T> = new WeakSet([]);
+  private items: WeakRef<T>[] = [];
+  private itemsSet: WeakSet<T> = new WeakSet([]);
 
-    public getItems(): T[] {
-        return [...this.items
-            .map((ref: WeakRef<T>): T | undefined => ref.deref())
-            .filter((item: T | undefined): boolean => item !== undefined)
-            .map((item: T | undefined): T => item!)
-        ];
+  public getItems(): T[] {
+    return [
+      ...this.items
+        .map((ref: WeakRef<T>): T | undefined => ref.deref())
+        .filter((item: T | undefined): boolean => item !== undefined)
+        .map((item: T | undefined): T => item!),
+    ];
+  }
+
+  public register(item: T): void {
+    if (this.itemsSet.has(item)) {
+      return;
     }
 
-    public register(item: T): void {
-        if (this.itemsSet.has(item)) {
-            return;
-        }
+    const ref: WeakRef<T> = new WeakRef<T>(item);
+    this.itemsSet.add(item);
+    this.items.push(ref);
+  }
 
-        const ref: WeakRef<T> = new WeakRef<T>(item);
-        this.itemsSet.add(item);
-        this.items.push(ref);
-    }
+  public reset() {
+    this.items.forEach((ref: WeakRef<T>): void => {
+      const item: T | undefined = ref.deref();
+      if (item !== undefined) {
+        this.itemsSet.delete(item);
+      }
+    });
+    this.items = [];
+  }
 
-    public reset() {
-        this.items.forEach((ref: WeakRef<T>): void => {
-            const item: T | undefined = ref.deref();
-            if (item !== undefined) {
-                this.itemsSet.delete(item);
-            }
-        });
-        this.items = [];
-    }
+  public forEach(consumer: Consumer<T>): void {
+    this.items.forEach((ref: WeakRef<T>): void => {
+      const item: T | undefined = ref.deref();
+      if (item !== undefined) {
+        consumer(item);
+      }
+    });
+    this.removeGCdItems();
+  }
 
-    public forEach(consumer: Consumer<T>): void {
-        this.items.forEach((ref: WeakRef<T>): void => {
-            const item: T | undefined = ref.deref();
-            if (item !== undefined) {
-                consumer(item);
-            }
-        });
-        this.removeGCdItems();
-    }
-
-    private removeGCdItems(): void {
-        this.items = this.items.filter(
-            (ref: WeakRef<T>) => ref.deref() !== undefined
-        )
-    }
+  private removeGCdItems(): void {
+    this.items = this.items.filter(
+      (ref: WeakRef<T>) => ref.deref() !== undefined
+    );
+  }
 }

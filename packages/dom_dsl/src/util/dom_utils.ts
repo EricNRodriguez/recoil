@@ -1,24 +1,23 @@
-import {MaybeNode} from "../node.interface";
-import {removeNullAndUndefinedItems} from "../../../util";
+import { MaybeNode } from "../node.interface";
+import { removeNullAndUndefinedItems } from "../../../util";
 
-export const replaceChildren = (node: Element, ...children: (MaybeNode)[]): void => {
-    node.replaceChildren(
-        ...removeNullAndUndefinedItems(children),
-    );
+export const replaceChildren = (
+  node: Element,
+  ...children: MaybeNode[]
+): void => {
+  node.replaceChildren(...removeNullAndUndefinedItems(children));
 };
 
 export const removeChildren = (node: Element, children: MaybeNode[]): void => {
-    removeNullAndUndefinedItems(children)
-        .forEach((child: Node): void => {
-            node.removeChild(child)
-        });
+  removeNullAndUndefinedItems(children).forEach((child: Node): void => {
+    node.removeChild(child);
+  });
 };
 
 export const appendChildren = (node: Element, children: MaybeNode[]): void => {
-    removeNullAndUndefinedItems(children)
-        .forEach((child: Node): void => {
-            node.appendChild(child);
-        });
+  removeNullAndUndefinedItems(children).forEach((child: Node): void => {
+    node.appendChild(child);
+  });
 };
 
 // A registry used to keep references in memory for the lifetime of the node.
@@ -39,9 +38,9 @@ export const appendChildren = (node: Element, children: MaybeNode[]): void => {
 const scopeContext: WeakMap<any, Set<Object>> = new WeakMap();
 
 export const bindScope = (node: any, reference: Object): void => {
-    if (!scopeContext.has(node)) {
-        scopeContext.set(node, new Set());
-    }
+  if (!scopeContext.has(node)) {
+    scopeContext.set(node, new Set());
+  }
 
-    scopeContext.get(node)!.add(reference);
+  scopeContext.get(node)!.add(reference);
 };
