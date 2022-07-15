@@ -2,12 +2,29 @@ import {LeafAtom, DerivedAtom, SideEffectRef} from "./atom.interface";
 import {LeafAtomImpl, DerivedAtomImpl} from "./atom";
 import {Atom} from "./atom.interface";
 import {Supplier} from "../../dom_dsl/src/util.interface";
-import {Consumer, Function, Runnable} from "./util.interface";
-import {a, p} from "../../dom_dsl";
+import {AsyncProducer, Consumer, Function, Producer, Runnable} from "./util.interface";
 import {nullOrUndefined} from "../../dom_dsl/src/util/dom_utils";
-// import {VNode} from "../../dom_dsl";
-// import {Maybe} from "typescript-monads";
-//
+
+
+export type FetchStateArgs<T> = {
+    producer: Producer<Promise<T>>,
+    autoScope?: boolean,
+}
+
+export const fetchState = <T>({producer, autoScope = true}: FetchStateArgs<T>): Atom<T | undefined> => {
+    const atom = createState<T | undefined>({value: undefined, autoScope: autoScope});
+
+    const derivation = deriveState<Promise<T>>({deriveValue: producer, autoScope: autoScope});
+    derivation.react((futureVal: Promise<T>): void => {
+        futureVal.then((val: T): void => atom.set(val));
+    });
+
+    // hack to keep the derivation alive with the atom
+    (atom as any).$$$recoilSomethingIdkYetHack = atom;
+
+    return atom;
+};
+
 // // this is a wrapper that allows us to fetch resources from the UI but use them semi-synchronously
 // export const fetchState = <T>(fn: AsyncProducer<T>): Atom<T | undefined> => { // think twice about exposing an external interface in your api...
 //     const atom = createState<T | undefined>(undefined);

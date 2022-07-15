@@ -2,6 +2,10 @@ export interface Producer<T> {
     (): T;
 }
 
+export interface AsyncProducer<T> {
+    (): Promise<T>;
+}
+
 export interface Consumer<T> {
     (value: T): void;
 }

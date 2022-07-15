@@ -3,6 +3,7 @@ export {
     deriveState,
     runEffect,
     createScope,
+    fetchState,
     Atom,
     LeafAtom,
     DerivedAtom,
