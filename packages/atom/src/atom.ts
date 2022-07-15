@@ -111,7 +111,7 @@ abstract class BaseAtom<T> implements Atom<T> {
       activate: () => {
         this.effects.activateEffect(cachedEffect);
         // TODO(ericr): this shouldnt always be run, but rather only when the version number of this
-        // nod has increased since the last run. For now it is fine, since profiling hasnt revealed issues
+        // atom has increased since the last run. For now it is fine, since profiling hasnt revealed issues
         // + we get it for free due to the buildCachedEffect wrapper
         effect(this.get());
       },
