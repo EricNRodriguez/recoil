@@ -6,5 +6,7 @@ export interface VNode<A, B extends VNode<A, B>> {
     unmount(): VNode<A, B>;
     isMounted(): boolean;
     registerSideEffect(effect: Runnable): VNode<A, B>;
+    registerOnMountHook(hook: Runnable): VNode<A, B>;
+    registerOnUnmountHook(hook: Runnable): VNode<A, B>;
     getRaw(): A;
 }

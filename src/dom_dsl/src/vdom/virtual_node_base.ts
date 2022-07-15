@@ -5,6 +5,8 @@ import {Runnable} from "../../../atom/src/util.interface";
 export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A, B> {
     private readonly node: A;
     private readonly rootEffects: Set<SideEffectRef> = new Set<SideEffectRef>();
+    private readonly onMountHooks: Set<Runnable> = new Set<Runnable>;
+    private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>;
     private currentlyMounted: boolean = false;
 
     constructor(node: A) {
@@ -38,6 +40,7 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.currentlyMounted = true;
 
         this.activateEffects();
+        this.runMountHooks();
         return this;
     }
 
@@ -45,6 +48,7 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.currentlyMounted = false;
 
         this.deactivateEffects();
+        this.runUnmountHooks();
         return this;
     }
 
@@ -58,6 +62,22 @@ export abstract class VNodeBase<A, B extends VNodeBase<A,B>> implements VNode<A,
         this.rootEffects.forEach((ref: SideEffectRef): void => {
             ref.deactivate();
         });
+    }
+
+    private runUnmountHooks(): void {
+        this.onUnmountHooks.forEach(hook => hook());
+    }
+
+    private runMountHooks(): void {
+        this.onMountHooks.forEach(hook => hook());
+    }
+
+    public registerOnMountHook(hook: Runnable): VNode<A, B> {
+        return this;
+    }
+
+    public registerOnUnmountHook(hook: Runnable): VNode<A, B> {
+        return this;
     }
 
     public getRaw(): A {
