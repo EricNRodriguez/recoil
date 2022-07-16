@@ -8,7 +8,7 @@ export { link } from "./src/link";
 export { button } from "./src/input/button";
 export { checkbox, CheckboxArguments } from "./src/input/checkbox";
 export { radioButton, RadioButtonArguments } from "./src/input/radio";
-export { textInput } from "./src/text_input";
+export { textInput } from "./src/input/text_input";
 export { hr } from "./src/hr";
 export { br } from "./src/br";
 export { foreach } from "./src/control/foreach";
