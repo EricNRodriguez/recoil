@@ -26,7 +26,7 @@ export const fetchState = <T>({
     futureVal.then((val: T): void => atom.set(val));
   });
 
-  (atom as any).$$$recoilFetchStateDerivation = atom;
+  (atom as any).$$$recoilFetchStateDerivation = derivation;
 
   return atom;
 };
