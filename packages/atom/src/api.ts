@@ -12,6 +12,8 @@ export const fetchState = <T>(
   producer: Producer<Promise<T>>,
   args?: FetchStateOptionalArgs
 ): Atom<T | undefined> => {
+  let reactionVersion: number = 0;
+  let writeVersion: number = 0;
   const atom = createState<T | undefined>(undefined, {
     autoScope: args?.autoScope,
   });
@@ -20,7 +22,14 @@ export const fetchState = <T>(
     autoScope: false,
   });
   derivation.react((futureVal: Promise<T>): void => {
-    futureVal.then((val: T): void => atom.set(val));
+    let currentReactionVersion = reactionVersion++;
+    futureVal.then((val: T): void => {
+      if (writeVersion > currentReactionVersion) {
+        return;
+      }
+      atom.set(val);
+      writeVersion = currentReactionVersion;
+    });
   });
 
   (atom as any).$$$recoilFetchStateDerivation = derivation;
