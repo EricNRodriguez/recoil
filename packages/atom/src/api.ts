@@ -10,7 +10,7 @@ export type FetchStateOptionalArgs = {
 // TODO(ericr): Support aborting
 export const fetchState = <T>(
   producer: Producer<Promise<T>>,
-  args?: FetchStateOptionalArgs,
+  args?: FetchStateOptionalArgs
 ): Atom<T | undefined> => {
   const atom = createState<T | undefined>(undefined, {
     autoScope: args?.autoScope,
@@ -85,7 +85,7 @@ export type CreateStateOptionalArgs = {
 
 export const createState = <T>(
   value: T,
-  args?: CreateStateOptionalArgs,
+  args?: CreateStateOptionalArgs
 ): LeafAtom<T> => {
   const atom: LeafAtom<T> = new LeafAtomImpl(value);
 
@@ -102,7 +102,8 @@ export type DeriveStateOptionalArgs = {
 
 export const deriveState = <T>(
   deriveValue: Producer<T>,
-  args?: DeriveStateOptionalArgs): Atom<T> => {
+  args?: DeriveStateOptionalArgs
+): Atom<T> => {
   const atom: Atom<T> = new DerivedAtomImpl(deriveValue);
 
   if (args?.autoScope ?? true) {
@@ -118,16 +119,17 @@ export type RunEffectOptionalArgs = {
 
 export const runEffect = (
   effect: Runnable,
-  args?: RunEffectOptionalArgs,
+  args?: RunEffectOptionalArgs
 ): SideEffectRef => {
   const atom: DerivedAtom<number> = deriveState<number>(
     () => {
       effect();
       return 0;
     },
-{
-  autoScope: false,
-  });
+    {
+      autoScope: false,
+    }
+  );
   // we register a noop effect, which will cause the derived atom
   // to eagerly evaluate immediately after every dirty
   const sideEffectRef: SideEffectRef = atom.react(() => {});

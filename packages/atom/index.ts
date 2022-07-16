@@ -4,10 +4,10 @@ export {
   runEffect,
   createScope,
   fetchState,
-    DeriveStateOptionalArgs,
-    CreateStateOptionalArgs,
-    RunEffectOptionalArgs,
-    FetchStateOptionalArgs,
+  DeriveStateOptionalArgs,
+  CreateStateOptionalArgs,
+  RunEffectOptionalArgs,
+  FetchStateOptionalArgs,
 } from "./src/api";
 export {
   Atom,
