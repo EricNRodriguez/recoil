@@ -1,42 +1,49 @@
 import { HtmlVElement } from "../vdom/virtual_element";
 import { clamp } from "../../../util/src/math";
-import { Consumer, notNullOrUndefined } from "../../../util";
+import {notNullOrUndefined } from "../../../util";
+import {createScope, LeafAtom, runEffect} from "../../../atom";
 
 export type NumberInputArgs = {
   max?: number;
   min?: number;
-  onInput?: Consumer<number>;
+  num: LeafAtom<number>,
 };
 
-export const numberInput = (args: NumberInputArgs): HtmlVElement => {
+export const numberInput = createScope((args: NumberInputArgs): HtmlVElement => {
   const builder: HtmlVElement = new HtmlVElement("input").setAttribute(
     "type",
     "number"
   );
 
-  if (notNullOrUndefined(args.onInput)) {
-    builder.addEventHandler("input", (e: Event, element: HTMLElement): void => {
-      const inputElement: HTMLInputElement = element as HTMLInputElement;
+  builder.addEventHandler("input", (): void => {
+    const inputElement: HTMLInputElement = builder.getRaw() as HTMLInputElement;
 
-      const rawValue: number = inputElement.valueAsNumber;
+    const rawValue: number = inputElement.valueAsNumber;
 
-      if (Number.isNaN(rawValue)) {
-        return;
-      }
+    if (Number.isNaN(rawValue)) {
+      return;
+    }
 
-      const clampedValue: number = clamp({
+    const clampedValue: number = clamp({
+      max: args.max,
+      min: args.min,
+      val: inputElement.valueAsNumber,
+    });
+
+    if (rawValue !== clampedValue) {
+      inputElement.valueAsNumber = clampedValue;
+    }
+
+    args.num.set(clampedValue);
+  });
+
+  runEffect({effect: (): void => {
+      (builder.getRaw() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,
-        val: inputElement.valueAsNumber,
-      });
-
-      if (rawValue !== clampedValue) {
-        inputElement.valueAsNumber = clampedValue;
-      }
-
-      args.onInput!(clampedValue);
-    });
-  }
+        val: args.num.get(),
+      }).toString();
+  }});
 
   if (notNullOrUndefined(args.max)) {
     builder.setAttribute("max", args.max!.toString());
@@ -47,4 +54,4 @@ export const numberInput = (args: NumberInputArgs): HtmlVElement => {
   }
 
   return builder;
-};
+});
