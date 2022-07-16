@@ -10,11 +10,11 @@ export type FetchStateOptionalArgs = {
 // TODO(ericr): Support aborting
 export const fetchState = <T>(
   producer: Producer<Promise<T>>,
-  {autoscope = true}: FetchStateOptionalArgs,
+  args?: FetchStateOptionalArgs,
 ): Atom<T | undefined> => {
   const atom = createState<T | undefined>({
     value: undefined,
-    autoScope: autoScope,
+    autoScope: args?.autoScope,
   });
 
   const derivation = deriveState<Promise<T>>({
