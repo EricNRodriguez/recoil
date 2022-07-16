@@ -13,8 +13,7 @@ export const atom = (): void | any => {
         if (!registry.has(this)) {
           registry.set(
             this,
-            createState({
-              value: newVal,
+            createState(newVal, {
               autoScope: false,
             })
           );
