@@ -1,4 +1,6 @@
 export {
+  state,
+  derivedState,
   deriveState,
   createState,
   runEffect,
@@ -16,5 +18,3 @@ export {
   SideEffectRef,
 } from "./src/atom.interface";
 export { isAtom } from "./src/atom";
-export { atom } from "./src/atom_decorator";
-export { derivation } from "./src/derivation_decorator";

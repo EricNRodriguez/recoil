@@ -151,3 +151,58 @@ export const runEffect = (
 
   return sideEffectRef;
 };
+
+export const state = (): void | any => {
+  const registry: WeakMap<Object, LeafAtom<any>> = new WeakMap<
+    Object,
+    LeafAtom<any>
+  >();
+
+  return function (target: Object, propertyKey: string) {
+    Object.defineProperty(target, propertyKey, {
+      set: function (this, newVal: any) {
+        if (!registry.has(this)) {
+          registry.set(
+            this,
+            createState(newVal, {
+              autoScope: false,
+            })
+          );
+        } else {
+          registry.get(this)!.set(newVal);
+        }
+      },
+      get: function (): any {
+        return registry.get(this)!.get();
+      },
+    });
+  };
+};
+
+export const derivedState = (): string | any => {
+  return (
+    target: Object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ): any => {
+    const registry: WeakMap<Object, DerivedAtom<any>> = new WeakMap();
+    const originalFn = descriptor.value;
+
+    descriptor.value = function (...args: any[]): any {
+      if (!registry.has(this)) {
+        registry.set(
+          this,
+          deriveState(
+            () => {
+              return originalFn.apply(this, args);
+            },
+            {
+              autoScope: false,
+            }
+          )
+        );
+      }
+      return registry.get(this)!.get();
+    };
+  };
+};
