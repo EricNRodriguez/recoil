@@ -3,16 +3,15 @@ import { LeafAtomImpl, DerivedAtomImpl } from "./atom";
 import { Atom } from "./atom.interface";
 import { Consumer, Producer, Runnable } from "../../util/index";
 
-export type FetchStateArgs<T> = {
-  producer: Producer<Promise<T>>;
+export type FetchStateOptionalArgs = {
   autoScope?: boolean;
 };
 
 // TODO(ericr): Support aborting
-export const fetchState = <T>({
-  producer,
-  autoScope = true,
-}: FetchStateArgs<T>): Atom<T | undefined> => {
+export const fetchState = <T>(
+  producer: Producer<Promise<T>>,
+  {autoscope = true}: FetchStateOptionalArgs,
+): Atom<T | undefined> => {
   const atom = createState<T | undefined>({
     value: undefined,
     autoScope: autoScope,
