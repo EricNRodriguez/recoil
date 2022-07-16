@@ -37,13 +37,13 @@ export const numberInput = createScope((args: NumberInputArgs): HtmlVElement => 
     args.num.set(clampedValue);
   });
 
-  runEffect({effect: (): void => {
+  runEffect((): void => {
       (builder.getRaw() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,
         val: args.num.get(),
       }).toString();
-  }});
+  });
 
   if (notNullOrUndefined(args.max)) {
     builder.setAttribute("max", args.max!.toString());

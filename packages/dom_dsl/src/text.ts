@@ -1,5 +1,5 @@
-import { Atom, runEffect, isAtom, SideEffectRef } from "../../atom";
-import { Supplier } from "../../util/src/function.interface";
+import { Atom, isAtom } from "../../atom";
+import { Supplier } from "../../util";
 import { HtmlVNode } from "./vdom/virtual_node";
 
 export type TextContent = string | Supplier<string> | Atom<string>;

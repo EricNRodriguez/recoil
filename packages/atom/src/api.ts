@@ -12,13 +12,11 @@ export const fetchState = <T>(
   producer: Producer<Promise<T>>,
   args?: FetchStateOptionalArgs,
 ): Atom<T | undefined> => {
-  const atom = createState<T | undefined>({
-    value: undefined,
+  const atom = createState<T | undefined>(undefined, {
     autoScope: args?.autoScope,
   });
 
-  const derivation = deriveState<Promise<T>>({
-    deriveValue: producer,
+  const derivation = deriveState<Promise<T>>(producer, {
     autoScope: false,
   });
   derivation.react((futureVal: Promise<T>): void => {
@@ -81,57 +79,54 @@ export const createScope = <F extends (...args: any[]) => O, O extends Object>(
   });
 };
 
-export type CreateStateArgs<T> = {
-  value: T;
+export type CreateStateOptionalArgs = {
   autoScope?: boolean;
 };
 
-export const createState = <T>({
-  value,
-  autoScope = true,
-}: CreateStateArgs<T>): LeafAtom<T> => {
+export const createState = <T>(
+  value: T,
+  args?: CreateStateOptionalArgs,
+): LeafAtom<T> => {
   const atom: LeafAtom<T> = new LeafAtomImpl(value);
 
-  if (autoScope) {
+  if (args?.autoScope ?? true) {
     currentScope.collect(atom);
   }
 
   return atom;
 };
 
-export type DeriveStateArgs<T> = {
-  deriveValue: Producer<T>;
+export type DeriveStateOptionalArgs = {
   autoScope?: boolean;
 };
 
-export const deriveState = <T>({
-  deriveValue,
-  autoScope = true,
-}: DeriveStateArgs<T>): Atom<T> => {
+export const deriveState = <T>(
+  deriveValue: Producer<T>,
+  args?: DeriveStateOptionalArgs): Atom<T> => {
   const atom: Atom<T> = new DerivedAtomImpl(deriveValue);
 
-  if (autoScope) {
+  if (args?.autoScope ?? true) {
     currentScope.collect(atom);
   }
 
   return atom;
 };
 
-export type RunEffectArgs = {
-  effect: Runnable;
+export type RunEffectOptionalArgs = {
   autoScope?: boolean;
 };
 
-export const runEffect = ({
-  effect,
-  autoScope = true,
-}: RunEffectArgs): SideEffectRef => {
-  const atom: DerivedAtom<number> = deriveState<number>({
-    deriveValue: () => {
+export const runEffect = (
+  effect: Runnable,
+  args?: RunEffectOptionalArgs,
+): SideEffectRef => {
+  const atom: DerivedAtom<number> = deriveState<number>(
+    () => {
       effect();
       return 0;
     },
-    autoScope: false,
+{
+  autoScope: false,
   });
   // we register a noop effect, which will cause the derived atom
   // to eagerly evaluate immediately after every dirty
@@ -148,7 +143,7 @@ export const runEffect = ({
   // This should probably be done through a registry but for now its fine
   (sideEffectRef as any).$$$recoilParentDerivedAtom = atom;
 
-  if (autoScope) {
+  if (args?.autoScope ?? true) {
     currentScope.collect(sideEffectRef);
   }
 

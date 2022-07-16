@@ -9,9 +9,9 @@ export const textInput = createScope((text: LeafAtom<string>): HtmlVElement => {
 
   element.addEventHandler('input', () => text.set(inputElement.value));
 
-  runEffect({effect: (): void => {
+  runEffect( (): void => {
       inputElement.value = text.get();
-  }});
+  });
 
   return element;
 });
