@@ -39,7 +39,7 @@ export const numberInput = createScope(
       args.num.set(clampedValue);
     });
 
-    runEffect((): void => {
+    builder.registerSideEffect((): void => {
       (builder.getRaw() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,
