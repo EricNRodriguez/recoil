@@ -4,8 +4,10 @@ import { IndexedItem } from "../indexed_item.interface";
 import { getItem, getKey } from "../indexed_item_lense";
 import { MaybeNodeOrVNode } from "../node.interface";
 import { HtmlVNode } from "../vdom/virtual_node";
+import {createComponent} from "../component/create_component";
+import {runEffect} from "../../../atom";
 
-export const foreach = <T extends Object>(
+export const foreach = createComponent(<T extends Object>(
   getItems: Supplier<IndexedItem<T>[]>,
   buildElement: Function<T, MaybeNodeOrVNode>
 ): HtmlVNode => {
@@ -13,7 +15,8 @@ export const foreach = <T extends Object>(
 
   let currentItemOrder: string[] = [];
   let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
-  anchor.registerSideEffect((): void => {
+
+  runEffect((): void => {
     const newItems: IndexedItem<T>[] = getItems();
     const newItemOrder: string[] = newItems.map(getKey);
     const newItemNodesIndex: Map<string, MaybeNodeOrVNode> = new Map(
@@ -44,4 +47,4 @@ export const foreach = <T extends Object>(
   });
 
   return anchor;
-};
+});

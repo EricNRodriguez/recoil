@@ -1,19 +1,21 @@
 import { HtmlVElement } from "../vdom/virtual_element";
 import { Runnable, Supplier } from "../../../util/src/function.interface";
+import {createComponent} from "../component/create_component";
+import {runEffect} from "../../../atom";
 
 export type RadioButtonArguments = {
   isChecked: Supplier<boolean>;
   onClick: Runnable;
 };
 
-export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
+export const radioButton = createComponent((args: RadioButtonArguments): HtmlVElement => {
   const radioButtonElement: HtmlVElement = new HtmlVElement(
     "input"
   ).setAttribute("type", "radio");
 
   // binding effect for checked attribute
   let prevCheckedValue: boolean | null;
-  radioButtonElement.registerSideEffect((): void => {
+  runEffect((): void => {
     const isChecked: boolean | null = args.isChecked();
     if (prevCheckedValue === isChecked) {
       return;
@@ -36,4 +38,4 @@ export const radioButton = (args: RadioButtonArguments): HtmlVElement => {
   };
 
   return radioButtonElement;
-};
+});

@@ -1,16 +1,17 @@
-import { Atom, isAtom } from "../../../atom";
+import {Atom, isAtom, runEffect} from "../../../atom";
 import { Supplier } from "../../../util/src/function.interface";
 import { wrapStaticContentInProvider } from "../vdom/vdom_util";
 import { frag } from "../frag";
 import { MaybeNodeOrVNode } from "../node.interface";
 import { HtmlVElement } from "../vdom/virtual_element";
 import { notNullOrUndefined } from "../../../util";
+import {createComponent} from "../component/create_component";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
 export type IfElseContent = MaybeNodeOrVNode | Supplier<MaybeNodeOrVNode>;
 
-export const ifElse = (
+export const ifElse = createComponent((
   condition: IfElseCondition,
   ifTrue: IfElseContent,
   ifFalse?: IfElseContent
@@ -31,7 +32,7 @@ export const ifElse = (
   let currentRenderedState: boolean;
   let currentRenderedItem: MaybeNodeOrVNode;
 
-  anchor.registerSideEffect((): void => {
+  runEffect((): void => {
     const state: boolean = isAtom(condition)
       ? (condition as Atom<boolean>).get()
       : (condition as Supplier<boolean>)();
@@ -51,7 +52,7 @@ export const ifElse = (
   });
 
   return anchor;
-};
+});
 
 const staticIfElse = (
   condition: boolean,

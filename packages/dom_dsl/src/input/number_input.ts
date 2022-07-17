@@ -1,7 +1,8 @@
 import { HtmlVElement } from "../vdom/virtual_element";
 import { clamp } from "../../../util/src/math";
 import { notNullOrUndefined } from "../../../util";
-import {LeafAtom} from "../../../atom";
+import {LeafAtom, runEffect} from "../../../atom";
+import {createComponent} from "../component/create_component";
 
 export type NumberInputArgs = {
   max?: number;
@@ -9,7 +10,7 @@ export type NumberInputArgs = {
   num: LeafAtom<number>;
 };
 
-export const numberInput = (args: NumberInputArgs): HtmlVElement => {
+export const numberInput = createComponent((args: NumberInputArgs): HtmlVElement => {
     const builder: HtmlVElement = new HtmlVElement("input").setAttribute(
       "type",
       "number"
@@ -38,7 +39,7 @@ export const numberInput = (args: NumberInputArgs): HtmlVElement => {
       args.num.set(clampedValue);
     });
 
-    builder.registerSideEffect((): void => {
+    runEffect((): void => {
       (builder.getRaw() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,
@@ -55,4 +56,4 @@ export const numberInput = (args: NumberInputArgs): HtmlVElement => {
     }
 
     return builder;
-};
+});

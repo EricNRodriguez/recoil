@@ -1,5 +1,7 @@
 import { HtmlVElement } from "../vdom/virtual_element";
 import { Runnable, Supplier } from "../../../util/src/function.interface";
+import {createComponent} from "../component/create_component";
+import {runEffect} from "../../../atom";
 
 export type CheckboxArguments = {
   isChecked: Supplier<boolean | null>;
@@ -7,7 +9,7 @@ export type CheckboxArguments = {
   onClick: Runnable;
 };
 
-export const checkbox = (args: CheckboxArguments): HtmlVElement => {
+export const checkbox = createComponent((args: CheckboxArguments): HtmlVElement => {
   const checkboxElement: HtmlVElement = new HtmlVElement("input").setAttribute(
     "type",
     "checkbox"
@@ -15,7 +17,7 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
 
   // binding effect for checked attribute
   let prevCheckedValue: boolean | null;
-  checkboxElement.registerSideEffect((): void => {
+  runEffect((): void => {
     const isChecked: boolean | null = args.isChecked();
     if (prevCheckedValue === isChecked) {
       return;
@@ -30,7 +32,7 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
   if (args.isEnabled !== undefined) {
     // binding effect for enabled attribute
     let prevEnabledValue: boolean;
-    checkboxElement.registerSideEffect((): void => {
+    runEffect((): void => {
       const isEnabled: boolean = args.isEnabled!();
       if (prevEnabledValue === isEnabled) {
         return;
@@ -55,4 +57,4 @@ export const checkbox = (args: CheckboxArguments): HtmlVElement => {
   };
 
   return checkboxElement;
-};
+});
