@@ -22,8 +22,8 @@ export const deregisterDecorator = <F extends Function>(apiFn: F, decorator: Api
     );
 };
 
-export const buildApiFunc = <F extends Function>(baseFunc: F): F => {
-  return (apiFunctionDecoratorRegistry.get(baseFunc) ?? [])
+export const buildApiFunc = <F extends Function>(publicApiFunc: F, baseFunc: F): F => {
+  return (apiFunctionDecoratorRegistry.get(publicApiFunc) ?? [])
       .reduceRight((builtFunc: F, decorator: ApiFunctionDecorator<F>): F => decorator(builtFunc), baseFunc);
 };
 
@@ -98,9 +98,8 @@ let baseRunEffect = (
   return sideEffectRef;
 };
 
-
 export const runEffect = (effect: Runnable): SideEffectRef => {
-  return buildApiFunc(runEffect)(effect);
+  return buildApiFunc(runEffect, baseRunEffect)(effect);
 };
 
 export const state = (): void | any => {
