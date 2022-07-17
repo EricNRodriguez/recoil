@@ -22,14 +22,14 @@ class EffectCollector {
 
 export type ComponentBuilder<T extends HtmlVNode> = (...args: any[]) => T;
 
-const collectorStack: EffectCollector[] = [];
-
 export const createComponent = <T extends HtmlVNode>(fn: ComponentBuilder<T>): ComponentBuilder<T> => {
+    const collector: EffectCollector = new EffectCollector();
+
     const collectCreatedEffects: FunctionDecorator<RunEffectSignature> = (runEffect: RunEffectSignature): RunEffectSignature => {
         return (rawEffect: Runnable): SideEffectRef => {
             const effect: SideEffectRef = runEffect(rawEffect);
 
-            collectorStack[collectorStack.length-1].collect(effect);
+            collector.collect(effect);
 
             return effect;
         };
@@ -37,17 +37,15 @@ export const createComponent = <T extends HtmlVNode>(fn: ComponentBuilder<T>): C
 
     return (...args: any[]): T => {
         try {
-            collectorStack.push(new EffectCollector());
             registerDecorator(runEffect, collectCreatedEffects);
 
             const componentRoot: T = fn(...args);
 
-            collectorStack[collectorStack.length-1].getEffects().forEach(ref => componentRoot.registerSideEffect(ref));
+            collector.getEffects().forEach(ref => componentRoot.registerSideEffect(ref));
 
             return componentRoot;
         } finally {
             deregisterDecorator(runEffect, collectCreatedEffects);
-            collectorStack.pop();
         }
     };
 };
