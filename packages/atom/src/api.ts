@@ -43,7 +43,7 @@ class ApiFunctionBuilder {
     );
   }
 
-  public composeFunction<F extends Function>(externalFunc: F): F {
+  private composeFunction<F extends Function>(externalFunc: F): F {
       if (!this.baseFuncRegistry.has(externalFunc)) {
         // TODO(ericr): more specific message and type
         throw new Error("unable to compose unknown function");
