@@ -1,6 +1,7 @@
-import { Atom, isAtom } from "../../atom";
+import {Atom, isAtom, runEffect} from "../../atom";
 import { Supplier } from "../../util";
 import { HtmlVNode } from "./vdom/virtual_node";
+import {createComponent} from "./component/create_component";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
@@ -20,21 +21,21 @@ export const t = (content: TextContent): HtmlVNode => {
 
 type BindedTextNodeSource = Supplier<string> | Atom<string>;
 
-const createBindedTextNode = (source: BindedTextNodeSource): HtmlVNode => {
+const createBindedTextNode = createComponent((source: BindedTextNodeSource): HtmlVNode => {
   const vNode: HtmlVNode = new HtmlVNode(document.createTextNode(""));
 
   if (isAtom(source)) {
-    vNode.registerSideEffect((): void => {
+    vNode.registerSideEffect(runEffect((): void => {
       vNode.getRaw().textContent = (source as Atom<string>).get();
-    });
+    }));
   } else if (typeof source === "function") {
-    vNode.registerSideEffect((): void => {
+    vNode.registerSideEffect(runEffect((): void => {
       vNode.getRaw().textContent = source();
-    });
+    }));
   } else {
     // TODO(ericr): be more specific with a fall through
     throw new Error();
   }
 
   return vNode;
-};
+});
