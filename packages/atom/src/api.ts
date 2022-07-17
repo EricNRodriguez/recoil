@@ -22,12 +22,12 @@ class ApiFunctionBuilder {
     return ApiFunctionBuilder.instance;
   }
 
-    /**
-     * A higher order method that provides runtime decoration support to the injected function
-     *
-     * @param baseFunc The function wrapped by the return function
-     * @returns A wrapper function around the injected function, which may be further decorated at runtime.
-     */
+  /**
+   * A higher order method that provides runtime decoration support to the injected function
+   *
+   * @param baseFunc The function wrapped by the return function
+   * @returns A wrapper function around the injected function, which may be further decorated at runtime.
+   */
   public build<F extends Function>(baseFunc: F): F {
     const externalFunc: F = ((...args: any[]): any => {
       return this.composeFunction(externalFunc)(...args);
@@ -128,7 +128,9 @@ export const deregisterDecorator = <F extends Function>(
   return ApiFunctionBuilder.getInstance().deregisterDecorator(apiFn, decorator);
 };
 
-export type FetchStateSignature<T> = (fetch: () => Promise<T>) => Atom<T | undefined>;
+export type FetchStateSignature<T> = (
+  fetch: () => Promise<T>
+) => Atom<T | undefined>;
 
 // TODO(ericr): Support aborting
 /**
@@ -220,8 +222,8 @@ export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
  * @param effect The side effect
  * @returns A reference to the side effect (see the above doc)
  */
-export const runEffect: RunEffectSignature = ApiFunctionBuilder.getInstance().build(
-  (effect: Runnable): SideEffectRef => {
+export const runEffect: RunEffectSignature =
+  ApiFunctionBuilder.getInstance().build((effect: Runnable): SideEffectRef => {
     const atom: DerivedAtom<number> = deriveState<number>(() => {
       effect();
       return 0;
@@ -242,8 +244,7 @@ export const runEffect: RunEffectSignature = ApiFunctionBuilder.getInstance().bu
     (sideEffectRef as any).$$$recoilParentDerivedAtom = atom;
 
     return sideEffectRef;
-  }
-);
+  });
 
 /**
  * A utility decorator that auto-wraps instance variables in atoms, and overrides the set and get methods

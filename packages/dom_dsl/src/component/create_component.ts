@@ -12,9 +12,10 @@ import {
   DeriveStateSignature,
   DerivedAtom,
   derivedState,
-  fetchState, FetchStateSignature,
+  fetchState,
+  FetchStateSignature,
 } from "../../../atom";
-import {Producer, Runnable} from "../../../util";
+import { Producer, Runnable } from "../../../util";
 import { FunctionDecorator } from "../../../atom/src/api";
 
 /**
@@ -64,12 +65,14 @@ export const createComponent = <T extends HtmlVNode>(
    * @param createState The current createState method (may or may not be already decorated)
    * @returns A decoration of the provided createState method
    */
-  const collectCreatedLeafAtomsDecorator = <T>(createState: CreateStateSignature<T>): CreateStateSignature<T> => {
-      return (value: T): LeafAtom<T> => {
-        const atom = createState(value);
-        atoms.push(atom);
-        return atom;
-      }
+  const collectCreatedLeafAtomsDecorator = <T>(
+    createState: CreateStateSignature<T>
+  ): CreateStateSignature<T> => {
+    return (value: T): LeafAtom<T> => {
+      const atom = createState(value);
+      atoms.push(atom);
+      return atom;
+    };
   };
 
   /**
@@ -78,12 +81,14 @@ export const createComponent = <T extends HtmlVNode>(
    * @param deriveState The current deriveState method (may or may not be already decorated)
    * @returns A decoration of the provided deriveState method
    */
-  const collectCreatedDerivedAtomsDecorator = <T>(deriveState: DeriveStateSignature<T>): DeriveStateSignature<T> => {
-      return (derivation: Producer<T>): DerivedAtom<T> => {
-          const atom = deriveState(derivation);
-          atoms.push(atom);
-          return atom;
-      }
+  const collectCreatedDerivedAtomsDecorator = <T>(
+    deriveState: DeriveStateSignature<T>
+  ): DeriveStateSignature<T> => {
+    return (derivation: Producer<T>): DerivedAtom<T> => {
+      const atom = deriveState(derivation);
+      atoms.push(atom);
+      return atom;
+    };
   };
 
   /**
@@ -92,18 +97,20 @@ export const createComponent = <T extends HtmlVNode>(
    * @param fetchState The current fetchState method (may or may not be already decorated)
    * @returns A decoration of the provided fetchState method
    */
-  const collectCreatedFetchedAtomsDecorator = <T>(fetchState: FetchStateSignature<T>): FetchStateSignature<T> => {
-      return (fetch: Producer<Promise<T>>): Atom<T | undefined> => {
-        const atom = fetchState(fetch);
-        atoms.push(atom);
-        return atom;
-      }
+  const collectCreatedFetchedAtomsDecorator = <T>(
+    fetchState: FetchStateSignature<T>
+  ): FetchStateSignature<T> => {
+    return (fetch: Producer<Promise<T>>): Atom<T | undefined> => {
+      const atom = fetchState(fetch);
+      atoms.push(atom);
+      return atom;
+    };
   };
 
   return (...args: any[]): T => {
     try {
       registerDecorator(runEffect, collectCreatedEffects);
-      registerDecorator(createState, collectCreatedLeafAtomsDecorator<any>)
+      registerDecorator(createState, collectCreatedLeafAtomsDecorator<any>);
       registerDecorator(derivedState, collectCreatedDerivedAtomsDecorator<any>);
       registerDecorator(fetchState, collectCreatedFetchedAtomsDecorator<any>);
 
@@ -119,8 +126,11 @@ export const createComponent = <T extends HtmlVNode>(
       return componentRoot;
     } finally {
       deregisterDecorator(runEffect, collectCreatedEffects);
-      deregisterDecorator(createState, collectCreatedLeafAtomsDecorator<any>)
-      deregisterDecorator(derivedState, collectCreatedDerivedAtomsDecorator<any>);
+      deregisterDecorator(createState, collectCreatedLeafAtomsDecorator<any>);
+      deregisterDecorator(
+        derivedState,
+        collectCreatedDerivedAtomsDecorator<any>
+      );
       deregisterDecorator(fetchState, collectCreatedFetchedAtomsDecorator<any>);
     }
   };
