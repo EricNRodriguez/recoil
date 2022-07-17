@@ -1,58 +1,60 @@
-import {Atom, isAtom, runEffect} from "../../../atom";
+import { Atom, isAtom, runEffect } from "../../../atom";
 import { Supplier } from "../../../util/src/function.interface";
 import { wrapStaticContentInProvider } from "../vdom/vdom_util";
 import { frag } from "../frag";
 import { MaybeNodeOrVNode } from "../node.interface";
 import { HtmlVElement } from "../vdom/virtual_element";
 import { notNullOrUndefined } from "../../../util";
-import {createComponent} from "../component/create_component";
+import { createComponent } from "../component/create_component";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
 export type IfElseContent = MaybeNodeOrVNode | Supplier<MaybeNodeOrVNode>;
 
-export const ifElse = createComponent((
-  condition: IfElseCondition,
-  ifTrue: IfElseContent,
-  ifFalse?: IfElseContent
-): HtmlVElement => {
-  ifFalse ??= undefined;
+export const ifElse = createComponent(
+  (
+    condition: IfElseCondition,
+    ifTrue: IfElseContent,
+    ifFalse?: IfElseContent
+  ): HtmlVElement => {
+    ifFalse ??= undefined;
 
-  const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> =
-    wrapStaticContentInProvider(ifTrue);
-  const ifFalseUnwrapped: Supplier<MaybeNodeOrVNode> =
-    wrapStaticContentInProvider(ifFalse);
+    const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> =
+      wrapStaticContentInProvider(ifTrue);
+    const ifFalseUnwrapped: Supplier<MaybeNodeOrVNode> =
+      wrapStaticContentInProvider(ifFalse);
 
-  if (typeof condition === "boolean") {
-    return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
-  }
-
-  const anchor: HtmlVElement = frag();
-
-  let currentRenderedState: boolean;
-  let currentRenderedItem: MaybeNodeOrVNode;
-
-  runEffect((): void => {
-    const state: boolean = isAtom(condition)
-      ? (condition as Atom<boolean>).get()
-      : (condition as Supplier<boolean>)();
-
-    if (state === currentRenderedState) {
-      return;
+    if (typeof condition === "boolean") {
+      return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
     }
 
-    currentRenderedState = state;
+    const anchor: HtmlVElement = frag();
 
-    const nodeSupplier: Supplier<MaybeNodeOrVNode> = state
-      ? ifTrueUnwrapped
-      : ifFalseUnwrapped;
-    currentRenderedItem = nodeSupplier();
+    let currentRenderedState: boolean;
+    let currentRenderedItem: MaybeNodeOrVNode;
 
-    anchor.setChildren(currentRenderedItem);
-  });
+    runEffect((): void => {
+      const state: boolean = isAtom(condition)
+        ? (condition as Atom<boolean>).get()
+        : (condition as Supplier<boolean>)();
 
-  return anchor;
-});
+      if (state === currentRenderedState) {
+        return;
+      }
+
+      currentRenderedState = state;
+
+      const nodeSupplier: Supplier<MaybeNodeOrVNode> = state
+        ? ifTrueUnwrapped
+        : ifFalseUnwrapped;
+      currentRenderedItem = nodeSupplier();
+
+      anchor.setChildren(currentRenderedItem);
+    });
+
+    return anchor;
+  }
+);
 
 const staticIfElse = (
   condition: boolean,
