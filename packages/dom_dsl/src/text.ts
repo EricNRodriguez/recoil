@@ -25,13 +25,13 @@ const createBindedTextNode = createComponent((source: BindedTextNodeSource): Htm
   const vNode: HtmlVNode = new HtmlVNode(document.createTextNode(""));
 
   if (isAtom(source)) {
-    vNode.registerSideEffect(runEffect((): void => {
+    runEffect((): void => {
       vNode.getRaw().textContent = (source as Atom<string>).get();
-    }));
+    });
   } else if (typeof source === "function") {
-    vNode.registerSideEffect(runEffect((): void => {
+    runEffect((): void => {
       vNode.getRaw().textContent = source();
-    }));
+    });
   } else {
     // TODO(ericr): be more specific with a fall through
     throw new Error();
