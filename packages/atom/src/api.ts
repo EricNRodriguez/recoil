@@ -3,48 +3,70 @@ import { LeafAtomImpl, DerivedAtomImpl } from "./atom";
 import { Atom } from "./atom.interface";
 import {Consumer, notNullOrUndefined, Producer, Runnable} from "../../util";
 
-export type ApiFunctionDecorator<F extends Function> = (fn: F) => F;
+export type FunctionDecorator<F extends Function> = (fn: F) => F;
 
 class ApiFunctionBuilder {
     private static instance: ApiFunctionBuilder = new ApiFunctionBuilder();
 
-    private decoratorRegistry: Map<Function, ApiFunctionDecorator<any>[]> = new Map();
+    private decoratorRegistry: Map<Function, FunctionDecorator<any>[]> = new Map();
+    private baseFuncRegistry: Map<Function, Function> = new Map();
 
     public static getInstance(): ApiFunctionBuilder {
         return ApiFunctionBuilder.instance;
     }
 
-    public registerDecorator<F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void {
+    public build<F extends Function>(baseFunc: F): F {
+
+      const externalFunc: F= ((...args: any[]): any => {
+          return this.composeFunction(externalFunc)(...args);
+      }) as unknown as F;
+
+      this.decoratorRegistry.set(externalFunc, []);
+      this.baseFuncRegistry.set(externalFunc, baseFunc);
+
+      return externalFunc;
+    }
+
+    public registerDecorator<F extends Function>(apiFn: F, decorator: FunctionDecorator<F>): void {
       if (!this.decoratorRegistry.has(apiFn)) {
-        this.decoratorRegistry.set(apiFn, []);
+        // TODO(ericr): more specific error type
+        throw new Error("decorating the provided function is not supported");
       }
 
       this.decoratorRegistry.get(apiFn)!.push(decorator);
   }
 
-  public deregisterDecorator<F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void {
+  public deregisterDecorator<F extends Function>(apiFn: F, decorator: FunctionDecorator<F>): void {
     this.decoratorRegistry.set(
         apiFn,
         (this.decoratorRegistry.get(apiFn) ?? []).filter(dec => dec !== decorator),
     );
   }
 
-  public composeFunction<F extends Function>(publicApiFunc: F, baseFunc: F): F {
-    return (this.decoratorRegistry.get(publicApiFunc) ?? [])
-        .reduceRight((builtFunc: F, decorator: ApiFunctionDecorator<F>): F => decorator(builtFunc), baseFunc);
+  public composeFunction<F extends Function>(externalFunc: F): F {
+      if (!this.baseFuncRegistry.has(externalFunc)) {
+        // TODO(ericr): more specific message and type
+        throw new Error("unable to compose unknown function");
+      }
+
+      const baseFunc: F = this.baseFuncRegistry.get(externalFunc) as F;
+      const decorations: FunctionDecorator<F>[] = this.decoratorRegistry.get(externalFunc) as FunctionDecorator<F>[];
+
+      return decorations
+          .reduceRight((composedFunc: F, decorator: FunctionDecorator<F>): F => decorator(composedFunc), baseFunc);
   }
 }
 
-export const registerDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
+export const registerDecorator = <F extends Function>(apiFn: F, decorator: FunctionDecorator<F>): void => {
   return ApiFunctionBuilder.getInstance().registerDecorator(apiFn, decorator);
 };
 
-export const deregisterDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
+export const deregisterDecorator = <F extends Function>(apiFn: F, decorator: FunctionDecorator<F>): void => {
   return ApiFunctionBuilder.getInstance().deregisterDecorator(apiFn, decorator);
 };
 
 // TODO(ericr): Support aborting
-const baseFetchState = <T>(
+export const fetchState = ApiFunctionBuilder.getInstance().build(<T>(
     producer: Producer<Promise<T>>,
 ): Atom<T | undefined> => {
   let reactionVersion: number = 0;
@@ -66,39 +88,20 @@ const baseFetchState = <T>(
   (atom as any).$$$recoilFetchStateDerivation = derivation;
 
   return atom;
-};
+});
 
-export const fetchState = <T>(producer: Producer<Promise<T>>): Atom<T | undefined> => {
-  return ApiFunctionBuilder.getInstance().composeFunction(fetchState, baseFetchState)(producer);
-};
-
-const baseCreateState = <T>(value: T): LeafAtom<T> => {
+export const createState = ApiFunctionBuilder.getInstance().build(<T>(value: T): LeafAtom<T> => {
   return new LeafAtomImpl(value);
-}
+});
 
-export const createState = <T>(
-  value: T,
-): LeafAtom<T> => {
-  return ApiFunctionBuilder.getInstance().composeFunction(createState, baseCreateState)(value);
-};
-
-const baseDeriveState = <T>(
-    deriveValue: Producer<T>,
-): Atom<T> => {
-  return new DerivedAtomImpl(deriveValue);
-}
-
-export const deriveState = <T>(
-  deriveValue: Producer<T>,
-): Atom<T> => {
-  return ApiFunctionBuilder.getInstance().composeFunction(deriveState, baseDeriveState)(deriveValue);
-};
+export const deriveState = ApiFunctionBuilder.getInstance().build(<T>(deriveValue: Producer<T>): Atom<T> => {
+    return new DerivedAtomImpl(deriveValue);
+});
 
 
 export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
 
-let baseRunEffect = (
-  effect: Runnable,
+export const runEffect = ApiFunctionBuilder.getInstance().build((effect: Runnable,
 ): SideEffectRef => {
   const atom: DerivedAtom<number> = deriveState<number>(
     () => {
@@ -122,13 +125,9 @@ let baseRunEffect = (
   (sideEffectRef as any).$$$recoilParentDerivedAtom = atom;
 
   return sideEffectRef;
-};
+});
 
-export const runEffect = (effect: Runnable): SideEffectRef => {
-  return ApiFunctionBuilder.getInstance().composeFunction(runEffect, baseRunEffect)(effect);
-};
-
-export const state = (): void | any => {
+export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
   const registry: WeakMap<Object, LeafAtom<any>> = new WeakMap<
     Object,
     LeafAtom<any>
@@ -151,9 +150,9 @@ export const state = (): void | any => {
       },
     });
   };
-};
+});
 
-export const derivedState = (): string | any => {
+export const derivedState = ApiFunctionBuilder.getInstance().build((): string | any => {
   return (
     target: Object,
     propertyKey: string,
@@ -176,4 +175,4 @@ export const derivedState = (): string | any => {
       return registry.get(this)!.get();
     };
   };
-};
+});
