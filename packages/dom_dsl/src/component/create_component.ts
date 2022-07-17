@@ -58,6 +58,12 @@ export const createComponent = <T extends HtmlVNode>(
     };
   };
 
+  /**
+   * A runtime decorator around the createState method (provided by the atom package) that collects them for future use.
+   *
+   * @param createState The current createState method (may or may not be already decorated)
+   * @returns A decoration of the provided createState method
+   */
   const collectCreatedLeafAtomsDecorator = <T>(createState: CreateStateSignature<T>): CreateStateSignature<T> => {
       return (value: T): LeafAtom<T> => {
         const atom = createState(value);
@@ -66,6 +72,12 @@ export const createComponent = <T extends HtmlVNode>(
       }
   };
 
+  /**
+   * A runtime decorator around the deriveState method (provided by the atom package) that collects them for future use.
+   *
+   * @param deriveState The current deriveState method (may or may not be already decorated)
+   * @returns A decoration of the provided deriveState method
+   */
   const collectCreatedDerivedAtomsDecorator = <T>(deriveState: DeriveStateSignature<T>): DeriveStateSignature<T> => {
       return (derivation: Producer<T>): DerivedAtom<T> => {
           const atom = deriveState(derivation);
@@ -74,6 +86,12 @@ export const createComponent = <T extends HtmlVNode>(
       }
   };
 
+  /**
+   * A runtime decorator around the fetchState method (provided by the atom package) that collects them for future use.
+   *
+   * @param fetchState The current fetchState method (may or may not be already decorated)
+   * @returns A decoration of the provided fetchState method
+   */
   const collectCreatedFetchedAtomsDecorator = <T>(fetchState: FetchStateSignature<T>): FetchStateSignature<T> => {
       return (fetch: Producer<Promise<T>>): Atom<T | undefined> => {
         const atom = fetchState(fetch);
