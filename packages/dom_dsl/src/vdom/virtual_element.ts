@@ -1,7 +1,7 @@
 import { BiConsumer, Consumer, notNullOrUndefined } from "../../../util";
 import { Attribute, VElement, ElementStyle } from "./virtual_element.interface";
 import { Supplier } from "../../../util";
-import { Atom, isAtom } from "../../../atom";
+import {Atom, isAtom, runEffect} from "../../../atom";
 import {
   appendChildren,
   removeChildren,
@@ -136,10 +136,10 @@ export class HtmlVElement
     attribute: string,
     value: Atom<string>
   ): HtmlVElement {
-    this.registerSideEffect((): void => {
+    this.registerSideEffect(runEffect((): void => {
       this.setAttribute(attribute, value.get());
       value.get();
-    });
+    }));
 
     return this;
   }
@@ -149,13 +149,13 @@ export class HtmlVElement
     valueSupplier: Supplier<string>
   ): HtmlVElement {
     let currentAttributeValue: string;
-    this.registerSideEffect((): void => {
+    this.registerSideEffect(runEffect((): void => {
       const value: string = valueSupplier();
       if (value !== currentAttributeValue) {
         currentAttributeValue = value;
         this.setStaticAttribute(attribute, value);
       }
-    });
+    }));
 
     return this;
   }
