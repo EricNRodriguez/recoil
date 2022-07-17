@@ -69,10 +69,10 @@ export const createComponent = <T extends HtmlVNode>(
 
       const componentRoot: T = fn(...args);
 
-      collector
-        .getEffects()
-        .forEach((ref) => componentRoot.registerSideEffect(ref));
-
+      collector.getEffects().forEach((ref) => {
+        componentRoot.registerOnMountHook(ref.activate.bind(ref));
+        componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
+      });
       return componentRoot;
     } finally {
       deregisterDecorator(runEffect, collectCreatedEffects);
