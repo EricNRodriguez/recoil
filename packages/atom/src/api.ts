@@ -22,12 +22,12 @@ class ApiFunctionBuilder {
     return ApiFunctionBuilder.instance;
   }
 
-  /**
-   * A higher order method that provides runtime decoration support to the injected function
-   *
-   * @param baseFunc The function wrapped by the return function
-   * @returns A wrapper function around the injected function, which may be further decorated at runtime.
-   */
+    /**
+     * A higher order method that provides runtime decoration support to the injected function
+     *
+     * @param baseFunc The function wrapped by the return function
+     * @returns A wrapper function around the injected function, which may be further decorated at runtime.
+     */
   public build<F extends Function>(baseFunc: F): F {
     const externalFunc: F = ((...args: any[]): any => {
       return this.composeFunction(externalFunc)(...args);
@@ -128,6 +128,8 @@ export const deregisterDecorator = <F extends Function>(
   return ApiFunctionBuilder.getInstance().deregisterDecorator(apiFn, decorator);
 };
 
+export type FetchStateSignature<T> = (fetch: () => Promise<T>) => Atom<T | undefined>;
+
 // TODO(ericr): Support aborting
 /**
  * A lightweight primitive that allows state to be fetched asynchronously and written to a reactive atom. Before
@@ -163,6 +165,8 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
   }
 );
 
+export type CreateStateSignature<T> = (value: T) => LeafAtom<T>;
+
 /**
  * A factory method for a leaf atom instance.
  *
@@ -174,6 +178,8 @@ export const createState = ApiFunctionBuilder.getInstance().build(
     return new LeafAtomImpl(value);
   }
 );
+
+export type DeriveStateSignature<T> = (derivation: () => T) => DerivedAtom<T>;
 
 /**
  * A factory method for a derived state.
@@ -214,7 +220,7 @@ export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
  * @param effect The side effect
  * @returns A reference to the side effect (see the above doc)
  */
-export const runEffect = ApiFunctionBuilder.getInstance().build(
+export const runEffect: RunEffectSignature = ApiFunctionBuilder.getInstance().build(
   (effect: Runnable): SideEffectRef => {
     const atom: DerivedAtom<number> = deriveState<number>(() => {
       effect();

@@ -5,21 +5,17 @@ import {
   SideEffectRef,
   RunEffectSignature,
   runEffect,
+  Atom,
+  CreateStateSignature,
+  createState,
+  LeafAtom,
+  DeriveStateSignature,
+  DerivedAtom,
+  derivedState,
+  fetchState, FetchStateSignature,
 } from "../../../atom";
-import { Runnable } from "../../../util";
+import {Producer, Runnable} from "../../../util";
 import { FunctionDecorator } from "../../../atom/src/api";
-
-class EffectCollector {
-  private effects: Set<SideEffectRef> = new Set();
-
-  public collect(effect: SideEffectRef): void {
-    this.effects.add(effect);
-  }
-
-  public getEffects(): SideEffectRef[] {
-    return Array.from(this.effects);
-  }
-}
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
@@ -43,7 +39,8 @@ export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
 export const createComponent = <T extends HtmlVNode>(
   fn: DomBuilder<T>
 ): DomBuilder<T> => {
-  const collector: EffectCollector = new EffectCollector();
+  const effects: SideEffectRef[] = [];
+  const atoms: Atom<any>[] = [];
 
   /**
    * A runtime decorator around the runEffect method (provided by the atom package) that collects them for future use.
@@ -56,26 +53,57 @@ export const createComponent = <T extends HtmlVNode>(
   ): RunEffectSignature => {
     return (rawEffect: Runnable): SideEffectRef => {
       const effect: SideEffectRef = runEffect(rawEffect);
-
-      collector.collect(effect);
-
+      effects.push(effect);
       return effect;
     };
+  };
+
+  const collectCreatedLeafAtomsDecorator = <T>(createState: CreateStateSignature<T>): CreateStateSignature<T> => {
+      return (value: T): LeafAtom<T> => {
+        const atom = createState(value);
+        atoms.push(atom);
+        return atom;
+      }
+  };
+
+  const collectCreatedDerivedAtomsDecorator = <T>(deriveState: DeriveStateSignature<T>): DeriveStateSignature<T> => {
+      return (derivation: Producer<T>): DerivedAtom<T> => {
+          const atom = deriveState(derivation);
+          atoms.push(atom);
+          return atom;
+      }
+  };
+
+  const collectCreatedFetchedAtomsDecorator = <T>(fetchState: FetchStateSignature<T>): FetchStateSignature<T> => {
+      return (fetch: Producer<Promise<T>>): Atom<T | undefined> => {
+        const atom = fetchState(fetch);
+        atoms.push(atom);
+        return atom;
+      }
   };
 
   return (...args: any[]): T => {
     try {
       registerDecorator(runEffect, collectCreatedEffects);
+      registerDecorator(createState, collectCreatedLeafAtomsDecorator<any>)
+      registerDecorator(derivedState, collectCreatedDerivedAtomsDecorator<any>);
+      registerDecorator(fetchState, collectCreatedFetchedAtomsDecorator<any>);
 
       const componentRoot: T = fn(...args);
 
-      collector.getEffects().forEach((ref) => {
+      effects.forEach((ref) => {
         componentRoot.registerOnMountHook(ref.activate.bind(ref));
         componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
       });
+
+      (componentRoot as any).$$$recoilComponentScopedAtoms = atoms;
+
       return componentRoot;
     } finally {
       deregisterDecorator(runEffect, collectCreatedEffects);
+      deregisterDecorator(createState, collectCreatedLeafAtomsDecorator<any>)
+      deregisterDecorator(derivedState, collectCreatedDerivedAtomsDecorator<any>);
+      deregisterDecorator(fetchState, collectCreatedFetchedAtomsDecorator<any>);
     }
   };
 };
