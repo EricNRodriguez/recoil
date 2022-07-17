@@ -45,7 +45,6 @@ export const createComponent = <T extends HtmlVNode>(
 ): DomBuilder<T> => {
   const collector: EffectCollector = new EffectCollector();
 
-
   /**
    * A runtime decorator around the runEffect method (provided by the atom package) that collects them for future use.
    *
