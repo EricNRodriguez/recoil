@@ -22,12 +22,12 @@ class ApiFunctionBuilder {
     return ApiFunctionBuilder.instance;
   }
 
-    /**
-     * A higher order method that provides runtime decoration support to the injected function
-     *
-     * @param baseFunc The function wrapped by the return function
-     * @returns A wrapper function around the injected function, which may be further decorated at runtime.
-     */
+  /**
+   * A higher order method that provides runtime decoration support to the injected function
+   *
+   * @param baseFunc The function wrapped by the return function
+   * @returns A wrapper function around the injected function, which may be further decorated at runtime.
+   */
   public build<F extends Function>(baseFunc: F): F {
     const externalFunc: F = ((...args: any[]): any => {
       return this.composeFunction(externalFunc)(...args);
