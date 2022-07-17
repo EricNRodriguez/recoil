@@ -29,7 +29,7 @@ class ApiFunctionBuilder {
     );
   }
 
-  public buildApiFunc<F extends Function>(publicApiFunc: F, baseFunc: F): F {
+  public composeFunction<F extends Function>(publicApiFunc: F, baseFunc: F): F {
     return (this.decoratorRegistry.get(publicApiFunc) ?? [])
         .reduceRight((builtFunc: F, decorator: ApiFunctionDecorator<F>): F => decorator(builtFunc), baseFunc);
   }
@@ -116,7 +116,7 @@ let baseRunEffect = (
 };
 
 export const runEffect = (effect: Runnable): SideEffectRef => {
-  return ApiFunctionBuilder.getInstance().buildApiFunc(runEffect, baseRunEffect)(effect);
+  return ApiFunctionBuilder.getInstance().composeFunction(runEffect, baseRunEffect)(effect);
 };
 
 export const state = (): void | any => {
