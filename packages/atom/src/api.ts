@@ -44,7 +44,21 @@ export const deriveState = <T>(
   return atom;
 };
 
-export const runEffect = (
+
+export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
+export type RunEffectDecorator = (runEffect: RunEffectSignature) => RunEffectSignature;
+
+let runEffectDecoratorStack: RunEffectDecorator[] = [];
+
+export const registerRunEffectDecorator = (decorator: RunEffectDecorator): void => {
+    runEffectDecoratorStack.push(decorator);
+};
+
+export const deregisterRunEffectDecorator = (decorator: RunEffectDecorator): void => {
+  runEffectDecoratorStack = runEffectDecoratorStack.filter(registeredDecorator => registeredDecorator !== decorator);
+}
+
+let baseRunEffect = (
   effect: Runnable,
 ): SideEffectRef => {
   const atom: DerivedAtom<number> = deriveState<number>(
@@ -69,6 +83,15 @@ export const runEffect = (
   (sideEffectRef as any).$$$recoilParentDerivedAtom = atom;
 
   return sideEffectRef;
+};
+
+export const runEffect = (effect: Runnable): SideEffectRef => {
+    const rootRunEffect: RunEffectSignature = runEffectDecoratorStack
+        .reduceRight((composedFunc: RunEffectSignature, currentDecorator: RunEffectDecorator): RunEffectSignature => {
+          return currentDecorator(composedFunc);
+        }, baseRunEffect);
+
+    return rootRunEffect(effect);
 };
 
 export const state = (): void | any => {
