@@ -5,27 +5,44 @@ import {Consumer, notNullOrUndefined, Producer, Runnable} from "../../util";
 
 export type ApiFunctionDecorator<F extends Function> = (fn: F) => F;
 
-const apiFunctionDecoratorRegistry: Map<Function, ApiFunctionDecorator<any>[]> = new Map<Function, ApiFunctionDecorator<any>[]>();
+class ApiFunctionBuilder {
+    private static instance: ApiFunctionBuilder = new ApiFunctionBuilder();
 
-export const registerDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
-    if (!apiFunctionDecoratorRegistry.has(apiFn)) {
-      apiFunctionDecoratorRegistry.set(apiFn, []);
+    private decoratorRegistry: Map<Function, ApiFunctionDecorator<any>[]> = new Map();
+
+    public static getInstance(): ApiFunctionBuilder {
+        return ApiFunctionBuilder.instance;
     }
 
-    apiFunctionDecoratorRegistry.get(apiFn)!.push(decorator);
+    public registerDecorator<F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void {
+      if (!this.decoratorRegistry.has(apiFn)) {
+        this.decoratorRegistry.set(apiFn, []);
+      }
+
+      this.decoratorRegistry.get(apiFn)!.push(decorator);
+  }
+
+  public deregisterDecorator<F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void {
+    this.decoratorRegistry.set(
+        apiFn,
+        (this.decoratorRegistry.get(apiFn) ?? []).filter(dec => dec !== decorator),
+    );
+  }
+
+  public buildApiFunc<F extends Function>(publicApiFunc: F, baseFunc: F): F {
+    return (this.decoratorRegistry.get(publicApiFunc) ?? [])
+        .reduceRight((builtFunc: F, decorator: ApiFunctionDecorator<F>): F => decorator(builtFunc), baseFunc);
+  }
+}
+
+export const registerDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
+  return ApiFunctionBuilder.getInstance().registerDecorator(apiFn, decorator);
 };
 
 export const deregisterDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
-    apiFunctionDecoratorRegistry.set(
-        apiFn,
-        (apiFunctionDecoratorRegistry.get(apiFn) ?? []).filter(dec => dec !== decorator),
-    );
+  return ApiFunctionBuilder.getInstance().deregisterDecorator(apiFn, decorator);
 };
 
-export const buildApiFunc = <F extends Function>(publicApiFunc: F, baseFunc: F): F => {
-  return (apiFunctionDecoratorRegistry.get(publicApiFunc) ?? [])
-      .reduceRight((builtFunc: F, decorator: ApiFunctionDecorator<F>): F => decorator(builtFunc), baseFunc);
-};
 
 // TODO(ericr): Support aborting
 export const fetchState = <T>(
@@ -99,7 +116,7 @@ let baseRunEffect = (
 };
 
 export const runEffect = (effect: Runnable): SideEffectRef => {
-  return buildApiFunc(runEffect, baseRunEffect)(effect);
+  return ApiFunctionBuilder.getInstance().buildApiFunc(runEffect, baseRunEffect)(effect);
 };
 
 export const state = (): void | any => {
