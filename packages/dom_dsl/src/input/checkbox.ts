@@ -24,8 +24,10 @@ export const checkbox = createComponent(
       }
 
       prevCheckedValue = isChecked;
-      checkboxElement.setAttribute("checked", (isChecked === true).toString());
-      checkboxElement.setAttribute("indeterminate", (isChecked === null).toString());
+      (checkboxElement.getRaw() as HTMLInputElement).checked =
+        isChecked === true;
+      (checkboxElement.getRaw() as HTMLInputElement).indeterminate =
+        isChecked === null;
     });
 
     if (args.isEnabled !== undefined) {
@@ -37,7 +39,7 @@ export const checkbox = createComponent(
           return;
         }
         prevEnabledValue = isEnabled;
-        checkboxElement.setAttribute("disabled", (!isEnabled).toString());
+        (checkboxElement.getRaw() as HTMLInputElement).disabled = !isEnabled;
       });
     }
 
@@ -46,13 +48,15 @@ export const checkbox = createComponent(
     // validation and decides to not toggle, but the default behaviour of the
     // checkbox element is to toggle.
     const originalOnClick = args.onClick;
-    checkboxElement.setClickHandler((e: MouseEvent): void => {
+    (checkboxElement.getRaw() as HTMLInputElement).onclick = (): void => {
       originalOnClick();
 
       const isChecked: boolean | null = args.isChecked();
-      checkboxElement.setAttribute("checked", (isChecked === true).toString());
-      checkboxElement.setAttribute("indeterminate", (isChecked === null).toString());
-    });
+      (checkboxElement.getRaw() as HTMLInputElement).checked =
+        isChecked === true;
+      (checkboxElement.getRaw() as HTMLInputElement).indeterminate =
+        isChecked === null;
+    };
 
     return checkboxElement;
   }
