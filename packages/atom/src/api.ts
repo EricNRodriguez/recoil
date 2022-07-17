@@ -3,8 +3,14 @@ import { LeafAtomImpl, DerivedAtomImpl } from "./atom";
 import { Atom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 
+/**
+ * A generic higher order function
+ */
 export type FunctionDecorator<F extends Function> = (fn: F) => F;
 
+/**
+ * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
+ */
 class ApiFunctionBuilder {
   private static instance: ApiFunctionBuilder = new ApiFunctionBuilder();
 
@@ -16,6 +22,12 @@ class ApiFunctionBuilder {
     return ApiFunctionBuilder.instance;
   }
 
+    /**
+     * A higher order method that provides runtime decoration support to the injected function
+     *
+     * @param baseFunc The function wrapped by the return function
+     * @returns A wrapper function around the injected function, which may be further decorated at runtime.
+     */
   public build<F extends Function>(baseFunc: F): F {
     const externalFunc: F = ((...args: any[]): any => {
       return this.composeFunction(externalFunc)(...args);
@@ -27,6 +39,12 @@ class ApiFunctionBuilder {
     return externalFunc;
   }
 
+  /**
+   * Registers runtime decorators for methods constructed by the build method
+   *
+   * @param apiFn The method _returned_ by the build method (not the injected function!)
+   * @param decorator The higher order function to wrap the apiFn
+   */
   public registerDecorator<F extends Function>(
     apiFn: F,
     decorator: FunctionDecorator<F>
@@ -39,6 +57,12 @@ class ApiFunctionBuilder {
     this.decoratorRegistry.get(apiFn)!.push(decorator);
   }
 
+  /**
+   * Unregisters any runtime decorators injected via the registerDecorator method
+   *
+   * @param apiFn The method _returned_ by the build method (not the injected function!)
+   * @param decorator The higher order decorator that is to be removed
+   */
   public deregisterDecorator<F extends Function>(
     apiFn: F,
     decorator: FunctionDecorator<F>
@@ -51,6 +75,14 @@ class ApiFunctionBuilder {
     );
   }
 
+  /**
+   * Takes the external function and applies all registered decorators in FIFO order of registration, returning
+   * the decorated function. This is done lazily at runtime to enable runtime decoration.
+   *
+   * @param externalFunc The method _returned_ by the build method
+   * @returns The composed function, being the registered base function with all of the currently registered decorators
+   *          applied.
+   */
   private composeFunction<F extends Function>(externalFunc: F): F {
     if (!this.baseFuncRegistry.has(externalFunc)) {
       // TODO(ericr): more specific message and type
@@ -70,6 +102,12 @@ class ApiFunctionBuilder {
   }
 }
 
+/**
+ * Registers a runtime decorator against one of the public factory methods exposed by this module.
+ *
+ * @param apiFn The exposed function
+ * @param decorator The higher order decorator to be applied for all subsequent calls of the apiFn
+ */
 export const registerDecorator = <F extends Function>(
   apiFn: F,
   decorator: FunctionDecorator<F>
@@ -77,6 +115,12 @@ export const registerDecorator = <F extends Function>(
   return ApiFunctionBuilder.getInstance().registerDecorator(apiFn, decorator);
 };
 
+/**
+ * De-registers decorators that have been applied to the provided apiFn (i.e. createState etc)
+ *
+ * @param apiFn The exposed function
+ * @param decorator The higher order decorator to be removed
+ */
 export const deregisterDecorator = <F extends Function>(
   apiFn: F,
   decorator: FunctionDecorator<F>
@@ -85,6 +129,16 @@ export const deregisterDecorator = <F extends Function>(
 };
 
 // TODO(ericr): Support aborting
+/**
+ * A lightweight primitive that allows state to be fetched asynchronously and written to a reactive atom. Before
+ * resolving, the returned atom will have an undefined value.
+ *
+ * @param producer A synchronous builder for an asynchronous value. It is important that all dependencies that invalidate
+ *                 the returned state are read synchronously (i.e. before any async execution). You should think of this
+ *                 as a synchronous factory that produces a promise, with this factory being re-run every time its dependencies
+ *                 change.
+ * @returns A maybe atom containing the fetched state (or undefined in the instance when the state is being fetched)
+ */
 export const fetchState = ApiFunctionBuilder.getInstance().build(
   <T>(producer: Producer<Promise<T>>): Atom<T | undefined> => {
     let reactionVersion: number = 0;
@@ -109,12 +163,33 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
   }
 );
 
+/**
+ * A factory method for a leaf atom instance.
+ *
+ * @param value The value to be stored in the atom.
+ * @returns The atom
+ */
 export const createState = ApiFunctionBuilder.getInstance().build(
   <T>(value: T): LeafAtom<T> => {
     return new LeafAtomImpl(value);
   }
 );
 
+/**
+ * A factory method for a derived state.
+ *
+ * The returned atom is dirtied whenever any atomic dependencies used within the
+ * derivation are dirtied. Evaluation can either be lazy or eager, depending on
+ * the effects registered against it.
+ *
+ * Which computations to wrap in derivations should be considered carefully, ideally through profiling. This
+ * is because all writes to leaf atoms have a linear time complexity on the depth of the dependency DAG. Hence,
+ * they should be used as tracked cache (memoization) primitive.
+ *
+ * @param deriveValue A synchronous factory for the state
+ * @returns An atom containing the derived state, which automatically tracks the dependencies that were used to
+ *          create it
+ */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
   <T>(deriveValue: Producer<T>): Atom<T> => {
     return new DerivedAtomImpl(deriveValue);
@@ -123,6 +198,22 @@ export const deriveState = ApiFunctionBuilder.getInstance().build(
 
 export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
 
+/**
+ * A factory method for a tracked side effect
+ *
+ * The effect will be eagerly run once, and again any time any of its dependencies become dirty.
+ *
+ * It is important that this side effect is state-free, i.e. writes to atoms should be done with extreme
+ * caution, as they can easily create reactive loops that are extremely difficult to find.
+ *
+ * As this is effectively a leaf in the dependency DAG, a reference to the side effect is returned that
+ * should be managed by the caller. It provides lifecycle methods for the effect and also ensures that the
+ * effect is not garbage collected. Despite this, it is recommended that this function should be decorated with
+ * auto-scoping logic that handles reference management instead of doing it ad-hoc.
+ *
+ * @param effect The side effect
+ * @returns A reference to the side effect (see the above doc)
+ */
 export const runEffect = ApiFunctionBuilder.getInstance().build(
   (effect: Runnable): SideEffectRef => {
     const atom: DerivedAtom<number> = deriveState<number>(() => {
@@ -148,6 +239,10 @@ export const runEffect = ApiFunctionBuilder.getInstance().build(
   }
 );
 
+/**
+ * A utility decorator that auto-wraps instance variables in atoms, and overrides the set and get methods
+ * such that they write/read to the atom.
+ */
 export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
   const registry: WeakMap<Object, LeafAtom<any>> = new WeakMap<
     Object,
@@ -170,6 +265,9 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
   };
 });
 
+/**
+ * A utility decorator that auto-wraps methods in derived atoms.
+ */
 export const derivedState = ApiFunctionBuilder.getInstance().build(
   (): string | any => {
     return (
