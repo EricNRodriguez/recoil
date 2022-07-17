@@ -43,10 +43,9 @@ export const deregisterDecorator = <F extends Function>(apiFn: F, decorator: Api
   return ApiFunctionBuilder.getInstance().deregisterDecorator(apiFn, decorator);
 };
 
-
 // TODO(ericr): Support aborting
-export const fetchState = <T>(
-  producer: Producer<Promise<T>>,
+const baseFetchState = <T>(
+    producer: Producer<Promise<T>>,
 ): Atom<T | undefined> => {
   let reactionVersion: number = 0;
   let writeVersion: number = 0;
@@ -69,20 +68,30 @@ export const fetchState = <T>(
   return atom;
 };
 
+export const fetchState = <T>(producer: Producer<Promise<T>>): Atom<T | undefined> => {
+  return ApiFunctionBuilder.getInstance().composeFunction(fetchState, baseFetchState)(producer);
+};
+
+const baseCreateState = <T>(value: T): LeafAtom<T> => {
+  return new LeafAtomImpl(value);
+}
+
 export const createState = <T>(
   value: T,
 ): LeafAtom<T> => {
-  const atom: LeafAtom<T> = new LeafAtomImpl(value);
-
-  return atom;
+  return ApiFunctionBuilder.getInstance().composeFunction(createState, baseCreateState)(value);
 };
+
+const baseDeriveState = <T>(
+    deriveValue: Producer<T>,
+): Atom<T> => {
+  return new DerivedAtomImpl(deriveValue);
+}
 
 export const deriveState = <T>(
   deriveValue: Producer<T>,
 ): Atom<T> => {
-  const atom: Atom<T> = new DerivedAtomImpl(deriveValue);
-
-  return atom;
+  return ApiFunctionBuilder.getInstance().composeFunction(deriveState, baseDeriveState)(deriveValue);
 };
 
 
