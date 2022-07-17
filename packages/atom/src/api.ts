@@ -1,7 +1,7 @@
 import { LeafAtom, DerivedAtom, SideEffectRef } from "./atom.interface";
 import { LeafAtomImpl, DerivedAtomImpl } from "./atom";
 import { Atom } from "./atom.interface";
-import { Consumer, notNullOrUndefined, Producer, Runnable } from "../../util";
+import { Producer, Runnable } from "../../util";
 
 export type FunctionDecorator<F extends Function> = (fn: F) => F;
 
