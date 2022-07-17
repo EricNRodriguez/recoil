@@ -12,7 +12,10 @@ import { VNode } from "./virtual_node.interface";
 import { VNodeBase } from "./virtual_node_base";
 import { HtmlVNode } from "./virtual_node";
 
-// A lightweight wrapper around a DOM element, managing lifecycle, dependant side effects etc
+/**
+ * A lightweight wrapper around a Html Dom element, encapsulating lifecycle management,
+ * scope of dependant side effects, mounting/unmounting elements in the subtree etc
+ */
 export class HtmlVElement
   extends VNodeBase<HTMLElement, HtmlVElement>
   implements VElement<HTMLElement, HtmlVElement>, HtmlVNode
