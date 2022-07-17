@@ -24,7 +24,7 @@ class EffectCollector {
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
  */
-export type ComponentBuilder<T extends HtmlVNode> = (...args: any[]) => T;
+export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
 
 /**
  * A higher order function that creates components. A component is any stateful Dom builder, i.e. any function
@@ -41,8 +41,8 @@ export type ComponentBuilder<T extends HtmlVNode> = (...args: any[]) => T;
  * @returns The wrapped function
  */
 export const createComponent = <T extends HtmlVNode>(
-  fn: ComponentBuilder<T>
-): ComponentBuilder<T> => {
+  fn: DomBuilder<T>
+): DomBuilder<T> => {
   const collector: EffectCollector = new EffectCollector();
 
 
