@@ -5,10 +5,9 @@ export {
   createState,
   runEffect,
   fetchState,
+    registerDecorator,
+    deregisterDecorator,
     RunEffectSignature,
-    RunEffectDecorator,
-    registerRunEffectDecorator,
-    deregisterRunEffectDecorator,
 } from "./src/api";
 export {
   Atom,

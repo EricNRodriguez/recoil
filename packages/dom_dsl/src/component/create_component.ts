@@ -1,12 +1,12 @@
 import {HtmlVNode} from "../vdom/virtual_node";
 import {
-    deregisterRunEffectDecorator,
-    registerRunEffectDecorator,
-    RunEffectDecorator,
-    RunEffectSignature,
-    SideEffectRef
+    registerDecorator,
+    deregisterDecorator,
+    SideEffectRef,
+    RunEffectSignature, runEffect
 } from "../../../atom";
 import {Runnable} from "../../../util";
+import {ApiFunctionDecorator} from "../../../atom/src/api";
 
 class EffectCollector {
     private effects: Set<SideEffectRef> = new Set();
@@ -25,7 +25,7 @@ export type ComponentBuilder<T extends HtmlVNode> = (...args: any[]) => T;
 const collectorStack: EffectCollector[] = [];
 
 export const createComponent = <T extends HtmlVNode>(fn: ComponentBuilder<T>): ComponentBuilder<T> => {
-    const collectCreatedEffects: RunEffectDecorator = (runEffect: RunEffectSignature): RunEffectSignature => {
+    const collectCreatedEffects: ApiFunctionDecorator<RunEffectSignature> = (runEffect: RunEffectSignature): RunEffectSignature => {
         return (rawEffect: Runnable): SideEffectRef => {
             const effect: SideEffectRef = runEffect(rawEffect);
 
@@ -38,7 +38,7 @@ export const createComponent = <T extends HtmlVNode>(fn: ComponentBuilder<T>): C
     return (...args: any[]): T => {
         try {
             collectorStack.push(new EffectCollector());
-            registerRunEffectDecorator(collectCreatedEffects);
+            registerDecorator(runEffect, collectCreatedEffects);
 
             const componentRoot: T = fn(...args);
 
@@ -46,7 +46,7 @@ export const createComponent = <T extends HtmlVNode>(fn: ComponentBuilder<T>): C
 
             return componentRoot;
         } finally {
-            deregisterRunEffectDecorator(collectCreatedEffects);
+            deregisterDecorator(runEffect, collectCreatedEffects);
             collectorStack.pop();
         }
     };

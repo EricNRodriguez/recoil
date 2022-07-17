@@ -3,6 +3,30 @@ import { LeafAtomImpl, DerivedAtomImpl } from "./atom";
 import { Atom } from "./atom.interface";
 import {Consumer, notNullOrUndefined, Producer, Runnable} from "../../util";
 
+export type ApiFunctionDecorator<F extends Function> = (fn: F) => F;
+
+const apiFunctionDecoratorRegistry: Map<Function, ApiFunctionDecorator<any>[]> = new Map<Function, ApiFunctionDecorator<any>[]>();
+
+export const registerDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
+    if (!apiFunctionDecoratorRegistry.has(apiFn)) {
+      apiFunctionDecoratorRegistry.set(apiFn, []);
+    }
+
+    apiFunctionDecoratorRegistry.get(apiFn)!.push(decorator);
+};
+
+export const deregisterDecorator = <F extends Function>(apiFn: F, decorator: ApiFunctionDecorator<F>): void => {
+    apiFunctionDecoratorRegistry.set(
+        apiFn,
+        (apiFunctionDecoratorRegistry.get(apiFn) ?? []).filter(dec => dec !== decorator),
+    );
+};
+
+export const buildApiFunc = <F extends Function>(baseFunc: F): F => {
+  return (apiFunctionDecoratorRegistry.get(baseFunc) ?? [])
+      .reduceRight((builtFunc: F, decorator: ApiFunctionDecorator<F>): F => decorator(builtFunc), baseFunc);
+};
+
 // TODO(ericr): Support aborting
 export const fetchState = <T>(
   producer: Producer<Promise<T>>,
@@ -46,17 +70,6 @@ export const deriveState = <T>(
 
 
 export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
-export type RunEffectDecorator = (runEffect: RunEffectSignature) => RunEffectSignature;
-
-let runEffectDecoratorStack: RunEffectDecorator[] = [];
-
-export const registerRunEffectDecorator = (decorator: RunEffectDecorator): void => {
-    runEffectDecoratorStack.push(decorator);
-};
-
-export const deregisterRunEffectDecorator = (decorator: RunEffectDecorator): void => {
-  runEffectDecoratorStack = runEffectDecoratorStack.filter(registeredDecorator => registeredDecorator !== decorator);
-}
 
 let baseRunEffect = (
   effect: Runnable,
@@ -85,13 +98,9 @@ let baseRunEffect = (
   return sideEffectRef;
 };
 
-export const runEffect = (effect: Runnable): SideEffectRef => {
-    const rootRunEffect: RunEffectSignature = runEffectDecoratorStack
-        .reduceRight((composedFunc: RunEffectSignature, currentDecorator: RunEffectDecorator): RunEffectSignature => {
-          return currentDecorator(composedFunc);
-        }, baseRunEffect);
 
-    return rootRunEffect(effect);
+export const runEffect = (effect: Runnable): SideEffectRef => {
+  return buildApiFunc(runEffect)(effect);
 };
 
 export const state = (): void | any => {
