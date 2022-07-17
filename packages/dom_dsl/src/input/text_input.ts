@@ -1,7 +1,7 @@
 import { HtmlVElement } from "../vdom/virtual_element";
-import { createScope, LeafAtom, runEffect } from "../../../atom";
+import {LeafAtom, runEffect } from "../../../atom";
 
-export const textInput = createScope((text: LeafAtom<string>): HtmlVElement => {
+export const textInput = (text: LeafAtom<string>): HtmlVElement => {
   const inputElement = document.createElement("input");
 
   const element = new HtmlVElement(inputElement).setAttribute("type", "text");
@@ -13,4 +13,4 @@ export const textInput = createScope((text: LeafAtom<string>): HtmlVElement => {
   });
 
   return element;
-});
+};

@@ -25,9 +25,6 @@ export abstract class VNodeBase<A, B extends VNodeBase<A, B>>
       (): void => {
         effect();
       },
-      {
-        autoScope: false,
-      }
     );
     this.rootEffects.add(effectRef);
 

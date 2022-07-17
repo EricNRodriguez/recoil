@@ -1,7 +1,7 @@
 import { HtmlVElement } from "../vdom/virtual_element";
 import { clamp } from "../../../util/src/math";
 import { notNullOrUndefined } from "../../../util";
-import { createScope, LeafAtom, runEffect } from "../../../atom";
+import {LeafAtom} from "../../../atom";
 
 export type NumberInputArgs = {
   max?: number;
@@ -9,8 +9,7 @@ export type NumberInputArgs = {
   num: LeafAtom<number>;
 };
 
-export const numberInput = createScope(
-  (args: NumberInputArgs): HtmlVElement => {
+export const numberInput = (args: NumberInputArgs): HtmlVElement => {
     const builder: HtmlVElement = new HtmlVElement("input").setAttribute(
       "type",
       "number"
@@ -56,5 +55,4 @@ export const numberInput = createScope(
     }
 
     return builder;
-  }
-);
+};
