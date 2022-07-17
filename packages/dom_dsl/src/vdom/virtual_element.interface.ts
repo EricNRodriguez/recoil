@@ -4,7 +4,7 @@ import { Atom } from "../../../atom";
 
 export type ElementStyle = { [key: string]: string };
 
-export type Attribute = string | Supplier<string> | Atom<string>;
+export type Attribute = string | Atom<string>;
 
 // A lightweight wrapper around a raw element
 export interface VElement<A, B extends VElement<A, B>> extends VNode<A, B> {

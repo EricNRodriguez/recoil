@@ -1,7 +1,6 @@
 import { BiConsumer, Consumer, notNullOrUndefined } from "../../../util";
 import { Attribute, VElement, ElementStyle } from "./virtual_element.interface";
-import { Supplier } from "../../../util";
-import { Atom, isAtom, runEffect } from "../../../atom";
+import { Atom, isAtom } from "../../../atom";
 import {
   appendChildren,
   removeChildren,
@@ -13,8 +12,7 @@ import { VNodeBase } from "./virtual_node_base";
 import { HtmlVNode } from "./virtual_node";
 
 /**
- * A lightweight wrapper around a Html Dom element, encapsulating lifecycle management,
- * scope of dependant side effects, mounting/unmounting elements in the subtree etc
+ * A lightweight wrapper around a Html Dom element, encapsulating lifecycle management, mounting/unmounting of subcomponents, etc
  */
 export class HtmlVElement
   extends VNodeBase<HTMLElement, HtmlVElement>
@@ -120,8 +118,6 @@ export class HtmlVElement
   public setAttribute(attribute: string, value: Attribute): HtmlVElement {
     if (isAtom(value)) {
       return this.setAtomicAttribute(attribute, value as Atom<string>);
-    } else if (typeof value === "function") {
-      return this.setSuppliedAttribute(attribute, value);
     } else if (typeof value === "string") {
       return this.setStaticAttribute(attribute, value);
     }
@@ -139,26 +135,13 @@ export class HtmlVElement
     attribute: string,
     value: Atom<string>
   ): HtmlVElement {
-    runEffect((): void => {
+    const ref = value.react((): void => {
       this.setAttribute(attribute, value.get());
       value.get();
     });
 
-    return this;
-  }
-
-  private setSuppliedAttribute(
-    attribute: string,
-    valueSupplier: Supplier<string>
-  ): HtmlVElement {
-    let currentAttributeValue: string;
-    runEffect((): void => {
-      const value: string = valueSupplier();
-      if (value !== currentAttributeValue) {
-        currentAttributeValue = value;
-        this.setStaticAttribute(attribute, value);
-      }
-    });
+    this.registerOnMountHook(ref.activate.bind(ref));
+    this.registerOnUnmountHook(ref.deactivate.bind(ref));
     return this;
   }
 
