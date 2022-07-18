@@ -147,9 +147,10 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
   <T>(producer: Producer<Promise<T>>): Atom<T | undefined> => {
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
-    const atom = createState<T | undefined>(undefined);
 
-    const derivation = deriveState<Promise<T>>(producer);
+    const atom = new LeafAtomImpl<T | undefined>(undefined);
+
+    const derivation = new DerivedAtomImpl<Promise<T>>(producer);
     derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
       futureVal.then((val: T): void => {
@@ -260,7 +261,7 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, createState(newVal));
+          registry.set(this, new LeafAtomImpl(newVal));
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -289,7 +290,7 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
         if (!registry.has(this)) {
           registry.set(
             this,
-            deriveState(() => {
+            new DerivedAtomImpl(() => {
               return originalFn.apply(this, args);
             })
           );
