@@ -1,46 +1,25 @@
 import { HtmlVNode } from "../vdom/virtual_node";
 import {
-  registerDecorator,
   SideEffectRef,
   runEffect,
-  Atom,
-  createState,
-  LeafAtom,
-  DerivedAtom,
-  fetchState,
-  deriveState,
 } from "../../../atom";
-
-/**
- * A plain old javascript function that returns a HtmlVNode (or subclass of it)
- */
-export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
+import {Runnable} from "../../../util";
 
 /**
  * An ad-hoc scoped collector, analogous to a symbol table
  */
-class ScopedAtomCollector {
+class ScopedEffectCollector {
   private readonly effects: Map<number, SideEffectRef[]> = new Map();
-  private readonly leafAtoms: Map<number, LeafAtom<any>[]> = new Map();
-  private readonly derivedAtoms: Map<number, DerivedAtom<any>[]> = new Map();
-  private readonly fetchedAtoms: Map<number, Atom<any>[]> = new Map();
 
   private currentScope: number = -1;
 
   public enterScope(): void {
     this.currentScope++;
     this.effects.set(this.currentScope, []);
-    this.leafAtoms.set(this.currentScope, []);
-    this.derivedAtoms.set(this.currentScope, []);
-    this.fetchedAtoms.set(this.currentScope, []);
   }
 
   public exitScope(): void {
     this.effects.delete(this.currentScope);
-    this.leafAtoms.delete(this.currentScope);
-    this.derivedAtoms.delete(this.currentScope);
-    this.fetchedAtoms.delete(this.currentScope);
-
     this.currentScope--;
   }
 
@@ -51,31 +30,35 @@ class ScopedAtomCollector {
   public getEffects(): SideEffectRef[] {
     return this.effects.get(this.currentScope) ?? [];
   }
-
-  public collectLeafAtom(leaf: LeafAtom<any>): void {
-    this.leafAtoms.get(this.currentScope)?.push(leaf);
-  }
-
-  public getLeafAtoms(): LeafAtom<any>[] {
-    return this.leafAtoms.get(this.currentScope) ?? [];
-  }
-
-  public collectDerivedAtom(derivation: DerivedAtom<any>): void {
-    this.derivedAtoms.get(this.currentScope)?.push(derivation);
-  }
-
-  public getDerivedAtoms(): DerivedAtom<any>[] {
-    return this.derivedAtoms.get(this.currentScope) ?? [];
-  }
-
-  public collectFetchedAtom(fetchedAtom: Atom<any>): void {
-    this.fetchedAtoms.get(this.currentScope)?.push(fetchedAtom);
-  }
-
-  public getFetchedAtoms(): Atom<any>[] {
-    return this.fetchedAtoms.get(this.currentScope) ?? [];
-  }
 }
+
+const collector = new ScopedEffectCollector();
+
+/**
+ * A convenience method for creating and mounting an effect in a single function call
+ *
+ * @param sideEffect The side effect to be created and mounted
+ */
+export const runMountedEffect = (sideEffect: Runnable): void => {
+  collector.collectEffect(runEffect(sideEffect));
+};
+
+
+/**
+ * Mounts the provided ref to the component currently under construction. This will bind the lifecycle
+ * of the effect to the component, such that when the component is mounted in the DOM, the effect will
+ * be active, and when it is unmounted, the effect will be inactive.
+ *
+ * @param ref The references of the side effect to be mounted
+ */
+export const mountEffect = (ref: SideEffectRef): void => {
+  collector.collectEffect(ref);
+}
+
+/**
+ * A plain old javascript function that returns a HtmlVNode (or subclass of it)
+ */
+export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
 
 /**
  * A higher order function that creates components. A component is any stateful Dom builder, i.e. any function
@@ -91,75 +74,21 @@ class ScopedAtomCollector {
  * @param fn The HtmlVNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = (() => {
-  const collector: ScopedAtomCollector = new ScopedAtomCollector();
+export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>): DomBuilder<T> => {
+  return (...args: any[]): T => {
+    try {
+      collector.enterScope();
 
-  /**
-   * A runtime decorator around the runEffect method (provided by the atom package) that collects them for future use.
-   */
-  registerDecorator(runEffect, (runEffectFn) => {
-    return (rawEffect) => {
-      const effect: SideEffectRef = runEffectFn(rawEffect);
-      collector.collectEffect(effect);
-      return effect;
-    };
-  });
+      const componentRoot: T = fn(...args);
 
-  /**
-   * A runtime decorator around the createState method (provided by the atom package) that collects them for future use.
-   */
-  registerDecorator(createState, (createStateFn) => {
-    return (value) => {
-      const atom = createStateFn(value);
-      collector.collectLeafAtom(atom);
-      return atom;
-    };
-  });
+      collector.getEffects().forEach((ref) => {
+        componentRoot.registerOnMountHook(ref.activate.bind(ref));
+        componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
+      });
 
-  /**
-   * A runtime decorator around the deriveState method (provided by the atom package) that collects them for future use.
-   */
-  registerDecorator(deriveState, (deriveStateFn) => {
-    return (derivation) => {
-      const atom = deriveStateFn(derivation);
-      collector.collectDerivedAtom(atom);
-      return atom;
-    };
-  });
-
-  /**
-   * A runtime decorator around the fetchState method (provided by the atom package) that collects them for future use.
-   */
-  registerDecorator(fetchState, (fetchStateFn) => {
-    return (fetch) => {
-      const atom = fetchStateFn(fetch);
-      collector.collectFetchedAtom(atom);
-      return atom;
-    };
-  });
-
-  return <T extends HtmlVNode>(fn: DomBuilder<T>): DomBuilder<T> => {
-    return (...args: any[]): T => {
-      try {
-        collector.enterScope();
-
-        const componentRoot: T = fn(...args);
-
-        collector.getEffects().forEach((ref) => {
-          componentRoot.registerOnMountHook(ref.activate.bind(ref));
-          componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
-        });
-
-        (componentRoot as any).$$$recoilComponentScopedAtoms = [
-          ...collector.getLeafAtoms(),
-          ...collector.getDerivedAtoms(),
-          ...collector.getFetchedAtoms(),
-        ];
-
-        return componentRoot;
-      } finally {
-        collector.exitScope();
-      }
-    };
+      return componentRoot;
+    } finally {
+      collector.exitScope();
+    }
   };
-})();
+};
