@@ -16,6 +16,9 @@ import {
  */
 export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
 
+/**
+ * An ad-hoc scoped collector, analogous to a symbol table
+ */
 class ScopedAtomCollector {
   private readonly effects: Map<number, SideEffectRef[]> = new Map();
   private readonly leafAtoms: Map<number, LeafAtom<any>[]> = new Map();
