@@ -15,6 +15,10 @@ class ScopedEffectCollector {
     return ScopedEffectCollector.instance;
   }
 
+  public isInScope(): boolean {
+    return this.currentScope >= 0;
+  }
+
   public enterScope(): void {
     this.currentScope++;
     this.effects.set(this.currentScope, []);
@@ -51,6 +55,10 @@ export const runMountedEffect = (sideEffect: Runnable): void => {
  * @param ref The references of the side effect to be mounted
  */
 export const mountEffect = (ref: SideEffectRef): void => {
+  if (!ScopedEffectCollector.getInstance().isInScope()) {
+    // TODO(ericr): more specific error message
+    throw new Error("unable to mount effect outside of createComponent scope");
+  }
   ScopedEffectCollector.getInstance().collectEffect(ref);
 };
 
