@@ -5,7 +5,7 @@ import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVElement } from "../vdom/virtual_element";
 import { notNullOrUndefined } from "../../../util";
-import { createComponent } from "../component/create_component";
+import {createComponent, runMountedEffect} from "../component/create_component";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 
@@ -33,7 +33,7 @@ export const ifElse = createComponent(
     let currentRenderedState: boolean;
     let currentRenderedItem: MaybeNodeOrVNode;
 
-    runEffect((): void => {
+    runMountedEffect((): void => {
       const state: boolean = isAtom(condition)
         ? (condition as Atom<boolean>).get()
         : (condition as Supplier<boolean>)();

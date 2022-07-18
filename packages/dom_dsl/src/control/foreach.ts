@@ -4,7 +4,7 @@ import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVNode } from "../vdom/virtual_node";
-import { createComponent } from "../component/create_component";
+import {createComponent, runMountedEffect} from "../component/create_component";
 import { runEffect } from "../../../atom";
 
 export const foreach = createComponent(
@@ -17,7 +17,7 @@ export const foreach = createComponent(
     let currentItemOrder: string[] = [];
     let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
 
-    runEffect((): void => {
+    runMountedEffect((): void => {
       const newItems: IndexedItem<T>[] = getItems();
       const newItemOrder: string[] = newItems.map(getKey);
       const newItemNodesIndex: Map<string, MaybeNodeOrVNode> = new Map(
