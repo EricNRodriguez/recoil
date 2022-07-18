@@ -2,7 +2,7 @@ import { HtmlVElement } from "../../vdom/virtual_element";
 import { clamp } from "../../../../util/src/math";
 import { notNullOrUndefined } from "../../../../util";
 import { LeafAtom, runEffect } from "../../../../atom";
-import { createComponent } from "../../component/create_component";
+import {createComponent, runMountedEffect} from "../../component/create_component";
 
 export type NumberInputArgs = {
   max?: number;
@@ -40,7 +40,7 @@ export const numberInput = createComponent(
       args.num.set(clampedValue);
     });
 
-    runEffect((): void => {
+    runMountedEffect((): void => {
       (builder.getRaw() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,

@@ -1,6 +1,6 @@
 import { HtmlVElement } from "../../vdom/virtual_element";
 import { LeafAtom, runEffect } from "../../../../atom";
-import { createComponent } from "../../component/create_component";
+import {createComponent, runMountedEffect} from "../../component/create_component";
 
 export const textInput = createComponent(
   (text: LeafAtom<string>): HtmlVElement => {
@@ -10,7 +10,7 @@ export const textInput = createComponent(
 
     element.addEventHandler("input", () => text.set(inputElement.value));
 
-    runEffect((): void => {
+    runMountedEffect((): void => {
       inputElement.value = text.get();
     });
 

@@ -1,7 +1,7 @@
 import { Atom, isAtom, runEffect } from "../../../atom";
 import { Supplier } from "../../../util";
 import { HtmlVNode } from "../vdom/virtual_node";
-import { createComponent } from "../component/create_component";
+import {createComponent, runMountedEffect} from "../component/create_component";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 
@@ -26,11 +26,11 @@ const createBindedTextNode = createComponent(
     const vNode: HtmlVNode = new HtmlVNode(document.createTextNode(""));
 
     if (isAtom(source)) {
-      runEffect((): void => {
+      runMountedEffect((): void => {
         vNode.getRaw().textContent = (source as Atom<string>).get();
       });
     } else if (typeof source === "function") {
-      runEffect((): void => {
+      runMountedEffect((): void => {
         vNode.getRaw().textContent = source();
       });
     } else {

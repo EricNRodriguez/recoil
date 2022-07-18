@@ -1,6 +1,6 @@
 import { HtmlVElement } from "../../vdom/virtual_element";
 import { Runnable, Supplier } from "../../../../util/src/function.interface";
-import { createComponent } from "../../component/create_component";
+import {createComponent, runMountedEffect} from "../../component/create_component";
 import { runEffect } from "../../../../atom";
 
 export type CheckboxArguments = {
@@ -17,7 +17,7 @@ export const checkbox = createComponent(
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    runEffect((): void => {
+    runMountedEffect((): void => {
       const isChecked: boolean | null = args.isChecked();
       if (prevCheckedValue === isChecked) {
         return;
@@ -33,7 +33,7 @@ export const checkbox = createComponent(
     if (args.isEnabled !== undefined) {
       // binding effect for enabled attribute
       let prevEnabledValue: boolean;
-      runEffect((): void => {
+      runMountedEffect((): void => {
         const isEnabled: boolean = args.isEnabled!();
         if (prevEnabledValue === isEnabled) {
           return;

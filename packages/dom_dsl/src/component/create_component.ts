@@ -1,17 +1,19 @@
 import { HtmlVNode } from "../vdom/virtual_node";
-import {
-  SideEffectRef,
-  runEffect,
-} from "../../../atom";
-import {Runnable} from "../../../util";
+import { SideEffectRef, runEffect } from "../../../atom";
+import { Runnable } from "../../../util";
 
 /**
  * An ad-hoc scoped collector, analogous to a symbol table
  */
 class ScopedEffectCollector {
+  private static readonly instance = new ScopedEffectCollector();
   private readonly effects: Map<number, SideEffectRef[]> = new Map();
 
   private currentScope: number = -1;
+
+  public static getInstance(): ScopedEffectCollector {
+    return ScopedEffectCollector.instance;
+  }
 
   public enterScope(): void {
     this.currentScope++;
@@ -32,17 +34,14 @@ class ScopedEffectCollector {
   }
 }
 
-const collector = new ScopedEffectCollector();
-
 /**
  * A convenience method for creating and mounting an effect in a single function call
  *
  * @param sideEffect The side effect to be created and mounted
  */
 export const runMountedEffect = (sideEffect: Runnable): void => {
-  collector.collectEffect(runEffect(sideEffect));
+  ScopedEffectCollector.getInstance().collectEffect(runEffect(sideEffect));
 };
-
 
 /**
  * Mounts the provided ref to the component currently under construction. This will bind the lifecycle
@@ -52,8 +51,8 @@ export const runMountedEffect = (sideEffect: Runnable): void => {
  * @param ref The references of the side effect to be mounted
  */
 export const mountEffect = (ref: SideEffectRef): void => {
-  collector.collectEffect(ref);
-}
+  ScopedEffectCollector.getInstance().collectEffect(ref);
+};
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
@@ -74,21 +73,25 @@ export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
  * @param fn The HtmlVNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>): DomBuilder<T> => {
+export const createComponent = <T extends HtmlVNode>(
+  fn: DomBuilder<T>
+): DomBuilder<T> => {
   return (...args: any[]): T => {
     try {
-      collector.enterScope();
+      ScopedEffectCollector.getInstance().enterScope();
 
       const componentRoot: T = fn(...args);
 
-      collector.getEffects().forEach((ref) => {
-        componentRoot.registerOnMountHook(ref.activate.bind(ref));
-        componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
-      });
+      ScopedEffectCollector.getInstance()
+        .getEffects()
+        .forEach((ref) => {
+          componentRoot.registerOnMountHook(ref.activate.bind(ref));
+          componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
+        });
 
       return componentRoot;
     } finally {
-      collector.exitScope();
+      ScopedEffectCollector.getInstance().exitScope();
     }
   };
 };

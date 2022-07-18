@@ -25,4 +25,8 @@ export { numberInput, NumberInputArgs } from "./src/element/input/number_input";
 export { HtmlVNode } from "./src/vdom/virtual_node";
 export { HtmlVElement } from "./src/vdom/virtual_element";
 export { frag } from "./src/element/frag";
-export { createComponent, runMountedEffect, mountEffect } from "./src/component/create_component";
+export {
+  createComponent,
+  runMountedEffect,
+  mountEffect,
+} from "./src/component/create_component";
