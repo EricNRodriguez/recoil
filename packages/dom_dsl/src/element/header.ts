@@ -1,5 +1,5 @@
-import { HtmlVElement } from "./vdom/virtual_element";
-import { HtmlVNode } from "./vdom/virtual_node";
+import { HtmlVElement } from "../vdom/virtual_element";
+import { HtmlVNode } from "../vdom/virtual_node";
 
 export type HeaderContent = HtmlVNode | string;
 

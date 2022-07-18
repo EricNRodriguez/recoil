@@ -1,8 +1,8 @@
 import { Atom, isAtom, runEffect } from "../../../atom";
 import { Supplier } from "../../../util/src/function.interface";
 import { wrapStaticContentInProvider } from "../vdom/vdom_util";
-import { frag } from "../frag";
-import { MaybeNodeOrVNode } from "../node.interface";
+import { frag } from "../element/frag";
+import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVElement } from "../vdom/virtual_element";
 import { notNullOrUndefined } from "../../../util";
 import { createComponent } from "../component/create_component";

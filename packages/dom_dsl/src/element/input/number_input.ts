@@ -1,8 +1,8 @@
-import { HtmlVElement } from "../vdom/virtual_element";
-import { clamp } from "../../../util/src/math";
-import { notNullOrUndefined } from "../../../util";
-import { LeafAtom, runEffect } from "../../../atom";
-import { createComponent } from "../component/create_component";
+import { HtmlVElement } from "../../vdom/virtual_element";
+import { clamp } from "../../../../util/src/math";
+import { notNullOrUndefined } from "../../../../util";
+import { LeafAtom, runEffect } from "../../../../atom";
+import { createComponent } from "../../component/create_component";
 
 export type NumberInputArgs = {
   max?: number;

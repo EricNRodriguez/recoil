@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../vdom/virtual_element";
+import { HtmlVElement } from "../../vdom/virtual_element";
 import { MaybeNodeOrVNode } from "../node.interface";
 
 export enum FormTarget {

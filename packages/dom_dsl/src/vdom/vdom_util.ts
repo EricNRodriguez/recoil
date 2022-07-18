@@ -1,5 +1,5 @@
 import { VNode } from "./virtual_node.interface";
-import { t } from "../text";
+import { t } from "../element/text";
 import { HtmlVNode } from "./virtual_node";
 import { nullOrUndefined, Supplier } from "../../../util";
 

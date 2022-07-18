@@ -1,4 +1,4 @@
-import { MaybeNode } from "../node.interface";
+import { MaybeNode } from "../element/node.interface";
 import { removeNullAndUndefinedItems } from "../../../util";
 
 export const replaceChildren = (

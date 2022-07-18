@@ -1,4 +1,4 @@
-import { HtmlVElement } from "./vdom/virtual_element";
+import { HtmlVElement } from "../vdom/virtual_element";
 
 type ParagraphContent = Text | string;
 

@@ -1,5 +1,5 @@
-import { HtmlVElement } from "../vdom/virtual_element";
-import { Consumer } from "../../../util";
+import { HtmlVElement } from "../../vdom/virtual_element";
+import { Consumer } from "../../../../util";
 
 export type ButtonContent = Text | string;
 

@@ -1,8 +1,8 @@
 import { Function, Supplier } from "../../../util/src/function.interface";
-import { frag } from "../frag";
-import { IndexedItem } from "../indexed_item.interface";
-import { getItem, getKey } from "../indexed_item_lense";
-import { MaybeNodeOrVNode } from "../node.interface";
+import { frag } from "../element/frag";
+import { IndexedItem } from "../element/indexed_item.interface";
+import { getItem, getKey } from "../element/indexed_item_lense";
+import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVNode } from "../vdom/virtual_node";
 import { createComponent } from "../component/create_component";
 import { runEffect } from "../../../atom";
