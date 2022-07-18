@@ -1,27 +1,78 @@
 import { HtmlVNode } from "../vdom/virtual_node";
 import {
   registerDecorator,
-  deregisterDecorator,
   SideEffectRef,
-  RunEffectSignature,
   runEffect,
   Atom,
-  CreateStateSignature,
   createState,
   LeafAtom,
-  DeriveStateSignature,
   DerivedAtom,
-  derivedState,
   fetchState,
-  FetchStateSignature,
+  deriveState,
 } from "../../../atom";
-import { Producer, Runnable } from "../../../util";
-import { FunctionDecorator } from "../../../atom/src/api";
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
  */
 export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
+
+class ScopedAtomCollector {
+  private readonly effects: Map<number, SideEffectRef[]> = new Map();
+  private readonly leafAtoms: Map<number, LeafAtom<any>[]> = new Map();
+  private readonly derivedAtoms: Map<number, DerivedAtom<any>[]> = new Map();
+  private readonly fetchedAtoms: Map<number, Atom<any>[]> = new Map();
+
+  private currentScope: number = -1;
+
+  public enterScope(): void {
+    this.currentScope++;
+    this.effects.set(this.currentScope, []);
+    this.leafAtoms.set(this.currentScope, []);
+    this.derivedAtoms.set(this.currentScope, []);
+    this.fetchedAtoms.set(this.currentScope, []);
+  }
+
+  public exitScope(): void {
+    this.effects.delete(this.currentScope);
+    this.leafAtoms.delete(this.currentScope);
+    this.derivedAtoms.delete(this.currentScope);
+    this.fetchedAtoms.delete(this.currentScope);
+
+    this.currentScope--;
+  }
+
+  public collectEffect(effect: SideEffectRef): void {
+    this.effects.get(this.currentScope)?.push(effect);
+  }
+
+  public getEffects(): SideEffectRef[] {
+    return this.effects.get(this.currentScope) ?? [];
+  }
+
+  public collectLeafAtom(leaf: LeafAtom<any>): void {
+    this.leafAtoms.get(this.currentScope)?.push(leaf);
+  }
+
+  public getLeafAtoms(): LeafAtom<any>[] {
+    return this.leafAtoms.get(this.currentScope) ?? [];
+  }
+
+  public collectDerivedAtom(derivation: DerivedAtom<any>): void {
+    this.derivedAtoms.get(this.currentScope)?.push(derivation);
+  }
+
+  public getDerivedAtoms(): DerivedAtom<any>[] {
+    return this.derivedAtoms.get(this.currentScope) ?? [];
+  }
+
+  public collectFetchedAtom(fetchedAtom: Atom<any>): void {
+    this.fetchedAtoms.get(this.currentScope)?.push(fetchedAtom);
+  }
+
+  public getFetchedAtoms(): Atom<any>[] {
+    return this.fetchedAtoms.get(this.currentScope) ?? [];
+  }
+}
 
 /**
  * A higher order function that creates components. A component is any stateful Dom builder, i.e. any function
@@ -37,101 +88,75 @@ export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
  * @param fn The HtmlVNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = <T extends HtmlVNode>(
-  fn: DomBuilder<T>
-): DomBuilder<T> => {
-  const effects: SideEffectRef[] = [];
-  const atoms: Atom<any>[] = [];
+export const createComponent = (() => {
+  const collector: ScopedAtomCollector = new ScopedAtomCollector();
 
   /**
    * A runtime decorator around the runEffect method (provided by the atom package) that collects them for future use.
-   *
-   * @param runEffect The current runEffect method (may or may not be already decorated)
-   * @returns A decoration of the provided runEffect method
    */
-  const collectCreatedEffects: FunctionDecorator<RunEffectSignature> = (
-    runEffect: RunEffectSignature
-  ): RunEffectSignature => {
-    return (rawEffect: Runnable): SideEffectRef => {
-      const effect: SideEffectRef = runEffect(rawEffect);
-      effects.push(effect);
+  registerDecorator(runEffect, (runEffectFn) => {
+    return (rawEffect) => {
+      const effect: SideEffectRef = runEffectFn(rawEffect);
+      collector.collectEffect(effect);
       return effect;
     };
-  };
+  });
 
   /**
    * A runtime decorator around the createState method (provided by the atom package) that collects them for future use.
-   *
-   * @param createState The current createState method (may or may not be already decorated)
-   * @returns A decoration of the provided createState method
    */
-  const collectCreatedLeafAtomsDecorator = <T>(
-    createState: CreateStateSignature<T>
-  ): CreateStateSignature<T> => {
-    return (value: T): LeafAtom<T> => {
-      const atom = createState(value);
-      atoms.push(atom);
+  registerDecorator(createState, (createStateFn) => {
+    return (value) => {
+      const atom = createStateFn(value);
+      collector.collectLeafAtom(atom);
       return atom;
     };
-  };
+  });
 
   /**
    * A runtime decorator around the deriveState method (provided by the atom package) that collects them for future use.
-   *
-   * @param deriveState The current deriveState method (may or may not be already decorated)
-   * @returns A decoration of the provided deriveState method
    */
-  const collectCreatedDerivedAtomsDecorator = <T>(
-    deriveState: DeriveStateSignature<T>
-  ): DeriveStateSignature<T> => {
-    return (derivation: Producer<T>): DerivedAtom<T> => {
-      const atom = deriveState(derivation);
-      atoms.push(atom);
+  registerDecorator(deriveState, (deriveStateFn) => {
+    return (derivation) => {
+      const atom = deriveStateFn(derivation);
+      collector.collectDerivedAtom(atom);
       return atom;
     };
-  };
+  });
 
   /**
    * A runtime decorator around the fetchState method (provided by the atom package) that collects them for future use.
-   *
-   * @param fetchState The current fetchState method (may or may not be already decorated)
-   * @returns A decoration of the provided fetchState method
    */
-  const collectCreatedFetchedAtomsDecorator = <T>(
-    fetchState: FetchStateSignature<T>
-  ): FetchStateSignature<T> => {
-    return (fetch: Producer<Promise<T>>): Atom<T | undefined> => {
-      const atom = fetchState(fetch);
-      atoms.push(atom);
+  registerDecorator(fetchState, (fetchStateFn) => {
+    return (fetch) => {
+      const atom = fetchStateFn(fetch);
+      collector.collectFetchedAtom(atom);
       return atom;
     };
+  });
+
+  return <T extends HtmlVNode>(fn: DomBuilder<T>): DomBuilder<T> => {
+    return (...args: any[]): T => {
+      try {
+        collector.enterScope();
+
+        const componentRoot: T = fn(...args);
+
+        collector.getEffects().forEach((ref) => {
+          componentRoot.registerOnMountHook(ref.activate.bind(ref));
+          componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
+        });
+
+        (componentRoot as any).$$$recoilComponentScopedAtoms = [
+          ...collector.getLeafAtoms(),
+          ...collector.getDerivedAtoms(),
+          ...collector.getFetchedAtoms(),
+        ];
+
+        return componentRoot;
+      } finally {
+        collector.exitScope();
+      }
+    };
   };
-
-  return (...args: any[]): T => {
-    try {
-      registerDecorator(runEffect, collectCreatedEffects);
-      registerDecorator(createState, collectCreatedLeafAtomsDecorator<any>);
-      registerDecorator(derivedState, collectCreatedDerivedAtomsDecorator<any>);
-      registerDecorator(fetchState, collectCreatedFetchedAtomsDecorator<any>);
-
-      const componentRoot: T = fn(...args);
-
-      effects.forEach((ref) => {
-        componentRoot.registerOnMountHook(ref.activate.bind(ref));
-        componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
-      });
-
-      (componentRoot as any).$$$recoilComponentScopedAtoms = atoms;
-
-      return componentRoot;
-    } finally {
-      deregisterDecorator(runEffect, collectCreatedEffects);
-      deregisterDecorator(createState, collectCreatedLeafAtomsDecorator<any>);
-      deregisterDecorator(
-        derivedState,
-        collectCreatedDerivedAtomsDecorator<any>
-      );
-      deregisterDecorator(fetchState, collectCreatedFetchedAtomsDecorator<any>);
-    }
-  };
-};
+})();
