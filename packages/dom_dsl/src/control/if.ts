@@ -43,14 +43,17 @@ export const ifElse = createComponent(
         return;
       }
 
-      currentRenderedState = state;
+      queueMicrotask((): void => {
+        currentRenderedState = state;
 
-      const nodeSupplier: Supplier<MaybeNodeOrVNode> = state
-        ? ifTrueUnwrapped
-        : ifFalseUnwrapped;
-      currentRenderedItem = nodeSupplier();
+        const nodeSupplier: Supplier<MaybeNodeOrVNode> = state
+          ? ifTrueUnwrapped
+          : ifFalseUnwrapped;
 
-      anchor.setChildren(currentRenderedItem);
+        currentRenderedItem = nodeSupplier();
+
+        anchor.setChildren(currentRenderedItem);
+      })
     });
 
     return anchor;
