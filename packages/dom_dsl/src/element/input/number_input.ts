@@ -2,7 +2,10 @@ import { HtmlVElement } from "../../vdom/virtual_element";
 import { clamp } from "../../../../util/src/math";
 import { notNullOrUndefined } from "../../../../util";
 import { LeafAtom, runEffect } from "../../../../atom";
-import {createComponent, runMountedEffect} from "../../component/create_component";
+import {
+  createComponent,
+  runMountedEffect,
+} from "../../component/create_component";
 
 export type NumberInputArgs = {
   max?: number;

@@ -1,6 +1,26 @@
-import {Runnable} from "../../../util";
-import {ComponentScope} from "./component_scope";
-import {runEffect, SideEffectRef} from "../../../atom";
+import { Runnable } from "../../../util";
+import { ComponentScope } from "./component_scope";
+import { runEffect, SideEffectRef } from "../../../atom";
+
+export const onMount = (effect: Runnable): void => {
+  ComponentScope.getInstance().collectOnMountEffect(effect);
+};
+
+export const onUnmount = (effect: Runnable): void => {
+  ComponentScope.getInstance().collectOnUnmountEffect(effect);
+};
+
+export const onInitialMount = (effect: Runnable): void => {
+  let called: boolean = false;
+  ComponentScope.getInstance().collectOnMountEffect((): void => {
+    if (called) {
+      return;
+    }
+
+    called = true;
+    effect();
+  });
+};
 
 /**
  * A convenience method for creating and mounting an effect in a single function call
@@ -8,7 +28,7 @@ import {runEffect, SideEffectRef} from "../../../atom";
  * @param sideEffect The side effect to be created and mounted
  */
 export const runMountedEffect = (sideEffect: Runnable): void => {
-  ComponentScope.getInstance().collectEffect(runEffect(sideEffect));
+  mountEffect(runEffect(sideEffect));
 };
 
 /**
@@ -23,5 +43,7 @@ export const mountEffect = (ref: SideEffectRef): void => {
     // TODO(ericr): more specific error message
     throw new Error("unable to mount effect outside of createComponent scope");
   }
-  ComponentScope.getInstance().collectEffect(ref);
+
+  onMount(() => ref.activate());
+  onUnmount(() => ref.deactivate());
 };

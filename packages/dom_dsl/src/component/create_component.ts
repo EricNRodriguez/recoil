@@ -1,5 +1,6 @@
 import { HtmlVNode } from "../vdom/virtual_node";
-import {ComponentScope} from "./component_scope";
+import { ComponentScope } from "./component_scope";
+import { Runnable } from "../../../util";
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
@@ -30,10 +31,15 @@ export const createComponent = <T extends HtmlVNode>(
       const componentRoot: T = fn(...args);
 
       ComponentScope.getInstance()
-        .getEffects()
-        .forEach((ref) => {
-          componentRoot.registerOnMountHook(ref.activate.bind(ref));
-          componentRoot.registerOnUnmountHook(ref.deactivate.bind(ref));
+        .getOnMountEffects()
+        .forEach((effect: Runnable): void => {
+          componentRoot.registerOnMountHook(effect);
+        });
+
+      ComponentScope.getInstance()
+        .getOnUnmountEffects()
+        .forEach((effect: Runnable): void => {
+          componentRoot.registerOnUnmountHook(effect);
         });
 
       return componentRoot;

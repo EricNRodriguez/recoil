@@ -1,7 +1,10 @@
 import { Atom, isAtom, runEffect } from "../../../atom";
 import { Supplier } from "../../../util";
 import { HtmlVNode } from "../vdom/virtual_node";
-import {createComponent, runMountedEffect} from "../component/create_component";
+import {
+  createComponent,
+  runMountedEffect,
+} from "../component/create_component";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 

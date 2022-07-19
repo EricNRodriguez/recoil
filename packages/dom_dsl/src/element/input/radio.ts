@@ -1,6 +1,9 @@
 import { HtmlVElement } from "../../vdom/virtual_element";
 import { Runnable, Supplier } from "../../../../util/src/function.interface";
-import {createComponent, runMountedEffect} from "../../component/create_component";
+import {
+  createComponent,
+  runMountedEffect,
+} from "../../component/create_component";
 import { runEffect } from "../../../../atom";
 
 export type RadioButtonArguments = {
