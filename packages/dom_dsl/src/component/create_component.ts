@@ -1,42 +1,7 @@
 import { HtmlVNode } from "../vdom/virtual_node";
 import { SideEffectRef, runEffect } from "../../../atom";
 import { Runnable } from "../../../util";
-
-/**
- * An ad-hoc scoped collector, analogous to a symbol table
- */
-class ScopedEffectCollector {
-  private static readonly instance = new ScopedEffectCollector();
-  private readonly effects: Map<number, SideEffectRef[]> = new Map();
-
-  private currentScope: number = -1;
-
-  public static getInstance(): ScopedEffectCollector {
-    return ScopedEffectCollector.instance;
-  }
-
-  public isInScope(): boolean {
-    return this.currentScope >= 0;
-  }
-
-  public enterScope(): void {
-    this.currentScope++;
-    this.effects.set(this.currentScope, []);
-  }
-
-  public exitScope(): void {
-    this.effects.delete(this.currentScope);
-    this.currentScope--;
-  }
-
-  public collectEffect(effect: SideEffectRef): void {
-    this.effects.get(this.currentScope)?.push(effect);
-  }
-
-  public getEffects(): SideEffectRef[] {
-    return this.effects.get(this.currentScope) ?? [];
-  }
-}
+import {ComponentScope} from "./component_scope";
 
 /**
  * A convenience method for creating and mounting an effect in a single function call
@@ -44,7 +9,7 @@ class ScopedEffectCollector {
  * @param sideEffect The side effect to be created and mounted
  */
 export const runMountedEffect = (sideEffect: Runnable): void => {
-  ScopedEffectCollector.getInstance().collectEffect(runEffect(sideEffect));
+  ComponentScope.getInstance().collectEffect(runEffect(sideEffect));
 };
 
 /**
@@ -55,11 +20,11 @@ export const runMountedEffect = (sideEffect: Runnable): void => {
  * @param ref The references of the side effect to be mounted
  */
 export const mountEffect = (ref: SideEffectRef): void => {
-  if (!ScopedEffectCollector.getInstance().isInScope()) {
+  if (!ComponentScope.getInstance().isInScope()) {
     // TODO(ericr): more specific error message
     throw new Error("unable to mount effect outside of createComponent scope");
   }
-  ScopedEffectCollector.getInstance().collectEffect(ref);
+  ComponentScope.getInstance().collectEffect(ref);
 };
 
 /**
@@ -86,11 +51,11 @@ export const createComponent = <T extends HtmlVNode>(
 ): DomBuilder<T> => {
   return (...args: any[]): T => {
     try {
-      ScopedEffectCollector.getInstance().enterScope();
+      ComponentScope.getInstance().enterScope();
 
       const componentRoot: T = fn(...args);
 
-      ScopedEffectCollector.getInstance()
+      ComponentScope.getInstance()
         .getEffects()
         .forEach((ref) => {
           componentRoot.registerOnMountHook(ref.activate.bind(ref));
@@ -99,7 +64,7 @@ export const createComponent = <T extends HtmlVNode>(
 
       return componentRoot;
     } finally {
-      ScopedEffectCollector.getInstance().exitScope();
+      ComponentScope.getInstance().exitScope();
     }
   };
 };
