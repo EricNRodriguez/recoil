@@ -28,7 +28,9 @@ export const onInitialMount = (effect: Runnable): void => {
  * @param sideEffect The side effect to be created and mounted
  */
 export const runMountedEffect = (sideEffect: Runnable): void => {
-  mountEffect(runEffect(sideEffect));
+  const ref = runEffect(sideEffect);
+  ref.deactivate();
+  mountEffect(ref);
 };
 
 /**
