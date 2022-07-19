@@ -5,10 +5,8 @@ import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVElement } from "../vdom/virtual_element";
 import { notNullOrUndefined } from "../../../util";
-import {
-  createComponent,
-  runMountedEffect,
-} from "../component/create_component";
+import { createComponent } from "../component/create_component";
+import { runMountedEffect } from "../component/mount_hooks";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 

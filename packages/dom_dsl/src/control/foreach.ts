@@ -4,11 +4,9 @@ import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVNode } from "../vdom/virtual_node";
-import {
-  createComponent,
-  runMountedEffect,
-} from "../component/create_component";
+import { createComponent } from "../component/create_component";
 import { runEffect } from "../../../atom";
+import { runMountedEffect } from "../component/mount_hooks";
 
 export const foreach = createComponent(
   <T extends Object>(

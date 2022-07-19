@@ -1,10 +1,8 @@
 import { HtmlVElement } from "../../vdom/virtual_element";
 import { Runnable, Supplier } from "../../../../util/src/function.interface";
-import {
-  createComponent,
-  runMountedEffect,
-} from "../../component/create_component";
+import { createComponent } from "../../component/create_component";
 import { runEffect } from "../../../../atom";
+import { runMountedEffect } from "../../component/mount_hooks";
 
 export type CheckboxArguments = {
   isChecked: Supplier<boolean | null>;

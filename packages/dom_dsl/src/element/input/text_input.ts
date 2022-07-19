@@ -1,9 +1,7 @@
 import { HtmlVElement } from "../../vdom/virtual_element";
 import { LeafAtom, runEffect } from "../../../../atom";
-import {
-  createComponent,
-  runMountedEffect,
-} from "../../component/create_component";
+import { createComponent } from "../../component/create_component";
+import { runMountedEffect } from "../../component/mount_hooks";
 
 export const textInput = createComponent(
   (text: LeafAtom<string>): HtmlVElement => {
