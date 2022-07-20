@@ -1,12 +1,12 @@
-import { Atom, isAtom, runEffect } from "../../../atom";
-import { Supplier } from "../../../util/src/function.interface";
+import { Atom, isAtom } from "../../../atom";
+import { Supplier } from "../../../util";
 import { wrapStaticContentInProvider } from "../../../vdom/src/vdom_util";
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { HtmlVElement } from "../../../vdom/src/virtual_element";
+import { HtmlVElement } from "../../../vdom";
 import { notNullOrUndefined } from "../../../util";
-import { createComponent } from "../../../dom-component/src/component_factory";
-import { runMountedEffect } from "../../../dom-component/src/mount_hooks";
+import { createComponent } from "../../../dom-component";
+import { runMountedEffect } from "../../../dom-component";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 

@@ -1,12 +1,11 @@
-import { Function, Supplier } from "../../../util/src/function.interface";
+import { Function, Supplier } from "../../../util";
 import { frag } from "../element/frag";
 import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { HtmlVNode } from "../../../vdom/src/virtual_node";
-import { createComponent } from "../../../dom-component/src/component_factory";
-import { runEffect } from "../../../atom";
-import { runMountedEffect } from "../../../dom-component/src/mount_hooks";
+import { HtmlVNode } from "../../../vdom";
+import { createComponent } from "../../../dom-component";
+import { runMountedEffect } from "../../../dom-component";
 
 export const foreach = createComponent(
   <T extends Object>(
