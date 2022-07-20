@@ -37,17 +37,15 @@ export const foreach = createComponent(
         ++firstNonEqualIndex;
       }
 
-      queueMicrotask((): void => {
-        anchor.deleteChildren(firstNonEqualIndex);
-        anchor.appendChildren(
-          newItemOrder
-            .slice(firstNonEqualIndex)
-            .map((key) => newItemNodesIndex.get(key))
-        );
+      anchor.deleteChildren(firstNonEqualIndex);
+      anchor.appendChildren(
+        newItemOrder
+          .slice(firstNonEqualIndex)
+          .map((key) => newItemNodesIndex.get(key))
+      );
 
-        currentItemOrder = newItemOrder;
-        currentItemIndex = newItemNodesIndex;
-      });
+      currentItemOrder = newItemOrder;
+      currentItemIndex = newItemNodesIndex;
     });
 
     return anchor;
