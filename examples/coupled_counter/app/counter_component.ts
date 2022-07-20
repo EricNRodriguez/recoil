@@ -9,10 +9,12 @@ class Logger {
     private logs: string[] = [];
 
     public logMessage(msg: string): void {
-      this.logs = [
-        ...this.logs,
-        msg,
-      ];
+      queueMicrotask(() => {
+        this.logs = [
+          ...this.logs,
+          msg,
+        ];
+      });
     }
 
     public getLogs(): string[] {
