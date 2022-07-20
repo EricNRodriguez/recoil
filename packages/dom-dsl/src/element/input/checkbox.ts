@@ -1,6 +1,6 @@
 import { HtmlVElement } from "../../../../vdom";
 import { Runnable, Supplier } from "../../../../util";
-import {createComponent, runMountedEffect} from "../../../../dom-component";
+import { createComponent, runMountedEffect } from "../../../../dom-component";
 
 export type CheckboxArguments = {
   isChecked: Supplier<boolean | null>;
