@@ -1,9 +1,30 @@
 import {createComponent, onInitialMount, onMount, onUnmount, runMountedEffect} from "../../../packages/dom-component";
 import {HtmlVElement, HtmlVNode} from "../../../packages/vdom";
-import {Atom, createState} from "../../../packages/atom";
-import {button, div, hr, ifElse, t} from "../../../packages/dom-dsl";
+import {Atom, createState, state} from "../../../packages/atom";
+import {br, button, div, hr, ifElse, t} from "../../../packages/dom-dsl";
+import {log} from "./log_component";
 
-export const coupledCounter = createComponent((onEMount: () => void): HtmlVElement => {
+class Logger {
+    @state()
+    private logs: string[] = [];
+
+    public logMessage(msg: string): void {
+      queueMicrotask(() => {
+        this.logs = [
+          ...this.logs,
+          msg,
+        ];
+      });
+    }
+
+    public getLogs(): string[] {
+      return this.logs;
+    }
+}
+
+export const coupledCounter = createComponent((): HtmlVElement => {
+  const logger = new Logger();
+
   const a = createState<number>(0);
   const b = createState<number>(0);
   const c = createState<number>(0);
@@ -35,25 +56,27 @@ export const coupledCounter = createComponent((onEMount: () => void): HtmlVEleme
     incBButton,
     incCButton,
     flipStateButton,
-    hr(),
+    br(),
     ifElse(
       state,
-      dComponent(a,b),
-      eComponent(a,b,c, onEMount),
+      dComponent(logger, a,b),
+      eComponent(logger, a,b,c),
     ),
+    hr(),
+    log(() => logger.getLogs()),
   );
 });
 
-const dComponent = createComponent((a: Atom<number>, b: Atom<number>): HtmlVNode => {
+const dComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<number>): HtmlVNode => {
 
   runMountedEffect((): void => {
     a.get();
     b.get();
-    console.log("dComponent was updated");
+    logger.logMessage("dComponent was updated");
   });
 
-  onMount(() => console.log("dComponent mounted"));
-  onUnmount(() => console.log("dComponent unmounted"));
+  onMount(() => logger.logMessage("dComponent mounted"));
+  onUnmount(() => logger.logMessage("dComponent unmounted"));
 
   const elem = div(
     div("d content"),
@@ -65,20 +88,19 @@ const dComponent = createComponent((a: Atom<number>, b: Atom<number>): HtmlVNode
   return elem;
 });
 
-const eComponent = createComponent((a: Atom<number>, b: Atom<number>, c: Atom<number>, onFirstMount: () => void): HtmlVNode => {
+const eComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<number>, c: Atom<number>): HtmlVNode => {
 
   runMountedEffect((): void => {
     a.get();
     b.get();
     c.get();
 
-    console.log("eComponent was updated");
+    logger.logMessage("eComponent was updated");
   });
 
-  onMount(() => console.log("eComponent mounted"));
-  onUnmount(() => console.log("eComponent unmounted"));
-  onInitialMount(() => console.log("E COMPONENT INITIAL MOUNT CALLED"));
-  onInitialMount(onFirstMount);
+  onMount(() => logger.logMessage("eComponent mounted"));
+  onUnmount(() => logger.logMessage("eComponent unmounted"));
+  onInitialMount(() => logger.logMessage("eComponent initial mount called"));
 
   const elem = div(
     div("e content"),
