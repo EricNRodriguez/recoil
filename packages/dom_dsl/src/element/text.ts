@@ -1,7 +1,7 @@
 import { Atom, isAtom, runEffect } from "../../../atom";
 import { Supplier } from "../../../util";
 import { HtmlVNode } from "../vdom/virtual_node";
-import { createComponent } from "../component/create_component";
+import { createComponent } from "../component/component_factory";
 import { runMountedEffect } from "../component/mount_hooks";
 
 export type TextContent = string | Supplier<string> | Atom<string>;

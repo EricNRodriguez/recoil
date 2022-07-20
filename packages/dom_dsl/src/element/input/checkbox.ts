@@ -1,6 +1,6 @@
 import { HtmlVElement } from "../../vdom/virtual_element";
 import { Runnable, Supplier } from "../../../../util/src/function.interface";
-import { createComponent } from "../../component/create_component";
+import { createComponent } from "../../component/component_factory";
 import { runEffect } from "../../../../atom";
 import { runMountedEffect } from "../../component/mount_hooks";
 

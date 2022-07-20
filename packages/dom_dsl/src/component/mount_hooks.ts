@@ -1,18 +1,23 @@
 import { Runnable } from "../../../util";
-import { ComponentScope } from "./component_scope";
 import { runEffect, SideEffectRef } from "../../../atom";
+import {ComponentFactory} from "./component_factory";
+import {HtmlVNode} from "../vdom/virtual_node";
 
 export const onMount = (effect: Runnable): void => {
-  ComponentScope.getInstance().collectOnMountEffect(effect);
+  ComponentFactory.getInstance().registerNextComponentConsumer((node: HtmlVNode): void => {
+      node.registerOnMountHook(effect);
+  });
 };
 
 export const onUnmount = (effect: Runnable): void => {
-  ComponentScope.getInstance().collectOnUnmountEffect(effect);
+  ComponentFactory.getInstance().registerNextComponentConsumer((node: HtmlVNode): void => {
+    node.registerOnUnmountHook(effect);
+  });
 };
 
 export const onInitialMount = (effect: Runnable): void => {
   let called: boolean = false;
-  ComponentScope.getInstance().collectOnMountEffect((): void => {
+  onMount((): void => {
     if (called) {
       return;
     }
@@ -41,11 +46,6 @@ export const runMountedEffect = (sideEffect: Runnable): void => {
  * @param ref The references of the side effect to be mounted
  */
 export const mountEffect = (ref: SideEffectRef): void => {
-  if (!ComponentScope.getInstance().isInScope()) {
-    // TODO(ericr): more specific error message
-    throw new Error("unable to mount effect outside of createComponent scope");
-  }
-
   onMount(() => ref.activate());
   onUnmount(() => ref.deactivate());
 };
