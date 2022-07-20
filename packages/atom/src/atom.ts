@@ -154,7 +154,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
   }
 
   public set(value: T) {
-    this.checkSetIsNotASideEffect();
+    // this.checkSetIsNotASideEffect();
 
     if (value === this.value) {
       return;
