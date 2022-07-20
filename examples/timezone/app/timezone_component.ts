@@ -13,7 +13,7 @@ export const time = createComponent((): HtmlVElement => {
       .then((rsp: Response): any => {
         return rsp.json();
       }).then((rsp: any): number => {
-        return rsp["datetime"] ?? -1;
+        return rsp["datetime"] ?? "invalid area/location/region";
       });
   });
 
