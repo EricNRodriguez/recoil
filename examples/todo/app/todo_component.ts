@@ -1,11 +1,15 @@
 import {br, button, div, foreach, h2, ifElse, t, textInput} from "../../../packages/dom-dsl";
 import {HtmlVElement, HtmlVNode} from "../../../packages/vdom";
 import {createState, state} from "../../../packages/atom";
-import {createComponent} from "../../../packages/dom-component";
+import {createComponent, onInitialMount, onMount} from "../../../packages/dom-component";
 import {TodoItem, TodoModel} from "./todo_model";
 
 
 export const todoList = createComponent((model: TodoModel): HtmlVElement => {
+
+  onInitialMount((): void => {
+    console.log("todoList initial mount");
+  });
 
   return div(
     h2("todo list:"),
@@ -48,7 +52,7 @@ const todoItemInput = (model: TodoModel): HtmlVNode => {
   );
 };
 
-const todoListItem = (item: TodoItem, model: TodoModel): HtmlVNode => {
+const todoListItem = createComponent((item: TodoItem, model: TodoModel): HtmlVNode => {
   const buttonDivStyle = {
     "padding-right": "10px",
     "display": "inline-block",
@@ -57,6 +61,10 @@ const todoListItem = (item: TodoItem, model: TodoModel): HtmlVNode => {
   const outerDivStyle = {
     "padding": "5px 5px 5px 0px",
   };
+
+  onInitialMount((): void => {
+      console.log(`mounted component for item ${item.content}`);
+  });
 
   return div(
     div(
@@ -67,5 +75,5 @@ const todoListItem = (item: TodoItem, model: TodoModel): HtmlVNode => {
     ).setStyle(buttonDivStyle),
     t(item.content),
   ).setStyle(outerDivStyle);
-}
+});
 
