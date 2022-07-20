@@ -1,5 +1,5 @@
 import { HtmlVNode } from "../vdom/virtual_node";
-import {Consumer} from "../../../util";
+import { Consumer } from "../../../util";
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
@@ -45,7 +45,9 @@ export class ComponentFactory {
   public registerNextComponentConsumer(consumer: Consumer<HtmlVNode>): void {
     if (!this.isInScope()) {
       // TODO(ericr): more specific error message and type
-      throw new Error("unable to register consumer outside of a component context");
+      throw new Error(
+        "unable to register consumer outside of a component context"
+      );
     }
 
     this.consumeQueue.get(this.currentScope)?.push(consumer);
@@ -57,13 +59,17 @@ export class ComponentFactory {
    *
    * @param domBuilder A simple dom constructor
    */
-  public buildComponent<T extends HtmlVNode>(domBuilder: DomBuilder<T>): DomBuilder<T> {
+  public buildComponent<T extends HtmlVNode>(
+    domBuilder: DomBuilder<T>
+  ): DomBuilder<T> {
     return (...args: any[]): T => {
       try {
         this.enterScope();
 
         const component = domBuilder(...args);
-        this.getCurrentScopeConsumers().forEach((consumer: Consumer<HtmlVNode>): void => consumer(component));
+        this.getCurrentScopeConsumers().forEach(
+          (consumer: Consumer<HtmlVNode>): void => consumer(component)
+        );
 
         return component;
       } finally {
@@ -87,4 +93,5 @@ export class ComponentFactory {
  * @param fn The HtmlVNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>) => ComponentFactory.getInstance().buildComponent(fn);
+export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>) =>
+  ComponentFactory.getInstance().buildComponent(fn);

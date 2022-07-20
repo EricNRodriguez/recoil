@@ -1,18 +1,22 @@
 import { Runnable } from "../../../util";
 import { runEffect, SideEffectRef } from "../../../atom";
-import {ComponentFactory} from "./component_factory";
-import {HtmlVNode} from "../vdom/virtual_node";
+import { ComponentFactory } from "./component_factory";
+import { HtmlVNode } from "../vdom/virtual_node";
 
 export const onMount = (effect: Runnable): void => {
-  ComponentFactory.getInstance().registerNextComponentConsumer((node: HtmlVNode): void => {
+  ComponentFactory.getInstance().registerNextComponentConsumer(
+    (node: HtmlVNode): void => {
       node.registerOnMountHook(effect);
-  });
+    }
+  );
 };
 
 export const onUnmount = (effect: Runnable): void => {
-  ComponentFactory.getInstance().registerNextComponentConsumer((node: HtmlVNode): void => {
-    node.registerOnUnmountHook(effect);
-  });
+  ComponentFactory.getInstance().registerNextComponentConsumer(
+    (node: HtmlVNode): void => {
+      node.registerOnUnmountHook(effect);
+    }
+  );
 };
 
 export const onInitialMount = (effect: Runnable): void => {

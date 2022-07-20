@@ -1,5 +1,5 @@
 import { VNode } from "./virtual_node.interface";
-import { BiConsumer, Consumer, Supplier } from "../../../util";
+import { BiConsumer, Consumer } from "../../../util";
 import { Atom } from "../../../atom";
 
 export type ElementStyle = { [key: string]: string };

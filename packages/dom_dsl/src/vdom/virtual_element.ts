@@ -2,11 +2,12 @@ import { BiConsumer, Consumer, notNullOrUndefined } from "../../../util";
 import { Attribute, VElement, ElementStyle } from "./virtual_element.interface";
 import { Atom, isAtom } from "../../../atom";
 import {
+  unwrapVNode,
+  wrapInVNode,
   appendChildren,
   removeChildren,
   replaceChildren,
-} from "../util/dom_utils";
-import { unwrapVNode, wrapInVNode } from "./vdom_util";
+} from "./vdom_util";
 import { VNode } from "./virtual_node.interface";
 import { VNodeBase } from "./virtual_node_base";
 import { HtmlVNode } from "./virtual_node";

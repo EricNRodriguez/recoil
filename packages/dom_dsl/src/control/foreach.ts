@@ -47,7 +47,7 @@ export const foreach = createComponent(
         );
 
         currentItemOrder = newItemOrder;
-        currentItemIndex = newItemNodesIndex
+        currentItemIndex = newItemNodesIndex;
       });
     });
 

@@ -1,5 +1,4 @@
 import { VNode } from "./virtual_node.interface";
-import { runEffect, SideEffectRef } from "../../../atom";
 import { Runnable } from "../../../util";
 
 export abstract class VNodeBase<A, B extends VNodeBase<A, B>>

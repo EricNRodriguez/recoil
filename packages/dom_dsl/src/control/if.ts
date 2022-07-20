@@ -53,7 +53,7 @@ export const ifElse = createComponent(
         currentRenderedItem = nodeSupplier();
 
         anchor.setChildren(currentRenderedItem);
-      })
+      });
     });
 
     return anchor;
