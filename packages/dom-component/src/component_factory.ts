@@ -1,5 +1,5 @@
-import { HtmlVNode } from "../../vdom/src/virtual_node";
-import { Consumer } from "../../util";
+import { HtmlVNode } from "../../vdom";
+import {Consumer, Producer} from "../../util";
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
@@ -57,25 +57,21 @@ export class ComponentFactory {
    * Executes a dom builder inside a managed scope/context, allowing functions that run against
    * the return value to be queued.
    *
-   * @param domBuilder A simple dom constructor
+   * @param fn A simple dom constructor
    */
-  public buildComponent<T extends HtmlVNode>(
-    domBuilder: DomBuilder<T>
-  ): DomBuilder<T> {
-    return (...args: any[]): T => {
-      try {
-        this.enterScope();
+  public buildComponent<T extends HtmlVNode>(fn: Producer<T>): T {
+    try {
+      this.enterScope();
 
-        const component = domBuilder(...args);
-        this.getCurrentScopeConsumers().forEach(
-          (consumer: Consumer<HtmlVNode>): void => consumer(component)
-        );
+      const component = fn();
+      this.getCurrentScopeConsumers().forEach(
+        (consumer: Consumer<HtmlVNode>): void => consumer(component)
+      );
 
-        return component;
-      } finally {
-        this.exitScope();
-      }
-    };
+      return component;
+    } finally {
+      this.exitScope();
+    }
   }
 }
 
@@ -93,5 +89,8 @@ export class ComponentFactory {
  * @param fn The HtmlVNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>) =>
-  ComponentFactory.getInstance().buildComponent(fn);
+export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>) => {
+  return (...args: any[]): T => {
+    return ComponentFactory.getInstance().buildComponent(() => fn(...args));
+  }
+};
