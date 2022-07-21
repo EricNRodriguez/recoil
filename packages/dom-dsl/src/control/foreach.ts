@@ -1,16 +1,15 @@
-import { Function, Supplier } from "../../../util";
 import { frag } from "../element/frag";
 import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { HtmlVNode } from "../../../vdom";
-import { createComponent } from "../../../dom-component";
-import { runMountedEffect } from "../../../dom-component";
+import { HtmlVNode } from "recoil-vdom";
+import { runMountedEffect, createComponent } from "recoil-dom-component";
+import {Supplier} from "recoil-util";
 
 export const foreach = createComponent(
   <T extends Object>(
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, MaybeNodeOrVNode>
+    buildElement: Function
   ): HtmlVNode => {
     const anchor = frag();
 

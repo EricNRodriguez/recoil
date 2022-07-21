@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../../../vdom";
+import { HtmlVElement } from "recoil-vdom";
 
 type ParagraphContent = Text | string;
 

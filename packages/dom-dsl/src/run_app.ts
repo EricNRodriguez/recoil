@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../../vdom";
+import { HtmlVElement } from "recoil-vdom";
 
 export const runApp = (anchor: HTMLElement, app: HtmlVElement): void => {
   // NOTE(ericr): This has some large implications, one of which is that now the VElement tree

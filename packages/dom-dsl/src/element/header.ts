@@ -1,5 +1,5 @@
-import { HtmlVElement } from "../../../vdom";
-import { HtmlVNode } from "../../../vdom";
+import { HtmlVElement } from "recoil-vdom";
+import { HtmlVNode } from "recoil-vdom";
 
 export type HeaderContent = HtmlVNode | string;
 

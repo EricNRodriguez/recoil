@@ -1,12 +1,12 @@
 {
-  "name": "dom-component",
+  "name": "recoil-dom-component",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "atom": "../atom",
-    "util": "../util",
-    "vdom": "../vdom"
+    "recoil-atom": "../atom",
+    "recoil-util": "../util",
+    "recoil-vdom": "../vdom"
   }
 }

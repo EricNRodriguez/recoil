@@ -1,5 +1,4 @@
-import { IMaybe } from "typescript-monads/src/maybe/maybe.interface";
-import { Maybe } from "typescript-monads";
+import { Maybe, IMaybe } from "typescript-monads";
 import { DerivedAtom } from "./atom.interface";
 
 export class AtomContext<T extends DerivedAtom<Object>> {

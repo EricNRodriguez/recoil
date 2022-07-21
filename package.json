@@ -24,8 +24,10 @@
     "tsc": "^2.0.4",
     "typescript": "^4.7.4"
   },
-  "dependencies": {
-    "typescript-monads": "^7.2.0",
-    "util": "^0.12.4"
+  "exports": {
+    "./atom": "./packages/atom",
+    "./dom-component": "./packages/dom-component",
+    "./dom-dsl": "./packages/dom-dsl",
+    "./vdom": "./packages/vdom"
   }
 }

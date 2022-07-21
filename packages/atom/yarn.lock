@@ -2,33 +2,8 @@
 # yarn lockfile v1
 
 
-recoil-atom@../atom:
-  version "1.0.0"
-  dependencies:
-    recoil-util "../util"
-    typescript-monads "^7.2.0"
-
-recoil-dom-component@../dom-component:
-  version "1.0.0"
-  dependencies:
-    recoil-atom "../atom"
-    recoil-util "../util"
-    recoil-vdom "../vdom"
-
-recoil-dom-dsl@../dom-dsl:
-  version "1.0.0"
-  dependencies:
-    recoil-dom-component "../dom-component"
-    recoil-vdom "../vdom"
-
 recoil-util@../util:
   version "1.0.0"
-
-recoil-vdom@../vdom:
-  version "1.0.0"
-  dependencies:
-    recoil-atom "../atom"
-    recoil-util "../util"
 
 rxjs@^7:
   version "7.5.6"

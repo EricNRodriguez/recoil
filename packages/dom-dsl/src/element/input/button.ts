@@ -1,5 +1,5 @@
-import { HtmlVElement } from "../../../../vdom";
-import { Consumer } from "../../../../util";
+import { HtmlVElement } from "recoil-vdom";
+import { Consumer } from "recoil-util";
 
 export type ButtonContent = Text | string;
 

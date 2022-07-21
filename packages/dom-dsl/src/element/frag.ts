@@ -1,6 +1,6 @@
 import { div } from "./div";
 import { MaybeNodeOrVNode } from "./node.interface";
-import { HtmlVElement } from "../../../vdom";
+import { HtmlVElement } from "recoil-vdom";
 
 export type FragContent = MaybeNodeOrVNode;
 

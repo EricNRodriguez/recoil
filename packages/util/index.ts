@@ -13,3 +13,7 @@ export {
   nullOrUndefined,
   removeNullAndUndefinedItems,
 } from "./src/type_check";
+
+export {
+  clamp
+} from "./src/math";

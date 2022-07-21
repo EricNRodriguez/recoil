@@ -5,11 +5,24 @@
 atom@../atom:
   version "1.0.0"
 
-util@../util:
+recoil-atom@../atom:
   version "1.0.0"
 
-vdom@../vdom:
+recoil-dom-component@../dom-component:
+  version "1.0.0"
+  dependencies:
+    recoil-atom "../atom"
+    recoil-util "../util"
+    recoil-vdom "../vdom"
+
+recoil-util@../util:
+  version "1.0.0"
+
+recoil-vdom@../vdom:
   version "1.0.0"
   dependencies:
     atom "../atom"
     util "../util"
+
+util@../util:
+  version "1.0.0"

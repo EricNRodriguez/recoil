@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../../../vdom";
+import { HtmlVElement } from "recoil-vdom";
 import { MaybeNodeOrVNode } from "./node.interface";
 
 export type DivContent = MaybeNodeOrVNode | string;

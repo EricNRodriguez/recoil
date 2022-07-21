@@ -1,9 +1,9 @@
 import { VNode } from "./virtual_node.interface";
 import { MaybeNode } from "../../dom-dsl/src/element/node.interface";
-import { removeNullAndUndefinedItems } from "../../util";
-import { t } from "../../dom-dsl";
+import { removeNullAndUndefinedItems } from "recoil-util";
+import { t } from "recoil-dom-dsl"; // TODO(ericr): remove this dep
 import { HtmlVNode } from "./virtual_node";
-import { nullOrUndefined, Supplier } from "../../util";
+import { nullOrUndefined, Supplier } from "recoil-util";
 
 export const isVNode = (content: any): boolean => {
   return content instanceof Object && "getRaw" in content;

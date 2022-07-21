@@ -1,5 +1,5 @@
 {
-  "name": "util",
+  "name": "recoil-util",
   "version": "1.0.0",
   "description": "a private shared utils package ",
   "main": "index.js",

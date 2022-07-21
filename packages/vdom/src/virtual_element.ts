@@ -1,6 +1,6 @@
-import { BiConsumer, Consumer, notNullOrUndefined } from "../../util";
+import { BiConsumer, Consumer, notNullOrUndefined } from "recoil-util";
 import { Attribute, VElement, ElementStyle } from "./virtual_element.interface";
-import { Atom, isAtom } from "../../atom";
+import { Atom, isAtom } from "recoil-atom";
 import {
   unwrapVNode,
   wrapInVNode,

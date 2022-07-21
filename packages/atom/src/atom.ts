@@ -1,5 +1,4 @@
-import { Maybe } from "typescript-monads";
-import { IMaybe } from "typescript-monads/src/maybe/maybe.interface";
+import { Maybe, IMaybe } from "typescript-monads";
 import {
   Atom,
   DerivedAtom,
@@ -10,7 +9,7 @@ import {
 import { AtomContext } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
-import { Producer } from "../../util";
+import { Producer } from "recoil-util";
 
 export const isAtom = (obj: any): boolean => {
   return (

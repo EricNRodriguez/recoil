@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../../../vdom/src/virtual_element";
+import { HtmlVElement } from "recoil-vdom";
 
 export const link = (): HtmlVElement => {
   return new HtmlVElement("link");

@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../../../vdom";
+import { HtmlVElement } from "recoil-vdom";
 
 export const hr = (): HtmlVElement => {
   return new HtmlVElement("hr");

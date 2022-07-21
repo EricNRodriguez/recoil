@@ -1,11 +1,11 @@
 {
-  "name": "dom-dsl",
+  "name": "recoil-dom-dsl",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "util": "../util",
-    "vdom": "../vdom"
+    "recoil-dom-component": "../dom-component",
+    "recoil-vdom": "../vdom"
   }
 }

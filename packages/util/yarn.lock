@@ -2,8 +2,3 @@
 # yarn lockfile v1
 
 
-atom@../atom:
-  version "1.0.0"
-
-util@../util:
-  version "1.0.0"

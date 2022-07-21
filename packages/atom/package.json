@@ -1,7 +1,12 @@
 {
-  "name": "atom",
+  "name": "recoil-atom",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "typescript-monads": "^7.2.0",
+  "dependencies": {
+    "recoil-util": "../util",
+    "typescript-monads": "^7.2.0"
+  }
 }
