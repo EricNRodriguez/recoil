@@ -1,7 +1,7 @@
-import {createComponent} from "../../../packages/dom-component";
-import {HtmlVElement, HtmlVNode} from "../../../packages/vdom";
-import {createState, fetchState, LeafAtom} from "../../../packages/atom";
-import {div, h3, hr, p, t, textInput} from "../../../packages/dom-dsl";
+import {createComponent} from "recoil/packages/dom-component";
+import {HtmlVElement, HtmlVNode} from "recoil/packages/vdom";
+import {createState, fetchState, LeafAtom} from "recoil/packages/atom";
+import {div, h3, hr, p, t, textInput} from "recoil/packages/dom-dsl";
 
 export const time = createComponent((): HtmlVElement => {
   const area = createState<string>("");

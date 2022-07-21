@@ -1,6 +1,6 @@
-import {HtmlVElement} from "../../../packages/vdom";
-import {createComponent, onInitialMount, runMountedEffect} from "../../../packages/dom-component";
-import {div, foreach, h3, p, t} from "../../../packages/dom-dsl";
+import {HtmlVElement} from "recoil/packages/vdom";
+import {createComponent, onInitialMount, runMountedEffect} from "recoil/packages/dom-component";
+import {div, foreach, h3, p, t} from "recoil/packages/dom-dsl";
 
 export const log = createComponent((getLogs: () => string[]): HtmlVElement => {
   const style = {

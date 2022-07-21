@@ -1,4 +1,4 @@
-import {runApp} from "../../../packages/dom-dsl";
+import {runApp} from "recoil/packages/dom-dsl";
 import {todoList} from "./todo_component";
 import {TodoModel} from "./todo_model";
 

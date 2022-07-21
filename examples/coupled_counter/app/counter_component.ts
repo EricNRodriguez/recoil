@@ -1,7 +1,7 @@
-import {createComponent, onInitialMount, onMount, onUnmount, runMountedEffect} from "../../../packages/dom-component";
-import {HtmlVElement, HtmlVNode} from "../../../packages/vdom";
-import {Atom, createState, state} from "../../../packages/atom";
-import {br, button, div, hr, ifElse, t} from "../../../packages/dom-dsl";
+import {createComponent, onInitialMount, onMount, onUnmount, runMountedEffect} from "recoil/packages/dom-component";
+import {HtmlVElement, HtmlVNode} from "recoil/packages/vdom";
+import {Atom, createState, state} from "recoil/packages/atom";
+import {br, button, div, hr, ifElse, t} from "recoil/packages/dom-dsl";
 import {log} from "./log_component";
 
 class Logger {

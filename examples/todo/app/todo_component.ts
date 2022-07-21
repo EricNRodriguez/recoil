@@ -1,7 +1,7 @@
-import {br, button, div, foreach, h2, ifElse, t, textInput} from "../../../packages/dom-dsl";
-import {HtmlVElement, HtmlVNode} from "../../../packages/vdom";
-import {createState, state} from "../../../packages/atom";
-import {createComponent, onInitialMount, onMount} from "../../../packages/dom-component";
+import {br, button, div, foreach, h2, ifElse, t, textInput} from "recoil/packages/dom-dsl";
+import {HtmlVElement, HtmlVNode} from "recoil/packages/vdom";
+import {createState, state} from "recoil/packages/atom";
+import {createComponent, onInitialMount, onMount} from "recoil/packages/dom-component";
 import {TodoItem, TodoModel} from "./todo_model";
 
 

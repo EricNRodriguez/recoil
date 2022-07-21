@@ -1,4 +1,4 @@
-import {state} from "../../../packages/atom";
+import {state} from "recoil/packages/atom";
 
 export type TodoItem = {
   uuid: number,
