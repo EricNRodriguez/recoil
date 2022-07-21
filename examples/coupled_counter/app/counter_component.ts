@@ -1,6 +1,6 @@
 import {createComponent, onInitialMount, onMount, onUnmount, runMountedEffect} from "recoil/packages/dom-component";
 import {HtmlVElement, HtmlVNode} from "recoil/packages/vdom";
-import {Atom, createState, state} from "recoil/packages/atom";
+import {Atom, createState, state, runUntracked} from "recoil/packages/atom";
 import {br, button, div, hr, ifElse, t} from "recoil/packages/dom-dsl";
 import {log} from "./log_component";
 
@@ -9,12 +9,10 @@ class Logger {
     private logs: string[] = [];
 
     public logMessage(msg: string): void {
-      queueMicrotask(() => {
-        this.logs = [
-          ...this.logs,
-          msg,
-        ];
-      });
+      this.logs = [
+        ...this.logs,
+        msg,
+      ];
     }
 
     public getLogs(): string[] {
@@ -72,11 +70,14 @@ const dComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<num
   runMountedEffect((): void => {
     a.get();
     b.get();
-    logger.logMessage("dComponent was updated");
+
+    runUntracked(() => {
+      logger.logMessage("dComponent was updated");
+    });
   });
 
-  onMount(() => logger.logMessage("dComponent mounted"));
-  onUnmount(() => logger.logMessage("dComponent unmounted"));
+  onMount(() => runUntracked(() => logger.logMessage("dComponent mounted")));
+  onUnmount(() => runUntracked(() => logger.logMessage("dComponent unmounted")));
 
   const elem = div(
     div("d content"),
@@ -98,9 +99,9 @@ const eComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<num
     logger.logMessage("eComponent was updated");
   });
 
-  onMount(() => logger.logMessage("eComponent mounted"));
-  onUnmount(() => logger.logMessage("eComponent unmounted"));
-  onInitialMount(() => logger.logMessage("eComponent initial mount called"));
+  onMount(() => runUntracked(() => logger.logMessage("eComponent mounted")));
+  onUnmount(() => runUntracked(() => logger.logMessage("eComponent unmounted")));
+  onInitialMount(() => runUntracked(() => logger.logMessage("eComponent initial mount called")));
 
   const elem = div(
     div("e content"),

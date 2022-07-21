@@ -300,3 +300,14 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
     };
   }
 );
+
+/**
+ * Executes a callback that is not tracked by external contexts. I.e. reads made within the callback
+ * will be made outside any external tracking scopes.
+ *
+ * @param job The callback to execute in an untracked context
+ */
+export const runUntracked = (job: Runnable): void => {
+  // TODO(ericr): Implement properly - this is fine for now but we should have an option to disable tracking globally
+  queueMicrotask(job);
+}
