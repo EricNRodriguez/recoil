@@ -1,0 +1,12 @@
+{
+  "name": "dom-component",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "atom": "../atom",
+    "util": "../util",
+    "vdom": "../vdom"
+  }
+}
