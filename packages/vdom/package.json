@@ -5,8 +5,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "recoil-atom": "file:./../atom",
-    "recoil-dom-dsl": "file:./../dom-dsl",
-    "recoil-util": "file:./../util"
+    "recoil-atom": "link:./../atom",
+    "recoil-util": "link:./../util"
   }
 }

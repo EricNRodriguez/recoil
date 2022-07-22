@@ -1,7 +1,5 @@
 import { VNode } from "./virtual_node.interface";
-import { MaybeNode } from "../../dom-dsl/src/element/node.interface";
 import { removeNullAndUndefinedItems } from "recoil-util";
-import { t } from "recoil-dom-dsl"; // TODO(ericr): remove this dep
 import { HtmlVNode } from "./virtual_node";
 import { nullOrUndefined, Supplier } from "recoil-util";
 
@@ -41,7 +39,8 @@ export const wrapInVNode = (
   if (isVNode(node)) {
     return node as VNode<any, any>;
   } else if (typeof node === "string") {
-    return t(node as string);
+    throw new Error("todo - solving circular deps");
+    // return t(node as string);
   } else {
     return new HtmlVNode(node as Node);
   }
@@ -49,18 +48,18 @@ export const wrapInVNode = (
 
 export const replaceChildren = (
   node: Element,
-  ...children: MaybeNode[]
+  ...children: any[]
 ): void => {
   node.replaceChildren(...removeNullAndUndefinedItems(children));
 };
 
-export const removeChildren = (node: Element, children: MaybeNode[]): void => {
+export const removeChildren = (node: Element, children: any[]): void => {
   removeNullAndUndefinedItems(children).forEach((child: Node): void => {
     node.removeChild(child);
   });
 };
 
-export const appendChildren = (node: Element, children: MaybeNode[]): void => {
+export const appendChildren = (node: Element, children: any[]): void => {
   removeNullAndUndefinedItems(children).forEach((child: Node): void => {
     node.appendChild(child);
   });

@@ -6,7 +6,7 @@
   "private": false,
   "typescript-monads": "^7.2.0",
   "dependencies": {
-    "recoil-util": "file:./../util",
+    "recoil-util": "link:./../util",
     "typescript-monads": "^7.2.0"
   }
 }

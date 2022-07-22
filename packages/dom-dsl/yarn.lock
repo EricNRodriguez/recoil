@@ -2,34 +2,21 @@
 # yarn lockfile v1
 
 
-recoil-atom@../atom, "recoil-atom@file:../atom":
-  version "1.0.0"
-  dependencies:
-    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-atom-1.0.0-86e3d630-9d0f-4135-a6d3-84115dc92aca-1658533594971/node_modules/util"
-    typescript-monads "^7.2.0"
+"recoil-atom@link:../atom":
+  version "0.0.0"
+  uid ""
 
-"recoil-dom-component@file:../dom-component":
-  version "1.0.0"
-  dependencies:
-    recoil-atom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-bd709dbe-4479-49b7-82cc-4245a077c341-1658533594968/node_modules/atom"
-    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-bd709dbe-4479-49b7-82cc-4245a077c341-1658533594968/node_modules/util"
-    recoil-vdom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-bd709dbe-4479-49b7-82cc-4245a077c341-1658533594968/node_modules/vdom"
+"recoil-dom-component@link:../dom-component":
+  version "0.0.0"
+  uid ""
 
-recoil-dom-dsl@../dom-dsl:
-  version "1.0.0"
-  dependencies:
-    recoil-dom-component "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-dsl-1.0.0-841075b4-e644-43a3-95d0-425ab2aebd95-1658533595013/node_modules/dom-component"
-    recoil-vdom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-dsl-1.0.0-841075b4-e644-43a3-95d0-425ab2aebd95-1658533595013/node_modules/vdom"
+"recoil-util@link:../util":
+  version "0.0.0"
+  uid ""
 
-recoil-util@../util, "recoil-util@file:../util":
-  version "1.0.0"
-
-"recoil-vdom@file:../vdom":
-  version "1.0.0"
-  dependencies:
-    recoil-atom "../atom"
-    recoil-dom-dsl "../dom-dsl"
-    recoil-util "../util"
+"recoil-vdom@link:../vdom":
+  version "0.0.0"
+  uid ""
 
 rxjs@^7:
   version "7.5.6"
