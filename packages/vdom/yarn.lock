@@ -2,33 +2,34 @@
 # yarn lockfile v1
 
 
-recoil-atom@../atom:
+"recoil-atom@file:../atom":
   version "1.0.0"
   dependencies:
-    recoil-util "../util"
+    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-atom-1.0.0-befec58d-5d01-4ead-966b-e872524d53a2-1658533655228/node_modules/util"
     typescript-monads "^7.2.0"
 
-recoil-dom-component@../dom-component:
+"recoil-dom-component@file:../dom-component":
   version "1.0.0"
   dependencies:
-    recoil-atom "../atom"
-    recoil-util "../util"
-    recoil-vdom "../vdom"
+    recoil-atom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-36640ab8-f1a1-4281-9af9-4d7650c063c3-1658533656735/node_modules/atom"
+    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-36640ab8-f1a1-4281-9af9-4d7650c063c3-1658533656735/node_modules/util"
+    recoil-vdom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-36640ab8-f1a1-4281-9af9-4d7650c063c3-1658533656735/node_modules/vdom"
 
-recoil-dom-dsl@../dom-dsl:
+"recoil-dom-dsl@file:../dom-dsl":
   version "1.0.0"
   dependencies:
-    recoil-dom-component "../dom-component"
-    recoil-vdom "../vdom"
+    recoil-dom-component "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-dsl-1.0.0-45ab8bb0-2e67-4836-a15c-02381e352be6-1658533656734/node_modules/dom-component"
+    recoil-vdom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-dsl-1.0.0-45ab8bb0-2e67-4836-a15c-02381e352be6-1658533656734/node_modules/vdom"
 
-recoil-util@../util:
+"recoil-util@file:../util":
   version "1.0.0"
 
-recoil-vdom@../vdom:
+"recoil-vdom@file:.":
   version "1.0.0"
   dependencies:
-    recoil-atom "../atom"
-    recoil-util "../util"
+    recoil-atom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-vdom-1.0.0-4bd702b2-9efb-405f-a484-5bc368b2209a-1658533656735/node_modules/atom"
+    recoil-dom-dsl "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-vdom-1.0.0-4bd702b2-9efb-405f-a484-5bc368b2209a-1658533656735/node_modules/dom-dsl"
+    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-vdom-1.0.0-4bd702b2-9efb-405f-a484-5bc368b2209a-1658533656735/node_modules/util"
 
 rxjs@^7:
   version "7.5.6"

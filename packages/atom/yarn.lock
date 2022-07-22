@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-recoil-util@../util:
+"recoil-util@file:./../util":
   version "1.0.0"
 
 rxjs@^7:

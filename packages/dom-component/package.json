@@ -5,8 +5,8 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "recoil-atom": "../atom",
-    "recoil-util": "../util",
-    "recoil-vdom": "../vdom"
+    "recoil-atom": "file:./../atom",
+    "recoil-util": "file:./../util",
+    "recoil-vdom": "file:./../vdom"
   }
 }

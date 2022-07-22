@@ -2,20 +2,50 @@
 # yarn lockfile v1
 
 
-atom@../atom:
-  version "1.0.0"
-
-recoil-atom@../atom:
-  version "1.0.0"
-
-recoil-util@../util:
-  version "1.0.0"
-
-recoil-vdom@../vdom:
+recoil-atom@../atom, "recoil-atom@file:../atom":
   version "1.0.0"
   dependencies:
-    atom "../atom"
-    util "../util"
+    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-atom-1.0.0-9c4be947-a647-4261-a032-a2ba8cb360f1-1658533550916/node_modules/util"
+    typescript-monads "^7.2.0"
 
-util@../util:
+recoil-dom-component@../dom-component:
   version "1.0.0"
+  dependencies:
+    recoil-atom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-fed561ba-de14-4186-8e74-9bc7ebaecb63-1658533552670/node_modules/atom"
+    recoil-util "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-fed561ba-de14-4186-8e74-9bc7ebaecb63-1658533552670/node_modules/util"
+    recoil-vdom "file:../../../../../Library/Caches/Yarn/v6/npm-recoil-dom-component-1.0.0-fed561ba-de14-4186-8e74-9bc7ebaecb63-1658533552670/node_modules/vdom"
+
+recoil-dom-dsl@../dom-dsl:
+  version "1.0.0"
+  dependencies:
+    recoil-dom-component "../dom-component"
+    recoil-vdom "../vdom"
+
+recoil-util@../util, "recoil-util@file:../util":
+  version "1.0.0"
+
+recoil-vdom@../vdom, "recoil-vdom@file:../vdom":
+  version "1.0.0"
+  dependencies:
+    recoil-atom "../atom"
+    recoil-dom-dsl "../dom-dsl"
+    recoil-util "../util"
+
+rxjs@^7:
+  version "7.5.6"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.6.tgz#0446577557862afd6903517ce7cae79ecb9662bc"
+  integrity sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw==
+  dependencies:
+    tslib "^2.1.0"
+
+tslib@^2.1.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
+
+typescript-monads@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/typescript-monads/-/typescript-monads-7.2.0.tgz#377e6c494737cf5834c4c4b4c4439bb4e90c34eb"
+  integrity sha512-c/t80zo/ThAxn92pgSC2GPuTM6gr0ijpD+yAF6mv2EH7KvYoLL7lPvFHbxEPsv8utXU2i2+a/lyEtT/IL/JQ8g==
+  optionalDependencies:
+    rxjs "^7"

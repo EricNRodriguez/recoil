@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "recoil-dom-component": "../dom-component",
-    "recoil-vdom": "../vdom"
+    "recoil-dom-component": "file:./../dom-component",
+    "recoil-vdom": "file:./../vdom"
   }
 }
