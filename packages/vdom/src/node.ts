@@ -16,7 +16,9 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     this.node = node;
   }
 
-  public setChildren(...children: (VNode<Node> | Node | null | undefined)[]): B {
+  public setChildren(
+    ...children: (VNode<Node> | Node | null | undefined)[]
+  ): B {
     this.unmountCurrentChildren();
 
     const newChildren: VNode<Node>[] = children
@@ -40,7 +42,9 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   }
 
   private unmountCurrentChildren(): void {
-    this.children.forEach((oldChild: VNode<Node>): VNode<Node> => oldChild.unmount());
+    this.children.forEach(
+      (oldChild: VNode<Node>): VNode<Node> => oldChild.unmount()
+    );
   }
 
   public deleteChildren(offset: number): B {
@@ -56,7 +60,9 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     return this as unknown as B;
   }
 
-  public appendChildren(children: (VNode<Node> | Node | null | undefined)[]): B {
+  public appendChildren(
+    children: (VNode<Node> | Node | null | undefined)[]
+  ): B {
     const newChildren: VNode<Node>[] = children
       .map(wrapInVNode)
       .filter(notNullOrUndefined) as VNode<Node>[];

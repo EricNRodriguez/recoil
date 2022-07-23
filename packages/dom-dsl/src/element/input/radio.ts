@@ -33,8 +33,7 @@ export const radioButton = createComponent(
     radioButtonElement.getRaw().onclick = (): void => {
       originalOnClick();
 
-      radioButtonElement.getRaw().checked =
-        args.isChecked();
+      radioButtonElement.getRaw().checked = args.isChecked();
     };
 
     return radioButtonElement;

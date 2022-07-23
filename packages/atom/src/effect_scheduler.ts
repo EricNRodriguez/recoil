@@ -1,5 +1,5 @@
-import {Runnable} from "../../util";
-import {IEffectScheduler } from "./atom";
+import { Runnable } from "../../util";
+import { IEffectScheduler } from "./atom";
 
 enum StateKind {
   BATCH = "batch",
@@ -21,7 +21,7 @@ type EffectSchedulerState = LazyBatchUpdateState | EagerUpdateState;
  * An update scheduler that supports deferred updates.
  */
 export class BatchingEffectScheduler implements IEffectScheduler {
-  private state: EffectSchedulerState = {kind: StateKind.EAGER};
+  private state: EffectSchedulerState = { kind: StateKind.EAGER };
 
   public schedule(update: Runnable): void {
     switch (this.state.kind) {
@@ -32,7 +32,9 @@ export class BatchingEffectScheduler implements IEffectScheduler {
         this.scheduleEagerUpdate(update);
         return;
       default:
-        throw new Error(`fallthrough - BatchingEffectScheduler in invalid state state`);
+        throw new Error(
+          `fallthrough - BatchingEffectScheduler in invalid state state`
+        );
     }
   }
 
@@ -44,16 +46,16 @@ export class BatchingEffectScheduler implements IEffectScheduler {
     this.state = {
       kind: StateKind.BATCH,
       scheduledUpdates: new Set(),
-    }
+    };
   }
 
   public exitBatchedState(): void {
-      if (this.state.kind !== StateKind.BATCH) {
-        return;
-      }
+    if (this.state.kind !== StateKind.BATCH) {
+      return;
+    }
 
-      this.state.scheduledUpdates.forEach(update => update());
-      this.state = {kind: StateKind.EAGER};
+    this.state.scheduledUpdates.forEach((update) => update());
+    this.state = { kind: StateKind.EAGER };
   }
 
   private scheduleBatchedUpdate(update: Runnable): void {

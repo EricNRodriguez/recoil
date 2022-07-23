@@ -5,10 +5,10 @@ import {
   ISideEffect,
   ISideEffectRef,
 } from "./atom.interface";
-import {AtomTrackingContext, ParentAtom} from "./context";
+import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
-import {Producer, Runnable} from "../../util";
+import { Producer, Runnable } from "../../util";
 
 export const isAtom = (obj: any): boolean => {
   return (
@@ -52,16 +52,18 @@ class SideEffectRegistry<T> {
   }
 }
 
-
-
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
   private readonly effectScheduler: IEffectScheduler;
-  private readonly parents: WeakCollection<ParentAtom> =
-    new WeakCollection<DerivedAtom<Object>>();
+  private readonly parents: WeakCollection<ParentAtom> = new WeakCollection<
+    DerivedAtom<Object>
+  >();
   private readonly effects: SideEffectRegistry<T> = new SideEffectRegistry<T>();
 
-  protected constructor(context: AtomTrackingContext, effectScheduler: IEffectScheduler) {
+  protected constructor(
+    context: AtomTrackingContext,
+    effectScheduler: IEffectScheduler
+  ) {
     this.context = context;
     this.effectScheduler = effectScheduler;
   }
@@ -104,17 +106,17 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   // intentionally an arrow function, since it allows us to pass
-  // the function into the scheduler by reference, preventing duplicate 
+  // the function into the scheduler by reference, preventing duplicate
   // updates within a single batch (the scheduler diffs by reference)
   private scheduleEffectsCallback = (): void => {
-      // we want this to track, since the effects should be re-run whenever deps change
-      // hence, we do a tracked get (instead of an untracked get) - this way if any deps read
-      // within the get are dirtied then the effects will re-run eagerly.
-      const value: T = this.get();
-      this.effects
-        .getActiveEffects()
-        .forEach((effect: ISideEffect<T>) => effect(value));
-  }
+    // we want this to track, since the effects should be re-run whenever deps change
+    // hence, we do a tracked get (instead of an untracked get) - this way if any deps read
+    // within the get are dirtied then the effects will re-run eagerly.
+    const value: T = this.get();
+    this.effects
+      .getActiveEffects()
+      .forEach((effect: ISideEffect<T>) => effect(value));
+  };
 
   public react(effect: ISideEffect<T>): ISideEffectRef {
     const cachedEffect: ISideEffect<T> = this.buildCachedEffect(effect);
@@ -157,7 +159,11 @@ export interface IEffectScheduler {
 export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   private value: T;
 
-  constructor(value: T, context: AtomTrackingContext, effectScheduler: IEffectScheduler) {
+  constructor(
+    value: T,
+    context: AtomTrackingContext,
+    effectScheduler: IEffectScheduler
+  ) {
     super(context, effectScheduler);
     this.value = value;
   }
@@ -216,7 +222,11 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
 
-  constructor(deriveValue: Producer<T>, context: AtomTrackingContext, effectScheduler: IEffectScheduler) {
+  constructor(
+    deriveValue: Producer<T>,
+    context: AtomTrackingContext,
+    effectScheduler: IEffectScheduler
+  ) {
     super(context, effectScheduler);
     this.deriveValue = deriveValue;
   }

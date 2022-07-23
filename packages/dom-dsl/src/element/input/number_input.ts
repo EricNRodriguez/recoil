@@ -11,10 +11,9 @@ export type NumberInputArgs = {
 
 export const numberInput = createComponent(
   (args: NumberInputArgs): VElement<HTMLInputElement> => {
-    const builder: VElement<HTMLInputElement> = new VElement(document.createElement("input")).setAttribute(
-      "type",
-      "number"
-    );
+    const builder: VElement<HTMLInputElement> = new VElement(
+      document.createElement("input")
+    ).setAttribute("type", "number");
 
     builder.addEventHandler("input", (): void => {
       const inputElement = builder.getRaw();

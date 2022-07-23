@@ -23,10 +23,8 @@ export const checkbox = createComponent(
       }
 
       prevCheckedValue = isChecked;
-      checkboxElement.getRaw().checked =
-        isChecked === true;
-      checkboxElement.getRaw().indeterminate =
-        isChecked === null;
+      checkboxElement.getRaw().checked = isChecked === true;
+      checkboxElement.getRaw().indeterminate = isChecked === null;
     });
 
     if (args.isEnabled !== undefined) {
@@ -51,10 +49,8 @@ export const checkbox = createComponent(
       originalOnClick();
 
       const isChecked: boolean | null = args.isChecked();
-      checkboxElement.getRaw().checked =
-        isChecked === true;
-      checkboxElement.getRaw().indeterminate =
-        isChecked === null;
+      checkboxElement.getRaw().checked = isChecked === true;
+      checkboxElement.getRaw().indeterminate = isChecked === null;
     };
 
     return checkboxElement;

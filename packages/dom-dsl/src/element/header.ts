@@ -9,9 +9,9 @@ interface HeaderBuilder {
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
   return (content: HeaderContent): VElement<HTMLHeadingElement> => {
-    return new VElement(document.createElement(`h${headerNumber}`) as HTMLHeadingElement).setChildren(
-      wrapTextInVNode(content)
-    );
+    return new VElement(
+      document.createElement(`h${headerNumber}`) as HTMLHeadingElement
+    ).setChildren(wrapTextInVNode(content));
   };
 };
 

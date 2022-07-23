@@ -3,7 +3,7 @@ import { LeafAtomImpl, DerivedAtom } from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
-import {BatchingEffectScheduler} from "./effect_scheduler";
+import { BatchingEffectScheduler } from "./effect_scheduler";
 
 /**
  * A shared tracking context for all atoms created through this api
@@ -160,9 +160,17 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
 
-    const atom = new LeafAtomImpl<T | undefined>(undefined, globalTrackingContext, globalEffectScheduler);
+    const atom = new LeafAtomImpl<T | undefined>(
+      undefined,
+      globalTrackingContext,
+      globalEffectScheduler
+    );
 
-    const derivation = new DerivedAtom<Promise<T>>(producer, globalTrackingContext, globalEffectScheduler);
+    const derivation = new DerivedAtom<Promise<T>>(
+      producer,
+      globalTrackingContext,
+      globalEffectScheduler
+    );
     derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
       futureVal.then((val: T): void => {
@@ -190,7 +198,11 @@ export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
   <T>(value: T): ILeafAtom<T> => {
-    return new LeafAtomImpl(value, globalTrackingContext, globalEffectScheduler);
+    return new LeafAtomImpl(
+      value,
+      globalTrackingContext,
+      globalEffectScheduler
+    );
   }
 );
 
@@ -213,7 +225,11 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
   <T>(deriveValue: Producer<T>): IAtom<T> => {
-    return new DerivedAtom(deriveValue, globalTrackingContext, globalEffectScheduler);
+    return new DerivedAtom(
+      deriveValue,
+      globalTrackingContext,
+      globalEffectScheduler
+    );
   }
 );
 
@@ -237,10 +253,14 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  */
 export const runEffect: RunEffectSignature =
   ApiFunctionBuilder.getInstance().build((effect: Runnable): ISideEffectRef => {
-    const atom: IAtom<number> = new DerivedAtom(() => {
-      effect();
-      return 0;
-    }, globalTrackingContext, globalEffectScheduler);
+    const atom: IAtom<number> = new DerivedAtom(
+      () => {
+        effect();
+        return 0;
+      },
+      globalTrackingContext,
+      globalEffectScheduler
+    );
 
     // we register a noop effect, which will cause the derived atom
     // to eagerly evaluate immediately after every dirty
@@ -274,7 +294,14 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext, globalEffectScheduler));
+          registry.set(
+            this,
+            new LeafAtomImpl(
+              newVal,
+              globalTrackingContext,
+              globalEffectScheduler
+            )
+          );
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -303,9 +330,13 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
         if (!registry.has(this)) {
           registry.set(
             this,
-            new DerivedAtom(() => {
-              return originalFn.apply(this, args);
-            }, globalTrackingContext, globalEffectScheduler)
+            new DerivedAtom(
+              () => {
+                return originalFn.apply(this, args);
+              },
+              globalTrackingContext,
+              globalEffectScheduler
+            )
           );
         }
         return registry.get(this)!.get();
@@ -329,7 +360,6 @@ export const runUntracked = <T>(job: Producer<T>): T => {
   }
 };
 
-
 /**
  * Executes a job in a batched context, such that all eager side effects will be run after the job returns.
  * This is typically useful if you have an invalid intermediate state that is invalid and should never be used
@@ -338,10 +368,10 @@ export const runUntracked = <T>(job: Producer<T>): T => {
  * @param job The job to be run in a batched state, with all effects running after the job completes.
  */
 export const runBatched = (job: Runnable): void => {
-    try {
-      globalEffectScheduler.enterBatchState();
-      job();
-    } finally {
-      globalEffectScheduler.exitBatchedState();
-    }
+  try {
+    globalEffectScheduler.enterBatchState();
+    job();
+  } finally {
+    globalEffectScheduler.exitBatchedState();
+  }
 };

@@ -3,7 +3,7 @@ import { Maybe, IMaybe } from "typescript-monads";
 export type ParentAtom = {
   childDirty(): void;
   childReady(): void;
-}
+};
 
 export class AtomTrackingContext {
   private readonly scopeStack: ParentAtom[][] = [[]];

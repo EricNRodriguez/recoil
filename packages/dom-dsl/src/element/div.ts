@@ -5,6 +5,7 @@ import { VElement } from "../../../vdom";
 export type DivContent = MaybeNodeOrVNode | string;
 
 export const div = (...children: DivContent[]): VElement<HTMLElement> => {
-  return new VElement<HTMLDivElement>(document.createElement("div"))
-    .setChildren(...children.map(wrapTextInVNode));
+  return new VElement<HTMLDivElement>(
+    document.createElement("div")
+  ).setChildren(...children.map(wrapTextInVNode));
 };
