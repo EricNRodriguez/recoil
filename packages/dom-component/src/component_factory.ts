@@ -76,6 +76,10 @@ export class ComponentFactory {
       const buildComponent: IAtom<T> = deriveState(fn);
       const component = buildComponent.get();
 
+      if (this.getCurrentComponentVNodeConsumers().length > 0) {
+        (component as any).$$$recoilBuildComponentTrackedScope = buildComponent;
+      }
+
       this.getCurrentComponentVNodeConsumers().forEach(
         (consumer: Consumer<IAtom<VNode<Node>>>): void =>
           consumer(buildComponent)
