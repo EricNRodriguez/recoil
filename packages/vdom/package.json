@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "private": false,
   "dependencies": {
     "recoil-atom": "link:./../atom",
     "recoil-util": "link:./../util"

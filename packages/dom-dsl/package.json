@@ -3,9 +3,8 @@
   "version": "0.0.0-development",
   "main": "index.js",
   "license": "MIT",
-  "private": false,
   "dependencies": {
-    "recoil-dom-component": "link:../dom-component",
-    "recoil-vdom": "link:../vdom"
+    "recoil-dom-component": "file:../dom-component",
+    "recoil-vdom": "file:../vdom"
   }
 }
