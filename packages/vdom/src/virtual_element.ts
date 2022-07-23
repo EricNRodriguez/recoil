@@ -50,7 +50,7 @@ export class HtmlVElement
   }
 
   public setChildren(
-    ...children: (VNode<any, any> | Node | string | null | undefined)[]
+    ...children: (VNode<any, any> | Node | null | undefined)[]
   ): HtmlVElement {
     this.unmountCurrentChildren();
 
@@ -95,7 +95,7 @@ export class HtmlVElement
   }
 
   public appendChildren(
-    children: (VNode<any, any> | Node | string | null | undefined)[]
+    children: (VNode<any, any> | Node | null | undefined)[]
   ): HtmlVElement {
     const newChildren: VNode<any, any>[] = children
       .map(wrapInVNode)

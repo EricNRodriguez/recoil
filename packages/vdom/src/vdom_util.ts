@@ -38,9 +38,6 @@ export const wrapInVNode = (
 
   if (isVNode(node)) {
     return node as VNode<any, any>;
-  } else if (typeof node === "string") {
-    throw new Error("todo - solving circular deps");
-    // return t(node as string);
   } else {
     return new HtmlVNode(node as Node);
   }
@@ -48,7 +45,7 @@ export const wrapInVNode = (
 
 export const replaceChildren = (
   node: Element,
-  ...children: any[]
+  ...children: (Node | string | null | undefined)[]
 ): void => {
   node.replaceChildren(...removeNullAndUndefinedItems(children));
 };
