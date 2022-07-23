@@ -237,10 +237,11 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  */
 export const runEffect: RunEffectSignature =
   ApiFunctionBuilder.getInstance().build((effect: Runnable): ISideEffectRef => {
-    const atom: IAtom<number> = deriveState<number>(() => {
+    const atom: IAtom<number> = new DerivedAtom(() => {
       effect();
       return 0;
-    });
+    }, globalTrackingContext);
+
     // we register a noop effect, which will cause the derived atom
     // to eagerly evaluate immediately after every dirty
     const sideEffectRef: ISideEffectRef = atom.react(() => {});
