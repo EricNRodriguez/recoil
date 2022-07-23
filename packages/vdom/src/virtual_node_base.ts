@@ -1,6 +1,6 @@
 import { VNode } from "./virtual_node.interface";
-import {notNullOrUndefined, nullOrUndefined, removeNullAndUndefinedItems, Runnable} from "../../util";
-import {HtmlVNode} from "./virtual_node";
+import {notNullOrUndefined, Runnable} from "../../util";
+import {appendChildren, removeChildren, replaceChildren, unwrapVNode, wrapInVNode} from "./vdom_util";
 
 export abstract class VNodeBase<A extends Node, B extends VNodeBase<A, B>>
   implements VNode<A, B>
@@ -132,60 +132,3 @@ export abstract class VNodeBase<A extends Node, B extends VNodeBase<A, B>>
     return this.node;
   }
 }
-
-
-export const unwrapVNode = (content: Node | VNode<any, any>): Node => {
-  if (content === null || content === undefined) {
-    return content;
-  }
-
-  if (isVNode(content)) {
-    return (content as HtmlVNode).getRaw();
-  }
-
-  return content as Node;
-};
-
-export const wrapInVNode = (
-  node: VNode<any, any> | Node | string | null | undefined
-): VNode<any, any> | null | undefined => {
-  if (nullOrUndefined(node)) {
-    return node as null | undefined;
-  }
-
-  if (isVNode(node)) {
-    return node as VNode<any, any>;
-  } else {
-    return new HtmlVNode(node as Node);
-  }
-};
-
-export const replaceChildren = (
-  node: Node,
-  ...children: (Node | string | null | undefined)[]
-): void => {
-  clearChildren(node);
-  appendChildren(node, removeNullAndUndefinedItems(children));
-};
-
-export const clearChildren = (node: Node): void => {
-  while (node.hasChildNodes()) {
-    node.removeChild(node.lastChild!);
-  }
-}
-
-export const removeChildren = (node: Node, children: any[]): void => {
-  removeNullAndUndefinedItems(children).forEach((child: Node): void => {
-    node.removeChild(child);
-  });
-};
-
-export const appendChildren = (node: Node, children: any[]): void => {
-  removeNullAndUndefinedItems(children).forEach((child: Node): void => {
-    node.appendChild(child);
-  });
-};
-
-export const isVNode = (content: any): boolean => {
-  return content instanceof Object && "getRaw" in content;
-};
