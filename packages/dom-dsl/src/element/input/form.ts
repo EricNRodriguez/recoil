@@ -1,5 +1,5 @@
 import { MaybeNodeOrVNode } from "../node.interface";
-import { HtmlVElement } from "../../../../vdom";
+import { VElement } from "../../../../vdom";
 
 export enum FormTarget {
   BLANK = "_blank",
@@ -8,6 +8,6 @@ export enum FormTarget {
   TOP = "_top",
 }
 
-export const form = (...content: MaybeNodeOrVNode[]): HtmlVElement => {
-  return new HtmlVElement("form").setChildren(...content);
+export const form = (...content: MaybeNodeOrVNode[]): VElement => {
+  return new VElement("form").setChildren(...content);
 };

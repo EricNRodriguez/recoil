@@ -1,11 +1,11 @@
 import { Runnable } from "../../util";
 import { runEffect, ISideEffectRef } from "../../atom";
 import { ComponentFactory } from "./component_factory";
-import { HtmlVNode } from "../../vdom";
+import { VNode } from "../../vdom";
 
 export const onMount = (effect: Runnable): void => {
   ComponentFactory.getInstance().registerNextComponentConsumer(
-    (node: HtmlVNode): void => {
+    (node: VNode): void => {
       node.registerOnMountHook(effect);
     }
   );
@@ -13,7 +13,7 @@ export const onMount = (effect: Runnable): void => {
 
 export const onUnmount = (effect: Runnable): void => {
   ComponentFactory.getInstance().registerNextComponentConsumer(
-    (node: HtmlVNode): void => {
+    (node: VNode): void => {
       node.registerOnUnmountHook(effect);
     }
   );

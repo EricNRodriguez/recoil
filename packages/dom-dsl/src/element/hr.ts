@@ -1,5 +1,5 @@
-import { HtmlVElement } from "../../../vdom";
+import { VElement } from "../../../vdom";
 
-export const hr = (): HtmlVElement => {
-  return new HtmlVElement("hr");
+export const hr = (): VElement => {
+  return new VElement("hr");
 };

@@ -1,6 +1,6 @@
 import { ILeafAtom } from "../../../../atom";
 import { createComponent, runMountedEffect } from "../../../../dom-component";
-import { HtmlVElement } from "../../../../vdom";
+import { VElement } from "../../../../vdom";
 import { clamp, notNullOrUndefined } from "../../../../util";
 
 export type NumberInputArgs = {
@@ -10,8 +10,8 @@ export type NumberInputArgs = {
 };
 
 export const numberInput = createComponent(
-  (args: NumberInputArgs): HtmlVElement => {
-    const builder: HtmlVElement = new HtmlVElement("input").setAttribute(
+  (args: NumberInputArgs): VElement => {
+    const builder: VElement = new VElement("input").setAttribute(
       "type",
       "number"
     );

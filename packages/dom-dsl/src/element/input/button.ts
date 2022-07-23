@@ -1,4 +1,4 @@
-import { HtmlVElement } from "../../../../vdom";
+import { VElement } from "../../../../vdom";
 import { Consumer } from "../../../../util";
 import { wrapTextInVNode } from "../../util/dom_util";
 
@@ -9,8 +9,8 @@ export type ButtonArgs = {
   onClick: Consumer<MouseEvent>;
 };
 
-export const button = (args: ButtonArgs): HtmlVElement => {
-  return new HtmlVElement("button")
+export const button = (args: ButtonArgs): VElement => {
+  return new VElement("button")
     .setAttribute("type", "button")
     .setChildren(wrapTextInVNode(args.content))
     .setClickHandler(args.onClick);

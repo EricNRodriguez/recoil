@@ -1,12 +1,12 @@
 import { createComponent, runMountedEffect } from "../../../../dom-component";
-import { HtmlVElement } from "../../../../vdom";
+import { VElement } from "../../../../vdom";
 import { ILeafAtom } from "../../../../atom";
 
 export const textInput = createComponent(
-  (text: ILeafAtom<string>): HtmlVElement => {
+  (text: ILeafAtom<string>): VElement => {
     const inputElement = document.createElement("input");
 
-    const element = new HtmlVElement(inputElement).setAttribute("type", "text");
+    const element = new VElement(inputElement).setAttribute("type", "text");
 
     element.addEventHandler("input", () => text.set(inputElement.value));
 

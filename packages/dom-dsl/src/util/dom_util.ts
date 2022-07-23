@@ -1,7 +1,7 @@
 import { t } from "../element/text";
-import { HtmlVNode } from "../../../vdom";
+import { VNode } from "../../../vdom";
 
-export const wrapTextInVNode = <T>(content: T | string): T | HtmlVNode => {
+export const wrapTextInVNode = <T>(content: T | string): T | VNode => {
   if (typeof content === "string") {
     return t(content as string);
   } else {

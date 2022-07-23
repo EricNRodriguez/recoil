@@ -1,5 +1,5 @@
 import { createComponent, runMountedEffect } from "../../../../dom-component";
-import { HtmlVElement } from "../../../../vdom";
+import { VElement } from "../../../../vdom";
 import { Runnable, Supplier } from "../../../../util";
 
 export type CheckboxArguments = {
@@ -9,8 +9,8 @@ export type CheckboxArguments = {
 };
 
 export const checkbox = createComponent(
-  (args: CheckboxArguments): HtmlVElement => {
-    const checkboxElement: HtmlVElement = new HtmlVElement(
+  (args: CheckboxArguments): VElement => {
+    const checkboxElement: VElement = new VElement(
       "input"
     ).setAttribute("type", "checkbox");
 

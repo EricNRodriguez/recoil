@@ -1,8 +1,8 @@
 import { wrapTextInVNode } from "../util/dom_util";
-import { HtmlVElement } from "../../../vdom";
+import { VElement } from "../../../vdom";
 
 type ParagraphContent = Text | string;
 
-export const p = (children: ParagraphContent): HtmlVElement => {
-  return new HtmlVElement("p").setChildren(wrapTextInVNode(children));
+export const p = (children: ParagraphContent): VElement => {
+  return new VElement("p").setChildren(wrapTextInVNode(children));
 };

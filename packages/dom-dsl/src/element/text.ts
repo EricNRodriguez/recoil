@@ -1,14 +1,14 @@
 import { Supplier } from "../../../util";
 import { IAtom, isAtom } from "../../../atom";
-import { HtmlVNode } from "../../../vdom";
+import { VNode } from "../../../vdom";
 import { createComponent, runMountedEffect } from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 
-export const t = (content: TextContent): HtmlVNode => {
-  let textNode: HtmlVNode;
+export const t = (content: TextContent): VNode => {
+  let textNode: VNode;
   if (typeof content === "string") {
-    textNode = new HtmlVNode(document.createTextNode(content));
+    textNode = new VNode(document.createTextNode(content));
   } else if (isAtom(content) || typeof content === "function") {
     textNode = createBindedTextNode(content);
   } else {
@@ -22,8 +22,8 @@ export const t = (content: TextContent): HtmlVNode => {
 type BindedTextNodeSource = Supplier<string> | IAtom<string>;
 
 const createBindedTextNode = createComponent(
-  (source: BindedTextNodeSource): HtmlVNode => {
-    const vNode: HtmlVNode = new HtmlVNode(document.createTextNode(""));
+  (source: BindedTextNodeSource): VNode => {
+    const vNode: VNode = new VNode(document.createTextNode(""));
 
     if (isAtom(source)) {
       runMountedEffect((): void => {

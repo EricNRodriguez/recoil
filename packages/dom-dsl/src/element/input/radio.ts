@@ -1,5 +1,5 @@
 import { createComponent, runMountedEffect } from "../../../../dom-component";
-import { HtmlVElement } from "../../../../vdom";
+import { VElement } from "../../../../vdom";
 import { Runnable, Supplier } from "../../../../util";
 
 export type RadioButtonArguments = {
@@ -8,8 +8,8 @@ export type RadioButtonArguments = {
 };
 
 export const radioButton = createComponent(
-  (args: RadioButtonArguments): HtmlVElement => {
-    const radioButtonElement: HtmlVElement = new HtmlVElement(
+  (args: RadioButtonArguments): VElement => {
+    const radioButtonElement: VElement = new VElement(
       "input"
     ).setAttribute("type", "radio");
 

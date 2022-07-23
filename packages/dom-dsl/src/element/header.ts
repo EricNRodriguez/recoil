@@ -1,15 +1,15 @@
 import { wrapTextInVNode } from "../util/dom_util";
-import { HtmlVElement, HtmlVNode } from "../../../vdom";
+import { VElement, VNode } from "../../../vdom";
 
-export type HeaderContent = HtmlVNode | string;
+export type HeaderContent = VNode | string;
 
 interface HeaderBuilder {
-  (content: HeaderContent): HtmlVElement;
+  (content: HeaderContent): VElement;
 }
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
-  return (content: HeaderContent): HtmlVElement => {
-    return new HtmlVElement(`h${headerNumber}`).setChildren(
+  return (content: HeaderContent): VElement => {
+    return new VElement(`h${headerNumber}`).setChildren(
       wrapTextInVNode(content)
     );
   };

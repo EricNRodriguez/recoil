@@ -1,8 +1,8 @@
 import { MaybeNodeOrVNode } from "./node.interface";
-import { HtmlVElement } from "../../../vdom";
+import { VElement } from "../../../vdom";
 
 export type HeadContent = MaybeNodeOrVNode;
 
-export const head = (...content: HeadContent[]): HtmlVElement => {
-  return new HtmlVElement("head").setChildren(...content);
+export const head = (...content: HeadContent[]): VElement => {
+  return new VElement("head").setChildren(...content);
 };

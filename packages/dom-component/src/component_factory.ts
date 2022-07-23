@@ -1,10 +1,10 @@
-import { HtmlVNode } from "../../vdom";
+import { VNode } from "../../vdom";
 import { Consumer, Producer } from "../../util";
 
 /**
- * A plain old javascript function that returns a HtmlVNode (or subclass of it)
+ * A plain old javascript function that returns a VNode (or subclass of it)
  */
-export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
+export type DomBuilder<T extends VNode> = (...args: any[]) => T;
 
 /**
  * A utility 'factory' that manages the scope of currently 'building' components.
@@ -14,7 +14,7 @@ export type DomBuilder<T extends HtmlVNode> = (...args: any[]) => T;
  */
 export class ComponentFactory {
   private static readonly instance = new ComponentFactory();
-  private readonly consumeQueue: Map<number, Consumer<HtmlVNode>[]> = new Map();
+  private readonly consumeQueue: Map<number, Consumer<VNode>[]> = new Map();
 
   private currentScope: number = -1;
 
@@ -26,7 +26,7 @@ export class ComponentFactory {
     return this.currentScope >= 0;
   }
 
-  public getCurrentScopeConsumers(): Consumer<HtmlVNode>[] {
+  public getCurrentScopeConsumers(): Consumer<VNode>[] {
     return this.consumeQueue.get(this.currentScope) ?? [];
   }
 
@@ -42,7 +42,7 @@ export class ComponentFactory {
     this.currentScope--;
   }
 
-  public registerNextComponentConsumer(consumer: Consumer<HtmlVNode>): void {
+  public registerNextComponentConsumer(consumer: Consumer<VNode>): void {
     if (!this.isInScope()) {
       // TODO(ericr): more specific error message and type
       throw new Error(
@@ -59,13 +59,13 @@ export class ComponentFactory {
    *
    * @param fn A simple dom constructor
    */
-  public buildComponent<T extends HtmlVNode>(fn: Producer<T>): T {
+  public buildComponent<T extends VNode>(fn: Producer<T>): T {
     try {
       this.enterScope();
 
       const component = fn();
       this.getCurrentScopeConsumers().forEach(
-        (consumer: Consumer<HtmlVNode>): void => consumer(component)
+        (consumer: Consumer<VNode>): void => consumer(component)
       );
 
       return component;
@@ -86,10 +86,10 @@ export class ComponentFactory {
  * kept alive for the lifetime of the DOM tree, which means the references returned by the runEffect factory method
  * can be safely ignored.
  *
- * @param fn The HtmlVNode builder to be wrapped.
+ * @param fn The VNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>) => {
+export const createComponent = <T extends VNode>(fn: DomBuilder<T>) => {
   return (...args: any[]): T => {
     return ComponentFactory.getInstance().buildComponent(() => fn(...args));
   };
