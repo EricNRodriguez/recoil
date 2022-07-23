@@ -1,6 +1,6 @@
 import { VNode } from "./virtual_node.interface";
-import { BiConsumer, Consumer } from "recoil-util";
-import { Atom } from "recoil-atom";
+import {Atom} from "../../atom";
+import {BiConsumer, Consumer} from "../../util";
 
 export type ElementStyle = { [key: string]: string };
 

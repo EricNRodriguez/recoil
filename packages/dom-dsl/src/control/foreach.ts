@@ -2,9 +2,9 @@ import { frag } from "../element/frag";
 import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { HtmlVNode } from "recoil-vdom";
-import { runMountedEffect, createComponent } from "recoil-dom-component";
-import {Supplier} from "recoil-util";
+import { HtmlVNode } from "../../../vdom";
+import { runMountedEffect, createComponent } from "../../../dom-component";
+import {Supplier} from "../../../util";
 
 export const foreach = createComponent(
   <T extends Object>(

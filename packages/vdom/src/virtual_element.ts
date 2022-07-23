@@ -1,6 +1,4 @@
-import { BiConsumer, Consumer, notNullOrUndefined } from "recoil-util";
 import { Attribute, VElement, ElementStyle } from "./virtual_element.interface";
-import { Atom, isAtom } from "recoil-atom";
 import {
   unwrapVNode,
   wrapInVNode,
@@ -11,6 +9,8 @@ import {
 import { VNode } from "./virtual_node.interface";
 import { VNodeBase } from "./virtual_node_base";
 import { HtmlVNode } from "./virtual_node";
+import {BiConsumer, Consumer, notNullOrUndefined} from "../../util";
+import {Atom, isAtom} from "../../atom";
 
 /**
  * A lightweight wrapper around a Html Dom element, encapsulating lifecycle management, mounting/unmounting of subcomponents, etc

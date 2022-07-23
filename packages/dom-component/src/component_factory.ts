@@ -1,5 +1,5 @@
-import {HtmlVNode} from "recoil-vdom";
-import {Consumer, Producer} from "recoil-util";
+import {HtmlVNode} from "../../vdom";
+import {Consumer, Producer} from "../../util";
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)

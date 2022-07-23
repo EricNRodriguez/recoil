@@ -1,8 +1,0 @@
-{
-  "name": "recoil-util",
-  "version": "0.0.0-development",
-  "description": "a private shared utils package ",
-  "main": "index.js",
-  "license": "MIT",
-  "private": true
-}

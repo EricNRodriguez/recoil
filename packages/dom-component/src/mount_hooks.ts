@@ -1,7 +1,7 @@
-import { Runnable } from "recoil-util";
-import { runEffect, SideEffectRef } from "recoil-atom"
+import { Runnable } from "../../util";
+import { runEffect, SideEffectRef } from "../../atom"
 import { ComponentFactory } from "./component_factory";
-import { HtmlVNode } from "recoil-vdom";
+import { HtmlVNode } from "../../vdom";
 
 export const onMount = (effect: Runnable): void => {
   ComponentFactory.getInstance().registerNextComponentConsumer(

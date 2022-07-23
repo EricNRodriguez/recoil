@@ -1,5 +1,5 @@
 import { VNode } from "./virtual_node.interface";
-import { Runnable } from "recoil-util";
+import {Runnable} from "../../util";
 
 export abstract class VNodeBase<A, B extends VNodeBase<A, B>>
   implements VNode<A, B>

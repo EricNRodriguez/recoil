@@ -117,8 +117,18 @@ __metadata:
     ts-node: ^10.8.1
     tsc: ^2.0.4
     typescript: ^4.7.4
+    typescript-monads: ^7.2.0
   languageName: unknown
   linkType: soft
+
+"rxjs@npm:^7":
+  version: 7.5.6
+  resolution: "rxjs@npm:7.5.6"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: fc05f01364a74dac57490fb3e07ea63b422af04017fae1db641a009073f902ef69f285c5daac31359620dc8d9aee7d81e42b370ca2a8573d1feae0b04329383b
+  languageName: node
+  linkType: hard
 
 "ts-node@npm:^10.8.1":
   version: 10.9.1
@@ -164,6 +174,25 @@ __metadata:
   bin:
     tsc: bin/tsc
   checksum: 50b10240887424c66454687f0fca4e319713b35cb44f0dab228719eb4dd757251f83c3d79e60d29dfbe90c2d6f1272f793b83e75a9fca2c622b4213ad3eb8cb1
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.1.0":
+  version: 2.4.0
+  resolution: "tslib@npm:2.4.0"
+  checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
+  languageName: node
+  linkType: hard
+
+"typescript-monads@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "typescript-monads@npm:7.2.0"
+  dependencies:
+    rxjs: ^7
+  dependenciesMeta:
+    rxjs:
+      optional: true
+  checksum: ba3598eb492819f14d9a14591ec088318aaec6e48aea074c7f5cf4b2a32ed08f74ca60c0d7a91f145732d60d60087da1d784d719431162ed117b072d11507019
   languageName: node
   linkType: hard
 

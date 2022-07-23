@@ -1,6 +1,5 @@
-import { HtmlVElement } from "recoil-vdom";
-import { HtmlVNode } from "recoil-vdom";
 import {wrapTextInVNode} from "../util/dom_util";
+import {HtmlVElement, HtmlVNode} from "../../../vdom";
 
 export type HeaderContent = HtmlVNode | string;
 

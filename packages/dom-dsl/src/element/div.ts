@@ -1,6 +1,6 @@
-import { HtmlVElement } from "recoil-vdom";
 import {wrapTextInVNode} from "../util/dom_util";
 import { MaybeNodeOrVNode } from "./node.interface";
+import {HtmlVElement} from "../../../vdom";
 
 export type DivContent = MaybeNodeOrVNode | string;
 

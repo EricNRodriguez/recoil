@@ -1,5 +1,5 @@
-import { HtmlVElement } from "recoil-vdom";
 import { MaybeNodeOrVNode } from "../node.interface";
+import {HtmlVElement} from "../../../../vdom";
 
 export enum FormTarget {
   BLANK = "_blank",

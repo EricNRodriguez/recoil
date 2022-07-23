@@ -1,6 +1,5 @@
-import { Runnable } from "recoil-util";
+import {Runnable} from "../../util";
 
-// A lightweight wrapper around a raw node
 export interface VNode<A, B extends VNode<A, B>> {
   mount(): B;
   unmount(): B;

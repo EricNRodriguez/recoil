@@ -1,7 +1,6 @@
 import { VNode } from "./virtual_node.interface";
-import { removeNullAndUndefinedItems } from "recoil-util";
 import { HtmlVNode } from "./virtual_node";
-import { nullOrUndefined, Supplier } from "recoil-util";
+import {nullOrUndefined, removeNullAndUndefinedItems} from "../../util";
 
 export const isVNode = (content: any): boolean => {
   return content instanceof Object && "getRaw" in content;
@@ -17,16 +16,6 @@ export const unwrapVNode = (content: Node | VNode<any, any>): Node => {
   }
 
   return content as Node;
-};
-
-export const wrapStaticContentInProvider = <T>(
-  content: T | Supplier<T>
-): Supplier<T> => {
-  if (typeof content === "function") {
-    return content as Supplier<T>;
-  } else {
-    return (): T => content;
-  }
 };
 
 export const wrapInVNode = (

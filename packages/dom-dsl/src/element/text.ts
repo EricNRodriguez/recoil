@@ -1,8 +1,7 @@
-import { Atom, isAtom } from "recoil-atom";
-import { Supplier } from "recoil-util";
-import { HtmlVNode } from "recoil-vdom";
-import { createComponent } from "recoil-dom-component";
-import { runMountedEffect } from "recoil-dom-component";
+import {Supplier} from "../../../util";
+import {Atom, isAtom} from "../../../atom";
+import {HtmlVNode} from "../../../vdom";
+import {createComponent, runMountedEffect} from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | Atom<string>;
 

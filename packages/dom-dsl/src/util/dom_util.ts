@@ -1,5 +1,5 @@
-import {HtmlVNode} from "recoil-vdom/src/virtual_node";
 import {t} from "../element/text";
+import {HtmlVNode} from "../../../vdom";
 
 export const wrapTextInVNode = <T>(content: T | string): T | HtmlVNode => {
   if (typeof content === "string") {

@@ -1,12 +1,9 @@
-import { Atom, isAtom } from "recoil-atom";
-import { Supplier } from "recoil-util";
-import { wrapStaticContentInProvider } from "../../../vdom/src/vdom_util";
+import { Atom, isAtom } from "../../../atom";
+import { Supplier, notNullOrUndefined, wrapStaticContentInProvider } from "../../../util";
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { HtmlVElement } from "recoil-vdom";
-import { notNullOrUndefined } from "recoil-util";
-import { createComponent } from "recoil-dom-component";
-import { runMountedEffect } from "recoil-dom-component";
+import { HtmlVElement } from "../../../vdom";
+import { createComponent, runMountedEffect } from "../../../dom-component";
 
 export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
 

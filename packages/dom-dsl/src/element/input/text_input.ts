@@ -1,7 +1,6 @@
-import { HtmlVElement } from "recoil-vdom";
-import { LeafAtom } from "recoil-atom";
-import { createComponent } from "recoil-dom-component";
-import { runMountedEffect } from "recoil-dom-component";
+import {createComponent, runMountedEffect} from "../../../../dom-component";
+import {HtmlVElement} from "../../../../vdom";
+import {LeafAtom} from "../../../../atom";
 
 export const textInput = createComponent(
   (text: LeafAtom<string>): HtmlVElement => {

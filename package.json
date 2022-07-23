@@ -2,7 +2,6 @@
   "name": "recoil",
   "version": "0.0.0-development",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node packages/index.ts",
@@ -24,15 +23,8 @@
     "tsc": "^2.0.4",
     "typescript": "^4.7.4"
   },
-  "exports": {
-    "./atom": "./packages/atom",
-    "./dom-component": "./packages/dom-component",
-    "./dom-dsl": "./packages/dom-dsl",
-    "./vdom": "./packages/vdom"
-  },
   "packageManager": "yarn@3.2.2",
-  "private": "true",
-  "workspaces": [
-    "./packages/*"
-  ]
+  "dependencies": {
+    "typescript-monads": "^7.2.0"
+  }
 }

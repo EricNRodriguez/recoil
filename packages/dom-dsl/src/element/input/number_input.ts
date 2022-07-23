@@ -1,9 +1,7 @@
-import { HtmlVElement } from "recoil-vdom";
-import { clamp } from "recoil-util";
-import { notNullOrUndefined } from "recoil-util";
-import { LeafAtom } from "recoil-atom";
-import { createComponent } from "recoil-dom-component";
-import { runMountedEffect } from "recoil-dom-component";
+import {LeafAtom} from "../../../../atom";
+import {createComponent, runMountedEffect} from "../../../../dom-component";
+import {HtmlVElement} from "../../../../vdom";
+import {clamp, notNullOrUndefined} from "../../../../util";
 
 export type NumberInputArgs = {
   max?: number;

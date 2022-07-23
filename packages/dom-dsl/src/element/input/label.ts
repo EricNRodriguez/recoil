@@ -1,5 +1,5 @@
 import { t, TextContent } from "../text";
-import { HtmlVElement } from "recoil-vdom";
+import {HtmlVElement} from "../../../../vdom";
 
 export type LabelContent = TextContent;
 

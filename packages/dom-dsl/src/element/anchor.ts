@@ -1,5 +1,5 @@
-import { HtmlVElement } from "recoil-vdom";
 import { t, TextContent } from "./text";
+import {HtmlVElement} from "../../../vdom";
 
 export type AnchorContent = TextContent;
 

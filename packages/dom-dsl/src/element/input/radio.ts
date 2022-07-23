@@ -1,7 +1,6 @@
-import { HtmlVElement } from "recoil-vdom";
-import { Runnable, Supplier } from "recoil-util";
-import { createComponent } from "recoil-dom-component";
-import { runMountedEffect } from "recoil-dom-component";
+import {createComponent, runMountedEffect} from "../../../../dom-component";
+import {HtmlVElement} from "../../../../vdom";
+import {Runnable, Supplier} from "../../../../util";
 
 export type RadioButtonArguments = {
   isChecked: Supplier<boolean>;

@@ -1,4 +1,4 @@
-import { Consumer } from "recoil-util";
+import { Consumer } from "../../util";
 
 export class WeakCollection<T extends Object> {
   private items: WeakRef<T>[] = [];
