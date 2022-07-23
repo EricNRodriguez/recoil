@@ -15,7 +15,6 @@ export abstract class VNodeBase<A extends Node, B extends VNodeBase<A, B>>
     this.node = node;
   }
 
-
   public setChildren(
     ...children: (VNode<any, any> | Node | null | undefined)[]
   ): B {

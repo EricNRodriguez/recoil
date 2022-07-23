@@ -2,7 +2,7 @@ import { IAtom, isAtom } from "../../../atom";
 import { Supplier, notNullOrUndefined, wrapStaticContentInProvider } from "../../../util";
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { HtmlVElement } from "../../../vdom";
+import {HtmlVElement, HtmlVNode} from "../../../vdom";
 import { createComponent, runMountedEffect } from "../../../dom-component";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
@@ -14,7 +14,7 @@ export const ifElse = createComponent(
     condition: IfElseCondition,
     ifTrue: IfElseContent,
     ifFalse?: IfElseContent
-  ): HtmlVElement => {
+  ): HtmlVNode => {
     ifFalse ??= undefined;
 
     const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> =
@@ -26,7 +26,7 @@ export const ifElse = createComponent(
       return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
     }
 
-    const anchor: HtmlVElement = frag();
+    const anchor = frag();
 
     let currentRenderedState: boolean;
     let currentRenderedItem: MaybeNodeOrVNode;
@@ -59,7 +59,7 @@ const staticIfElse = (
   condition: boolean,
   ifTrue: Supplier<MaybeNodeOrVNode>,
   ifFalse: Supplier<MaybeNodeOrVNode>
-): HtmlVElement => {
+): HtmlVNode => {
   const anchor = frag();
 
   const content: MaybeNodeOrVNode = condition ? ifTrue() : ifFalse();
