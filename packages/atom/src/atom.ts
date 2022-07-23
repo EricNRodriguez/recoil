@@ -8,7 +8,7 @@ import {
 import {AtomTrackingContext, ParentAtom} from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
-import { Producer } from "../../util";
+import {Producer, Runnable} from "../../util";
 
 export const isAtom = (obj: any): boolean => {
   return (
@@ -51,6 +51,8 @@ class SideEffectRegistry<T> {
     this.inactiveEffects.add(effect);
   }
 }
+
+
 
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
@@ -137,12 +139,18 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 }
 
+export interface UpdateScheduler {
+  schedule(update: Runnable): void;
+}
+
 export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
+  private readonly updateScheduler: UpdateScheduler;
   private value: T;
 
-  constructor(value: T, context: AtomTrackingContext) {
+  constructor(value: T, context: AtomTrackingContext, updateScheduler: UpdateScheduler) {
     super(context);
     this.value = value;
+    this.updateScheduler = updateScheduler;
   }
 
   public get(): T {
@@ -165,7 +173,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
 
     // intentionally kicking AFTER setting, since
     // we want our effects to run with the new values
-    this.dirty();
+    this.updateScheduler.schedule(() => this.dirty());
   }
 
   public update(fn: (val: T) => T): void {

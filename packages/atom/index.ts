@@ -1,5 +1,6 @@
 export {
   runUntracked,
+  runBatched,
   state,
   derivedState,
   deriveState,

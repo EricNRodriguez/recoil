@@ -3,11 +3,17 @@ import { LeafAtomImpl, DerivedAtom } from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
+import {BatchUpdateScheduler} from "./update_scheduler";
 
 /**
  * A shared tracking context for all atoms created through this api
  */
 const globalTrackingContext = new AtomTrackingContext();
+
+/**
+ * A shared update scheduler that provides support for batching updates
+ */
+const globalUpdateScheduler = new BatchUpdateScheduler();
 
 /**
  * A generic higher order function
@@ -154,7 +160,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
 
-    const atom = new LeafAtomImpl<T | undefined>(undefined, globalTrackingContext);
+    const atom = new LeafAtomImpl<T | undefined>(undefined, globalTrackingContext, globalUpdateScheduler);
 
     const derivation = new DerivedAtom<Promise<T>>(producer, globalTrackingContext);
     derivation.react((futureVal: Promise<T>): void => {
@@ -184,7 +190,7 @@ export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
   <T>(value: T): ILeafAtom<T> => {
-    return new LeafAtomImpl(value, globalTrackingContext);
+    return new LeafAtomImpl(value, globalTrackingContext, globalUpdateScheduler);
   }
 );
 
@@ -267,7 +273,7 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext));
+          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext, globalUpdateScheduler));
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -320,4 +326,13 @@ export const runUntracked = <T>(job: Producer<T>): T => {
   } finally {
     globalTrackingContext.exitCurrentTrackingContext();
   }
+};
+
+export const runBatched = (job: Runnable): void => {
+    try {
+      globalUpdateScheduler.enterBatchState();
+      job();
+    } finally {
+      globalUpdateScheduler.exitBatchedState();
+    }
 };
