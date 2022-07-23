@@ -20,3 +20,6 @@ export {
   SideEffectRef,
 } from "./src/atom.interface";
 export { isAtom } from "./src/atom";
+export {
+  hackCreateObservableList
+} from "./src/list_atom";
