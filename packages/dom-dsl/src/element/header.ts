@@ -1,5 +1,6 @@
 import { HtmlVElement } from "recoil-vdom";
 import { HtmlVNode } from "recoil-vdom";
+import {wrapTextInVNode} from "../util/dom_util";
 
 export type HeaderContent = HtmlVNode | string;
 
@@ -9,7 +10,7 @@ interface HeaderBuilder {
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
   return (content: HeaderContent): HtmlVElement => {
-    return new HtmlVElement(`h${headerNumber}`).setChildren(content);
+    return new HtmlVElement(`h${headerNumber}`).setChildren(wrapTextInVNode(content));
   };
 };
 
