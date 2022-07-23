@@ -33,19 +33,26 @@ export const wrapInVNode = (
 };
 
 export const replaceChildren = (
-  node: Element,
+  node: Node,
   ...children: (Node | string | null | undefined)[]
 ): void => {
-  node.replaceChildren(...removeNullAndUndefinedItems(children));
+  clearChildren(node);
+  appendChildren(node, removeNullAndUndefinedItems(children));
 };
 
-export const removeChildren = (node: Element, children: any[]): void => {
+export const clearChildren = (node: Node): void => {
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild!);
+  }
+}
+
+export const removeChildren = (node: Node, children: any[]): void => {
   removeNullAndUndefinedItems(children).forEach((child: Node): void => {
     node.removeChild(child);
   });
 };
 
-export const appendChildren = (node: Element, children: any[]): void => {
+export const appendChildren = (node: Node, children: any[]): void => {
   removeNullAndUndefinedItems(children).forEach((child: Node): void => {
     node.appendChild(child);
   });

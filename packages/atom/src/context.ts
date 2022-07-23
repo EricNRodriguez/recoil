@@ -3,7 +3,7 @@ import {DerivedAtom} from "./atom";
 
 export class AtomTrackingContext {
   private static readonly instance: AtomTrackingContext = new AtomTrackingContext();
-  private scopeStack: (DerivedAtom<any>[])[] = [[]];
+  private readonly scopeStack: (DerivedAtom<any>[])[] = [[]];
 
   public static getInstance(): AtomTrackingContext {
     return AtomTrackingContext.instance;

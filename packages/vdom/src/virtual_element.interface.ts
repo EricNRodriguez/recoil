@@ -12,10 +12,5 @@ export interface VElement<A, B extends VElement<A, B>> extends VNode<A, B> {
   setClickHandler(handler: Consumer<MouseEvent>): B;
   setAttribute(attribute: string, value: Attribute): B;
   setStyle(style: ElementStyle): B;
-  setChildren(...children: (VNode<any, VNode<any, any>>)[]): B;
-  deleteChildren(offset: number): B;
-  appendChildren(
-    children: (VNode<any, any> | Node | null | undefined)[]
-  ): B;
   getRaw(): A;
 }
