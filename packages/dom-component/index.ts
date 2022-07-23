@@ -6,3 +6,4 @@ export {
   mountEffect,
   runMountedEffect,
 } from "./src/mount_hooks";
+export {onSubtreeUpdate} from "./src/update_hook";

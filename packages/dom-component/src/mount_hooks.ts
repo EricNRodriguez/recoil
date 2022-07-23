@@ -1,20 +1,20 @@
 import { Runnable } from "../../util";
-import { runEffect, ISideEffectRef } from "../../atom";
+import { runEffect, ISideEffectRef, IAtom } from "../../atom";
 import { ComponentFactory } from "./component_factory";
 import { VNode } from "../../vdom";
 
 export const onMount = (effect: Runnable): void => {
   ComponentFactory.getInstance().registerNextComponentConsumer(
-    (node: VNode): void => {
-      node.registerOnMountHook(effect);
+    (node: IAtom<VNode<Node>>): void => {
+      node.getUntracked().registerOnMountHook(effect);
     }
   );
 };
 
 export const onUnmount = (effect: Runnable): void => {
   ComponentFactory.getInstance().registerNextComponentConsumer(
-    (node: VNode): void => {
-      node.registerOnUnmountHook(effect);
+    (node: IAtom<VNode<Node>>): void => {
+      node.getUntracked().registerOnUnmountHook(effect);
     }
   );
 };

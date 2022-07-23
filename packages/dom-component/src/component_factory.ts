@@ -1,5 +1,6 @@
 import { VNode } from "../../vdom";
 import { Consumer, Producer } from "../../util";
+import {deriveState, IAtom} from "../../atom";
 
 /**
  * A plain old javascript function that returns a VNode (or subclass of it)
@@ -14,7 +15,7 @@ export type DomBuilder<T extends VNode> = (...args: any[]) => T;
  */
 export class ComponentFactory {
   private static readonly instance = new ComponentFactory();
-  private readonly consumeQueue: Map<number, Consumer<VNode>[]> = new Map();
+  private readonly consumeVNodeQueue: Map<number, Consumer<IAtom<VNode<Node>>>[]> = new Map();
 
   private currentScope: number = -1;
 
@@ -26,23 +27,23 @@ export class ComponentFactory {
     return this.currentScope >= 0;
   }
 
-  public getCurrentScopeConsumers(): Consumer<VNode>[] {
-    return this.consumeQueue.get(this.currentScope) ?? [];
+  public getCurrentComponentVNodeConsumers(): Consumer<IAtom<VNode<Node>>>[] {
+    return this.consumeVNodeQueue.get(this.currentScope) ?? [];
   }
 
   private enterScope(): void {
     this.currentScope++;
 
-    this.consumeQueue.set(this.currentScope, []);
+    this.consumeVNodeQueue.set(this.currentScope, []);
   }
 
   private exitScope(): void {
-    this.consumeQueue.delete(this.currentScope);
+    this.consumeVNodeQueue.delete(this.currentScope);
 
     this.currentScope--;
   }
 
-  public registerNextComponentConsumer(consumer: Consumer<VNode>): void {
+  public registerNextComponentConsumer(consumer: Consumer<IAtom<VNode<Node>>>): void {
     if (!this.isInScope()) {
       // TODO(ericr): more specific error message and type
       throw new Error(
@@ -50,22 +51,28 @@ export class ComponentFactory {
       );
     }
 
-    this.consumeQueue.get(this.currentScope)?.push(consumer);
+    this.consumeVNodeQueue.get(this.currentScope)?.push(consumer);
   }
 
-  /**
-   * Executes a dom builder inside a managed scope/context, allowing functions that run against
-   * the return value to be queued.
-   *
-   * @param fn A simple dom constructor
-   */
-  public buildComponent<T extends VNode>(fn: Producer<T>): T {
-    try {
-      this.enterScope();
+    /**
+     * Executes a dom builder inside a managed scope/context, allowing functions that run against
+     * the return value to be queued.
+     *
+     * @param fn A simple dom constructor
+     */
+    public buildComponent<T extends VNode<Node>>(fn: Producer<T>): T {
+      try {
+        this.enterScope();
 
-      const component = fn();
-      this.getCurrentScopeConsumers().forEach(
-        (consumer: Consumer<VNode>): void => consumer(component)
+        // Building the component inside of a tracked context allows us to react whenever any 
+        // tracked state that was used to construct the component is dirtied, which opens up
+        // some powerful lifecycle methods such as onUpdate, without any implicit code to track
+        // and propagate such events
+        const buildComponent: IAtom<T> = deriveState(fn);
+        const component = buildComponent.get();
+
+        this.getCurrentComponentVNodeConsumers().forEach(
+          (consumer: Consumer<IAtom<VNode<Node>>>): void => consumer(buildComponent)
       );
 
       return component;
