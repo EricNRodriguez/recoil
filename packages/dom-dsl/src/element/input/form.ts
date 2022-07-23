@@ -1,5 +1,5 @@
 import { MaybeNodeOrVNode } from "../node.interface";
-import {HtmlVElement} from "../../../../vdom";
+import { HtmlVElement } from "../../../../vdom";
 
 export enum FormTarget {
   BLANK = "_blank",

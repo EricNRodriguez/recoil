@@ -5,7 +5,7 @@ import {
   ISideEffect,
   ISideEffectRef,
 } from "./atom.interface";
-import {AtomTrackingContext} from "./context";
+import { AtomTrackingContext } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
 import { Producer } from "../../util";
@@ -56,7 +56,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
   private readonly parents: WeakCollection<DerivedAtom<Object>> =
     new WeakCollection<DerivedAtom<Object>>();
   private readonly effects: SideEffectRegistry<T> = new SideEffectRegistry<T>();
-  
+
   abstract get(): T;
 
   abstract getUntracked(): T;
@@ -164,7 +164,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   }
 
   public update(fn: (val: T) => T): void {
-      this.set(fn(this.getUntracked()));
+    this.set(fn(this.getUntracked()));
   }
 
   public dirty() {

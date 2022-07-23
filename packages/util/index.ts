@@ -14,10 +14,6 @@ export {
   removeNullAndUndefinedItems,
 } from "./src/type_check";
 
-export {
-  clamp
-} from "./src/math";
+export { clamp } from "./src/math";
 
-export {
-  wrapStaticContentInProvider
-} from "./src/util";
+export { wrapStaticContentInProvider } from "./src/util";

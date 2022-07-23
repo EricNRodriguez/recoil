@@ -1,16 +1,17 @@
 import { Maybe, IMaybe } from "typescript-monads";
-import {DerivedAtom} from "./atom";
+import { DerivedAtom } from "./atom";
 
 export class AtomTrackingContext {
-  private static readonly instance: AtomTrackingContext = new AtomTrackingContext();
-  private readonly scopeStack: (DerivedAtom<any>[])[] = [[]];
+  private static readonly instance: AtomTrackingContext =
+    new AtomTrackingContext();
+  private readonly scopeStack: DerivedAtom<any>[][] = [[]];
 
   public static getInstance(): AtomTrackingContext {
     return AtomTrackingContext.instance;
   }
 
   private getCurrentScope(): DerivedAtom<any>[] {
-    return this.scopeStack[this.scopeStack.length-1];
+    return this.scopeStack[this.scopeStack.length - 1];
   }
 
   public getCurrentDerivation(): IMaybe<DerivedAtom<any>> {

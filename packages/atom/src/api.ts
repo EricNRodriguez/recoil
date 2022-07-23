@@ -2,7 +2,7 @@ import { ILeafAtom, ISideEffectRef } from "./atom.interface";
 import { LeafAtomImpl, DerivedAtom } from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
-import {AtomTrackingContext} from "./context";
+import { AtomTrackingContext } from "./context";
 
 /**
  * A generic higher order function
@@ -315,4 +315,4 @@ export const runUntracked = (job: Runnable): void => {
   } finally {
     AtomTrackingContext.getInstance().exitCurrentTrackingContext();
   }
-}
+};

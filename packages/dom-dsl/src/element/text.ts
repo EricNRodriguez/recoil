@@ -1,7 +1,7 @@
-import {Supplier} from "../../../util";
-import {IAtom, isAtom} from "../../../atom";
-import {HtmlVNode} from "../../../vdom";
-import {createComponent, runMountedEffect} from "../../../dom-component";
+import { Supplier } from "../../../util";
+import { IAtom, isAtom } from "../../../atom";
+import { HtmlVNode } from "../../../vdom";
+import { createComponent, runMountedEffect } from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 

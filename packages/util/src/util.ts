@@ -1,4 +1,4 @@
-import {Supplier} from "./function.interface";
+import { Supplier } from "./function.interface";
 
 export const wrapStaticContentInProvider = <T>(
   content: T | Supplier<T>

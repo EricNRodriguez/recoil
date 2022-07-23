@@ -1,5 +1,5 @@
-import {HtmlVNode} from "../../vdom";
-import {Consumer, Producer} from "../../util";
+import { HtmlVNode } from "../../vdom";
+import { Consumer, Producer } from "../../util";
 
 /**
  * A plain old javascript function that returns a HtmlVNode (or subclass of it)
@@ -92,5 +92,5 @@ export class ComponentFactory {
 export const createComponent = <T extends HtmlVNode>(fn: DomBuilder<T>) => {
   return (...args: any[]): T => {
     return ComponentFactory.getInstance().buildComponent(() => fn(...args));
-  }
+  };
 };

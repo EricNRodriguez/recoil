@@ -13,9 +13,5 @@ export {
   DeriveStateSignature,
   FetchStateSignature,
 } from "./src/api";
-export {
-  IAtom,
-  ILeafAtom,
-  ISideEffectRef,
-} from "./src/atom.interface";
+export { IAtom, ILeafAtom, ISideEffectRef } from "./src/atom.interface";
 export { isAtom } from "./src/atom";

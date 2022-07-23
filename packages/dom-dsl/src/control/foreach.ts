@@ -4,7 +4,7 @@ import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVNode } from "../../../vdom";
 import { runMountedEffect, createComponent } from "../../../dom-component";
-import {Supplier} from "../../../util";
+import { Supplier } from "../../../util";
 
 export const foreach = createComponent(
   <T extends Object>(

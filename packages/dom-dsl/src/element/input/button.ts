@@ -1,6 +1,6 @@
 import { HtmlVElement } from "../../../../vdom";
 import { Consumer } from "../../../../util";
-import {wrapTextInVNode} from "../../util/dom_util";
+import { wrapTextInVNode } from "../../util/dom_util";
 
 export type ButtonContent = Text | string;
 

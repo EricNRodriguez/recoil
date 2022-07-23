@@ -1,6 +1,6 @@
-import {wrapTextInVNode} from "../util/dom_util";
+import { wrapTextInVNode } from "../util/dom_util";
 import { MaybeNodeOrVNode } from "./node.interface";
-import {HtmlVElement} from "../../../vdom";
+import { HtmlVElement } from "../../../vdom";
 
 export type DivContent = MaybeNodeOrVNode | string;
 

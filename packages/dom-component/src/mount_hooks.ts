@@ -1,5 +1,5 @@
 import { Runnable } from "../../util";
-import { runEffect, ISideEffectRef } from "../../atom"
+import { runEffect, ISideEffectRef } from "../../atom";
 import { ComponentFactory } from "./component_factory";
 import { HtmlVNode } from "../../vdom";
 

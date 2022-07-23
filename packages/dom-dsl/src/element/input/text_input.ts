@@ -1,6 +1,6 @@
-import {createComponent, runMountedEffect} from "../../../../dom-component";
-import {HtmlVElement} from "../../../../vdom";
-import {ILeafAtom} from "../../../../atom";
+import { createComponent, runMountedEffect } from "../../../../dom-component";
+import { HtmlVElement } from "../../../../vdom";
+import { ILeafAtom } from "../../../../atom";
 
 export const textInput = createComponent(
   (text: ILeafAtom<string>): HtmlVElement => {

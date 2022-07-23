@@ -1,7 +1,7 @@
-import {ILeafAtom} from "../../../../atom";
-import {createComponent, runMountedEffect} from "../../../../dom-component";
-import {HtmlVElement} from "../../../../vdom";
-import {clamp, notNullOrUndefined} from "../../../../util";
+import { ILeafAtom } from "../../../../atom";
+import { createComponent, runMountedEffect } from "../../../../dom-component";
+import { HtmlVElement } from "../../../../vdom";
+import { clamp, notNullOrUndefined } from "../../../../util";
 
 export type NumberInputArgs = {
   max?: number;
