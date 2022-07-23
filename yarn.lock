@@ -110,136 +110,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil-atom@link:./../atom::locator=recoil-dom-component%40file%3A..%2Fdom-component%23..%2Fdom-component%3A%3Ahash%3Dc82d61%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0-use.local
-  resolution: "recoil-atom@link:./../atom::locator=recoil-dom-component%40file%3A..%2Fdom-component%23..%2Fdom-component%3A%3Ahash%3Dc82d61%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  languageName: node
-  linkType: soft
-
-"recoil-atom@link:./../atom::locator=recoil-dom-component%40workspace%3Apackages%2Fdom-component":
-  version: 0.0.0-use.local
-  resolution: "recoil-atom@link:./../atom::locator=recoil-dom-component%40workspace%3Apackages%2Fdom-component"
-  languageName: node
-  linkType: soft
-
-"recoil-atom@link:./../atom::locator=recoil-vdom%40file%3A..%2Fvdom%23..%2Fvdom%3A%3Ahash%3D595ae3%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0-use.local
-  resolution: "recoil-atom@link:./../atom::locator=recoil-vdom%40file%3A..%2Fvdom%23..%2Fvdom%3A%3Ahash%3D595ae3%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  languageName: node
-  linkType: soft
-
-"recoil-atom@link:./../atom::locator=recoil-vdom%40workspace%3Apackages%2Fvdom":
-  version: 0.0.0-use.local
-  resolution: "recoil-atom@link:./../atom::locator=recoil-vdom%40workspace%3Apackages%2Fvdom"
-  languageName: node
-  linkType: soft
-
-"recoil-atom@workspace:packages/atom":
-  version: 0.0.0-use.local
-  resolution: "recoil-atom@workspace:packages/atom"
-  dependencies:
-    recoil-util: "link:./../util"
-    typescript-monads: ^7.2.0
-  languageName: unknown
-  linkType: soft
-
-"recoil-dom-component@file:../dom-component::locator=recoil-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
-  version: 0.0.0-development
-  resolution: "recoil-dom-component@file:../dom-component#../dom-component::hash=c82d61&locator=recoil-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  dependencies:
-    recoil-atom: "link:./../atom"
-    recoil-util: "link:./../util"
-    recoil-vdom: "link:./../vdom"
-  checksum: 84771cc47fe4ecd11297adfdde6f0ac9e2489caf8d8445403928633f9b790d4db98a529398154417d0334018803cd6a0757d991710a88e521ae69658f833eb8d
-  languageName: node
-  linkType: hard
-
-"recoil-dom-component@workspace:packages/dom-component":
-  version: 0.0.0-use.local
-  resolution: "recoil-dom-component@workspace:packages/dom-component"
-  dependencies:
-    recoil-atom: "link:./../atom"
-    recoil-util: "link:./../util"
-    recoil-vdom: "link:./../vdom"
-  languageName: unknown
-  linkType: soft
-
-"recoil-dom-dsl@workspace:packages/dom-dsl":
-  version: 0.0.0-use.local
-  resolution: "recoil-dom-dsl@workspace:packages/dom-dsl"
-  dependencies:
-    recoil-dom-component: "file:../dom-component"
-    recoil-vdom: "file:../vdom"
-  languageName: unknown
-  linkType: soft
-
-"recoil-util@link:./../util::locator=recoil-atom%40workspace%3Apackages%2Fatom":
-  version: 0.0.0-use.local
-  resolution: "recoil-util@link:./../util::locator=recoil-atom%40workspace%3Apackages%2Fatom"
-  languageName: node
-  linkType: soft
-
-"recoil-util@link:./../util::locator=recoil-dom-component%40file%3A..%2Fdom-component%23..%2Fdom-component%3A%3Ahash%3Dc82d61%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0-use.local
-  resolution: "recoil-util@link:./../util::locator=recoil-dom-component%40file%3A..%2Fdom-component%23..%2Fdom-component%3A%3Ahash%3Dc82d61%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  languageName: node
-  linkType: soft
-
-"recoil-util@link:./../util::locator=recoil-dom-component%40workspace%3Apackages%2Fdom-component":
-  version: 0.0.0-use.local
-  resolution: "recoil-util@link:./../util::locator=recoil-dom-component%40workspace%3Apackages%2Fdom-component"
-  languageName: node
-  linkType: soft
-
-"recoil-util@link:./../util::locator=recoil-vdom%40file%3A..%2Fvdom%23..%2Fvdom%3A%3Ahash%3D595ae3%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0-use.local
-  resolution: "recoil-util@link:./../util::locator=recoil-vdom%40file%3A..%2Fvdom%23..%2Fvdom%3A%3Ahash%3D595ae3%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  languageName: node
-  linkType: soft
-
-"recoil-util@link:./../util::locator=recoil-vdom%40workspace%3Apackages%2Fvdom":
-  version: 0.0.0-use.local
-  resolution: "recoil-util@link:./../util::locator=recoil-vdom%40workspace%3Apackages%2Fvdom"
-  languageName: node
-  linkType: soft
-
-"recoil-util@workspace:packages/util":
-  version: 0.0.0-use.local
-  resolution: "recoil-util@workspace:packages/util"
-  languageName: unknown
-  linkType: soft
-
-"recoil-vdom@file:../vdom::locator=recoil-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
-  version: 1.0.0
-  resolution: "recoil-vdom@file:../vdom#../vdom::hash=595ae3&locator=recoil-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  dependencies:
-    recoil-atom: "link:./../atom"
-    recoil-util: "link:./../util"
-  checksum: 59427dd8bd817b65e6807b733783ba9dce9bb12caebf6b8d930a2fc1b7951b76a8ea2fe7b7c816b785a4279cc8faee97b6f5b2a68469792286bedfca31eb4cdc
-  languageName: node
-  linkType: hard
-
-"recoil-vdom@link:./../vdom::locator=recoil-dom-component%40file%3A..%2Fdom-component%23..%2Fdom-component%3A%3Ahash%3Dc82d61%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0-use.local
-  resolution: "recoil-vdom@link:./../vdom::locator=recoil-dom-component%40file%3A..%2Fdom-component%23..%2Fdom-component%3A%3Ahash%3Dc82d61%26locator%3Drecoil-dom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  languageName: node
-  linkType: soft
-
-"recoil-vdom@link:./../vdom::locator=recoil-dom-component%40workspace%3Apackages%2Fdom-component":
-  version: 0.0.0-use.local
-  resolution: "recoil-vdom@link:./../vdom::locator=recoil-dom-component%40workspace%3Apackages%2Fdom-component"
-  languageName: node
-  linkType: soft
-
-"recoil-vdom@workspace:packages/vdom":
-  version: 0.0.0-use.local
-  resolution: "recoil-vdom@workspace:packages/vdom"
-  dependencies:
-    recoil-atom: "link:./../atom"
-    recoil-util: "link:./../util"
-  languageName: unknown
-  linkType: soft
-
 "recoil@workspace:.":
   version: 0.0.0-use.local
   resolution: "recoil@workspace:."
@@ -249,15 +119,6 @@ __metadata:
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
-
-"rxjs@npm:^7":
-  version: 7.5.6
-  resolution: "rxjs@npm:7.5.6"
-  dependencies:
-    tslib: ^2.1.0
-  checksum: fc05f01364a74dac57490fb3e07ea63b422af04017fae1db641a009073f902ef69f285c5daac31359620dc8d9aee7d81e42b370ca2a8573d1feae0b04329383b
-  languageName: node
-  linkType: hard
 
 "ts-node@npm:^10.8.1":
   version: 10.9.1
@@ -303,25 +164,6 @@ __metadata:
   bin:
     tsc: bin/tsc
   checksum: 50b10240887424c66454687f0fca4e319713b35cb44f0dab228719eb4dd757251f83c3d79e60d29dfbe90c2d6f1272f793b83e75a9fca2c622b4213ad3eb8cb1
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.1.0":
-  version: 2.4.0
-  resolution: "tslib@npm:2.4.0"
-  checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
-  languageName: node
-  linkType: hard
-
-"typescript-monads@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "typescript-monads@npm:7.2.0"
-  dependencies:
-    rxjs: ^7
-  dependenciesMeta:
-    rxjs:
-      optional: true
-  checksum: ba3598eb492819f14d9a14591ec088318aaec6e48aea074c7f5cf4b2a32ed08f74ca60c0d7a91f145732d60d60087da1d784d719431162ed117b072d11507019
   languageName: node
   linkType: hard
 

@@ -31,6 +31,7 @@
     "./vdom": "./packages/vdom"
   },
   "packageManager": "yarn@3.2.2",
+  "private": "true",
   "workspaces": [
     "./packages/*"
   ]
