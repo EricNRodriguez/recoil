@@ -6,13 +6,7 @@ export type ParentAtom = {
 }
 
 export class AtomTrackingContext {
-  private static readonly instance: AtomTrackingContext =
-    new AtomTrackingContext();
   private readonly scopeStack: ParentAtom[][] = [[]];
-
-  public static getInstance(): AtomTrackingContext {
-    return AtomTrackingContext.instance;
-  }
 
   private getCurrentScope(): ParentAtom[] {
     return this.scopeStack[this.scopeStack.length - 1];

@@ -313,11 +313,11 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
  *
  * @param job The callback to execute in an untracked context
  */
-export const runUntracked = (job: Runnable): void => {
+export const runUntracked = <T>(job: Producer<T>): T => {
   try {
-    AtomTrackingContext.getInstance().enterNewTrackingContext();
-    job();
+    globalTrackingContext.enterNewTrackingContext();
+    return job();
   } finally {
-    AtomTrackingContext.getInstance().exitCurrentTrackingContext();
+    globalTrackingContext.exitCurrentTrackingContext();
   }
 };
