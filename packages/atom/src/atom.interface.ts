@@ -1,22 +1,20 @@
-export interface SideEffectRef {
+export interface ISideEffectRef {
   activate(): void;
   deactivate(): void;
 }
 
-export interface Atom<T> {
+export interface IAtom<T> {
   get(): T;
   getUntracked(): T;
   invalidate(): void;
-  react(effect: SideEffect<T>): SideEffectRef;
+  react(effect: ISideEffect<T>): ISideEffectRef;
 }
 
-export interface LeafAtom<T> extends Atom<T> {
+export interface ILeafAtom<T> extends IAtom<T> {
   set(value: T): void;
   update(fn: (val: T) => T): void;
 }
 
-export interface DerivedAtom<T> extends Atom<T> {}
-
-export interface SideEffect<T> {
+export interface ISideEffect<T> {
   (value: T): void;
 }

@@ -1,11 +1,11 @@
-import { Atom, isAtom } from "../../../atom";
+import { IAtom, isAtom } from "../../../atom";
 import { Supplier, notNullOrUndefined, wrapStaticContentInProvider } from "../../../util";
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { HtmlVElement } from "../../../vdom";
 import { createComponent, runMountedEffect } from "../../../dom-component";
 
-export type IfElseCondition = Atom<boolean> | Supplier<boolean> | boolean;
+export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
 export type IfElseContent = MaybeNodeOrVNode | Supplier<MaybeNodeOrVNode>;
 
@@ -33,7 +33,7 @@ export const ifElse = createComponent(
 
     runMountedEffect((): void => {
       const state: boolean = isAtom(condition)
-        ? (condition as Atom<boolean>).get()
+        ? (condition as IAtom<boolean>).get()
         : (condition as Supplier<boolean>)();
 
       if (state === currentRenderedState) {

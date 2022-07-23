@@ -1,7 +1,8 @@
-import { LeafAtom, DerivedAtom, SideEffectRef } from "./atom.interface";
-import { LeafAtomImpl, DerivedAtomImpl } from "./atom";
-import { Atom } from "./atom.interface";
+import { ILeafAtom, ISideEffectRef } from "./atom.interface";
+import { LeafAtomImpl, DerivedAtom } from "./atom";
+import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
+import {AtomTrackingContext} from "./context";
 
 /**
  * A generic higher order function
@@ -130,7 +131,7 @@ export const deregisterDecorator = <F extends Function>(
 
 export type FetchStateSignature<T> = (
   fetch: () => Promise<T>
-) => Atom<T | undefined>;
+) => IAtom<T | undefined>;
 
 // TODO(ericr): Support aborting
 /**
@@ -144,13 +145,13 @@ export type FetchStateSignature<T> = (
  * @returns A maybe atom containing the fetched state (or undefined in the instance when the state is being fetched)
  */
 export const fetchState = ApiFunctionBuilder.getInstance().build(
-  <T>(producer: Producer<Promise<T>>): Atom<T | undefined> => {
+  <T>(producer: Producer<Promise<T>>): IAtom<T | undefined> => {
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
 
     const atom = new LeafAtomImpl<T | undefined>(undefined);
 
-    const derivation = new DerivedAtomImpl<Promise<T>>(producer);
+    const derivation = new DerivedAtom<Promise<T>>(producer);
     derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
       futureVal.then((val: T): void => {
@@ -168,7 +169,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
   }
 );
 
-export type CreateStateSignature<T> = (value: T) => LeafAtom<T>;
+export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
 
 /**
  * A factory method for a leaf atom instance.
@@ -177,12 +178,12 @@ export type CreateStateSignature<T> = (value: T) => LeafAtom<T>;
  * @returns The atom
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
-  <T>(value: T): LeafAtom<T> => {
+  <T>(value: T): ILeafAtom<T> => {
     return new LeafAtomImpl(value);
   }
 );
 
-export type DeriveStateSignature<T> = (derivation: () => T) => DerivedAtom<T>;
+export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
 
 /**
  * A factory method for a derived state.
@@ -200,12 +201,12 @@ export type DeriveStateSignature<T> = (derivation: () => T) => DerivedAtom<T>;
  *          create it
  */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
-  <T>(deriveValue: Producer<T>): Atom<T> => {
-    return new DerivedAtomImpl(deriveValue);
+  <T>(deriveValue: Producer<T>): IAtom<T> => {
+    return new DerivedAtom(deriveValue);
   }
 );
 
-export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
+export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
 
 /**
  * A factory method for a tracked side effect
@@ -224,14 +225,14 @@ export type RunEffectSignature = (effect: Runnable) => SideEffectRef;
  * @returns A reference to the side effect (see the above doc)
  */
 export const runEffect: RunEffectSignature =
-  ApiFunctionBuilder.getInstance().build((effect: Runnable): SideEffectRef => {
-    const atom: DerivedAtom<number> = deriveState<number>(() => {
+  ApiFunctionBuilder.getInstance().build((effect: Runnable): ISideEffectRef => {
+    const atom: IAtom<number> = deriveState<number>(() => {
       effect();
       return 0;
     });
     // we register a noop effect, which will cause the derived atom
     // to eagerly evaluate immediately after every dirty
-    const sideEffectRef: SideEffectRef = atom.react(() => {});
+    const sideEffectRef: ISideEffectRef = atom.react(() => {});
 
     // kick it to trigger the initial eager evaluation, which
     // will in turn track any deps that the effect will run against
@@ -252,9 +253,9 @@ export const runEffect: RunEffectSignature =
  * such that they write/read to the atom.
  */
 export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
-  const registry: WeakMap<Object, LeafAtom<any>> = new WeakMap<
+  const registry: WeakMap<Object, ILeafAtom<any>> = new WeakMap<
     Object,
-    LeafAtom<any>
+    ILeafAtom<any>
   >();
 
   return function (target: Object, propertyKey: string) {
@@ -290,7 +291,7 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
         if (!registry.has(this)) {
           registry.set(
             this,
-            new DerivedAtomImpl(() => {
+            new DerivedAtom(() => {
               return originalFn.apply(this, args);
             })
           );
@@ -308,6 +309,10 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
  * @param job The callback to execute in an untracked context
  */
 export const runUntracked = (job: Runnable): void => {
-  // TODO(ericr): Implement properly - this is fine for now but we should have an option to disable tracking globally
-  queueMicrotask(job);
+  try {
+    AtomTrackingContext.getInstance().enterNewTrackingContext();
+    job();
+  } finally {
+    AtomTrackingContext.getInstance().exitCurrentTrackingContext();
+  }
 }

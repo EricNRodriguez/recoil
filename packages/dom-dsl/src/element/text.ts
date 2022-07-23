@@ -1,9 +1,9 @@
 import {Supplier} from "../../../util";
-import {Atom, isAtom} from "../../../atom";
+import {IAtom, isAtom} from "../../../atom";
 import {HtmlVNode} from "../../../vdom";
 import {createComponent, runMountedEffect} from "../../../dom-component";
 
-export type TextContent = string | Supplier<string> | Atom<string>;
+export type TextContent = string | Supplier<string> | IAtom<string>;
 
 export const t = (content: TextContent): HtmlVNode => {
   let textNode: HtmlVNode;
@@ -19,7 +19,7 @@ export const t = (content: TextContent): HtmlVNode => {
   return textNode;
 };
 
-type BindedTextNodeSource = Supplier<string> | Atom<string>;
+type BindedTextNodeSource = Supplier<string> | IAtom<string>;
 
 const createBindedTextNode = createComponent(
   (source: BindedTextNodeSource): HtmlVNode => {
@@ -27,7 +27,7 @@ const createBindedTextNode = createComponent(
 
     if (isAtom(source)) {
       runMountedEffect((): void => {
-        vNode.getRaw().textContent = (source as Atom<string>).get();
+        vNode.getRaw().textContent = (source as IAtom<string>).get();
       });
     } else if (typeof source === "function") {
       runMountedEffect((): void => {

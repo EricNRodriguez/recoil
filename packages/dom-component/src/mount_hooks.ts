@@ -1,5 +1,5 @@
 import { Runnable } from "../../util";
-import { runEffect, SideEffectRef } from "../../atom"
+import { runEffect, ISideEffectRef } from "../../atom"
 import { ComponentFactory } from "./component_factory";
 import { HtmlVNode } from "../../vdom";
 
@@ -49,7 +49,7 @@ export const runMountedEffect = (sideEffect: Runnable): void => {
  *
  * @param ref The references of the side effect to be mounted
  */
-export const mountEffect = (ref: SideEffectRef): void => {
+export const mountEffect = (ref: ISideEffectRef): void => {
   onMount(() => ref.activate());
   onUnmount(() => ref.deactivate());
 };

@@ -1,12 +1,11 @@
 import { Maybe, IMaybe } from "typescript-monads";
 import {
-  Atom,
-  DerivedAtom,
-  LeafAtom,
-  SideEffect,
-  SideEffectRef,
+  IAtom,
+  ILeafAtom,
+  ISideEffect,
+  ISideEffectRef,
 } from "./atom.interface";
-import { AtomContext } from "./context";
+import {AtomTrackingContext} from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
 import { Producer } from "../../util";
@@ -22,10 +21,10 @@ export const isAtom = (obj: any): boolean => {
 };
 
 class SideEffectRegistry<T> {
-  private readonly activeEffects: Set<SideEffect<T>> = new Set();
-  private readonly inactiveEffects: Set<SideEffect<T>> = new Set();
+  private readonly activeEffects: Set<ISideEffect<T>> = new Set();
+  private readonly inactiveEffects: Set<ISideEffect<T>> = new Set();
 
-  public registerEffect(effect: SideEffect<T>): void {
+  public registerEffect(effect: ISideEffect<T>): void {
     if (this.activeEffects.has(effect) || this.inactiveEffects.has(effect)) {
       // TODO(ericr): use a more specific error
       throw new Error("duplicate registration of side effect");
@@ -38,33 +37,31 @@ class SideEffectRegistry<T> {
     return this.activeEffects.size !== 0;
   }
 
-  public getActiveEffects(): SideEffect<T>[] {
+  public getActiveEffects(): ISideEffect<T>[] {
     return Array.from(this.activeEffects);
   }
 
-  public activateEffect(effect: SideEffect<T>): void {
+  public activateEffect(effect: ISideEffect<T>): void {
     this.inactiveEffects.delete(effect);
     this.activeEffects.add(effect);
   }
 
-  public deactivateEffect(effect: SideEffect<T>): void {
+  public deactivateEffect(effect: ISideEffect<T>): void {
     this.activeEffects.delete(effect);
     this.inactiveEffects.add(effect);
   }
 }
 
-abstract class BaseAtom<T> implements Atom<T> {
-  private static readonly context: AtomContext<DerivedAtomImpl<Object>> =
-    new AtomContext<DerivedAtomImpl<Object>>();
-  private readonly parents: WeakCollection<DerivedAtomImpl<Object>> =
-    new WeakCollection<DerivedAtomImpl<Object>>();
+abstract class BaseAtom<T> implements IAtom<T> {
+  private readonly parents: WeakCollection<DerivedAtom<Object>> =
+    new WeakCollection<DerivedAtom<Object>>();
   private readonly effects: SideEffectRegistry<T> = new SideEffectRegistry<T>();
-
+  
   abstract get(): T;
 
   abstract getUntracked(): T;
 
-  protected getParents(): DerivedAtomImpl<any>[] {
+  protected getParents(): DerivedAtom<any>[] {
     return this.parents.getItems();
   }
 
@@ -73,14 +70,14 @@ abstract class BaseAtom<T> implements Atom<T> {
   }
 
   public invalidate(): void {
-    this.parents.forEach((parent: DerivedAtomImpl<any>): void => {
+    this.parents.forEach((parent: DerivedAtom<any>): void => {
       parent.dirty();
       parent.childReady();
     });
   }
 
-  protected getContext(): AtomContext<DerivedAtomImpl<any>> {
-    return BaseAtom.context;
+  protected getContext(): AtomTrackingContext {
+    return AtomTrackingContext.getInstance();
   }
 
   public latchToCurrentDerivation(): void {
@@ -98,11 +95,11 @@ abstract class BaseAtom<T> implements Atom<T> {
     const value: T = this.get();
     this.effects
       .getActiveEffects()
-      .forEach((effect: SideEffect<T>) => effect(value));
+      .forEach((effect: ISideEffect<T>) => effect(value));
   }
 
-  public react(effect: SideEffect<T>): SideEffectRef {
-    const cachedEffect: SideEffect<T> = this.buildCachedEffect(effect);
+  public react(effect: ISideEffect<T>): ISideEffectRef {
+    const cachedEffect: ISideEffect<T> = this.buildCachedEffect(effect);
 
     this.effects.registerEffect(cachedEffect);
 
@@ -120,9 +117,9 @@ abstract class BaseAtom<T> implements Atom<T> {
     };
   }
 
-  private buildCachedEffect(effect: SideEffect<T>): SideEffect<T> {
+  private buildCachedEffect(effect: ISideEffect<T>): ISideEffect<T> {
     let prevValue: T | null = null;
-    const cachedEffect: SideEffect<T> = (newValue: T): void => {
+    const cachedEffect: ISideEffect<T> = (newValue: T): void => {
       if (newValue !== prevValue) {
         prevValue = newValue;
         effect(newValue);
@@ -135,7 +132,7 @@ abstract class BaseAtom<T> implements Atom<T> {
   }
 }
 
-export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
+export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   private value: T;
 
   constructor(value: T) {
@@ -153,7 +150,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
   }
 
   public set(value: T): void {
-    // this.checkSetIsNotASideEffect();
+    this.checkSetIsNotASideEffect();
 
     if (value === this.value) {
       return;
@@ -171,12 +168,12 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
   }
 
   public dirty() {
-    const prevParents: DerivedAtomImpl<any>[] = this.getParents();
+    const prevParents: DerivedAtom<any>[] = this.getParents();
     this.forgetParents();
 
     this.scheduleEffects();
 
-    prevParents.forEach((parent: DerivedAtomImpl<any>): void => {
+    prevParents.forEach((parent: DerivedAtom<any>): void => {
       parent.dirty();
       parent.childReady();
     });
@@ -191,7 +188,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
   }
 }
 
-export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
+export class DerivedAtom<T> extends BaseAtom<T> {
   private readonly deriveValue: Producer<T>;
 
   private value: IMaybe<T> = Maybe.none();
@@ -229,12 +226,12 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
     this.numChildrenNotReady--;
 
     if (this.numChildrenNotReady === 0) {
-      const prevParents: DerivedAtomImpl<any>[] = this.getParents();
+      const prevParents: DerivedAtom<any>[] = this.getParents();
       this.forgetParents();
 
       this.scheduleEffects();
 
-      prevParents.forEach((parent: DerivedAtomImpl<any>): void => {
+      prevParents.forEach((parent: DerivedAtom<any>): void => {
         parent.childReady();
       });
     }
@@ -244,7 +241,7 @@ export class DerivedAtomImpl<T> extends BaseAtom<T> implements DerivedAtom<T> {
     this.discardCachedValue();
 
     if (this.numChildrenNotReady === 0) {
-      this.getParents().forEach((parent: DerivedAtomImpl<any>): void => {
+      this.getParents().forEach((parent: DerivedAtom<any>): void => {
         parent.dirty();
       });
     }

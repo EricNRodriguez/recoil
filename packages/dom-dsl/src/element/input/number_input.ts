@@ -1,4 +1,4 @@
-import {LeafAtom} from "../../../../atom";
+import {ILeafAtom} from "../../../../atom";
 import {createComponent, runMountedEffect} from "../../../../dom-component";
 import {HtmlVElement} from "../../../../vdom";
 import {clamp, notNullOrUndefined} from "../../../../util";
@@ -6,7 +6,7 @@ import {clamp, notNullOrUndefined} from "../../../../util";
 export type NumberInputArgs = {
   max?: number;
   min?: number;
-  num: LeafAtom<number>;
+  num: ILeafAtom<number>;
 };
 
 export const numberInput = createComponent(

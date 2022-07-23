@@ -10,7 +10,7 @@ import { VNode } from "./virtual_node.interface";
 import { VNodeBase } from "./virtual_node_base";
 import { HtmlVNode } from "./virtual_node";
 import {BiConsumer, Consumer, notNullOrUndefined} from "../../util";
-import {Atom, isAtom} from "../../atom";
+import {IAtom, isAtom} from "../../atom";
 
 /**
  * A lightweight wrapper around a Html Dom element, encapsulating lifecycle management, mounting/unmounting of subcomponents, etc
@@ -118,7 +118,7 @@ export class HtmlVElement
 
   public setAttribute(attribute: string, value: Attribute): HtmlVElement {
     if (isAtom(value)) {
-      return this.setAtomicAttribute(attribute, value as Atom<string>);
+      return this.setAtomicAttribute(attribute, value as IAtom<string>);
     } else if (typeof value === "string") {
       return this.setStaticAttribute(attribute, value);
     }
@@ -134,7 +134,7 @@ export class HtmlVElement
 
   private setAtomicAttribute(
     attribute: string,
-    value: Atom<string>
+    value: IAtom<string>
   ): HtmlVElement {
     const ref = value.react((): void => {
       this.setAttribute(attribute, value.get());

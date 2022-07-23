@@ -14,9 +14,9 @@ export {
   FetchStateSignature,
 } from "./src/api";
 export {
-  Atom,
-  LeafAtom,
+  IAtom,
+  ILeafAtom,
   DerivedAtom,
-  SideEffectRef,
+  ISideEffectRef,
 } from "./src/atom.interface";
 export { isAtom } from "./src/atom";

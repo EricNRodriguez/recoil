@@ -1,10 +1,10 @@
 import { VNode } from "./virtual_node.interface";
-import {Atom} from "../../atom";
+import {IAtom} from "../../atom";
 import {BiConsumer, Consumer} from "../../util";
 
 export type ElementStyle = { [key: string]: string };
 
-export type Attribute = string | Atom<string>;
+export type Attribute = string | IAtom<string>;
 
 // A lightweight wrapper around a raw element
 export interface VElement<A, B extends VElement<A, B>> extends VNode<A, B> {
