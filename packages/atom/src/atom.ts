@@ -152,7 +152,7 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
     return this.value;
   }
 
-  public set(value: T) {
+  public set(value: T): void {
     // this.checkSetIsNotASideEffect();
 
     if (value === this.value) {
@@ -164,6 +164,10 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements LeafAtom<T> {
     // intentionally kicking AFTER setting, since
     // we want our effects to run with the new values
     this.dirty();
+  }
+
+  public update(fn: (val: T) => T): void {
+      this.set(fn(this.getUntracked()));
   }
 
   public dirty() {

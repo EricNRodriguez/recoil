@@ -12,6 +12,7 @@ export interface Atom<T> {
 
 export interface LeafAtom<T> extends Atom<T> {
   set(value: T): void;
+  update(fn: (val: T) => T): void;
 }
 
 export interface DerivedAtom<T> extends Atom<T> {}
