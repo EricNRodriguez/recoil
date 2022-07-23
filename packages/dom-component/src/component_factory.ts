@@ -1,6 +1,6 @@
 import { VNode } from "../../vdom";
 import { Consumer, Producer } from "../../util";
-import {deriveState, IAtom} from "../../atom";
+import { deriveState, IAtom } from "../../atom";
 
 /**
  * A plain old javascript function that returns a VNode (or subclass of it)
@@ -15,7 +15,10 @@ export type DomBuilder<T extends VNode<Node>> = (...args: any[]) => T;
  */
 export class ComponentFactory {
   private static readonly instance = new ComponentFactory();
-  private readonly consumeVNodeQueue: Map<number, Consumer<IAtom<VNode<Node>>>[]> = new Map();
+  private readonly consumeVNodeQueue: Map<
+    number,
+    Consumer<IAtom<VNode<Node>>>[]
+  > = new Map();
 
   private currentScope: number = -1;
 
@@ -43,7 +46,9 @@ export class ComponentFactory {
     this.currentScope--;
   }
 
-  public registerNextComponentConsumer(consumer: Consumer<IAtom<VNode<Node>>>): void {
+  public registerNextComponentConsumer(
+    consumer: Consumer<IAtom<VNode<Node>>>
+  ): void {
     if (!this.isInScope()) {
       // TODO(ericr): more specific error message and type
       throw new Error(
@@ -54,25 +59,26 @@ export class ComponentFactory {
     this.consumeVNodeQueue.get(this.currentScope)?.push(consumer);
   }
 
-    /**
-     * Executes a dom builder inside a managed scope/context, allowing functions that run against
-     * the return value to be queued.
-     *
-     * @param fn A simple dom constructor
-     */
-    public buildComponent<T extends VNode<Node>>(fn: Producer<T>): T {
-      try {
-        this.enterScope();
+  /**
+   * Executes a dom builder inside a managed scope/context, allowing functions that run against
+   * the return value to be queued.
+   *
+   * @param fn A simple dom constructor
+   */
+  public buildComponent<T extends VNode<Node>>(fn: Producer<T>): T {
+    try {
+      this.enterScope();
 
-        // Building the component inside of a tracked context allows us to react whenever any 
-        // tracked state that was used to construct the component is dirtied, which opens up
-        // some powerful lifecycle methods such as onUpdate, without any implicit code to track
-        // and propagate such events
-        const buildComponent: IAtom<T> = deriveState(fn);
-        const component = buildComponent.get();
+      // Building the component inside of a tracked context allows us to react whenever any
+      // tracked state that was used to construct the component is dirtied, which opens up
+      // some powerful lifecycle methods such as onUpdate, without any implicit code to track
+      // and propagate such events
+      const buildComponent: IAtom<T> = deriveState(fn);
+      const component = buildComponent.get();
 
-        this.getCurrentComponentVNodeConsumers().forEach(
-          (consumer: Consumer<IAtom<VNode<Node>>>): void => consumer(buildComponent)
+      this.getCurrentComponentVNodeConsumers().forEach(
+        (consumer: Consumer<IAtom<VNode<Node>>>): void =>
+          consumer(buildComponent)
       );
 
       return component;
