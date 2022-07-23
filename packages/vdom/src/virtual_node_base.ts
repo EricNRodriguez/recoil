@@ -1,6 +1,6 @@
 import { VNode } from "./virtual_node.interface";
-import {notNullOrUndefined, nullOrUndefined, removeNullAndUndefinedItems, Runnable} from "../../util";
-import {HtmlVNode} from "./virtual_node";
+import {notNullOrUndefined, removeNullAndUndefinedItems, Runnable} from "../../util";
+import {HtmlVNode, wrapInVNode} from "./virtual_node";
 
 export abstract class VNodeBase<A extends Node, B extends VNodeBase<A, B>>
   implements VNode<A, B>
@@ -144,20 +144,6 @@ export const unwrapVNode = (content: Node | VNode<any, any>): Node => {
   }
 
   return content as Node;
-};
-
-export const wrapInVNode = (
-  node: VNode<any, any> | Node | string | null | undefined
-): VNode<any, any> | null | undefined => {
-  if (nullOrUndefined(node)) {
-    return node as null | undefined;
-  }
-
-  if (isVNode(node)) {
-    return node as VNode<any, any>;
-  } else {
-    return new HtmlVNode(node as Node);
-  }
 };
 
 export const replaceChildren = (
