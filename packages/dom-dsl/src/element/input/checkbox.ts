@@ -9,9 +9,9 @@ export type CheckboxArguments = {
 };
 
 export const checkbox = createComponent(
-  (args: CheckboxArguments): VElement => {
-    const checkboxElement: VElement = new VElement(
-      "input"
+  (args: CheckboxArguments): VElement<HTMLInputElement> => {
+    const checkboxElement: VElement<HTMLInputElement> = new VElement(
+      document.createElement("input")
     ).setAttribute("type", "checkbox");
 
     // binding effect for checked attribute
@@ -23,9 +23,9 @@ export const checkbox = createComponent(
       }
 
       prevCheckedValue = isChecked;
-      (checkboxElement.getRaw() as HTMLInputElement).checked =
+      checkboxElement.getRaw().checked =
         isChecked === true;
-      (checkboxElement.getRaw() as HTMLInputElement).indeterminate =
+      checkboxElement.getRaw().indeterminate =
         isChecked === null;
     });
 
@@ -38,7 +38,7 @@ export const checkbox = createComponent(
           return;
         }
         prevEnabledValue = isEnabled;
-        (checkboxElement.getRaw() as HTMLInputElement).disabled = !isEnabled;
+        checkboxElement.getRaw().disabled = !isEnabled;
       });
     }
 
@@ -47,13 +47,13 @@ export const checkbox = createComponent(
     // validation and decides to not toggle, but the default behaviour of the
     // checkbox element is to toggle.
     const originalOnClick = args.onClick;
-    (checkboxElement.getRaw() as HTMLInputElement).onclick = (): void => {
+    checkboxElement.getRaw().onclick = (): void => {
       originalOnClick();
 
       const isChecked: boolean | null = args.isChecked();
-      (checkboxElement.getRaw() as HTMLInputElement).checked =
+      checkboxElement.getRaw().checked =
         isChecked === true;
-      (checkboxElement.getRaw() as HTMLInputElement).indeterminate =
+      checkboxElement.getRaw().indeterminate =
         isChecked === null;
     };
 

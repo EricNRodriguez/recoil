@@ -8,9 +8,9 @@ export type RadioButtonArguments = {
 };
 
 export const radioButton = createComponent(
-  (args: RadioButtonArguments): VElement => {
-    const radioButtonElement: VElement = new VElement(
-      "input"
+  (args: RadioButtonArguments): VElement<HTMLInputElement> => {
+    const radioButtonElement: VElement<HTMLInputElement> = new VElement(
+      document.createElement("input")
     ).setAttribute("type", "radio");
 
     // binding effect for checked attribute
@@ -22,7 +22,7 @@ export const radioButton = createComponent(
       }
 
       prevCheckedValue = isChecked;
-      (radioButtonElement.getRaw() as HTMLInputElement).checked = isChecked;
+      radioButtonElement.getRaw().checked = isChecked;
     });
 
     // we want to trigger a re-bind once the onclick handle is executed.
@@ -30,10 +30,10 @@ export const radioButton = createComponent(
     // validation and decides to not toggle, but the default behaviour of the
     // element is to toggle.
     const originalOnClick = args.onClick;
-    (radioButtonElement.getRaw() as HTMLInputElement).onclick = (): void => {
+    radioButtonElement.getRaw().onclick = (): void => {
       originalOnClick();
 
-      (radioButtonElement.getRaw() as HTMLInputElement).checked =
+      radioButtonElement.getRaw().checked =
         args.isChecked();
     };
 

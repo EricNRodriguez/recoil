@@ -7,7 +7,7 @@ import {
 
 export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   private readonly node: A;
-  private readonly children: VNode[] = [];
+  private readonly children: VNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
   private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>();
   private currentlyMounted: boolean = false;
@@ -16,12 +16,12 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     this.node = node;
   }
 
-  public setChildren(...children: (VNode | Node | null | undefined)[]): B {
+  public setChildren(...children: (VNode<Node> | Node | null | undefined)[]): B {
     this.unmountCurrentChildren();
 
-    const newChildren: VNode[] = children
+    const newChildren: VNode<Node>[] = children
       .map(wrapInVNode)
-      .filter(notNullOrUndefined) as VNode[];
+      .filter(notNullOrUndefined) as VNode<Node>[];
 
     this.children.length = 0;
 
@@ -32,7 +32,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   }
 
   private syncMountStatusOfChildren(): void {
-    this.children.forEach((child: VNode): void => {
+    this.children.forEach((child: VNode<Node>): void => {
       if (this.isMounted() !== child.isMounted()) {
         this.isMounted() ? child.mount() : child.unmount();
       }
@@ -40,13 +40,13 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   }
 
   private unmountCurrentChildren(): void {
-    this.children.forEach((oldChild: VNode): VNode => oldChild.unmount());
+    this.children.forEach((oldChild: VNode<Node>): VNode<Node> => oldChild.unmount());
   }
 
   public deleteChildren(offset: number): B {
     const childrenToRemove: Node[] = this.children
       .slice(offset)
-      .map((child: VNode): VNode => child.unmount())
+      .map((child: VNode<Node>): VNode<Node> => child.unmount())
       .map(unwrapVNode);
 
     removeChildren(this.getRaw(), childrenToRemove);
@@ -56,23 +56,23 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     return this as unknown as B;
   }
 
-  public appendChildren(children: (VNode | Node | null | undefined)[]): B {
-    const newChildren: VNode[] = children
+  public appendChildren(children: (VNode<Node> | Node | null | undefined)[]): B {
+    const newChildren: VNode<Node>[] = children
       .map(wrapInVNode)
-      .filter(notNullOrUndefined) as VNode[];
+      .filter(notNullOrUndefined) as VNode<Node>[];
 
     this.pushNewChildren(newChildren);
 
     return this as unknown as B;
   }
 
-  private pushNewChildren(newChildren: VNode[]): void {
+  private pushNewChildren(newChildren: VNode<Node>[]): void {
     this.children.push(...newChildren);
     newChildren.forEach(this.insertChildIntoDom.bind(this));
     this.syncMountStatusOfChildren();
   }
 
-  private insertChildIntoDom(child: VNode): void {
+  private insertChildIntoDom(child: VNode<Node>): void {
     appendChildren(this.getRaw(), [child].map(unwrapVNode));
   }
 
@@ -82,7 +82,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
 
   public mount(): B {
     this.currentlyMounted = true;
-    this.children.forEach((child: VNode): void => {
+    this.children.forEach((child: VNode<Node>): void => {
       child.mount();
     });
     this.runMountHooks();
@@ -91,7 +91,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
 
   public unmount(): B {
     this.currentlyMounted = false;
-    this.children.forEach((child: VNode): void => {
+    this.children.forEach((child: VNode<Node>): void => {
       child.unmount();
     });
     this.runUnmountHooks();
@@ -123,8 +123,8 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   }
 }
 
-export class VNode extends AVNode<Node, VNode> {
-  constructor(node: Node) {
+export class VNode<T extends Node> extends AVNode<T, VNode<T>> {
+  constructor(node: T) {
     super(node);
   }
 }
@@ -133,27 +133,27 @@ export const isVNode = (content: any): boolean => {
   return content instanceof Object && "getRaw" in content;
 };
 
-export const unwrapVNode = (content: Node | VNode): Node => {
+export const unwrapVNode = (content: Node | VNode<Node>): Node => {
   if (content === null || content === undefined) {
     return content;
   }
 
   if (isVNode(content)) {
-    return (content as VNode).getRaw();
+    return (content as VNode<Node>).getRaw();
   }
 
   return content as Node;
 };
 
 export const wrapInVNode = (
-  node: VNode | Node | string | null | undefined
-): VNode | null | undefined => {
+  node: VNode<Node> | Node | string | null | undefined
+): VNode<Node> | null | undefined => {
   if (nullOrUndefined(node)) {
     return node as null | undefined;
   }
 
   if (isVNode(node)) {
-    return node as VNode;
+    return node as VNode<Node>;
   } else {
     return new VNode(node as Node);
   }

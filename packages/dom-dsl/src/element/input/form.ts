@@ -8,6 +8,6 @@ export enum FormTarget {
   TOP = "_top",
 }
 
-export const form = (...content: MaybeNodeOrVNode[]): VElement => {
-  return new VElement("form").setChildren(...content);
+export const form = (...content: MaybeNodeOrVNode[]): VElement<HTMLFormElement> => {
+  return new VElement(document.createElement("form")).setChildren(...content);
 };

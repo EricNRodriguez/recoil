@@ -1,5 +1,5 @@
 import { VElement } from "../../../vdom";
 
-export const hr = (): VElement => {
-  return new VElement("hr");
+export const hr = (): VElement<HTMLHRElement> => {
+  return new VElement(document.createElement("hr"));
 };

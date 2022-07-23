@@ -9,8 +9,8 @@ export type ButtonArgs = {
   onClick: Consumer<MouseEvent>;
 };
 
-export const button = (args: ButtonArgs): VElement => {
-  return new VElement("button")
+export const button = (args: ButtonArgs): VElement<HTMLButtonElement> => {
+  return new VElement(document.createElement("button"))
     .setAttribute("type", "button")
     .setChildren(wrapTextInVNode(args.content))
     .setClickHandler(args.onClick);

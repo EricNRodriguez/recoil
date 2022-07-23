@@ -4,12 +4,12 @@ import { VElement, VNode } from "../../../vdom";
 export type HeaderContent = VNode | string;
 
 interface HeaderBuilder {
-  (content: HeaderContent): VElement;
+  (content: HeaderContent): VElement<HTMLHeadingElement>;
 }
 
 const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
-  return (content: HeaderContent): VElement => {
-    return new VElement(`h${headerNumber}`).setChildren(
+  return (content: HeaderContent): VElement<HTMLHeadingElement> => {
+    return new VElement(document.createElement(`h${headerNumber}`) as HTMLHeadingElement).setChildren(
       wrapTextInVNode(content)
     );
   };

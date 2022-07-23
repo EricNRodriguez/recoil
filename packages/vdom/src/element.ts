@@ -61,12 +61,8 @@ export abstract class AVElement<
   }
 }
 
-export class VElement extends AVElement<HTMLElement, VElement> {
-  constructor(elem: string | HTMLElement) {
-    if (typeof elem === "string") {
-      super(document.createElement(elem as string));
-    } else {
-      super(elem);
-    }
+export class VElement<T extends HTMLElement> extends AVElement<T, VElement<T>> {
+  constructor(elem: T) {
+    super(elem);
   }
 }

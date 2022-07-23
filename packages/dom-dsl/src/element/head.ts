@@ -3,6 +3,6 @@ import { VElement } from "../../../vdom";
 
 export type HeadContent = MaybeNodeOrVNode;
 
-export const head = (...content: HeadContent[]): VElement => {
-  return new VElement("head").setChildren(...content);
+export const head = (...content: HeadContent[]): VElement<HTMLHeadElement> => {
+  return new VElement(document.createElement("head")).setChildren(...content);
 };

@@ -3,15 +3,13 @@ import { VElement } from "../../../../vdom";
 import { ILeafAtom } from "../../../../atom";
 
 export const textInput = createComponent(
-  (text: ILeafAtom<string>): VElement => {
-    const inputElement = document.createElement("input");
+  (text: ILeafAtom<string>): VElement<HTMLInputElement> => {
+    const element = new VElement(document.createElement("input")).setAttribute("type", "text");
 
-    const element = new VElement(inputElement).setAttribute("type", "text");
-
-    element.addEventHandler("input", () => text.set(inputElement.value));
+    element.addEventHandler("input", () => text.set(element.getRaw().value));
 
     runMountedEffect((): void => {
-      inputElement.value = text.get();
+      element.getRaw().value = text.get();
     });
 
     return element;
