@@ -5,7 +5,7 @@ import {deriveState, IAtom} from "../../atom";
 /**
  * A plain old javascript function that returns a VNode (or subclass of it)
  */
-export type DomBuilder<T extends VNode> = (...args: any[]) => T;
+export type DomBuilder<T extends VNode<Node>> = (...args: any[]) => T;
 
 /**
  * A utility 'factory' that manages the scope of currently 'building' components.
@@ -96,7 +96,7 @@ export class ComponentFactory {
  * @param fn The VNode builder to be wrapped.
  * @returns The wrapped function
  */
-export const createComponent = <T extends VNode>(fn: DomBuilder<T>) => {
+export const createComponent = <T extends VNode<Node>>(fn: DomBuilder<T>) => {
   return (...args: any[]): T => {
     return ComponentFactory.getInstance().buildComponent(() => fn(...args));
   };
