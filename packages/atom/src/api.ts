@@ -3,7 +3,7 @@ import { LeafAtomImpl, DerivedAtom } from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
-import {BatchUpdateScheduler} from "./update_scheduler";
+import {BatchingEffectScheduler} from "./effect_scheduler";
 
 /**
  * A shared tracking context for all atoms created through this api
@@ -11,9 +11,9 @@ import {BatchUpdateScheduler} from "./update_scheduler";
 const globalTrackingContext = new AtomTrackingContext();
 
 /**
- * A shared update scheduler that provides support for batching updates
+ * A shared side effect scheduler that provides support for batching updates
  */
-const globalUpdateScheduler = new BatchUpdateScheduler();
+const globalEffectScheduler = new BatchingEffectScheduler();
 
 /**
  * A generic higher order function
@@ -160,9 +160,9 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
 
-    const atom = new LeafAtomImpl<T | undefined>(undefined, globalTrackingContext, globalUpdateScheduler);
+    const atom = new LeafAtomImpl<T | undefined>(undefined, globalTrackingContext, globalEffectScheduler);
 
-    const derivation = new DerivedAtom<Promise<T>>(producer, globalTrackingContext);
+    const derivation = new DerivedAtom<Promise<T>>(producer, globalTrackingContext, globalEffectScheduler);
     derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
       futureVal.then((val: T): void => {
@@ -190,7 +190,7 @@ export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
   <T>(value: T): ILeafAtom<T> => {
-    return new LeafAtomImpl(value, globalTrackingContext, globalUpdateScheduler);
+    return new LeafAtomImpl(value, globalTrackingContext, globalEffectScheduler);
   }
 );
 
@@ -213,7 +213,7 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
   <T>(deriveValue: Producer<T>): IAtom<T> => {
-    return new DerivedAtom(deriveValue, globalTrackingContext);
+    return new DerivedAtom(deriveValue, globalTrackingContext, globalEffectScheduler);
   }
 );
 
@@ -240,7 +240,7 @@ export const runEffect: RunEffectSignature =
     const atom: IAtom<number> = new DerivedAtom(() => {
       effect();
       return 0;
-    }, globalTrackingContext);
+    }, globalTrackingContext, globalEffectScheduler);
 
     // we register a noop effect, which will cause the derived atom
     // to eagerly evaluate immediately after every dirty
@@ -274,7 +274,7 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext, globalUpdateScheduler));
+          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext, globalEffectScheduler));
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -305,7 +305,7 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
             this,
             new DerivedAtom(() => {
               return originalFn.apply(this, args);
-            }, globalTrackingContext)
+            }, globalTrackingContext, globalEffectScheduler)
           );
         }
         return registry.get(this)!.get();
@@ -329,11 +329,19 @@ export const runUntracked = <T>(job: Producer<T>): T => {
   }
 };
 
+
+/**
+ * Executes a job in a batched context, such that all eager side effects will be run after the job returns.
+ * This is typically useful if you have an invalid intermediate state that is invalid and should never be used
+ * in any effects.
+ *
+ * @param job The job to be run in a batched state, with all effects running after the job completes.
+ */
 export const runBatched = (job: Runnable): void => {
     try {
-      globalUpdateScheduler.enterBatchState();
+      globalEffectScheduler.enterBatchState();
       job();
     } finally {
-      globalUpdateScheduler.exitBatchedState();
+      globalEffectScheduler.exitBatchedState();
     }
 };
