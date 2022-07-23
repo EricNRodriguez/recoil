@@ -5,6 +5,11 @@ import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
 
 /**
+ * A shared tracking context for all atoms created through this api
+ */
+const globalTrackingContext = new AtomTrackingContext();
+
+/**
  * A generic higher order function
  */
 export type FunctionDecorator<F extends Function> = (fn: F) => F;
@@ -149,9 +154,9 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
 
-    const atom = new LeafAtomImpl<T | undefined>(undefined);
+    const atom = new LeafAtomImpl<T | undefined>(undefined, globalTrackingContext);
 
-    const derivation = new DerivedAtom<Promise<T>>(producer);
+    const derivation = new DerivedAtom<Promise<T>>(producer, globalTrackingContext);
     derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
       futureVal.then((val: T): void => {
@@ -179,7 +184,7 @@ export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
   <T>(value: T): ILeafAtom<T> => {
-    return new LeafAtomImpl(value);
+    return new LeafAtomImpl(value, globalTrackingContext);
   }
 );
 
@@ -202,7 +207,7 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
   <T>(deriveValue: Producer<T>): IAtom<T> => {
-    return new DerivedAtom(deriveValue);
+    return new DerivedAtom(deriveValue, globalTrackingContext);
   }
 );
 
@@ -262,7 +267,7 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, new LeafAtomImpl(newVal));
+          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext));
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -293,7 +298,7 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
             this,
             new DerivedAtom(() => {
               return originalFn.apply(this, args);
-            })
+            }, globalTrackingContext)
           );
         }
         return registry.get(this)!.get();

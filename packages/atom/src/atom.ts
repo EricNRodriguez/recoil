@@ -5,7 +5,7 @@ import {
   ISideEffect,
   ISideEffectRef,
 } from "./atom.interface";
-import { AtomTrackingContext } from "./context";
+import {AtomTrackingContext, ParentAtom} from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
 import { Producer } from "../../util";
@@ -53,15 +53,20 @@ class SideEffectRegistry<T> {
 }
 
 abstract class BaseAtom<T> implements IAtom<T> {
-  private readonly parents: WeakCollection<DerivedAtom<Object>> =
+  private readonly context: AtomTrackingContext;
+  private readonly parents: WeakCollection<ParentAtom> =
     new WeakCollection<DerivedAtom<Object>>();
   private readonly effects: SideEffectRegistry<T> = new SideEffectRegistry<T>();
+
+  protected constructor(context: AtomTrackingContext) {
+    this.context = context;
+  }
 
   abstract get(): T;
 
   abstract getUntracked(): T;
 
-  protected getParents(): DerivedAtom<any>[] {
+  protected getParents(): ParentAtom[] {
     return this.parents.getItems();
   }
 
@@ -70,19 +75,19 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public invalidate(): void {
-    this.parents.forEach((parent: DerivedAtom<any>): void => {
-      parent.dirty();
+    this.parents.forEach((parent: ParentAtom): void => {
+      parent.childDirty();
       parent.childReady();
     });
   }
 
   protected getContext(): AtomTrackingContext {
-    return AtomTrackingContext.getInstance();
+    return this.context;
   }
 
   public latchToCurrentDerivation(): void {
     this.getContext()
-      .getCurrentDerivation()
+      .getCurrentParent()
       .tapSome(this.parents.register.bind(this.parents));
   }
 
@@ -135,8 +140,8 @@ abstract class BaseAtom<T> implements IAtom<T> {
 export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   private value: T;
 
-  constructor(value: T) {
-    super();
+  constructor(value: T, context: AtomTrackingContext) {
+    super(context);
     this.value = value;
   }
 
@@ -168,19 +173,19 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   }
 
   public dirty() {
-    const prevParents: DerivedAtom<any>[] = this.getParents();
+    const prevParents: ParentAtom[] = this.getParents();
     this.forgetParents();
 
     this.scheduleEffects();
 
-    prevParents.forEach((parent: DerivedAtom<any>): void => {
-      parent.dirty();
+    prevParents.forEach((parent: ParentAtom): void => {
+      parent.childDirty();
       parent.childReady();
     });
   }
 
   private checkSetIsNotASideEffect(): void {
-    if (this.getContext().getCurrentDerivation().isSome()) {
+    if (this.getContext().getCurrentParent().isSome()) {
       throw new StatefulSideEffectError(
         "stateful set called on leaf atom during derivation"
       );
@@ -194,8 +199,8 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
 
-  constructor(deriveValue: Producer<T>) {
-    super();
+  constructor(deriveValue: Producer<T>, context: AtomTrackingContext) {
+    super(context);
     this.deriveValue = deriveValue;
   }
 
@@ -206,10 +211,10 @@ export class DerivedAtom<T> extends BaseAtom<T> {
 
   private executeScopedDerivation(): T {
     try {
-      this.getContext().pushDerivation(this);
+      this.getContext().pushParent(this);
       return this.getUntracked();
     } finally {
-      this.getContext().popDerivation();
+      this.getContext().popParent();
     }
   }
 
@@ -226,23 +231,23 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     this.numChildrenNotReady--;
 
     if (this.numChildrenNotReady === 0) {
-      const prevParents: DerivedAtom<any>[] = this.getParents();
+      const prevParents: ParentAtom[] = this.getParents();
       this.forgetParents();
 
       this.scheduleEffects();
 
-      prevParents.forEach((parent: DerivedAtom<any>): void => {
+      prevParents.forEach((parent: ParentAtom): void => {
         parent.childReady();
       });
     }
   }
 
-  public dirty() {
+  public childDirty() {
     this.discardCachedValue();
 
     if (this.numChildrenNotReady === 0) {
-      this.getParents().forEach((parent: DerivedAtom<any>): void => {
-        parent.dirty();
+      this.getParents().forEach((parent: ParentAtom): void => {
+        parent.childDirty();
       });
     }
 

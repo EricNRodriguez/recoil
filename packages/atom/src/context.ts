@@ -1,34 +1,38 @@
 import { Maybe, IMaybe } from "typescript-monads";
-import { DerivedAtom } from "./atom";
+
+export type ParentAtom = {
+  childDirty(): void;
+  childReady(): void;
+}
 
 export class AtomTrackingContext {
   private static readonly instance: AtomTrackingContext =
     new AtomTrackingContext();
-  private readonly scopeStack: DerivedAtom<any>[][] = [[]];
+  private readonly scopeStack: ParentAtom[][] = [[]];
 
   public static getInstance(): AtomTrackingContext {
     return AtomTrackingContext.instance;
   }
 
-  private getCurrentScope(): DerivedAtom<any>[] {
+  private getCurrentScope(): ParentAtom[] {
     return this.scopeStack[this.scopeStack.length - 1];
   }
 
-  public getCurrentDerivation(): IMaybe<DerivedAtom<any>> {
-    const currentScope: DerivedAtom<any>[] = this.getCurrentScope();
+  public getCurrentParent(): IMaybe<ParentAtom> {
+    const currentScope: ParentAtom[] = this.getCurrentScope();
 
     if (currentScope.length === 0) {
-      return Maybe.none<DerivedAtom<any>>();
+      return Maybe.none<ParentAtom>();
     }
 
     return Maybe.some(currentScope[currentScope.length - 1]);
   }
 
-  public pushDerivation(derivation: DerivedAtom<any>): void {
+  public pushParent(derivation: ParentAtom): void {
     this.getCurrentScope().push(derivation);
   }
 
-  public popDerivation(): void {
+  public popParent(): void {
     this.getCurrentScope().pop();
   }
 
