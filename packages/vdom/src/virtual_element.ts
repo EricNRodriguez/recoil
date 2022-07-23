@@ -138,7 +138,6 @@ export class HtmlVElement
   ): HtmlVElement {
     const ref = value.react((): void => {
       this.setAttribute(attribute, value.get());
-      value.get();
     });
 
     this.registerOnMountHook(ref.activate.bind(ref));
