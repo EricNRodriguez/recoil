@@ -16,7 +16,6 @@ export {
 export {
   IAtom,
   ILeafAtom,
-  DerivedAtom,
   ISideEffectRef,
 } from "./src/atom.interface";
 export { isAtom } from "./src/atom";
