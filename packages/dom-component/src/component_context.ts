@@ -1,14 +1,9 @@
 import {VNode} from "../../vdom";
 import {
-  createState,
-  deriveState,
-  fetchState,
-  IAtom,
-  ILeafAtom,
   ISideEffectRef,
   runEffect
 } from "../../atom";
-import {Consumer, Producer, Runnable} from "../../util";
+import {Consumer, Runnable} from "../../util";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;
@@ -19,18 +14,6 @@ export interface IComponentContext {
 
 export class ComponentContext implements IComponentContext {
   private readonly deferredFunctions: Consumer<VNode<Node>>[] = [];
-
-  public createState<T>(value: T): ILeafAtom<T> {
-    return createState(value);
-  }
-
-  public deriveState<T>(derivation: Producer<T>): IAtom<T> {
-    return deriveState(derivation);
-  }
-
-  public fetchState<T>(fetcher: Producer<Promise<T>>): IAtom<T | undefined> {
-    return fetchState(fetcher);
-  }
 
   public onInitialMount(sideEffect: Runnable): void {
     let called: boolean = false;
