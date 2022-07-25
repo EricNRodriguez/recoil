@@ -1,7 +1,7 @@
 import { Supplier } from "../../../util";
 import { IAtom, isAtom } from "../../../atom";
 import { VNode } from "../../../vdom";
-import {createComponent, IComponentContext} from "../../../dom-component";
+import { createComponent, IComponentContext } from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 
@@ -21,10 +21,8 @@ export const t = (content: TextContent): VNode<Node> => {
 
 type BindedTextNodeSource = Supplier<string> | IAtom<string>;
 
-const createBindedTextNode = createComponent((
-  ctx: IComponentContext,
-  source: BindedTextNodeSource,
-): VNode<Node> => {
+const createBindedTextNode = createComponent(
+  (ctx: IComponentContext, source: BindedTextNodeSource): VNode<Node> => {
     const vNode: VNode<Node> = new VNode(document.createTextNode(""));
 
     if (isAtom(source)) {

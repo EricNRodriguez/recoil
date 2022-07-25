@@ -1,4 +1,4 @@
-import {createComponent, IComponentContext} from "../../../../dom-component";
+import { createComponent, IComponentContext } from "../../../../dom-component";
 import { VElement } from "../../../../vdom";
 import { Runnable, Supplier } from "../../../../util";
 
@@ -7,10 +7,11 @@ export type RadioButtonArguments = {
   onClick: Runnable;
 };
 
-export const radioButton = createComponent((
-  ctx: IComponentContext,
-  args: RadioButtonArguments,
-): VElement<HTMLInputElement> => {
+export const radioButton = createComponent(
+  (
+    ctx: IComponentContext,
+    args: RadioButtonArguments
+  ): VElement<HTMLInputElement> => {
     const radioButtonElement: VElement<HTMLInputElement> = new VElement(
       document.createElement("input")
     ).setAttribute("type", "radio");

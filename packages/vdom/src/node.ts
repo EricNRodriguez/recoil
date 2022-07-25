@@ -44,7 +44,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     if (this.isMounted() !== child.isMounted()) {
       this.isMounted() ? child.mount() : child.unmount();
     }
-}
+  }
 
   private unmountCurrentChildren(): void {
     this.children.forEach(

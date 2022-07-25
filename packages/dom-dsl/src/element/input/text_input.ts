@@ -1,11 +1,12 @@
-import {createComponent, IComponentContext} from "../../../../dom-component";
+import { createComponent, IComponentContext } from "../../../../dom-component";
 import { VElement } from "../../../../vdom";
 import { ILeafAtom } from "../../../../atom";
 
-export const textInput = createComponent((
-  ctx: IComponentContext,
-  text: ILeafAtom<string>,
-): VElement<HTMLInputElement> => {
+export const textInput = createComponent(
+  (
+    ctx: IComponentContext,
+    text: ILeafAtom<string>
+  ): VElement<HTMLInputElement> => {
     const element = new VElement(document.createElement("input")).setAttribute(
       "type",
       "text"
