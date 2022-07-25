@@ -6,6 +6,7 @@ import {
 } from "../../util";
 
 export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
+  private readonly id: Object = new Object();
   private readonly node: A;
   private readonly children: VNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
@@ -122,6 +123,10 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     this.onUnmountHooks.add(hook);
 
     return this as unknown as B;
+  }
+
+  public getId(): Object {
+    return this.id;
   }
 
   public getRaw(): A {
