@@ -12,13 +12,11 @@ export type StatefulDomBuilder<T extends VNode<Node>> = (ctx: ComponentContext, 
 export type DomBuilder<T extends VNode<Node>> = (...args: any[]) => T;
 
 export const createComponent = <T extends VNode<Node>>(buildDomTree: StatefulDomBuilder<T>): DomBuilder<T> => {
-  const ctx: ComponentContext = new ComponentContext();
 
   return (...args: any[]): T => {
+    const ctx: ComponentContext = new ComponentContext();
     const node: T = buildDomTree(ctx, ...args);
-
     ctx.applyDeferredFunctions(node);
-
     return node;
   }
 }
