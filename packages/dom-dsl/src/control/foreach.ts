@@ -3,20 +3,20 @@ import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { VNode } from "../../../vdom";
-import { runMountedEffect, createComponent } from "../../../dom-component";
+import {IComponentContext , createComponent } from "../../../dom-component";
 import { Supplier } from "../../../util";
 
-export const foreach = createComponent(
-  <T extends Object>(
+export const foreach = createComponent(<T extends Object>(
+    ctx: IComponentContext,
     getItems: Supplier<IndexedItem<T>[]>,
     buildElement: Function
-  ): VNode => {
+  ): VNode<Node> => {
     const anchor = frag();
 
     let currentItemOrder: string[] = [];
     let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
 
-    runMountedEffect((): void => {
+    ctx.runEffect((): void => {
       const newItems: IndexedItem<T>[] = getItems();
       const newItemOrder: string[] = newItems.map(getKey);
       const newItemNodesIndex: Map<string, MaybeNodeOrVNode> = new Map(

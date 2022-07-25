@@ -1,12 +1,12 @@
 import { Supplier } from "../../../util";
 import { IAtom, isAtom } from "../../../atom";
 import { VNode } from "../../../vdom";
-import { createComponent, runMountedEffect } from "../../../dom-component";
+import {createComponent, IComponentContext} from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 
-export const t = (content: TextContent): VNode => {
-  let textNode: VNode;
+export const t = (content: TextContent): VNode<Node> => {
+  let textNode: VNode<Node>;
   if (typeof content === "string") {
     textNode = new VNode(document.createTextNode(content));
   } else if (isAtom(content) || typeof content === "function") {
@@ -21,16 +21,18 @@ export const t = (content: TextContent): VNode => {
 
 type BindedTextNodeSource = Supplier<string> | IAtom<string>;
 
-const createBindedTextNode = createComponent(
-  (source: BindedTextNodeSource): VNode => {
-    const vNode: VNode = new VNode(document.createTextNode(""));
+const createBindedTextNode = createComponent((
+  ctx: IComponentContext,
+  source: BindedTextNodeSource,
+): VNode<Node> => {
+    const vNode: VNode<Node> = new VNode(document.createTextNode(""));
 
     if (isAtom(source)) {
-      runMountedEffect((): void => {
+      ctx.runEffect((): void => {
         vNode.getRaw().textContent = (source as IAtom<string>).get();
       });
     } else if (typeof source === "function") {
-      runMountedEffect((): void => {
+      ctx.runEffect((): void => {
         vNode.getRaw().textContent = source();
       });
     } else {

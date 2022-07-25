@@ -7,7 +7,7 @@ import {
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { VElement, VNode } from "../../../vdom";
-import { createComponent, runMountedEffect } from "../../../dom-component";
+import {createComponent, IComponentContext} from "../../../dom-component";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
@@ -15,10 +15,11 @@ export type IfElseContent = MaybeNodeOrVNode | Supplier<MaybeNodeOrVNode>;
 
 export const ifElse = createComponent(
   (
+    ctx: IComponentContext,
     condition: IfElseCondition,
     ifTrue: IfElseContent,
     ifFalse?: IfElseContent
-  ): VNode => {
+  ): VNode<Node> => {
     ifFalse ??= undefined;
 
     const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> =
@@ -35,7 +36,7 @@ export const ifElse = createComponent(
     let currentRenderedState: boolean;
     let currentRenderedItem: MaybeNodeOrVNode;
 
-    runMountedEffect((): void => {
+    ctx.runEffect((): void => {
       const state: boolean = isAtom(condition)
         ? (condition as IAtom<boolean>).get()
         : (condition as Supplier<boolean>)();
@@ -63,7 +64,7 @@ const staticIfElse = (
   condition: boolean,
   ifTrue: Supplier<MaybeNodeOrVNode>,
   ifFalse: Supplier<MaybeNodeOrVNode>
-): VNode => {
+): VNode<Node> => {
   const anchor = frag();
 
   const content: MaybeNodeOrVNode = condition ? ifTrue() : ifFalse();

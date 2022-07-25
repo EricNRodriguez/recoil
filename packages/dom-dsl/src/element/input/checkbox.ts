@@ -1,4 +1,4 @@
-import { createComponent, runMountedEffect } from "../../../../dom-component";
+import {createComponent, IComponentContext} from "../../../../dom-component";
 import { VElement } from "../../../../vdom";
 import { Runnable, Supplier } from "../../../../util";
 
@@ -8,15 +8,17 @@ export type CheckboxArguments = {
   onClick: Runnable;
 };
 
-export const checkbox = createComponent(
-  (args: CheckboxArguments): VElement<HTMLInputElement> => {
+export const checkbox = createComponent((
+  ctx: IComponentContext,
+  args: CheckboxArguments
+): VElement<HTMLInputElement> => {
     const checkboxElement: VElement<HTMLInputElement> = new VElement(
       document.createElement("input")
     ).setAttribute("type", "checkbox");
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    runMountedEffect((): void => {
+    ctx.runEffect((): void => {
       const isChecked: boolean | null = args.isChecked();
       if (prevCheckedValue === isChecked) {
         return;
@@ -30,7 +32,7 @@ export const checkbox = createComponent(
     if (args.isEnabled !== undefined) {
       // binding effect for enabled attribute
       let prevEnabledValue: boolean;
-      runMountedEffect((): void => {
+      ctx.runEffect((): void => {
         const isEnabled: boolean = args.isEnabled!();
         if (prevEnabledValue === isEnabled) {
           return;

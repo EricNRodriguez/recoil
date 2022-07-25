@@ -1,4 +1,4 @@
-import { createComponent, runMountedEffect } from "../../../../dom-component";
+import {createComponent, IComponentContext} from "../../../../dom-component";
 import { VElement } from "../../../../vdom";
 import { Runnable, Supplier } from "../../../../util";
 
@@ -7,15 +7,17 @@ export type RadioButtonArguments = {
   onClick: Runnable;
 };
 
-export const radioButton = createComponent(
-  (args: RadioButtonArguments): VElement<HTMLInputElement> => {
+export const radioButton = createComponent((
+  ctx: IComponentContext,
+  args: RadioButtonArguments,
+): VElement<HTMLInputElement> => {
     const radioButtonElement: VElement<HTMLInputElement> = new VElement(
       document.createElement("input")
     ).setAttribute("type", "radio");
 
     // binding effect for checked attribute
     let prevCheckedValue: boolean | null;
-    runMountedEffect((): void => {
+    ctx.runEffect((): void => {
       const isChecked: boolean | null = args.isChecked();
       if (prevCheckedValue === isChecked) {
         return;

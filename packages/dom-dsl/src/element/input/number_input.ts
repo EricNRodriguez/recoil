@@ -1,5 +1,5 @@
 import { ILeafAtom } from "../../../../atom";
-import { createComponent, runMountedEffect } from "../../../../dom-component";
+import {createComponent, IComponentContext} from "../../../../dom-component";
 import { VElement } from "../../../../vdom";
 import { clamp, notNullOrUndefined } from "../../../../util";
 
@@ -9,8 +9,10 @@ export type NumberInputArgs = {
   num: ILeafAtom<number>;
 };
 
-export const numberInput = createComponent(
-  (args: NumberInputArgs): VElement<HTMLInputElement> => {
+export const numberInput = createComponent((
+  ctx: IComponentContext,
+  args: NumberInputArgs,
+): VElement<HTMLInputElement> => {
     const builder: VElement<HTMLInputElement> = new VElement(
       document.createElement("input")
     ).setAttribute("type", "number");
@@ -37,7 +39,7 @@ export const numberInput = createComponent(
       args.num.set(clampedValue);
     });
 
-    runMountedEffect((): void => {
+    ctx.runEffect((): void => {
       (builder.getRaw() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,
