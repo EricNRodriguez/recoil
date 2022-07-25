@@ -36,11 +36,15 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
 
   private syncMountStatusOfChildren(): void {
     this.children.forEach((child: VNode<Node>): void => {
-      if (this.isMounted() !== child.isMounted()) {
-        this.isMounted() ? child.mount() : child.unmount();
-      }
+      this.syncMountStatusOfChild(child);
     });
   }
+
+  public syncMountStatusOfChild(child: VNode<Node>): void {
+    if (this.isMounted() !== child.isMounted()) {
+      this.isMounted() ? child.mount() : child.unmount();
+    }
+}
 
   private unmountCurrentChildren(): void {
     this.children.forEach(
@@ -76,7 +80,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   private pushNewChildren(newChildren: VNode<Node>[]): void {
     this.children.push(...newChildren);
     newChildren.forEach(this.insertChildIntoDom.bind(this));
-    this.syncMountStatusOfChildren();
+    newChildren.forEach(this.syncMountStatusOfChild.bind(this));
   }
 
   private insertChildIntoDom(child: VNode<Node>): void {

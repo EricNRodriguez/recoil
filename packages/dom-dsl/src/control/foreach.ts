@@ -4,12 +4,12 @@ import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { VNode } from "../../../vdom";
 import {IComponentContext , createComponent } from "../../../dom-component";
-import { Supplier } from "../../../util";
+import { Supplier, Function } from "../../../util";
 
 export const foreach = createComponent(<T extends Object>(
     ctx: IComponentContext,
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function
+    buildElement: Function<T, VNode<Node>>
   ): VNode<Node> => {
     const anchor = frag();
 
