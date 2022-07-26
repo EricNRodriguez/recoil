@@ -1,5 +1,5 @@
 import { wrapTextInVNode } from "../util/dom_util";
-import { VElement, VNode } from "../../../vdom";
+import { VElement, VNode } from "../../../dom";
 
 export type HeaderContent = VNode<Node> | string;
 

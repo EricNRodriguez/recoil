@@ -1,4 +1,4 @@
-import { VNode } from "../../vdom";
+import { VNode } from "../../dom";
 import { ComponentContext } from "./component_context";
 
 /**

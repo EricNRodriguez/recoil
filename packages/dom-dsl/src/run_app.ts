@@ -1,4 +1,4 @@
-import { VElement, VNode } from "../../vdom";
+import { VElement, VNode } from "../../dom";
 
 export const runApp = (anchor: HTMLElement, app: VNode<Node>): void => {
   // NOTE(ericr): This has some large implications, one of which is that now the VElement tree

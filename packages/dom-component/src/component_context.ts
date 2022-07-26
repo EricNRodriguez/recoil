@@ -1,4 +1,4 @@
-import { VNode } from "../../vdom";
+import { VNode } from "../../dom";
 import { ISideEffectRef, runEffect } from "../../atom";
 import { Consumer, Runnable } from "../../util";
 

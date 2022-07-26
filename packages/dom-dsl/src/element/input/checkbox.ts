@@ -1,5 +1,5 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
-import { VElement } from "../../../../vdom";
+import { VElement } from "../../../../dom";
 import { Runnable, Supplier } from "../../../../util";
 
 export type CheckboxArguments = {

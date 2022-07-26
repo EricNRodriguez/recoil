@@ -1,6 +1,6 @@
 import { wrapTextInVNode } from "../util/dom_util";
 import { MaybeNodeOrVNode } from "./node.interface";
-import { VElement } from "../../../vdom";
+import { VElement } from "../../../dom";
 
 export type DivContent = MaybeNodeOrVNode | string;
 

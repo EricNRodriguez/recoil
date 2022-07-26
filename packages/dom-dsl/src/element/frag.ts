@@ -1,5 +1,5 @@
 import { MaybeNodeOrVNode } from "./node.interface";
-import { VNode } from "../../../vdom";
+import { VNode } from "../../../dom";
 import { div } from "./div";
 
 export type FragContent = MaybeNodeOrVNode;

@@ -1,5 +1,5 @@
 import { t, TextContent } from "../text";
-import { VElement } from "../../../../vdom";
+import { VElement } from "../../../../dom";
 
 export type LabelContent = TextContent;
 

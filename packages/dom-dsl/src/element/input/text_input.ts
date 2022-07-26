@@ -1,5 +1,5 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
-import { VElement } from "../../../../vdom";
+import { VElement } from "../../../../dom";
 import { ILeafAtom } from "../../../../atom";
 
 export const textInput = createComponent(

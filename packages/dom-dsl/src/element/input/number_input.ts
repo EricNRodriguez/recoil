@@ -1,6 +1,6 @@
 import { ILeafAtom } from "../../../../atom";
 import { createComponent, IComponentContext } from "../../../../dom-component";
-import { VElement } from "../../../../vdom";
+import { VElement } from "../../../../dom";
 import { clamp, notNullOrUndefined } from "../../../../util";
 
 export type NumberInputArgs = {

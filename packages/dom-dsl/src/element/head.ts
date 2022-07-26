@@ -1,5 +1,5 @@
 import { MaybeNodeOrVNode } from "./node.interface";
-import { VElement } from "../../../vdom";
+import { VElement } from "../../../dom";
 
 export type HeadContent = MaybeNodeOrVNode;
 

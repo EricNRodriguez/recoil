@@ -1,4 +1,4 @@
-import { VElement } from "../../../../vdom";
+import { VElement } from "../../../../dom";
 import { Consumer } from "../../../../util";
 import { wrapTextInVNode } from "../../util/dom_util";
 

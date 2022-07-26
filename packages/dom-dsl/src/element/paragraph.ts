@@ -1,5 +1,5 @@
 import { wrapTextInVNode } from "../util/dom_util";
-import { VElement } from "../../../vdom";
+import { VElement } from "../../../dom";
 
 type ParagraphContent = Text | string;
 

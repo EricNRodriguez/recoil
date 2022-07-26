@@ -1,6 +1,6 @@
 import { Supplier } from "../../../util";
 import { IAtom, isAtom } from "../../../atom";
-import { VNode } from "../../../vdom";
+import { VNode } from "../../../dom";
 import { createComponent, IComponentContext } from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
