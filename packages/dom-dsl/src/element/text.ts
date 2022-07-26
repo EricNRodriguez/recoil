@@ -1,14 +1,14 @@
 import { Supplier } from "../../../util";
 import { IAtom, isAtom } from "../../../atom";
-import { VNode } from "../../../dom";
+import { WNode } from "../../../dom";
 import { createComponent, IComponentContext } from "../../../dom-component";
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 
-export const t = (content: TextContent): VNode<Node> => {
-  let textNode: VNode<Node>;
+export const t = (content: TextContent): WNode<Node> => {
+  let textNode: WNode<Node>;
   if (typeof content === "string") {
-    textNode = new VNode(document.createTextNode(content));
+    textNode = new WNode(document.createTextNode(content));
   } else if (isAtom(content) || typeof content === "function") {
     textNode = createBindedTextNode(content);
   } else {
@@ -22,8 +22,8 @@ export const t = (content: TextContent): VNode<Node> => {
 type BindedTextNodeSource = Supplier<string> | IAtom<string>;
 
 const createBindedTextNode = createComponent(
-  (ctx: IComponentContext, source: BindedTextNodeSource): VNode<Node> => {
-    const vNode: VNode<Node> = new VNode(document.createTextNode(""));
+  (ctx: IComponentContext, source: BindedTextNodeSource): WNode<Node> => {
+    const vNode: WNode<Node> = new WNode(document.createTextNode(""));
 
     if (isAtom(source)) {
       ctx.runEffect((): void => {

@@ -2,7 +2,7 @@ import { frag } from "../element/frag";
 import { IndexedItem } from "../element/indexed_item.interface";
 import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { VNode } from "../../../dom";
+import { WNode } from "../../../dom";
 import { IComponentContext, createComponent } from "../../../dom-component";
 import { Supplier, Function } from "../../../util";
 
@@ -10,8 +10,8 @@ export const foreach = createComponent(
   <T extends Object>(
     ctx: IComponentContext,
     getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, VNode<Node>>
-  ): VNode<Node> => {
+    buildElement: Function<T, WNode<Node>>
+  ): WNode<Node> => {
     const anchor = frag();
 
     let currentItemOrder: string[] = [];

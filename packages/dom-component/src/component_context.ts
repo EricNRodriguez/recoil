@@ -1,4 +1,4 @@
-import { VNode } from "../../dom";
+import { WNode } from "../../dom";
 import { ISideEffectRef, runEffect } from "../../atom";
 import { Consumer, Runnable } from "../../util";
 
@@ -18,7 +18,7 @@ export class ComponentContext implements IComponentContext {
       this.registeredFinalizers.get(id)?.forEach((fn) => fn());
     });
 
-  private readonly deferredFunctions: Consumer<VNode<Node>>[] = [];
+  private readonly deferredFunctions: Consumer<WNode<Node>>[] = [];
 
   public onInitialMount(sideEffect: Runnable): void {
     let called: boolean = false;
@@ -55,7 +55,7 @@ export class ComponentContext implements IComponentContext {
   }
 
   public onCleanup(finalizer: Runnable): void {
-    this.deferredFunctions.push((node: VNode<Node>) => {
+    this.deferredFunctions.push((node: WNode<Node>) => {
       if (!ComponentContext.registeredFinalizers.has(node.getId())) {
         ComponentContext.finalizationRegistry.register(node, node.getId());
         ComponentContext.registeredFinalizers.set(node.getId(), []);
@@ -64,7 +64,7 @@ export class ComponentContext implements IComponentContext {
     });
   }
 
-  public applyDeferredFunctions(node: VNode<Node>): void {
+  public applyDeferredFunctions(node: WNode<Node>): void {
     this.deferredFunctions.forEach((fn) => fn(node));
   }
 }

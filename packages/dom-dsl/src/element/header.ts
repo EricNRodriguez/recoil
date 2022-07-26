@@ -1,7 +1,7 @@
 import { wrapTextInVNode } from "../util/dom_util";
-import { VElement, VNode } from "../../../dom";
+import { VElement, WNode } from "../../../dom";
 
-export type HeaderContent = VNode<Node> | string;
+export type HeaderContent = WNode<Node> | string;
 
 interface HeaderBuilder {
   (content: HeaderContent): VElement<HTMLHeadingElement>;

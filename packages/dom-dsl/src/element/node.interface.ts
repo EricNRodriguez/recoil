@@ -1,4 +1,4 @@
-import { VNode } from "../../../dom";
+import { WNode } from "../../../dom";
 
 export type MaybeNode = Node | undefined | null;
-export type MaybeNodeOrVNode = MaybeNode | VNode<Node>;
+export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;

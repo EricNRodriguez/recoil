@@ -1,10 +1,10 @@
-import { VNode } from "../../dom";
+import { WNode } from "../../dom";
 import { ComponentContext } from "./component_context";
 
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a VNode (or subclass of it)
  */
-export type StatefulDomBuilder<T extends VNode<Node>> = (
+export type StatefulDomBuilder<T extends WNode<Node>> = (
   ctx: ComponentContext,
   ...args: any[]
 ) => T;
@@ -12,9 +12,9 @@ export type StatefulDomBuilder<T extends VNode<Node>> = (
 /**
  * A plain old javascript function that returns a VNode (or a subclass of it)
  */
-export type DomBuilder<T extends VNode<Node>> = (...args: any[]) => T;
+export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-export const createComponent = <T extends VNode<Node>>(
+export const createComponent = <T extends WNode<Node>>(
   buildDomTree: StatefulDomBuilder<T>
 ): DomBuilder<T> => {
   return (...args: any[]): T => {

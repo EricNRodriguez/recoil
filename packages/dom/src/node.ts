@@ -8,7 +8,7 @@ import {
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private readonly id: Object = new Object();
   private readonly node: A;
-  private readonly children: VNode<Node>[] = [];
+  private readonly children: WNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
   private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>();
   private currentlyMounted: boolean = false;
@@ -18,13 +18,13 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   }
 
   public setChildren(
-    ...children: (VNode<Node> | Node | null | undefined)[]
+    ...children: (WNode<Node> | Node | null | undefined)[]
   ): B {
     this.unmountCurrentChildren();
 
-    const newChildren: VNode<Node>[] = children
+    const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)
-      .filter(notNullOrUndefined) as VNode<Node>[];
+      .filter(notNullOrUndefined) as WNode<Node>[];
 
     this.children.length = 0;
 
@@ -35,12 +35,12 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   }
 
   private syncMountStatusOfChildren(): void {
-    this.children.forEach((child: VNode<Node>): void => {
+    this.children.forEach((child: WNode<Node>): void => {
       this.syncMountStatusOfChild(child);
     });
   }
 
-  public syncMountStatusOfChild(child: VNode<Node>): void {
+  public syncMountStatusOfChild(child: WNode<Node>): void {
     if (this.isMounted() !== child.isMounted()) {
       this.isMounted() ? child.mount() : child.unmount();
     }
@@ -48,14 +48,14 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
   private unmountCurrentChildren(): void {
     this.children.forEach(
-      (oldChild: VNode<Node>): VNode<Node> => oldChild.unmount()
+      (oldChild: WNode<Node>): WNode<Node> => oldChild.unmount()
     );
   }
 
   public deleteChildren(offset: number): B {
     const childrenToRemove: Node[] = this.children
       .slice(offset)
-      .map((child: VNode<Node>): VNode<Node> => child.unmount())
+      .map((child: WNode<Node>): WNode<Node> => child.unmount())
       .map(unwrapVNode);
 
     removeChildren(this.unwrap(), childrenToRemove);
@@ -66,24 +66,24 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   }
 
   public appendChildren(
-    children: (VNode<Node> | Node | null | undefined)[]
+    children: (WNode<Node> | Node | null | undefined)[]
   ): B {
-    const newChildren: VNode<Node>[] = children
+    const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)
-      .filter(notNullOrUndefined) as VNode<Node>[];
+      .filter(notNullOrUndefined) as WNode<Node>[];
 
     this.pushNewChildren(newChildren);
 
     return this as unknown as B;
   }
 
-  private pushNewChildren(newChildren: VNode<Node>[]): void {
+  private pushNewChildren(newChildren: WNode<Node>[]): void {
     this.children.push(...newChildren);
     newChildren.forEach(this.insertChildIntoDom.bind(this));
     newChildren.forEach(this.syncMountStatusOfChild.bind(this));
   }
 
-  private insertChildIntoDom(child: VNode<Node>): void {
+  private insertChildIntoDom(child: WNode<Node>): void {
     appendChildren(this.unwrap(), [child].map(unwrapVNode));
   }
 
@@ -93,7 +93,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
   public mount(): B {
     this.currentlyMounted = true;
-    this.children.forEach((child: VNode<Node>): void => {
+    this.children.forEach((child: WNode<Node>): void => {
       child.mount();
     });
     this.runMountHooks();
@@ -102,7 +102,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
   public unmount(): B {
     this.currentlyMounted = false;
-    this.children.forEach((child: VNode<Node>): void => {
+    this.children.forEach((child: WNode<Node>): void => {
       child.unmount();
     });
     this.runUnmountHooks();
@@ -138,7 +138,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   }
 }
 
-export class VNode<T extends Node> extends BaseWNode<T, VNode<T>> {
+export class WNode<T extends Node> extends BaseWNode<T, WNode<T>> {
   constructor(node: T) {
     super(node);
   }
@@ -148,29 +148,29 @@ export const isVNode = (content: any): boolean => {
   return content instanceof Object && "unwrap" in content;
 };
 
-export const unwrapVNode = (content: Node | VNode<Node>): Node => {
+export const unwrapVNode = (content: Node | WNode<Node>): Node => {
   if (content === null || content === undefined) {
     return content;
   }
 
   if (isVNode(content)) {
-    return (content as VNode<Node>).unwrap();
+    return (content as WNode<Node>).unwrap();
   }
 
   return content as Node;
 };
 
 export const wrapInVNode = (
-  node: VNode<Node> | Node | string | null | undefined
-): VNode<Node> | null | undefined => {
+  node: WNode<Node> | Node | string | null | undefined
+): WNode<Node> | null | undefined => {
   if (nullOrUndefined(node)) {
     return node as null | undefined;
   }
 
   if (isVNode(node)) {
-    return node as VNode<Node>;
+    return node as WNode<Node>;
   } else {
-    return new VNode(node as Node);
+    return new WNode(node as Node);
   }
 };
 
