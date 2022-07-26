@@ -1,4 +1,5 @@
 import {
+  firstNonEqualIndex,
   notNullOrUndefined,
   nullOrUndefined,
   removeNullAndUndefinedItems,
@@ -13,78 +14,57 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>();
   private currentlyMounted: boolean = false;
 
-  constructor(node: A) {
+  protected constructor(node: A) {
     this.node = node;
   }
 
   public setChildren(
     ...children: (WNode<Node> | Node | null | undefined)[]
   ): B {
-    this.unmountCurrentChildren();
+    const currentChildren: WNode<Node>[] = this.children;
 
     const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)
       .filter(notNullOrUndefined) as WNode<Node>[];
+    const newChildrenSet: Set<WNode<Node>> = new Set(newChildren);
 
-    this.children.length = 0;
+    // sync mount status of new children to this dom node
+    newChildren.forEach((nc) => this.syncMountStatusOfChild(nc));
 
-    replaceChildren(this.unwrap());
-    this.pushNewChildren(newChildren);
+    // unmount any current children that are not in the newChildren list
+    if (this.isMounted()) {
+      currentChildren
+        .filter((cc) => !newChildrenSet.has(cc))
+        .forEach((cc) => cc.unmount());
+    }
+
+    let firstNewNodeIndex: number = firstNonEqualIndex(
+      currentChildren,
+      newChildren
+    );
+
+    removeChildren(
+      this.unwrap(),
+      currentChildren.slice(firstNewNodeIndex).map(unwrapVNode)
+    );
+
+    appendChildren(
+      this.unwrap(),
+      newChildren.slice(firstNewNodeIndex).map(unwrapVNode)
+    );
+
+    // remove the children from the dom that come after this index
+    this.children.length = firstNewNodeIndex;
+
+    this.children.push(...newChildren.slice(firstNewNodeIndex));
 
     return this as unknown as B;
-  }
-
-  private syncMountStatusOfChildren(): void {
-    this.children.forEach((child: WNode<Node>): void => {
-      this.syncMountStatusOfChild(child);
-    });
   }
 
   public syncMountStatusOfChild(child: WNode<Node>): void {
     if (this.isMounted() !== child.isMounted()) {
       this.isMounted() ? child.mount() : child.unmount();
     }
-  }
-
-  private unmountCurrentChildren(): void {
-    this.children.forEach(
-      (oldChild: WNode<Node>): WNode<Node> => oldChild.unmount()
-    );
-  }
-
-  public deleteChildren(offset: number): B {
-    const childrenToRemove: Node[] = this.children
-      .slice(offset)
-      .map((child: WNode<Node>): WNode<Node> => child.unmount())
-      .map(unwrapVNode);
-
-    removeChildren(this.unwrap(), childrenToRemove);
-
-    this.children.length = offset;
-
-    return this as unknown as B;
-  }
-
-  public appendChildren(
-    children: (WNode<Node> | Node | null | undefined)[]
-  ): B {
-    const newChildren: WNode<Node>[] = children
-      .map(wrapInVNode)
-      .filter(notNullOrUndefined) as WNode<Node>[];
-
-    this.pushNewChildren(newChildren);
-
-    return this as unknown as B;
-  }
-
-  private pushNewChildren(newChildren: WNode<Node>[]): void {
-    this.children.push(...newChildren);
-    newChildren.forEach(this.insertChildIntoDom.bind(this));
-    newChildren.forEach(this.syncMountStatusOfChild.bind(this));
-  }
-
-  private insertChildIntoDom(child: WNode<Node>): void {
-    appendChildren(this.unwrap(), [child].map(unwrapVNode));
   }
 
   public isMounted(): boolean {
@@ -171,23 +151,6 @@ export const wrapInVNode = (
     return node as WNode<Node>;
   } else {
     return new WNode(node as Node);
-  }
-};
-
-const replaceChildren = (
-  node: Node,
-  ...children: (Node | null | undefined)[]
-): void => {
-  clearChildren(node);
-  appendChildren(
-    node,
-    children.filter((c) => c !== null && c !== undefined) as Node[]
-  );
-};
-
-const clearChildren = (node: Node): void => {
-  while (node.hasChildNodes()) {
-    node.removeChild(node.lastChild!);
   }
 };
 

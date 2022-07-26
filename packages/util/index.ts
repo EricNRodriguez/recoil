@@ -17,3 +17,5 @@ export {
 export { clamp } from "./src/math";
 
 export { wrapStaticContentInProvider } from "./src/util";
+
+export { firstNonEqualIndex } from "./src/list";

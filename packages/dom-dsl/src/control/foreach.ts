@@ -4,7 +4,8 @@ import { getItem, getKey } from "../element/indexed_item_lense";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { WNode } from "../../../dom";
 import { IComponentContext, createComponent } from "../../../dom-component";
-import { Supplier, Function } from "../../../util";
+import { Supplier, Function, notNullOrUndefined } from "../../../util";
+import { wrapInVNode } from "../../../dom/src/node";
 
 export const foreach = createComponent(
   <T extends Object>(
@@ -14,7 +15,6 @@ export const foreach = createComponent(
   ): WNode<Node> => {
     const anchor = frag();
 
-    let currentItemOrder: string[] = [];
     let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
 
     ctx.runEffect((): void => {
@@ -27,24 +27,13 @@ export const foreach = createComponent(
         ])
       );
 
-      let firstNonEqualIndex: number = 0;
-      while (
-        firstNonEqualIndex < currentItemOrder.length &&
-        firstNonEqualIndex < newItems.length &&
-        currentItemOrder[firstNonEqualIndex] ===
-          newItemOrder[firstNonEqualIndex]
-      ) {
-        ++firstNonEqualIndex;
-      }
+      const newChildren: WNode<Node>[] = newItemOrder
+        .map((key) => newItemNodesIndex.get(key))
+        .map(wrapInVNode)
+        .filter(notNullOrUndefined) as WNode<Node>[];
 
-      anchor.deleteChildren(firstNonEqualIndex);
-      anchor.appendChildren(
-        newItemOrder
-          .slice(firstNonEqualIndex)
-          .map((key) => newItemNodesIndex.get(key))
-      );
+      anchor.setChildren(...newChildren);
 
-      currentItemOrder = newItemOrder;
       currentItemIndex = newItemNodesIndex;
     });
 
