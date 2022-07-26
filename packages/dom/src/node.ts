@@ -161,7 +161,15 @@ const removeChildren = (node: Node, children: Node[]): void => {
 };
 
 const appendChildren = (node: Node, children: Node[]): void => {
-  removeNullAndUndefinedItems(children).forEach((child: Node): void => {
-    node.appendChild(child);
-  });
+  if (children.length === 1) {
+    node.appendChild(children[0]);
+  } else {
+    if (node instanceof HTMLElement) {
+      (node as HTMLElement).append(...children);
+    } else {
+      const frag: DocumentFragment = document.createDocumentFragment();
+      children.forEach((c) => frag.appendChild(c));
+      node.appendChild(frag);
+    }
+  }
 };
