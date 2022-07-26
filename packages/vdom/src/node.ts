@@ -28,7 +28,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
 
     this.children.length = 0;
 
-    replaceChildren(this.getRaw());
+    replaceChildren(this.unwrap());
     this.pushNewChildren(newChildren);
 
     return this as unknown as B;
@@ -58,7 +58,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
       .map((child: VNode<Node>): VNode<Node> => child.unmount())
       .map(unwrapVNode);
 
-    removeChildren(this.getRaw(), childrenToRemove);
+    removeChildren(this.unwrap(), childrenToRemove);
 
     this.children.length = offset;
 
@@ -84,7 +84,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   }
 
   private insertChildIntoDom(child: VNode<Node>): void {
-    appendChildren(this.getRaw(), [child].map(unwrapVNode));
+    appendChildren(this.unwrap(), [child].map(unwrapVNode));
   }
 
   public isMounted(): boolean {
@@ -133,7 +133,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
     return this.id;
   }
 
-  public getRaw(): A {
+  public unwrap(): A {
     return this.node;
   }
 }
@@ -145,7 +145,7 @@ export class VNode<T extends Node> extends AVNode<T, VNode<T>> {
 }
 
 export const isVNode = (content: any): boolean => {
-  return content instanceof Object && "getRaw" in content;
+  return content instanceof Object && "unwrap" in content;
 };
 
 export const unwrapVNode = (content: Node | VNode<Node>): Node => {
@@ -154,7 +154,7 @@ export const unwrapVNode = (content: Node | VNode<Node>): Node => {
   }
 
   if (isVNode(content)) {
-    return (content as VNode<Node>).getRaw();
+    return (content as VNode<Node>).unwrap();
   }
 
   return content as Node;

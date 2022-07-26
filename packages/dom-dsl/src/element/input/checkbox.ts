@@ -26,8 +26,8 @@ export const checkbox = createComponent(
       }
 
       prevCheckedValue = isChecked;
-      checkboxElement.getRaw().checked = isChecked === true;
-      checkboxElement.getRaw().indeterminate = isChecked === null;
+      checkboxElement.unwrap().checked = isChecked === true;
+      checkboxElement.unwrap().indeterminate = isChecked === null;
     });
 
     if (args.isEnabled !== undefined) {
@@ -39,7 +39,7 @@ export const checkbox = createComponent(
           return;
         }
         prevEnabledValue = isEnabled;
-        checkboxElement.getRaw().disabled = !isEnabled;
+        checkboxElement.unwrap().disabled = !isEnabled;
       });
     }
 
@@ -48,12 +48,12 @@ export const checkbox = createComponent(
     // validation and decides to not toggle, but the default behaviour of the
     // checkbox element is to toggle.
     const originalOnClick = args.onClick;
-    checkboxElement.getRaw().onclick = (): void => {
+    checkboxElement.unwrap().onclick = (): void => {
       originalOnClick();
 
       const isChecked: boolean | null = args.isChecked();
-      checkboxElement.getRaw().checked = isChecked === true;
-      checkboxElement.getRaw().indeterminate = isChecked === null;
+      checkboxElement.unwrap().checked = isChecked === true;
+      checkboxElement.unwrap().indeterminate = isChecked === null;
     };
 
     return checkboxElement;

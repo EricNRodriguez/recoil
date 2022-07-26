@@ -25,7 +25,7 @@ export const radioButton = createComponent(
       }
 
       prevCheckedValue = isChecked;
-      radioButtonElement.getRaw().checked = isChecked;
+      radioButtonElement.unwrap().checked = isChecked;
     });
 
     // we want to trigger a re-bind once the onclick handle is executed.
@@ -33,10 +33,10 @@ export const radioButton = createComponent(
     // validation and decides to not toggle, but the default behaviour of the
     // element is to toggle.
     const originalOnClick = args.onClick;
-    radioButtonElement.getRaw().onclick = (): void => {
+    radioButtonElement.unwrap().onclick = (): void => {
       originalOnClick();
 
-      radioButtonElement.getRaw().checked = args.isChecked();
+      radioButtonElement.unwrap().checked = args.isChecked();
     };
 
     return radioButtonElement;

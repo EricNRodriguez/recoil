@@ -27,11 +27,11 @@ const createBindedTextNode = createComponent(
 
     if (isAtom(source)) {
       ctx.runEffect((): void => {
-        vNode.getRaw().textContent = (source as IAtom<string>).get();
+        vNode.unwrap().textContent = (source as IAtom<string>).get();
       });
     } else if (typeof source === "function") {
       ctx.runEffect((): void => {
-        vNode.getRaw().textContent = source();
+        vNode.unwrap().textContent = source();
       });
     } else {
       // TODO(ericr): be more specific with a fall through

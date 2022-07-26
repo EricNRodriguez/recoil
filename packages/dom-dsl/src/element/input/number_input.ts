@@ -19,7 +19,7 @@ export const numberInput = createComponent(
     ).setAttribute("type", "number");
 
     builder.addEventHandler("input", (): void => {
-      const inputElement = builder.getRaw();
+      const inputElement = builder.unwrap();
 
       const rawValue: number = inputElement.valueAsNumber;
 
@@ -41,7 +41,7 @@ export const numberInput = createComponent(
     });
 
     ctx.runEffect((): void => {
-      (builder.getRaw() as HTMLInputElement).value = clamp({
+      (builder.unwrap() as HTMLInputElement).value = clamp({
         max: args.max,
         min: args.min,
         val: args.num.get(),

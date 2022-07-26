@@ -25,7 +25,7 @@ export abstract class AVElement<
   }
 
   private setStaticAttribute(attribute: string, value: string): B {
-    this.getRaw().setAttribute(attribute, value);
+    this.unwrap().setAttribute(attribute, value);
     return this as unknown as B;
   }
 
@@ -40,13 +40,13 @@ export abstract class AVElement<
   }
 
   public setClickHandler(handler: Consumer<MouseEvent>): B {
-    this.getRaw().addEventListener("click", handler);
+    this.unwrap().addEventListener("click", handler);
     return this as unknown as B;
   }
 
   public addEventHandler(eventType: string, handler: BiConsumer<Event, A>): B {
-    this.getRaw().addEventListener(eventType, (event: Event): void =>
-      handler(event, this.getRaw())
+    this.unwrap().addEventListener(eventType, (event: Event): void =>
+      handler(event, this.unwrap())
     );
     return this as unknown as B;
   }
@@ -54,7 +54,7 @@ export abstract class AVElement<
   public setStyle(style: ElementStyle): B {
     Object.entries(style).forEach(
       ([property, value]: [string, string]): void => {
-        this.getRaw().style.setProperty(property, value);
+        this.unwrap().style.setProperty(property, value);
       }
     );
     return this as unknown as B;
