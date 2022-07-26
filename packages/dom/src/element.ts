@@ -61,7 +61,7 @@ export abstract class BaseWElement<
   }
 }
 
-export class VElement<T extends HTMLElement> extends BaseWElement<T, VElement<T>> {
+export class WElement<T extends HTMLElement> extends BaseWElement<T, WElement<T>> {
   constructor(elem: T) {
     super(elem);
   }

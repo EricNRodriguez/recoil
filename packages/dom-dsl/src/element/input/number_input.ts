@@ -1,6 +1,6 @@
 import { ILeafAtom } from "../../../../atom";
 import { createComponent, IComponentContext } from "../../../../dom-component";
-import { VElement } from "../../../../dom";
+import { WElement } from "../../../../dom";
 import { clamp, notNullOrUndefined } from "../../../../util";
 
 export type NumberInputArgs = {
@@ -13,8 +13,8 @@ export const numberInput = createComponent(
   (
     ctx: IComponentContext,
     args: NumberInputArgs
-  ): VElement<HTMLInputElement> => {
-    const builder: VElement<HTMLInputElement> = new VElement(
+  ): WElement<HTMLInputElement> => {
+    const builder: WElement<HTMLInputElement> = new WElement(
       document.createElement("input")
     ).setAttribute("type", "number");
 

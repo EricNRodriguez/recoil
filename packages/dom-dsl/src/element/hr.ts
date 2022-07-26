@@ -1,5 +1,5 @@
-import { VElement } from "../../../dom";
+import { WElement } from "../../../dom";
 
-export const hr = (): VElement<HTMLHRElement> => {
-  return new VElement(document.createElement("hr"));
+export const hr = (): WElement<HTMLHRElement> => {
+  return new WElement(document.createElement("hr"));
 };

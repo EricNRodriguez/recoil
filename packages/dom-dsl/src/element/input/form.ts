@@ -1,5 +1,5 @@
 import { MaybeNodeOrVNode } from "../node.interface";
-import { VElement } from "../../../../dom";
+import { WElement } from "../../../../dom";
 
 export enum FormTarget {
   BLANK = "_blank",
@@ -10,6 +10,6 @@ export enum FormTarget {
 
 export const form = (
   ...content: MaybeNodeOrVNode[]
-): VElement<HTMLFormElement> => {
-  return new VElement(document.createElement("form")).setChildren(...content);
+): WElement<HTMLFormElement> => {
+  return new WElement(document.createElement("form")).setChildren(...content);
 };

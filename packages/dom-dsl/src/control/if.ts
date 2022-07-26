@@ -6,7 +6,7 @@ import {
 } from "../../../util";
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
-import { VElement, WNode } from "../../../dom";
+import { WElement, WNode } from "../../../dom";
 import { createComponent, IComponentContext } from "../../../dom-component";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;

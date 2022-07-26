@@ -1,8 +1,8 @@
 import { t, TextContent } from "./text";
-import { VElement } from "../../../dom";
+import { WElement } from "../../../dom";
 
 export type AnchorContent = TextContent;
 
-export const a = (content: AnchorContent): VElement<HTMLAnchorElement> => {
-  return new VElement(document.createElement("a")).setChildren(t(content));
+export const a = (content: AnchorContent): WElement<HTMLAnchorElement> => {
+  return new WElement(document.createElement("a")).setChildren(t(content));
 };

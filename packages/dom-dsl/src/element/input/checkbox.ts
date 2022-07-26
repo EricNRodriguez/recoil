@@ -1,5 +1,5 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
-import { VElement } from "../../../../dom";
+import { WElement } from "../../../../dom";
 import { Runnable, Supplier } from "../../../../util";
 
 export type CheckboxArguments = {
@@ -12,8 +12,8 @@ export const checkbox = createComponent(
   (
     ctx: IComponentContext,
     args: CheckboxArguments
-  ): VElement<HTMLInputElement> => {
-    const checkboxElement: VElement<HTMLInputElement> = new VElement(
+  ): WElement<HTMLInputElement> => {
+    const checkboxElement: WElement<HTMLInputElement> = new WElement(
       document.createElement("input")
     ).setAttribute("type", "checkbox");
 

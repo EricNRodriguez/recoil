@@ -1,5 +1,5 @@
-import { VElement } from "../../../../dom";
+import { WElement } from "../../../../dom";
 
-export const input = (): VElement<HTMLInputElement> => {
-  return new VElement(document.createElement("input"));
+export const input = (): WElement<HTMLInputElement> => {
+  return new WElement(document.createElement("input"));
 };
