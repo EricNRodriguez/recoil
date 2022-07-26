@@ -5,9 +5,9 @@ export type ElementStyle = { [key: string]: string };
 
 export type Attribute = string | IAtom<string>;
 
-export abstract class AVElement<
+export abstract class BaseWElement<
   A extends HTMLElement,
-  B extends AVElement<A, B>
+  B extends BaseWElement<A, B>
 > extends AVNode<A, B> {
   constructor(element: A) {
     super(element);
@@ -61,7 +61,7 @@ export abstract class AVElement<
   }
 }
 
-export class VElement<T extends HTMLElement> extends AVElement<T, VElement<T>> {
+export class VElement<T extends HTMLElement> extends BaseWElement<T, VElement<T>> {
   constructor(elem: T) {
     super(elem);
   }
