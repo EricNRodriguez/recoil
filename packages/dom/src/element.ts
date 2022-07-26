@@ -1,6 +1,6 @@
 import { BiConsumer, Consumer } from "../../util";
 import { IAtom, isAtom } from "../../atom";
-import { AVNode } from "./node";
+import { BaseWNode } from "./node";
 export type ElementStyle = { [key: string]: string };
 
 export type Attribute = string | IAtom<string>;
@@ -8,7 +8,7 @@ export type Attribute = string | IAtom<string>;
 export abstract class BaseWElement<
   A extends HTMLElement,
   B extends BaseWElement<A, B>
-> extends AVNode<A, B> {
+> extends BaseWNode<A, B> {
   constructor(element: A) {
     super(element);
   }

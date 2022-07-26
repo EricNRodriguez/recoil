@@ -5,7 +5,7 @@ import {
   Runnable,
 } from "../../util";
 
-export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
+export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private readonly id: Object = new Object();
   private readonly node: A;
   private readonly children: VNode<Node>[] = [];
@@ -138,7 +138,7 @@ export abstract class AVNode<A extends Node, B extends AVNode<A, B>> {
   }
 }
 
-export class VNode<T extends Node> extends AVNode<T, VNode<T>> {
+export class VNode<T extends Node> extends BaseWNode<T, VNode<T>> {
   constructor(node: T) {
     super(node);
   }
