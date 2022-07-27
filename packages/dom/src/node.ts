@@ -8,6 +8,7 @@ import {
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private readonly id: Object = new Object();
+  private parent: WNode<Node> | null = null;
   private readonly node: A;
   private readonly children: WNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
@@ -18,14 +19,28 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     this.node = node;
   }
 
+  public isDocumentFragment(): boolean {
+    return this.node instanceof DocumentFragment;
+  }
+
+  public getChildren(): WNode<Node>[] {
+    return this.children;
+  }
+
+  private rebindChildren(): void {
+    this.setChildren(...this.children);
+  }
+
   public setChildren(
     ...children: (WNode<Node> | Node | null | undefined)[]
   ): B {
+
     const currentChildren: WNode<Node>[] = this.children;
 
     const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)
       .filter(notNullOrUndefined) as WNode<Node>[];
+
     const newChildrenSet: Set<WNode<Node>> = new Set(newChildren);
 
     // sync mount status of new children to this dom node
@@ -35,33 +50,46 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     if (this.isMounted()) {
       currentChildren
         .filter((cc) => !newChildrenSet.has(cc))
-        .forEach((cc) => cc.unmount());
+        .forEach((cc) => {
+          cc.unmount();
+          cc.setParent(null);
+        });
     }
 
+    let unwrappedCurrentChildren: Node[] = Array.from(this.unwrap().childNodes);
+    let unwrapedNewChildren: Node[] = unpack(newChildren);
+
+    // we are unpacking before we diff to ensure that any updates to child nodes are reflected,
     let firstNewNodeIndex: number = firstNonEqualIndex(
-      currentChildren,
-      newChildren
+      unwrappedCurrentChildren,
+      unwrapedNewChildren,
     );
+
+    if (this.isDocumentFragment()) {
+      this.children.length = 0;
+      this.children.push(...newChildren);
+      this.getParent()?.rebindChildren();
+      return this as unknown as B;
+    }
 
     removeChildren(
       this.unwrap(),
-      currentChildren.slice(firstNewNodeIndex).map(unwrapVNode)
+      unwrappedCurrentChildren.slice(firstNewNodeIndex),
     );
 
     appendChildren(
       this.unwrap(),
-      newChildren.slice(firstNewNodeIndex).map(unwrapVNode)
+      unwrapedNewChildren.slice(firstNewNodeIndex),
     );
 
-    // remove the children from the dom that come after this index
-    this.children.length = firstNewNodeIndex;
-
-    this.children.push(...newChildren.slice(firstNewNodeIndex));
+    this.children.length = 0;
+    this.children.push(...newChildren);
 
     return this as unknown as B;
   }
 
   public syncMountStatusOfChild(child: WNode<Node>): void {
+    child.setParent(this);
     if (this.isMounted() !== child.isMounted()) {
       this.isMounted() ? child.mount() : child.unmount();
     }
@@ -69,6 +97,14 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
   public isMounted(): boolean {
     return this.currentlyMounted;
+  }
+
+  private setParent(parent: WNode<Node> | null): void {
+    this.parent = parent;
+  }
+
+  public getParent(): WNode<Node> | null {
+    return this.parent;
   }
 
   public mount(): B {
@@ -172,4 +208,21 @@ const appendChildren = (node: Node, children: Node[]): void => {
       node.appendChild(frag);
     }
   }
+};
+
+// TODO(ericr): find a better name....
+const unpack = (content: WNode<Node>[]): Node[] => {
+  const unpackedNodes: Node[] = [];
+
+  for (let wNode of content) {
+    if (wNode.isDocumentFragment()) {
+      unpackedNodes.push(
+        ...unpack(wNode.getChildren())
+      );
+    } else {
+      unpackedNodes.push(wNode.unwrap());
+    }
+  }
+
+  return unpackedNodes;
 };

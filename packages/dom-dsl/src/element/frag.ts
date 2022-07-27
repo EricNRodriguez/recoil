@@ -5,5 +5,5 @@ import { div } from "./div";
 export type FragContent = MaybeNodeOrVNode;
 
 export const frag = (...children: FragContent[]): WNode<Node> => {
-  return div(...children).setStyle({ display: "contents" });
+  return new WNode<Node>(document.createDocumentFragment()).setChildren(...children);
 };
