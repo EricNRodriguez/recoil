@@ -19,8 +19,24 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     this.node = node;
   }
 
-  public isDocumentFragment(): boolean {
+  private isFragment(): boolean {
     return this.node instanceof DocumentFragment;
+  }
+
+  private getUnpackedChildren(): Node[] {
+    const unpackedNodes: Node[] = [];
+
+    for (let wNode of this.getChildren()) {
+      if (wNode.isFragment()) {
+        unpackedNodes.push(
+          ...wNode.getUnpackedChildren()
+        );
+      } else {
+        unpackedNodes.push(wNode.unwrap());
+      }
+    }
+
+    return unpackedNodes;
   }
 
   public getChildren(): WNode<Node>[] {
@@ -57,7 +73,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     }
 
     let unwrappedCurrentChildren: Node[] = Array.from(this.unwrap().childNodes);
-    let unwrapedNewChildren: Node[] = unpack(newChildren);
+    let unwrapedNewChildren: Node[] = this.getUnpackedChildren();
 
     // we are unpacking before we diff to ensure that any updates to child nodes are reflected,
     let firstNewNodeIndex: number = firstNonEqualIndex(
@@ -65,7 +81,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
       unwrapedNewChildren,
     );
 
-    if (this.isDocumentFragment()) {
+    if (this.isFragment()) {
       this.children.length = 0;
       this.children.push(...newChildren);
       this.getParent()?.rebindChildren();
@@ -208,21 +224,4 @@ const appendChildren = (node: Node, children: Node[]): void => {
       node.appendChild(frag);
     }
   }
-};
-
-// TODO(ericr): find a better name....
-const unpack = (content: WNode<Node>[]): Node[] => {
-  const unpackedNodes: Node[] = [];
-
-  for (let wNode of content) {
-    if (wNode.isDocumentFragment()) {
-      unpackedNodes.push(
-        ...unpack(wNode.getChildren())
-      );
-    } else {
-      unpackedNodes.push(wNode.unwrap());
-    }
-  }
-
-  return unpackedNodes;
 };
