@@ -170,7 +170,7 @@ export class WNode<T extends Node> extends BaseWNode<T, WNode<T>> {
   }
 }
 
-export const isVNode = (content: any): boolean => {
+export const isWNode = (content: any): boolean => {
   return content instanceof Object && "unwrap" in content;
 };
 
@@ -179,7 +179,7 @@ export const unwrapVNode = (content: Node | WNode<Node>): Node => {
     return content;
   }
 
-  if (isVNode(content)) {
+  if (isWNode(content)) {
     return (content as WNode<Node>).unwrap();
   }
 
@@ -193,7 +193,7 @@ export const wrapInVNode = (
     return node as null | undefined;
   }
 
-  if (isVNode(node)) {
+  if (isWNode(node)) {
     return node as WNode<Node>;
   } else {
     return new WNode(node as Node);
