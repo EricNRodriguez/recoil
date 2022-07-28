@@ -8,6 +8,7 @@ export interface IComponentContext {
   onInitialMount(sideEffect: Runnable): void;
   onUnmount(sideEffect: Runnable): void;
   onCleanup(finalizer: Runnable): void;
+  onClick(fn: Consumer<MouseEvent>): void;
 }
 
 export class ComponentContext implements IComponentContext {
@@ -61,6 +62,16 @@ export class ComponentContext implements IComponentContext {
         ComponentContext.registeredFinalizers.set(node.unwrap(), []);
       }
       ComponentContext.registeredFinalizers.get(node.unwrap())!.push(finalizer);
+    });
+  }
+
+  public onClick(fn: Consumer<MouseEvent>): void {
+    this.deferredFunctions.push((node: WNode<Node>) => {
+        if (!(node.unwrap() instanceof HTMLElement)) {
+          throw new Error("unable to attach event handler to node");
+        }
+
+      (node.unwrap() as HTMLElement).addEventListener("click", fn);
     });
   }
 
