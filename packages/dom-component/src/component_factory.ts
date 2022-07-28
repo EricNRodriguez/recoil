@@ -2,7 +2,7 @@ import { WNode } from "../../dom";
 import { ComponentContext } from "./component_context";
 
 /**
- * A plain old javascript function that consumes a IComponentContext and returns a VNode (or subclass of it)
+ * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
  */
 export type StatefulDomBuilder<T extends WNode<Node>> = (
   ctx: ComponentContext,
@@ -10,7 +10,7 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
 ) => T;
 
 /**
- * A plain old javascript function that returns a VNode (or a subclass of it)
+ * A plain old javascript function that returns a wNode (or a subclass of it)
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 

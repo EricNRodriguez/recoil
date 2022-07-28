@@ -23,21 +23,21 @@ type BindedTextNodeSource = Supplier<string> | IAtom<string>;
 
 const createBindedTextNode = createComponent(
   (ctx: IComponentContext, source: BindedTextNodeSource): WNode<Node> => {
-    const vNode: WNode<Node> = new WNode(document.createTextNode(""));
+    const wNode: WNode<Node> = new WNode(document.createTextNode(""));
 
     if (isAtom(source)) {
       ctx.runEffect((): void => {
-        vNode.unwrap().textContent = (source as IAtom<string>).get();
+        wNode.unwrap().textContent = (source as IAtom<string>).get();
       });
     } else if (typeof source === "function") {
       ctx.runEffect((): void => {
-        vNode.unwrap().textContent = source();
+        wNode.unwrap().textContent = source();
       });
     } else {
       // TODO(ericr): be more specific with a fall through
       throw new Error();
     }
 
-    return vNode;
+    return wNode;
   }
 );
