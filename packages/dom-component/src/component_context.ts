@@ -56,11 +56,11 @@ export class ComponentContext implements IComponentContext {
 
   public onCleanup(finalizer: Runnable): void {
     this.deferredFunctions.push((node: WNode<Node>) => {
-      if (!ComponentContext.registeredFinalizers.has(node.getId())) {
-        ComponentContext.finalizationRegistry.register(node, node.getId());
-        ComponentContext.registeredFinalizers.set(node.getId(), []);
+      if (!ComponentContext.registeredFinalizers.has(node.unwrap())) {
+        ComponentContext.finalizationRegistry.register(node, node.unwrap());
+        ComponentContext.registeredFinalizers.set(node.unwrap(), []);
       }
-      ComponentContext.registeredFinalizers.get(node.getId())!.push(finalizer);
+      ComponentContext.registeredFinalizers.get(node.unwrap())!.push(finalizer);
     });
   }
 

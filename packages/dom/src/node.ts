@@ -7,7 +7,6 @@ import {
 } from "../../util";
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
-  private readonly id: Object = new Object();
   private parent: WNode<Node> | null = null;
   private readonly node: A;
   private readonly children: WNode<Node>[] = [];
@@ -159,10 +158,6 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     this.onUnmountHooks.add(hook);
 
     return this as unknown as B;
-  }
-
-  public getId(): Object {
-    return this.id;
   }
 
   public unwrap(): A {
