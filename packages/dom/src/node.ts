@@ -27,9 +27,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
     for (let wNode of this.getChildren()) {
       if (wNode.isFragment()) {
-        unpackedNodes.push(
-          ...wNode.getUnpackedChildren()
-        );
+        unpackedNodes.push(...wNode.getUnpackedChildren());
       } else {
         unpackedNodes.push(wNode.unwrap());
       }
@@ -49,7 +47,6 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   public setChildren(
     ...children: (WNode<Node> | Node | null | undefined)[]
   ): B {
-
     const currentChildren: WNode<Node>[] = this.children;
 
     const newChildren: WNode<Node>[] = children
@@ -76,21 +73,20 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     // we are unpacking before we diff to ensure fragment children are properly expanded
     let firstNewNodeIndex: number = firstNonEqualIndex(
       unwrappedCurrentChildren,
-      unwrapedNewChildren,
+      unwrapedNewChildren
     );
 
     if (!this.isFragment()) {
       removeChildren(
         this.unwrap(),
-        unwrappedCurrentChildren.slice(firstNewNodeIndex),
+        unwrappedCurrentChildren.slice(firstNewNodeIndex)
       );
 
       appendChildren(
         this.unwrap(),
-        unwrapedNewChildren.slice(firstNewNodeIndex),
+        unwrapedNewChildren.slice(firstNewNodeIndex)
       );
     }
-
 
     this.children.length = 0;
     this.children.push(...newChildren);
