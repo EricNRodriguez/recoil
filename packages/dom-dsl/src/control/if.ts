@@ -34,8 +34,6 @@ export const ifElse = createComponent(
     const anchor = frag();
 
     let currentRenderedState: boolean;
-    let currentRenderedItem: MaybeNodeOrVNode;
-
     ctx.runEffect((): void => {
       const state: boolean = isAtom(condition)
         ? (condition as IAtom<boolean>).get()
@@ -51,9 +49,7 @@ export const ifElse = createComponent(
         ? ifTrueUnwrapped
         : ifFalseUnwrapped;
 
-      currentRenderedItem = nodeSupplier();
-
-      anchor.setChildren(currentRenderedItem);
+      anchor.setChildren(nodeSupplier());
     });
 
     return anchor;
