@@ -55,6 +55,10 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
     const newChildrenSet: Set<WNode<Node>> = new Set(newChildren);
 
+    this.children.length = 0;
+    this.children.push(...newChildren);
+
+    // sync mount status of new children to this dom node
     newChildren.forEach((nc) => this.syncMountStatusOfChild(nc));
 
     // unmount any current children that are not in the newChildren list
@@ -67,6 +71,11 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
         });
     }
 
+    if (this.isFragment()) {
+      this.getParent()?.rebindChildren();
+      return this as unknown as B;
+    }
+
     let unwrappedCurrentChildren: Node[] = Array.from(this.unwrap().childNodes);
     let unwrapedNewChildren: Node[] = this.getUnpackedChildren();
 
@@ -76,24 +85,12 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
       unwrapedNewChildren
     );
 
-    if (!this.isFragment()) {
-      removeChildren(
-        this.unwrap(),
-        unwrappedCurrentChildren.slice(firstNewNodeIndex)
-      );
+    removeChildren(
+      this.unwrap(),
+      unwrappedCurrentChildren.slice(firstNewNodeIndex)
+    );
 
-      appendChildren(
-        this.unwrap(),
-        unwrapedNewChildren.slice(firstNewNodeIndex)
-      );
-    }
-
-    this.children.length = 0;
-    this.children.push(...newChildren);
-
-    if (this.isFragment()) {
-      this.getParent()?.rebindChildren();
-    }
+    appendChildren(this.unwrap(), unwrapedNewChildren.slice(firstNewNodeIndex));
 
     return this as unknown as B;
   }
