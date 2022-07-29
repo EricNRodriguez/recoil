@@ -20,3 +20,4 @@ export { runApp } from "./src/run_app";
 export { label, LabelContent } from "./src/element/input/label";
 export { input } from "./src/element/input/input";
 export { frag } from "./src/element/frag";
+export { suspense } from "./src/control/suspense";
