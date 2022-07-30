@@ -104,26 +104,31 @@ export const reconcileNodeArrays = ({
     }
   };
 
-  while (curLeft < curRight || newLeft < newRight) {
-    // clip prefix
+  const clipPrefix = (): void => {
     while (
       curLeft < curRight &&
       newLeft < newRight &&
       currentNodes[curLeft] === newNodes[newLeft]
-    ) {
+      ) {
       ++curLeft;
       ++newLeft;
     }
+  };
 
-    // clip suffix
+  const clipSuffix = (): void => {
     while (
       curRight > curLeft &&
       newRight > newLeft &&
       currentNodes[curRight - 1] === newNodes[newRight - 1]
-    ) {
+      ) {
       --curRight;
       --newRight;
     }
+  };
+
+  while (curLeft < curRight || newLeft < newRight) {
+    clipPrefix();
+    clipSuffix();
 
     if (curLeft === curRight) {
       appendRestOfNewNodes();
