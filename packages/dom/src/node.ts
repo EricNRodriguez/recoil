@@ -1,5 +1,5 @@
 import { notNullOrUndefined, nullOrUndefined, Runnable } from "../../util";
-import { reconcileNodeArrays } from "./reconciler";
+import { reconcileNodeArrays } from "./reconcile";
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private parent: WNode<Node> | null = null;
