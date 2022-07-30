@@ -60,24 +60,24 @@ export const reconcileNodeArrays = ({
   const fallbackAndMapContiguousChunk = () => {
     if (newNodesIndex.has(currentNodes[curLeft])) {
       // We have a node that is in both `currentNodes` and `newNodes`, however has changed index
-      const curStartIndexInB = newNodesIndex.get(currentNodes[curLeft])!;
+      const curStartIndexInNew = newNodesIndex.get(currentNodes[curLeft])!;
 
       // SC
-      if (curStartIndexInB < newLeft || curStartIndexInB >= newRight) {
+      if (curStartIndexInNew < newLeft || curStartIndexInNew >= newRight) {
         return;
       }
 
-      // We find the largest common contiguous subsequence of nodes in `currentNodes` starting at aStart,
-      // that are also contiguous in `newNodes`, starting at `aStartIndexInB`
+      // We find the largest common contiguous subsequence of nodes in `currentNodes` starting at curLeft,
+      // that are also contiguous in `newNodes`, starting at `curIIndexInNew`
       let contigSubsequenceLen: number = 1;
       for (let i = curLeft + 1; i < curRight && i < newRight; ++i) {
-        const curIIndexInB: number | undefined = newNodesIndex.get(
+        const curIIndexInNew: number | undefined = newNodesIndex.get(
           currentNodes[i]
         );
 
         if (
-          nullOrUndefined(curIIndexInB) ||
-          curIIndexInB! - contigSubsequenceLen !== curStartIndexInB
+          nullOrUndefined(curIIndexInNew) ||
+          curIIndexInNew! - contigSubsequenceLen !== curStartIndexInNew
         ) {
           break;
         }
@@ -85,9 +85,9 @@ export const reconcileNodeArrays = ({
         contigSubsequenceLen++;
       }
 
-      if (contigSubsequenceLen > curStartIndexInB - newLeft) {
+      if (contigSubsequenceLen > curStartIndexInNew - newLeft) {
         const node: Node = currentNodes[curLeft];
-        while (newLeft < curStartIndexInB) {
+        while (newLeft < curStartIndexInNew) {
           parent.insertBefore(newNodes[newLeft], node);
           ++newLeft;
         }
