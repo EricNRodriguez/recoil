@@ -5,7 +5,7 @@ import {
   removeNullAndUndefinedItems,
   Runnable,
 } from "../../util";
-import {maybeToObservable} from "typescript-monads";
+import { maybeToObservable } from "typescript-monads";
 
 export type ReconcileNodeArraysArgs = {
   parent: Node;
@@ -109,7 +109,7 @@ export const reconcileNodeArrays = ({
       curLeft < curRight &&
       newLeft < newRight &&
       currentNodes[curLeft] === newNodes[newLeft]
-      ) {
+    ) {
       ++curLeft;
       ++newLeft;
     }
@@ -120,7 +120,7 @@ export const reconcileNodeArrays = ({
       curRight > curLeft &&
       newRight > newLeft &&
       currentNodes[curRight - 1] === newNodes[newRight - 1]
-      ) {
+    ) {
       --curRight;
       --newRight;
     }

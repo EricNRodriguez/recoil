@@ -1,11 +1,14 @@
 import { BiConsumer, Consumer } from "../../util";
-import {BaseWNode, WNode} from "./node";
+import { BaseWNode, WNode } from "./node";
 export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
-  A extends HTMLElement,
-  B extends BaseWElement<A, B>
-> extends BaseWNode<A, B> implements WNode<A> {
+    A extends HTMLElement,
+    B extends BaseWElement<A, B>
+  >
+  extends BaseWNode<A, B>
+  implements WNode<A>
+{
   constructor(element: A) {
     super(element);
   }
