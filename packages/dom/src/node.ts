@@ -4,6 +4,7 @@ import { reconcileNodeArrays } from "./reconcile";
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private parent: WNode<Node> | null = null;
   private readonly node: A;
+  private readonly isDocumentFragment: boolean;
   private readonly children: WNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
   private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>();
@@ -11,10 +12,11 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
   protected constructor(node: A) {
     this.node = node;
+    this.isDocumentFragment = this.node instanceof DocumentFragment;
   }
 
   private isFragment(): boolean {
-    return this.node instanceof DocumentFragment;
+    return this.isDocumentFragment;
   }
 
   private getUnpackedChildren(): Node[] {
