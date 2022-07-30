@@ -5,6 +5,7 @@ import {
   removeNullAndUndefinedItems,
   Runnable,
 } from "../../util";
+import {maybeToObservable} from "typescript-monads";
 
 export type ReconcileNodeArraysArgs = {
   parent: Node;
@@ -46,6 +47,7 @@ export const reconcileNodeArrays = ({
 
     const frag = document.createDocumentFragment();
     frag.append(...newNodes.slice(newLeft, newRight));
+    newLeft = newRight;
 
     parent.insertBefore(frag, nextNodeAnchor);
   };
