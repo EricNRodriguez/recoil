@@ -7,7 +7,10 @@ export type SuspenseOptionalArgs = {
   fallback: WNode<Node>;
 };
 
-export type SuspenseSignature = (child: Promise<WNode<Node>>, {fallback}: SuspenseOptionalArgs) => WNode<Node>;
+export type SuspenseSignature = (
+  child: Promise<WNode<Node>>,
+  { fallback }: SuspenseOptionalArgs
+) => WNode<Node>;
 export const suspense: SuspenseSignature = createComponent(
   (
     ctx: IComponentContext,

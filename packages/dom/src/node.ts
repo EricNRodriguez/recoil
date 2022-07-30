@@ -1,10 +1,5 @@
-import {
-  firstNonEqualIndex,
-  notNullOrUndefined,
-  nullOrUndefined,
-  removeNullAndUndefinedItems,
-  Runnable,
-} from "../../util";
+import { notNullOrUndefined, nullOrUndefined, Runnable } from "../../util";
+import { reconcileNodeArrays } from "./reconciler";
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private parent: WNode<Node> | null = null;
@@ -47,8 +42,6 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   public setChildren(
     ...children: (WNode<Node> | Node | null | undefined)[]
   ): B {
-    const currentChildren: WNode<Node>[] = this.children;
-
     const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)
       .filter(notNullOrUndefined) as WNode<Node>[];
@@ -63,7 +56,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
     // unmount any current children that are not in the newChildren list
     if (this.isMounted()) {
-      currentChildren
+      this.children
         .filter((cc) => !newChildrenSet.has(cc))
         .forEach((cc) => {
           cc.unmount();
@@ -76,21 +69,11 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
       return this as unknown as B;
     }
 
-    let unwrappedCurrentChildren: Node[] = Array.from(this.unwrap().childNodes);
-    let unwrapedNewChildren: Node[] = this.getUnpackedChildren();
-
-    // we are unpacking before we diff to ensure fragment children are properly expanded
-    let firstNewNodeIndex: number = firstNonEqualIndex(
-      unwrappedCurrentChildren,
-      unwrapedNewChildren
-    );
-
-    removeChildren(
-      this.unwrap(),
-      unwrappedCurrentChildren.slice(firstNewNodeIndex)
-    );
-
-    appendChildren(this.unwrap(), unwrapedNewChildren.slice(firstNewNodeIndex));
+    reconcileNodeArrays({
+      parent: this.unwrap(),
+      currentNodes: Array.from(this.unwrap().childNodes),
+      newNodes: this.getUnpackedChildren(),
+    });
 
     return this as unknown as B;
   }
@@ -190,25 +173,5 @@ export const wrapInVNode = (
     return node as WNode<Node>;
   } else {
     return new WNode(node as Node);
-  }
-};
-
-const removeChildren = (node: Node, children: Node[]): void => {
-  removeNullAndUndefinedItems(children).forEach((child: Node): void => {
-    node.removeChild(child);
-  });
-};
-
-const appendChildren = (node: Node, children: Node[]): void => {
-  if (children.length === 1) {
-    node.appendChild(children[0]);
-  } else {
-    if (node instanceof HTMLElement) {
-      (node as HTMLElement).append(...children);
-    } else {
-      const frag: DocumentFragment = document.createDocumentFragment();
-      children.forEach((c) => frag.appendChild(c));
-      node.appendChild(frag);
-    }
   }
 };
