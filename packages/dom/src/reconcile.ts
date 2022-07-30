@@ -13,6 +13,8 @@ export type ReconcileNodeArraysArgs = {
   newNodes: Node[];
 };
 
+const frag: DocumentFragment = document.createDocumentFragment();
+
 // heavily inspired by both
 // https://github.com/ryansolid/dom-expressions/blob/07f693e7a60a487c07966c277f89a7c00c96c72b/packages/dom-expressions/src/reconcile.js
 // and
@@ -45,7 +47,6 @@ export const reconcileNodeArrays = ({
       nextNodeAnchor = currentNodes[currentNodes.length - 1]?.nextSibling;
     }
 
-    const frag = document.createDocumentFragment();
     frag.append(...newNodes.slice(newLeft, newRight));
     newLeft = newRight;
 
