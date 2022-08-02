@@ -13,5 +13,5 @@ export const button = (args: ButtonArgs): WElement<HTMLButtonElement> => {
   return new WElement(document.createElement("button"))
     .setAttribute("type", "button")
     .setChildren(wrapTextInVNode(args.content))
-    .setClickHandler(args.onClick);
+    .setEventHandler("click", args.onClick);
 };

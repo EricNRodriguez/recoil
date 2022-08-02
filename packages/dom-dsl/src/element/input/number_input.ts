@@ -18,7 +18,7 @@ export const numberInput = createComponent(
       document.createElement("input")
     ).setAttribute("type", "number");
 
-    builder.addEventHandler("input", (): void => {
+    builder.setEventHandler("input", (): void => {
       const inputElement = builder.unwrap();
 
       const rawValue: number = inputElement.valueAsNumber;

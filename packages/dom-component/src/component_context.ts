@@ -74,7 +74,7 @@ export class ComponentContext implements IComponentContext {
       (node.unwrap() as HTMLElement).addEventListener("click", fn);
     });
   }
-
+  
   public applyDeferredFunctions(node: WNode<Node>): void {
     this.deferredFunctions.forEach((fn) => fn(node));
   }

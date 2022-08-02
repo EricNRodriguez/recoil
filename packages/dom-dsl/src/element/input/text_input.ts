@@ -12,7 +12,7 @@ export const textInput = createComponent(
       "text"
     );
 
-    element.addEventHandler("input", () => text.set(element.unwrap().value));
+    element.setEventHandler("input", () => text.set(element.unwrap().value));
 
     ctx.runEffect((): void => {
       element.unwrap().value = text.get();
