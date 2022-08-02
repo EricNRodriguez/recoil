@@ -1,10 +1,10 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
 import { WElement } from "../../../../dom";
 import { Runnable, Supplier } from "../../../../util";
+import {IAtom} from "../../../../atom";
 
 export type RadioButtonArguments = {
-  isChecked: Supplier<boolean>;
-  onClick: Runnable;
+  isChecked: IAtom<boolean>;
 };
 
 export const radioButton = createComponent(
@@ -17,27 +17,18 @@ export const radioButton = createComponent(
     ).setAttribute("type", "radio");
 
     // binding effect for checked attribute
-    let prevCheckedValue: boolean | null;
     ctx.runEffect((): void => {
-      const isChecked: boolean | null = args.isChecked();
-      if (prevCheckedValue === isChecked) {
-        return;
-      }
+      const isChecked = args.isChecked.get();
 
-      prevCheckedValue = isChecked;
-      radioButtonElement.unwrap().checked = isChecked;
+      // changes triggered inside an event handler will be reverted
+      // if preventDefault is called
+      setTimeout(() => {
+        radioButtonElement.unwrap().checked = isChecked;
+      }, 0);
     });
 
-    // we want to trigger a re-bind once the onclick handle is executed.
-    // this is important in the instance when the onClick handler does some
-    // validation and decides to not toggle, but the default behaviour of the
-    // element is to toggle.
-    const originalOnClick = args.onClick;
-    radioButtonElement.unwrap().onclick = (): void => {
-      originalOnClick();
-
-      radioButtonElement.unwrap().checked = args.isChecked();
-    };
+    // State changes should be reactive
+    radioButtonElement.unwrap().onclick = (e: Event) => e.preventDefault();
 
     return radioButtonElement;
   }
