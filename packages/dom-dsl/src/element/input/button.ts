@@ -4,14 +4,8 @@ import { wrapTextInVNode } from "../../util/dom_util";
 
 export type ButtonContent = Text | string;
 
-export type ButtonArgs = {
-  content: ButtonContent;
-  onClick: Consumer<MouseEvent>;
-};
-
-export const button = (args: ButtonArgs): WElement<HTMLButtonElement> => {
+export const button = (content: ButtonContent): WElement<HTMLButtonElement> => {
   return new WElement(document.createElement("button"))
     .setAttribute("type", "button")
-    .setChildren(wrapTextInVNode(args.content))
-    .setEventHandler("click", args.onClick);
+    .setChildren(wrapTextInVNode(content));
 };
