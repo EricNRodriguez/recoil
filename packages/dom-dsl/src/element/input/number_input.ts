@@ -30,7 +30,7 @@ export const numberInput = createComponent(
       const clampedValue: number = clamp({
         max: args.max,
         min: args.min,
-        val: inputElement.valueAsNumber,
+        val: rawValue,
       });
 
       if (rawValue !== clampedValue) {

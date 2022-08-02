@@ -1,11 +1,10 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
 import { WElement } from "../../../../dom";
-import { Runnable, Supplier } from "../../../../util";
+import { IAtom} from "../../../../atom";
 
 export type CheckboxArguments = {
-  isChecked: Supplier<boolean | null>;
-  isEnabled?: Supplier<boolean>;
-  onClick: Runnable;
+  isChecked: IAtom<boolean | null>;
+  isEnabled?: IAtom<boolean>;
 };
 
 export const checkbox = createComponent(
@@ -18,43 +17,32 @@ export const checkbox = createComponent(
     ).setAttribute("type", "checkbox");
 
     // binding effect for checked attribute
-    let prevCheckedValue: boolean | null;
     ctx.runEffect((): void => {
-      const isChecked: boolean | null = args.isChecked();
-      if (prevCheckedValue === isChecked) {
-        return;
-      }
+      const isChecked: boolean | null = args.isChecked.get();
 
-      prevCheckedValue = isChecked;
-      checkboxElement.unwrap().checked = isChecked === true;
-      checkboxElement.unwrap().indeterminate = isChecked === null;
+      // changes triggered inside an event handler will be reverted
+      // if preventDefault is called
+      setTimeout(() => {
+        checkboxElement.unwrap().checked = isChecked === true;
+        checkboxElement.unwrap().indeterminate = isChecked === null;
+      }, 0);
     });
 
     if (args.isEnabled !== undefined) {
       // binding effect for enabled attribute
-      let prevEnabledValue: boolean;
       ctx.runEffect((): void => {
-        const isEnabled: boolean = args.isEnabled!();
-        if (prevEnabledValue === isEnabled) {
-          return;
-        }
-        prevEnabledValue = isEnabled;
-        checkboxElement.unwrap().disabled = !isEnabled;
+        const isEnabled: boolean = args.isEnabled!.get();
+
+        // changes triggered inside an event handler will be reverted
+        // if preventDefault is called
+        setTimeout(() => {
+          checkboxElement.unwrap().disabled = !isEnabled;
+        }, 0);
       });
     }
 
-    // we want to trigger a re-bind once the onclick handle is executed.
-    // this is important in the instance when the onClick handler does some
-    // validation and decides to not toggle, but the default behaviour of the
-    // checkbox element is to toggle.
-    const originalOnClick = args.onClick;
-    checkboxElement.unwrap().onclick = (): void => {
-      originalOnClick();
-
-      const isChecked: boolean | null = args.isChecked();
-      checkboxElement.unwrap().checked = isChecked === true;
-      checkboxElement.unwrap().indeterminate = isChecked === null;
-    };
+    // state change should be reactive
+    checkboxElement.unwrap().onclick = (e: Event) => e.preventDefault();
 
     return checkboxElement;
   }
