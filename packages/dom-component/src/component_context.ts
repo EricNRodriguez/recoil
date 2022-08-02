@@ -1,4 +1,4 @@
-import { WNode } from "../../dom";
+import {WElement, WNode} from "../../dom";
 import { ISideEffectRef, runEffect } from "../../atom";
 import { Consumer, Runnable } from "../../util";
 
@@ -8,7 +8,7 @@ export interface IComponentContext {
   onInitialMount(sideEffect: Runnable): void;
   onUnmount(sideEffect: Runnable): void;
   onCleanup(finalizer: Runnable): void;
-  onClick(fn: Consumer<MouseEvent>): void;
+  onEvent<K extends keyof HTMLElementEventMap>(type: K, handler: Consumer<HTMLElementEventMap[K]>): void;
 }
 
 export class ComponentContext implements IComponentContext {
@@ -19,7 +19,7 @@ export class ComponentContext implements IComponentContext {
       this.registeredFinalizers.get(id)?.forEach((fn) => fn());
     });
 
-  private readonly deferredFunctions: Consumer<WNode<Node>>[] = [];
+  private readonly deferredFunctions: Consumer<WElement<HTMLElement>>[] = [];
 
   public onInitialMount(sideEffect: Runnable): void {
     let called: boolean = false;
@@ -65,17 +65,17 @@ export class ComponentContext implements IComponentContext {
     });
   }
 
-  public onClick(fn: Consumer<MouseEvent>): void {
-    this.deferredFunctions.push((node: WNode<Node>) => {
-      if (!(node.unwrap() instanceof HTMLElement)) {
+  public onEvent<K extends keyof HTMLElementEventMap>(type: K, handler: Consumer<HTMLElementEventMap[K]>): void {
+    this.deferredFunctions.push((element: WElement<HTMLElement>) => {
+      if (!(element.unwrap() instanceof HTMLElement)) {
         throw new Error("unable to attach event handler to node");
       }
 
-      (node.unwrap() as HTMLElement).addEventListener("click", fn);
+      element.setEventHandler(type, handler);
     });
   }
-  
-  public applyDeferredFunctions(node: WNode<Node>): void {
-    this.deferredFunctions.forEach((fn) => fn(node));
+
+  public applyDeferredFunctions(element: WElement<HTMLElement>): void {
+    this.deferredFunctions.forEach((fn) => fn(element));
   }
 }
