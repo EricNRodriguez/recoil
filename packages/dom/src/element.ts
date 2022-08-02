@@ -7,7 +7,6 @@ export abstract class BaseWElement<
     B extends BaseWElement<A, B>
   >
   extends BaseWNode<A, B>
-  implements WNode<A>
 {
   constructor(element: A) {
     super(element);
@@ -43,7 +42,7 @@ export abstract class BaseWElement<
 export class WElement<T extends HTMLElement> extends BaseWElement<
   T,
   WElement<T>
-> {
+> implements WNode<T> {
   constructor(elem: T) {
     super(elem);
   }
