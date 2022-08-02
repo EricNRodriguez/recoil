@@ -5,6 +5,15 @@ export interface Supplier<T> {
 export interface Function<I, O> {
   (input: I): O;
 }
+
+export interface BiFunction<A,B,O> {
+  (a: A, b: B): O;
+}
+
+export interface Method<T,I,O> {
+  (this: T, input: I): O;
+}
+
 export interface Producer<T> {
   (): T;
 }

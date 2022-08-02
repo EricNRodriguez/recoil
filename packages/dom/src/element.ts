@@ -1,5 +1,6 @@
 import { BiConsumer, Consumer } from "../../util";
 import { BaseWNode, WNode } from "./node";
+import {BiFunction, Method} from "../../util/src/function.interface";
 export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
@@ -17,17 +18,15 @@ export abstract class BaseWElement<
     return this as unknown as B;
   }
 
-  public setClickHandler(handler: Consumer<MouseEvent>): B {
-    this.unwrap().addEventListener("click", handler);
+  public setEventHandler<K extends keyof HTMLElementEventMap>(type: K, listener: Method<HTMLElement, HTMLElementEventMap[K], void>): B {
+    this.unwrap().addEventListener(type, listener);
     return this as unknown as B;
-  }
+  };
 
-  public addEventHandler(eventType: string, handler: BiConsumer<Event, A>): B {
-    this.unwrap().addEventListener(eventType, (event: Event): void =>
-      handler(event, this.unwrap())
-    );
+  public removeEventHandler<K extends keyof HTMLElementEventMap>(type: K, listener: Method<HTMLElement, HTMLElementEventMap[K], void>): B {
+    this.unwrap().removeEventListener(type, listener);
     return this as unknown as B;
-  }
+  };
 
   public setStyle(style: ElementStyle): B {
     Object.entries(style).forEach(
