@@ -2,12 +2,13 @@ import { IAtom, isAtom } from "../../../atom";
 import {
   Supplier,
   notNullOrUndefined,
-  wrapStaticContentInProvider,
+  wrapStaticContentInProvider, WDerivationCache, Producer,
 } from "../../../util";
 import { frag } from "../element/frag";
 import { MaybeNodeOrVNode } from "../element/node.interface";
 import { WElement, WNode } from "../../../dom";
 import { createComponent, IComponentContext } from "../../../dom-component";
+import {wrapInVNode} from "../../../dom/src/node";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
@@ -31,9 +32,18 @@ export const ifElse = createComponent(
       return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
     }
 
+    const nullOrUndefinedNode = new WNode(document.createComment("null"));
+    const wrap = (fn: Producer<MaybeNodeOrVNode>): Producer<WNode<Node>> => {
+        return () => wrapInVNode(fn()) ?? nullOrUndefinedNode;
+    };
+    const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<boolean, WNode<Node>>(
+      (value: boolean) => value ? wrap(ifTrueUnwrapped)() : wrap(ifFalseUnwrapped)(),
+    )
+
     const anchor = frag();
 
     let currentRenderedState: boolean;
+    let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
     ctx.runEffect((): void => {
       const state: boolean = isAtom(condition)
         ? (condition as IAtom<boolean>).get()
@@ -43,13 +53,11 @@ export const ifElse = createComponent(
         return;
       }
 
+      currentRenderedSubtree.unmount();
       currentRenderedState = state;
+      currentRenderedSubtree = cache.get(state);
 
-      const nodeSupplier: Supplier<MaybeNodeOrVNode> = state
-        ? ifTrueUnwrapped
-        : ifFalseUnwrapped;
-
-      anchor.setChildren(nodeSupplier());
+      anchor.setChildren(currentRenderedSubtree === nullOrUndefinedNode ? null : currentRenderedSubtree);
     });
 
     return anchor;
