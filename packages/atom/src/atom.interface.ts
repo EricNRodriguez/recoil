@@ -7,7 +7,6 @@ export interface IAtom<T> {
   get(): T;
   getUntracked(): T;
   invalidate(): void;
-  react(effect: ISideEffect<T>): ISideEffectRef;
 }
 
 export interface ILeafAtom<T> extends IAtom<T> {

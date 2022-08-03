@@ -163,13 +163,11 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     const atom = new LeafAtomImpl<T | undefined>(
       undefined,
       globalTrackingContext,
-      globalEffectScheduler
     );
 
     const derivation = new DerivedAtom<Promise<T>>(
       producer,
       globalTrackingContext,
-      globalEffectScheduler
     );
     const ref = derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
@@ -201,7 +199,6 @@ export const createState = ApiFunctionBuilder.getInstance().build(
     return new LeafAtomImpl(
       value,
       globalTrackingContext,
-      globalEffectScheduler
     );
   }
 );
@@ -228,7 +225,6 @@ export const deriveState = ApiFunctionBuilder.getInstance().build(
     return new DerivedAtom(
       deriveValue,
       globalTrackingContext,
-      globalEffectScheduler
     );
   }
 );
@@ -283,7 +279,6 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
             new LeafAtomImpl(
               newVal,
               globalTrackingContext,
-              globalEffectScheduler
             )
           );
         } else {
@@ -319,7 +314,6 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
                 return originalFn.apply(this, args);
               },
               globalTrackingContext,
-              globalEffectScheduler
             )
           );
         }
