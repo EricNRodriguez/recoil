@@ -5,12 +5,14 @@ export class WeakCollection<T extends Object> {
   private itemsSet: WeakSet<T> = new WeakSet([]);
 
   public getItems(): T[] {
-    return [
+    const items = [
       ...this.items
         .map((ref: WeakRef<T>): T | undefined => ref.deref())
         .filter((item: T | undefined): boolean => item !== undefined)
         .map((item: T | undefined): T => item!),
     ];
+    this.removeGCdItems();
+    return items;
   }
 
   public register(item: T): void {
@@ -21,6 +23,11 @@ export class WeakCollection<T extends Object> {
     const ref: WeakRef<T> = new WeakRef<T>(item);
     this.itemsSet.add(item);
     this.items.push(ref);
+  }
+
+  public deregister(item: T): void {
+    this.itemsSet.delete(item);
+    this.items = this.items.filter((v) => v.deref() !== item);
   }
 
   public reset() {

@@ -171,7 +171,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
       globalTrackingContext,
       globalEffectScheduler
     );
-    derivation.react((futureVal: Promise<T>): void => {
+    const ref = derivation.react((futureVal: Promise<T>): void => {
       let currentReactionVersion = reactionVersion++;
       futureVal.then((val: T): void => {
         if (writeVersion > currentReactionVersion) {
@@ -182,7 +182,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
       });
     });
 
-    (atom as any).$$$recoilFetchStateDerivation = derivation;
+    (atom as any).$$$recoilFetchStateDerivation = [derivation, ref];
 
     return atom;
   }
