@@ -2,8 +2,6 @@ import { Maybe, IMaybe } from "typescript-monads";
 import {
   IAtom,
   ILeafAtom,
-  ISideEffect,
-  ISideEffectRef,
 } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
