@@ -162,12 +162,12 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
 
     const atom = new LeafAtomImpl<T | undefined>(
       undefined,
-      globalTrackingContext,
+      globalTrackingContext
     );
 
     const derivation = new DerivedAtom<Promise<T>>(
       producer,
-      globalTrackingContext,
+      globalTrackingContext
     );
 
     const sideEffectRunnable = (): void => {
@@ -207,10 +207,7 @@ export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
   <T>(value: T): ILeafAtom<T> => {
-    return new LeafAtomImpl(
-      value,
-      globalTrackingContext,
-    );
+    return new LeafAtomImpl(value, globalTrackingContext);
   }
 );
 
@@ -233,10 +230,7 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
   <T>(deriveValue: Producer<T>): IAtom<T> => {
-    return new DerivedAtom(
-      deriveValue,
-      globalTrackingContext,
-    );
+    return new DerivedAtom(deriveValue, globalTrackingContext);
   }
 );
 
@@ -285,13 +279,7 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(
-            this,
-            new LeafAtomImpl(
-              newVal,
-              globalTrackingContext,
-            )
-          );
+          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext));
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -320,12 +308,9 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
         if (!registry.has(this)) {
           registry.set(
             this,
-            new DerivedAtom(
-              () => {
-                return originalFn.apply(this, args);
-              },
-              globalTrackingContext,
-            )
+            new DerivedAtom(() => {
+              return originalFn.apply(this, args);
+            }, globalTrackingContext)
           );
         }
         return registry.get(this)!.get();
