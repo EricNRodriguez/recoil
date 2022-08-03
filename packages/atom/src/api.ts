@@ -1,5 +1,5 @@
 import { ILeafAtom, ISideEffectRef } from "./atom.interface";
-import { LeafAtomImpl, DerivedAtom } from "./atom";
+import {LeafAtomImpl, DerivedAtom, SideEffect} from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
@@ -253,31 +253,16 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  */
 export const runEffect: RunEffectSignature =
   ApiFunctionBuilder.getInstance().build((effect: Runnable): ISideEffectRef => {
-    const atom: IAtom<number> = new DerivedAtom(
-      () => {
-        effect();
-        return 0;
-      },
+
+    const sideEffect: SideEffect = new SideEffect(
+      effect,
       globalTrackingContext,
       globalEffectScheduler
     );
 
-    // we register a noop effect, which will cause the derived atom
-    // to eagerly evaluate immediately after every dirty
-    const sideEffectRef: ISideEffectRef = atom.react(() => {});
+    sideEffect.run();
 
-    // kick it to trigger the initial eager evaluation, which
-    // will in turn track any deps that the effect will run against
-    atom.get();
-
-    // since the DAG edges are all weak, there is nothing keeping this atom
-    // alive. Hence, the caller is responsible for keeping it in scope by
-    // keeping the ref in scope.
-    //
-    // This should probably be done through a registry but for now its fine
-    (sideEffectRef as any).$$$recoilParentDerivedAtom = atom;
-
-    return sideEffectRef;
+    return sideEffect;
   });
 
 /**

@@ -287,3 +287,63 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     this.value = Maybe.none();
   }
 }
+
+export class SideEffect {
+  private readonly effect: Runnable;
+  private readonly effectScheduler: IEffectScheduler;
+  private readonly context: AtomTrackingContext;
+  private numChildrenNotReady: number = 0;
+  private active: boolean = true;
+
+  constructor(
+    effect: Runnable,
+    context: AtomTrackingContext,
+    effectScheduler: IEffectScheduler
+  ) {
+    this.effect = effect;
+    this.context = context;
+    this.effectScheduler = effectScheduler;
+  }
+
+  public run() {
+    this.effectScheduler.schedule(this.runScoped);
+  }
+
+  private runScoped = (): void => {
+    try {
+      this.context.pushParent(this);
+      this.effect();
+    } finally {
+      this.context.popParent();
+    }
+  }
+
+  public childReady() {
+    this.numChildrenNotReady--;
+
+    if (this.active && this.numChildrenNotReady === 0) {
+      this.run();
+    }
+  }
+
+  public childDirty() {
+    this.numChildrenNotReady++;
+  }
+
+  public activate() {
+    if (this.active) {
+      return;
+    }
+
+    this.active = true;
+    this.run();
+  }
+
+  public deactivate() {
+    if (!this.active) {
+      return;
+    }
+
+    this.active = false;
+  }
+}
