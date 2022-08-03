@@ -126,6 +126,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
     return {
       activate: () => {
         this.effects.activateEffect(cachedEffect);
+        cachedEffect(this.get());
       },
       deactivate: () => {
         this.effects.deactivateEffect(cachedEffect);
