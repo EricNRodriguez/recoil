@@ -21,11 +21,16 @@ export const isAtom = (obj: any): boolean => {
 };
 
 class SideEffectRegistry<T> {
-  private readonly activeEffects: WeakCollection<ISideEffect<T>> = new WeakCollection();
-  private readonly inactiveEffects: WeakCollection<ISideEffect<T>> = new WeakCollection();
+  private readonly activeEffects: WeakCollection<ISideEffect<T>> =
+    new WeakCollection();
+  private readonly inactiveEffects: WeakCollection<ISideEffect<T>> =
+    new WeakCollection();
 
   public registerEffect(effect: ISideEffect<T>): void {
-    if (this.activeEffects.getItems().includes(effect) || this.inactiveEffects.getItems().includes(effect)) {
+    if (
+      this.activeEffects.getItems().includes(effect) ||
+      this.inactiveEffects.getItems().includes(effect)
+    ) {
       // TODO(ericr): use a more specific error
       throw new Error("duplicate registration of side effect");
     }
@@ -126,6 +131,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
     return {
       activate: () => {
         this.effects.activateEffect(cachedEffect);
+        cachedEffect(this.get());
       },
       deactivate: () => {
         this.effects.deactivateEffect(cachedEffect);
@@ -279,5 +285,65 @@ export class DerivedAtom<T> extends BaseAtom<T> {
 
   private discardCachedValue() {
     this.value = Maybe.none();
+  }
+}
+
+export class SideEffect {
+  private readonly effect: Runnable;
+  private readonly effectScheduler: IEffectScheduler;
+  private readonly context: AtomTrackingContext;
+  private numChildrenNotReady: number = 0;
+  private active: boolean = true;
+
+  constructor(
+    effect: Runnable,
+    context: AtomTrackingContext,
+    effectScheduler: IEffectScheduler
+  ) {
+    this.effect = effect;
+    this.context = context;
+    this.effectScheduler = effectScheduler;
+  }
+
+  public run() {
+    this.effectScheduler.schedule(this.runScoped);
+  }
+
+  private runScoped = (): void => {
+    try {
+      this.context.pushParent(this);
+      this.effect();
+    } finally {
+      this.context.popParent();
+    }
+  }
+
+  public childReady() {
+    this.numChildrenNotReady--;
+
+    if (this.active && this.numChildrenNotReady === 0) {
+      this.run();
+    }
+  }
+
+  public childDirty() {
+    this.numChildrenNotReady++;
+  }
+
+  public activate() {
+    if (this.active) {
+      return;
+    }
+
+    this.active = true;
+    this.run();
+  }
+
+  public deactivate() {
+    if (!this.active) {
+      return;
+    }
+
+    this.active = false;
   }
 }
