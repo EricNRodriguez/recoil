@@ -53,7 +53,6 @@ export const ifElse = createComponent(
         return;
       }
 
-      currentRenderedSubtree.unmount();
       currentRenderedState = state;
       currentRenderedSubtree = cache.get(state);
 
