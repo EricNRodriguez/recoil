@@ -4,14 +4,14 @@ import { Consumer, Runnable } from "../../util";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;
+
   onMount(sideEffect: Runnable): void;
+
   onInitialMount(sideEffect: Runnable): void;
+
   onUnmount(sideEffect: Runnable): void;
+
   onCleanup(finalizer: Runnable): void;
-  onEvent<K extends keyof HTMLElementEventMap>(
-    type: K,
-    handler: Consumer<HTMLElementEventMap[K]>
-  ): void;
 }
 
 export class ComponentContext implements IComponentContext {
@@ -22,7 +22,7 @@ export class ComponentContext implements IComponentContext {
       this.registeredFinalizers.get(id)?.forEach((fn) => fn());
     });
 
-  private readonly deferredFunctions: Consumer<WElement<HTMLElement>>[] = [];
+  private readonly deferredFunctions: Consumer<WNode<Node>>[] = [];
 
   public onInitialMount(sideEffect: Runnable): void {
     let called: boolean = false;
@@ -68,20 +68,7 @@ export class ComponentContext implements IComponentContext {
     });
   }
 
-  public onEvent<K extends keyof HTMLElementEventMap>(
-    type: K,
-    handler: Consumer<HTMLElementEventMap[K]>
-  ): void {
-    this.deferredFunctions.push((element: WElement<HTMLElement>) => {
-      if (!(element.unwrap() instanceof HTMLElement)) {
-        throw new Error("unable to attach event handler to node");
-      }
-
-      element.setEventHandler(type, handler);
-    });
-  }
-
-  public applyDeferredFunctions(element: WElement<HTMLElement>): void {
+  public applyDeferredFunctions(element: WNode<Node>): void {
     this.deferredFunctions.forEach((fn) => fn(element));
   }
 }

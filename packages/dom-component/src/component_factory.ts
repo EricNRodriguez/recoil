@@ -4,7 +4,7 @@ import { ComponentContext } from "./component_context";
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
  */
-export type StatefulDomBuilder<T extends WElement<HTMLElement>> = (
+export type StatefulDomBuilder<T extends WNode<Node>> = (
   ctx: ComponentContext,
   ...args: any[]
 ) => T;
@@ -12,9 +12,9 @@ export type StatefulDomBuilder<T extends WElement<HTMLElement>> = (
 /**
  * A plain old javascript function that returns a wNode (or a subclass of it)
  */
-export type DomBuilder<T extends WElement<HTMLElement>> = (...args: any[]) => T;
+export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-export const createComponent = <T extends WElement<HTMLElement>>(
+export const createComponent = <T extends WNode<Node>>(
   buildDomTree: StatefulDomBuilder<T>
 ): DomBuilder<T> => {
   return (...args: any[]): T => {

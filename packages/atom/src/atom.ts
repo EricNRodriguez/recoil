@@ -25,9 +25,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
     DerivedAtom<Object>
   >();
 
-  protected constructor(
-    context: AtomTrackingContext,
-  ) {
+  protected constructor(context: AtomTrackingContext) {
     this.context = context;
   }
 
@@ -68,10 +66,7 @@ export interface IEffectScheduler {
 export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   private value: T;
 
-  constructor(
-    value: T,
-    context: AtomTrackingContext,
-  ) {
+  constructor(value: T, context: AtomTrackingContext) {
     super(context);
     this.value = value;
   }
@@ -128,10 +123,7 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
 
-  constructor(
-    deriveValue: Producer<T>,
-    context: AtomTrackingContext,
-  ) {
+  constructor(deriveValue: Producer<T>, context: AtomTrackingContext) {
     super(context);
     this.deriveValue = deriveValue;
   }
