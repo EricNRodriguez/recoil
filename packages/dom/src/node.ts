@@ -49,16 +49,6 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
       .filter(notNullOrUndefined) as WNode<Node>[];
 
     const newChildrenSet: Set<WNode<Node>> = new Set(newChildren);
-
-    this.children.length = 0;
-    this.children.push(...newChildren);
-
-    // sync mount status of new children to this dom node
-    newChildren.forEach((nc: WNode<Node>): void => {
-      nc.setParent(this);
-      this.syncMountStatusOfChild(nc);
-    });
-
     // unmount any current children that are not in the newChildren list
     if (this.isMounted()) {
       this.children
@@ -68,6 +58,14 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
           cc.setParent(null);
         });
     }
+    this.children.length = 0;
+    this.children.push(...newChildren);
+
+    // sync mount status of new children to this dom node
+    newChildren.forEach((nc: WNode<Node>): void => {
+      nc.setParent(this);
+      this.syncMountStatusOfChild(nc);
+    });
 
     if (this.isFragment()) {
       this.getParent()?.rebindChildren();

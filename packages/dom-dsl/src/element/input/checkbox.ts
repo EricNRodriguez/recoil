@@ -1,6 +1,6 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
 import { WElement } from "../../../../dom";
-import { IAtom} from "../../../../atom";
+import { IAtom } from "../../../../atom";
 
 export type CheckboxArguments = {
   isChecked: IAtom<boolean | null>;

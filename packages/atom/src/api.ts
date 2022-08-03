@@ -1,5 +1,5 @@
 import { ILeafAtom, ISideEffectRef } from "./atom.interface";
-import {LeafAtomImpl, DerivedAtom, SideEffect} from "./atom";
+import { LeafAtomImpl, DerivedAtom, SideEffect } from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
@@ -253,7 +253,6 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  */
 export const runEffect: RunEffectSignature =
   ApiFunctionBuilder.getInstance().build((effect: Runnable): ISideEffectRef => {
-
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,

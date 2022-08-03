@@ -1,7 +1,7 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
 import { WElement } from "../../../../dom";
 import { Runnable, Supplier } from "../../../../util";
-import {IAtom} from "../../../../atom";
+import { IAtom } from "../../../../atom";
 
 export type RadioButtonArguments = {
   isChecked: IAtom<boolean>;

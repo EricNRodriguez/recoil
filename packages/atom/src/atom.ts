@@ -316,7 +316,7 @@ export class SideEffect {
     } finally {
       this.context.popParent();
     }
-  }
+  };
 
   public childReady() {
     this.numChildrenNotReady--;
