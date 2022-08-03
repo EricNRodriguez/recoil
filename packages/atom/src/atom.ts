@@ -179,12 +179,19 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   }
 }
 
+enum SideEffectStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive"
+}
+
+type SideEffectState = {status: SideEffectStatus.ACTIVE} | {status: SideEffectStatus.INACTIVE, dirty: boolean};
+
 export class SideEffect {
   private readonly effect: Runnable;
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
-  private active: boolean = true;
+  private state: SideEffectState = {status: SideEffectStatus.ACTIVE};
 
   constructor(
     effect: Runnable,
@@ -212,8 +219,17 @@ export class SideEffect {
   public childReady() {
     this.numChildrenNotReady--;
 
-    if (this.active && this.numChildrenNotReady === 0) {
-      this.run();
+    if (this.numChildrenNotReady === 0) {
+      switch (this.state.status) {
+        case SideEffectStatus.ACTIVE:
+          this.run();
+          return;
+        case SideEffectStatus.INACTIVE:
+          this.state.dirty = true;
+          return;;
+        default:
+          throw new Error("invalid state");
+      }
     }
   }
 
@@ -222,19 +238,18 @@ export class SideEffect {
   }
 
   public activate() {
-    if (this.active) {
+    if (this.state.status === SideEffectStatus.ACTIVE) {
       return;
     }
 
-    this.active = true;
-    this.run();
+    if (this.state.dirty) {
+      this.run();
+    }
+
+    this.state = {status: SideEffectStatus.ACTIVE};
   }
 
   public deactivate() {
-    if (!this.active) {
-      return;
-    }
-
-    this.active = false;
+    this.state = {status: SideEffectStatus.INACTIVE, dirty: false};
   }
 }
