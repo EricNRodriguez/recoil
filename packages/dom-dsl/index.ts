@@ -1,5 +1,6 @@
 export { foreach } from "./src/control/foreach";
 export { ifElse } from "./src/control/if";
+export {match } from "./src/control/match";
 export { div } from "./src/element/div";
 export { p } from "./src/element/paragraph";
 export { t } from "./src/element/text";
