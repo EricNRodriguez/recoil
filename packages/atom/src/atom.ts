@@ -21,34 +21,34 @@ export const isAtom = (obj: any): boolean => {
 };
 
 class SideEffectRegistry<T> {
-  private readonly activeEffects: Set<ISideEffect<T>> = new Set();
-  private readonly inactiveEffects: Set<ISideEffect<T>> = new Set();
+  private readonly activeEffects: WeakCollection<ISideEffect<T>> = new WeakCollection();
+  private readonly inactiveEffects: WeakCollection<ISideEffect<T>> = new WeakCollection();
 
   public registerEffect(effect: ISideEffect<T>): void {
-    if (this.activeEffects.has(effect) || this.inactiveEffects.has(effect)) {
+    if (this.activeEffects.getItems().includes(effect) || this.inactiveEffects.getItems().includes(effect)) {
       // TODO(ericr): use a more specific error
       throw new Error("duplicate registration of side effect");
     }
 
-    this.activeEffects.add(effect);
+    this.activeEffects.register(effect);
   }
 
   public hasActiveEffects(): boolean {
-    return this.activeEffects.size !== 0;
+    return this.activeEffects.getItems().length !== 0;
   }
 
   public getActiveEffects(): ISideEffect<T>[] {
-    return Array.from(this.activeEffects);
+    return this.activeEffects.getItems();
   }
 
   public activateEffect(effect: ISideEffect<T>): void {
-    this.inactiveEffects.delete(effect);
-    this.activeEffects.add(effect);
+    this.inactiveEffects.deregister(effect);
+    this.activeEffects.register(effect);
   }
 
   public deactivateEffect(effect: ISideEffect<T>): void {
-    this.activeEffects.delete(effect);
-    this.inactiveEffects.add(effect);
+    this.activeEffects.deregister(effect);
+    this.inactiveEffects.register(effect);
   }
 }
 
