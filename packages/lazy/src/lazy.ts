@@ -7,9 +7,8 @@ type DefaultModuleType = {
 export const lazy = (
   getModule: () => Promise<DefaultModuleType>
 ): ((...args: any[]) => Promise<WNode<Node>>) => {
-  const modulePromise = getModule();
   return async (...args: any[]): Promise<WNode<Node>> => {
-    const module = await modulePromise;
+    const module = await getModule();;
     return module.default(...args);
   };
 };
