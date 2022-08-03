@@ -1,4 +1,5 @@
 import {Function} from "./function.interface";
+import {notNullOrUndefined} from "./type_check";
 
 export class WDerivationCache<K,V extends Object> {
   private readonly cache: Map<K, WeakRef<V>> = new Map();
@@ -11,13 +12,14 @@ export class WDerivationCache<K,V extends Object> {
   public get(key: K): V {
     this.gc();
 
-    if (!this.cache.has(key)) {
-      const val: V = this.deriveValue(key);
-      this.cache.set(key, new WeakRef(val));
-      return val;
+    const val = this.cache.get(key)?.deref();
+    if (notNullOrUndefined(val)) {
+      return val!;
     }
 
-    return this.get(key);
+    const newVal: V = this.deriveValue(key);
+    this.cache.set(key, new WeakRef(newVal));
+    return newVal;
   }
 
   private gc() {
