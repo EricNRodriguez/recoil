@@ -15,62 +15,20 @@ export const isAtom = (obj: any): boolean => {
     obj instanceof Object &&
     "get" in obj &&
     "getUntracked" in obj &&
-    "invalidate" in obj &&
-    "react" in obj
+    "invalidate" in obj
   );
 };
 
-class SideEffectRegistry<T> {
-  private readonly activeEffects: WeakCollection<ISideEffect<T>> =
-    new WeakCollection();
-  private readonly inactiveEffects: WeakCollection<ISideEffect<T>> =
-    new WeakCollection();
-
-  public registerEffect(effect: ISideEffect<T>): void {
-    if (
-      this.activeEffects.getItems().includes(effect) ||
-      this.inactiveEffects.getItems().includes(effect)
-    ) {
-      // TODO(ericr): use a more specific error
-      throw new Error("duplicate registration of side effect");
-    }
-
-    this.activeEffects.register(effect);
-  }
-
-  public hasActiveEffects(): boolean {
-    return this.activeEffects.getItems().length !== 0;
-  }
-
-  public getActiveEffects(): ISideEffect<T>[] {
-    return this.activeEffects.getItems();
-  }
-
-  public activateEffect(effect: ISideEffect<T>): void {
-    this.inactiveEffects.deregister(effect);
-    this.activeEffects.register(effect);
-  }
-
-  public deactivateEffect(effect: ISideEffect<T>): void {
-    this.activeEffects.deregister(effect);
-    this.inactiveEffects.register(effect);
-  }
-}
-
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
-  private readonly effectScheduler: IEffectScheduler;
   private readonly parents: WeakCollection<ParentAtom> = new WeakCollection<
     DerivedAtom<Object>
   >();
-  private readonly effects: SideEffectRegistry<T> = new SideEffectRegistry<T>();
 
   protected constructor(
     context: AtomTrackingContext,
-    effectScheduler: IEffectScheduler
   ) {
     this.context = context;
-    this.effectScheduler = effectScheduler;
   }
 
   abstract get(): T;
@@ -101,57 +59,6 @@ abstract class BaseAtom<T> implements IAtom<T> {
       .getCurrentParent()
       .tapSome(this.parents.register.bind(this.parents));
   }
-
-  protected scheduleEffects(): void {
-    if (!this.effects.hasActiveEffects()) {
-      return;
-    }
-
-    this.effectScheduler.schedule(this.scheduleEffectsCallback);
-  }
-
-  // intentionally an arrow function, since it allows us to pass
-  // the function into the scheduler by reference, preventing duplicate
-  // updates within a single batch (the scheduler diffs by reference)
-  private scheduleEffectsCallback = (): void => {
-    // we want this to track, since the effects should be re-run whenever deps change
-    // hence, we do a tracked get (instead of an untracked get) - this way if any deps read
-    // within the get are dirtied then the effects will re-run eagerly.
-    const value: T = this.get();
-    this.effects
-      .getActiveEffects()
-      .forEach((effect: ISideEffect<T>) => effect(value));
-  };
-
-  public react(effect: ISideEffect<T>): ISideEffectRef {
-    const cachedEffect: ISideEffect<T> = this.buildCachedEffect(effect);
-
-    this.effects.registerEffect(cachedEffect);
-
-    return {
-      activate: () => {
-        this.effects.activateEffect(cachedEffect);
-        cachedEffect(this.get());
-      },
-      deactivate: () => {
-        this.effects.deactivateEffect(cachedEffect);
-      },
-    };
-  }
-
-  private buildCachedEffect(effect: ISideEffect<T>): ISideEffect<T> {
-    let prevValue: T | null = null;
-    const cachedEffect: ISideEffect<T> = (newValue: T): void => {
-      if (newValue !== prevValue) {
-        prevValue = newValue;
-        effect(newValue);
-      }
-    };
-
-    cachedEffect(this.get());
-
-    return cachedEffect;
-  }
 }
 
 export interface IEffectScheduler {
@@ -164,9 +71,8 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
   constructor(
     value: T,
     context: AtomTrackingContext,
-    effectScheduler: IEffectScheduler
   ) {
-    super(context, effectScheduler);
+    super(context);
     this.value = value;
   }
 
@@ -201,8 +107,6 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
     const prevParents: ParentAtom[] = this.getParents();
     this.forgetParents();
 
-    this.scheduleEffects();
-
     prevParents.forEach((parent: ParentAtom): void => {
       parent.childDirty();
       parent.childReady();
@@ -227,9 +131,8 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   constructor(
     deriveValue: Producer<T>,
     context: AtomTrackingContext,
-    effectScheduler: IEffectScheduler
   ) {
-    super(context, effectScheduler);
+    super(context);
     this.deriveValue = deriveValue;
   }
 
@@ -262,8 +165,6 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     if (this.numChildrenNotReady === 0) {
       const prevParents: ParentAtom[] = this.getParents();
       this.forgetParents();
-
-      this.scheduleEffects();
 
       prevParents.forEach((parent: ParentAtom): void => {
         parent.childReady();

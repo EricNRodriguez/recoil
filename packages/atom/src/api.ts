@@ -163,24 +163,33 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     const atom = new LeafAtomImpl<T | undefined>(
       undefined,
       globalTrackingContext,
-      globalEffectScheduler
     );
 
     const derivation = new DerivedAtom<Promise<T>>(
       producer,
       globalTrackingContext,
-      globalEffectScheduler
     );
-    const ref = derivation.react((futureVal: Promise<T>): void => {
+
+    const sideEffectRunnable = (): void => {
       let currentReactionVersion = reactionVersion++;
-      futureVal.then((val: T): void => {
+      derivation.get().then((val: T): void => {
+        if (val === undefined) {
+          return;
+        }
+
         if (writeVersion > currentReactionVersion) {
           return;
         }
         atom.set(val);
         writeVersion = currentReactionVersion;
       });
-    });
+    };
+
+    const ref = new SideEffect(
+      sideEffectRunnable,
+      globalTrackingContext,
+      globalEffectScheduler
+    );
 
     (atom as any).$$$recoilFetchStateDerivation = [derivation, ref];
 
@@ -201,7 +210,6 @@ export const createState = ApiFunctionBuilder.getInstance().build(
     return new LeafAtomImpl(
       value,
       globalTrackingContext,
-      globalEffectScheduler
     );
   }
 );
@@ -228,7 +236,6 @@ export const deriveState = ApiFunctionBuilder.getInstance().build(
     return new DerivedAtom(
       deriveValue,
       globalTrackingContext,
-      globalEffectScheduler
     );
   }
 );
@@ -283,7 +290,6 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
             new LeafAtomImpl(
               newVal,
               globalTrackingContext,
-              globalEffectScheduler
             )
           );
         } else {
@@ -319,7 +325,6 @@ export const derivedState = ApiFunctionBuilder.getInstance().build(
                 return originalFn.apply(this, args);
               },
               globalTrackingContext,
-              globalEffectScheduler
             )
           );
         }
