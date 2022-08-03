@@ -6,11 +6,11 @@ export interface Function<I, O> {
   (input: I): O;
 }
 
-export interface BiFunction<A,B,O> {
+export interface BiFunction<A, B, O> {
   (a: A, b: B): O;
 }
 
-export interface Method<T,I,O> {
+export interface Method<T, I, O> {
   (this: T, input: I): O;
 }
 

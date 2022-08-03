@@ -1,4 +1,4 @@
-import {WElement, WNode} from "../../dom";
+import { WElement, WNode } from "../../dom";
 import { ISideEffectRef, runEffect } from "../../atom";
 import { Consumer, Runnable } from "../../util";
 
@@ -8,7 +8,10 @@ export interface IComponentContext {
   onInitialMount(sideEffect: Runnable): void;
   onUnmount(sideEffect: Runnable): void;
   onCleanup(finalizer: Runnable): void;
-  onEvent<K extends keyof HTMLElementEventMap>(type: K, handler: Consumer<HTMLElementEventMap[K]>): void;
+  onEvent<K extends keyof HTMLElementEventMap>(
+    type: K,
+    handler: Consumer<HTMLElementEventMap[K]>
+  ): void;
 }
 
 export class ComponentContext implements IComponentContext {
@@ -65,7 +68,10 @@ export class ComponentContext implements IComponentContext {
     });
   }
 
-  public onEvent<K extends keyof HTMLElementEventMap>(type: K, handler: Consumer<HTMLElementEventMap[K]>): void {
+  public onEvent<K extends keyof HTMLElementEventMap>(
+    type: K,
+    handler: Consumer<HTMLElementEventMap[K]>
+  ): void {
     this.deferredFunctions.push((element: WElement<HTMLElement>) => {
       if (!(element.unwrap() instanceof HTMLElement)) {
         throw new Error("unable to attach event handler to node");

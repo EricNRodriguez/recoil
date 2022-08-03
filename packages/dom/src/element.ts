@@ -1,14 +1,12 @@
 import { BiConsumer, Consumer } from "../../util";
 import { BaseWNode, WNode } from "./node";
-import {BiFunction, Method} from "../../util/src/function.interface";
+import { BiFunction, Method } from "../../util/src/function.interface";
 export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
-    A extends HTMLElement,
-    B extends BaseWElement<A, B>
-  >
-  extends BaseWNode<A, B>
-{
+  A extends HTMLElement,
+  B extends BaseWElement<A, B>
+> extends BaseWNode<A, B> {
   constructor(element: A) {
     super(element);
   }
@@ -18,15 +16,21 @@ export abstract class BaseWElement<
     return this as unknown as B;
   }
 
-  public setEventHandler<K extends keyof HTMLElementEventMap>(type: K, listener: Method<HTMLElement, HTMLElementEventMap[K], void>): B {
+  public setEventHandler<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: Method<HTMLElement, HTMLElementEventMap[K], void>
+  ): B {
     this.unwrap().addEventListener(type, listener);
     return this as unknown as B;
-  };
+  }
 
-  public removeEventHandler<K extends keyof HTMLElementEventMap>(type: K, listener: Method<HTMLElement, HTMLElementEventMap[K], void>): B {
+  public removeEventHandler<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: Method<HTMLElement, HTMLElementEventMap[K], void>
+  ): B {
     this.unwrap().removeEventListener(type, listener);
     return this as unknown as B;
-  };
+  }
 
   public setStyle(style: ElementStyle): B {
     Object.entries(style).forEach(
@@ -38,10 +42,10 @@ export abstract class BaseWElement<
   }
 }
 
-export class WElement<T extends HTMLElement> extends BaseWElement<
-  T,
-  WElement<T>
-> implements WNode<T> {
+export class WElement<T extends HTMLElement>
+  extends BaseWElement<T, WElement<T>>
+  implements WNode<T>
+{
   constructor(elem: T) {
     super(elem);
   }
