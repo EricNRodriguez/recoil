@@ -21,11 +21,16 @@ export const isAtom = (obj: any): boolean => {
 };
 
 class SideEffectRegistry<T> {
-  private readonly activeEffects: WeakCollection<ISideEffect<T>> = new WeakCollection();
-  private readonly inactiveEffects: WeakCollection<ISideEffect<T>> = new WeakCollection();
+  private readonly activeEffects: WeakCollection<ISideEffect<T>> =
+    new WeakCollection();
+  private readonly inactiveEffects: WeakCollection<ISideEffect<T>> =
+    new WeakCollection();
 
   public registerEffect(effect: ISideEffect<T>): void {
-    if (this.activeEffects.getItems().includes(effect) || this.inactiveEffects.getItems().includes(effect)) {
+    if (
+      this.activeEffects.getItems().includes(effect) ||
+      this.inactiveEffects.getItems().includes(effect)
+    ) {
       // TODO(ericr): use a more specific error
       throw new Error("duplicate registration of side effect");
     }
