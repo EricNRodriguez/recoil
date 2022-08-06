@@ -1,7 +1,7 @@
-import {Function} from "./function.interface";
-import {notNullOrUndefined} from "./type_check";
+import { Function } from "./function.interface";
+import { notNullOrUndefined } from "./type_check";
 
-export class WDerivationCache<K,V extends Object> {
+export class WDerivationCache<K, V extends Object> {
   private readonly cache: Map<K, WeakRef<V>> = new Map();
   private readonly deriveValue: Function<K, V>;
 
@@ -30,5 +30,4 @@ export class WDerivationCache<K,V extends Object> {
       }
     }
   }
-
 }

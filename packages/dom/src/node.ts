@@ -1,6 +1,11 @@
-import {notNullOrUndefined, nullOrUndefined, Runnable, Supplier} from "../../util";
+import {
+  notNullOrUndefined,
+  nullOrUndefined,
+  Runnable,
+  Supplier,
+} from "../../util";
 import { reconcileNodeArrays } from "./reconcile";
-import {IAtom, isAtom, runEffect} from "../../atom";
+import { IAtom, isAtom, runEffect } from "../../atom";
 
 export type BindedValue<T> = Supplier<T> | IAtom<T>;
 

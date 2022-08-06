@@ -1,8 +1,5 @@
 import { Maybe, IMaybe } from "typescript-monads";
-import {
-  IAtom,
-  ILeafAtom,
-} from "./atom.interface";
+import { IAtom, ILeafAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
@@ -181,17 +178,19 @@ export class DerivedAtom<T> extends BaseAtom<T> {
 
 enum SideEffectStatus {
   ACTIVE = "active",
-  INACTIVE = "inactive"
+  INACTIVE = "inactive",
 }
 
-type SideEffectState = {status: SideEffectStatus.ACTIVE} | {status: SideEffectStatus.INACTIVE, dirty: boolean};
+type SideEffectState =
+  | { status: SideEffectStatus.ACTIVE }
+  | { status: SideEffectStatus.INACTIVE; dirty: boolean };
 
 export class SideEffect {
   private readonly effect: Runnable;
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
-  private state: SideEffectState = {status: SideEffectStatus.ACTIVE};
+  private state: SideEffectState = { status: SideEffectStatus.ACTIVE };
 
   constructor(
     effect: Runnable,
@@ -226,7 +225,7 @@ export class SideEffect {
           return;
         case SideEffectStatus.INACTIVE:
           this.state.dirty = true;
-          return;;
+          return;
         default:
           throw new Error("invalid state");
       }
@@ -246,10 +245,10 @@ export class SideEffect {
       this.run();
     }
 
-    this.state = {status: SideEffectStatus.ACTIVE};
+    this.state = { status: SideEffectStatus.ACTIVE };
   }
 
   public deactivate() {
-    this.state = {status: SideEffectStatus.INACTIVE, dirty: false};
+    this.state = { status: SideEffectStatus.INACTIVE, dirty: false };
   }
 }

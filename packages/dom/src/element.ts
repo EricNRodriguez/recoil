@@ -1,15 +1,14 @@
-import {BiConsumer, Consumer, Runnable, Supplier} from "../../util";
-import {BaseWNode, BindedValue, WNode} from "./node";
+import { BiConsumer, Consumer, Runnable, Supplier } from "../../util";
+import { BaseWNode, BindedValue, WNode } from "./node";
 import { BiFunction, Method } from "../../util/src/function.interface";
-import {IAtom, isAtom, runEffect} from "../../atom";
-import {t} from "../../dom-dsl";
+import { IAtom, isAtom, runEffect } from "../../atom";
+import { t } from "../../dom-dsl";
 export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
   A extends HTMLElement,
   B extends BaseWElement<A, B>
 > extends BaseWNode<A, B> {
-
   constructor(element: A) {
     super(element);
   }
@@ -21,9 +20,13 @@ export abstract class BaseWElement<
 
   public bindAttribute(attribute: string, value: BindedValue<string>): B {
     if (isAtom(value)) {
-      this.registerEffect(() => this.unwrap().setAttribute(attribute, (value as IAtom<string>).get()));
+      this.registerEffect(() =>
+        this.unwrap().setAttribute(attribute, (value as IAtom<string>).get())
+      );
     } else {
-      this.registerEffect(() => this.unwrap().setAttribute(attribute, (value as Supplier<string>)()));
+      this.registerEffect(() =>
+        this.unwrap().setAttribute(attribute, (value as Supplier<string>)())
+      );
     }
 
     return this as unknown as B;

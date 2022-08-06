@@ -1,4 +1,4 @@
-import { t } from "../element/text";
+import { t } from "../element";
 import { WNode } from "../../../dom";
 
 export const wrapTextInVNode = <T>(content: T | string): T | WNode<Node> => {
