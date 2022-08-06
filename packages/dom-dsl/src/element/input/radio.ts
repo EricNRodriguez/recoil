@@ -14,7 +14,7 @@ export const radioButton = createComponent(
   ): WElement<HTMLInputElement> => {
     const radioButtonElement: WElement<HTMLInputElement> = new WElement(document.createElement("input"))
       .setAttribute("type", "radio")
-      .setProperty("checked", deriveState(() => args.isChecked.get()));
+      .bindProperty("checked", () => args.isChecked.get());
 
     return radioButtonElement;
   }

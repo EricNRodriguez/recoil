@@ -15,8 +15,8 @@ export const checkbox = createComponent(
   ): WElement<HTMLInputElement> => {
     return new WElement(document.createElement("input"))
       .setAttribute("type", "checkbox")
-      .setProperty("checked", deriveState(() => args.isChecked.get() === true))
-      .setProperty("indeterminate", deriveState(() => args.isChecked.get() === null))
-      .setProperty("disabled", notNullOrUndefined(args.isEnabled) ?  deriveState(() => !args.isEnabled?.get()) : false);
+      .bindProperty("checked", () => args.isChecked.get() === true)
+      .bindProperty("indeterminate", () => args.isChecked.get() === null)
+      .bindProperty("disabled", (() => notNullOrUndefined(args.isEnabled) ? () => !args.isEnabled!.get() : () => false)());
   }
 );
