@@ -1,9 +1,9 @@
-import { frag } from "../element/frag";
-import { IndexedItem } from "../element/indexed_item.interface";
-import { getItem, getKey } from "../element/indexed_item_lense";
-import { MaybeNodeOrVNode } from "../element/node.interface";
+import { frag } from "../element";
+import { IndexedItem } from "../element";
+import { getItem, getKey } from "../element";
+import { MaybeNodeOrVNode } from "../element";
 import { WNode } from "../../../dom";
-import { IComponentContext, createComponent } from "../../../dom-component";
+import { IComponentContext, createComponent } from "../../index";
 import { Supplier, Function, notNullOrUndefined } from "../../../util";
 import { wrapInVNode } from "../../../dom/src/node";
 

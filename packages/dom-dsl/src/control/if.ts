@@ -2,13 +2,15 @@ import { IAtom, isAtom } from "../../../atom";
 import {
   Supplier,
   notNullOrUndefined,
-  wrapStaticContentInProvider, WDerivationCache, Producer,
+  wrapStaticContentInProvider,
+  WDerivationCache,
+  Producer,
 } from "../../../util";
-import { frag } from "../element/frag";
-import { MaybeNodeOrVNode } from "../element/node.interface";
+import { frag } from "../element";
+import { MaybeNodeOrVNode } from "../element";
 import { WElement, WNode } from "../../../dom";
-import { createComponent, IComponentContext } from "../../../dom-component";
-import {wrapInVNode} from "../../../dom/src/node";
+import { createComponent, IComponentContext } from "../../index";
+import { wrapInVNode } from "../../../dom/src/node";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
@@ -34,11 +36,14 @@ export const ifElse = createComponent(
 
     const nullOrUndefinedNode = new WNode(document.createComment("null"));
     const wrap = (fn: Producer<MaybeNodeOrVNode>): Producer<WNode<Node>> => {
-        return () => wrapInVNode(fn()) ?? nullOrUndefinedNode;
+      return () => wrapInVNode(fn()) ?? nullOrUndefinedNode;
     };
-    const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<boolean, WNode<Node>>(
-      (value: boolean) => value ? wrap(ifTrueUnwrapped)() : wrap(ifFalseUnwrapped)(),
-    )
+    const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
+      boolean,
+      WNode<Node>
+    >((value: boolean) =>
+      value ? wrap(ifTrueUnwrapped)() : wrap(ifFalseUnwrapped)()
+    );
 
     const anchor = frag();
 
@@ -56,7 +61,11 @@ export const ifElse = createComponent(
       currentRenderedState = state;
       currentRenderedSubtree = cache.get(state);
 
-      anchor.setChildren(currentRenderedSubtree === nullOrUndefinedNode ? null : currentRenderedSubtree);
+      anchor.setChildren(
+        currentRenderedSubtree === nullOrUndefinedNode
+          ? null
+          : currentRenderedSubtree
+      );
     });
 
     return anchor;

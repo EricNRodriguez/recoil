@@ -20,4 +20,4 @@ export { wrapStaticContentInProvider } from "./src/util";
 
 export { firstNonEqualIndex } from "./src/list";
 
-export {WDerivationCache} from "./src/weak_cache";
+export { WDerivationCache } from "./src/weak_cache";

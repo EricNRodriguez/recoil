@@ -1,6 +1,6 @@
-import { WElement, WNode } from "../../dom";
-import { ISideEffectRef, runEffect } from "../../atom";
-import { Consumer, Runnable } from "../../util";
+import { WElement, WNode } from "../../../dom";
+import { ISideEffectRef, runEffect } from "../../../atom";
+import { Consumer, Runnable } from "../../../util";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;

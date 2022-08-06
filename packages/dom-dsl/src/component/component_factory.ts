@@ -1,4 +1,4 @@
-import { WElement, WNode } from "../../dom";
+import { WElement, WNode } from "../../../dom";
 import { ComponentContext } from "./component_context";
 
 /**

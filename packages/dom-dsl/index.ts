@@ -1,24 +1,30 @@
 export { foreach } from "./src/control/foreach";
 export { ifElse } from "./src/control/if";
-export {match } from "./src/control/match";
-export { div } from "./src/element/div";
-export { p } from "./src/element/paragraph";
-export { t } from "./src/element/text";
-export { h1, h2, h3, h4, h5, h6 } from "./src/element/header";
-export { head } from "./src/element/head";
-export { a, AnchorContent } from "./src/element/anchor";
-export { link } from "./src/element/link";
-export { button } from "./src/element/input/button";
-export { checkbox, CheckboxArguments } from "./src/element/input/checkbox";
-export { radioButton, RadioButtonArguments } from "./src/element/input/radio";
-export { textInput } from "./src/element/input/text_input";
-export { numberInput, NumberInputArgs } from "./src/element/input/number_input";
-export { hr } from "./src/element/hr";
-export { br } from "./src/element/br";
-export { IndexedItem } from "./src/element/indexed_item.interface";
-export { form, FormTarget } from "./src/element/input/form";
+export { match } from "./src/control/match";
+export { div } from "./src/element";
+export { p } from "./src/element";
+export { t } from "./src/element";
+export { h1, h2, h3, h4, h5, h6 } from "./src/element";
+export { head } from "./src/element";
+export { a, AnchorContent } from "./src/element";
+export { link } from "./src/element";
+export { button } from "./src/element";
+export { checkbox, CheckboxArguments } from "./src/element";
+export { radioButton, RadioButtonArguments } from "./src/element";
+export { textInput } from "./src/element";
+export { numberInput, NumberInputArgs } from "./src/element";
+export { hr } from "./src/element";
+export { br } from "./src/element";
+export { IndexedItem } from "./src/element";
+export { form, FormTarget } from "./src/element";
 export { runApp } from "./src/run_app";
-export { label, LabelContent } from "./src/element/input/label";
-export { input } from "./src/element/input/input";
-export { frag } from "./src/element/frag";
+export { label, LabelContent } from "./src/element";
+export { input } from "./src/element";
+export { frag } from "./src/element";
 export { suspense } from "./src/control/suspense";
+export {
+  createComponent,
+  StatefulDomBuilder,
+  DomBuilder,
+} from "./src/component/component_factory";
+export { IComponentContext } from "./src/component/component_context";
