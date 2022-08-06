@@ -7,16 +7,9 @@ export const textInput = createComponent(
     ctx: IComponentContext,
     text: ILeafAtom<string>
   ): WElement<HTMLInputElement> => {
-    const element = new WElement(document.createElement("input")).setAttribute(
-      "type",
-      "text"
-    );
-
-    element.setEventHandler("input", () => text.set(element.unwrap().value));
-
-    ctx.runEffect((): void => {
-      element.unwrap().value = text.get();
-    });
+    const element = new WElement(document.createElement("input"))
+      .setAttribute("type", "text")
+      .bindProperty("value", text);
 
     return element;
   }

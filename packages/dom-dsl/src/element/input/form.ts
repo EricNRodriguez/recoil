@@ -11,5 +11,6 @@ export enum FormTarget {
 export const form = (
   ...content: MaybeNodeOrVNode[]
 ): WElement<HTMLFormElement> => {
-  return new WElement(document.createElement("form")).setChildren(...content);
+  return new WElement(document.createElement("form"))
+    .setChildren(...content);
 };
