@@ -14,7 +14,7 @@ export class GlobalEventCoordinator {
       // TODO(ericr): provide a way to detach the event handler. Not sure if this should be done here or in the dom wrapper
       // itself
       this.eventTargets.set(event, new Set());
-      document.addEventListener(event, this.handleEvent<K>);
+      document.addEventListener(event, this.executeHandlersBottomUp<K>);
     }
 
     this.eventTargets.get(event)!.add(node);
@@ -29,7 +29,7 @@ export class GlobalEventCoordinator {
   // TODO(ericr): test this properly.... read the mdn docs properly.... I hacked this together
   // without much thought. Subtle things like shadow dom boundaries, multiple events on the same node,
   // events on the document etc etc need to be handled.
-  private handleEvent = <K extends keyof HTMLElementEventMap>(event: HTMLElementEventMap[K]): void => {
+  private executeHandlersBottomUp = <K extends keyof HTMLElementEventMap>(event: HTMLElementEventMap[K]): void => {
     const path: EventTarget[] = event.composedPath();
     let curNode: number = 0;
 
