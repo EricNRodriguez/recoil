@@ -2,7 +2,6 @@ import {Consumer, notNullOrUndefined} from "../../util";
 import {WNode} from "./node";
 
 export class GlobalEventCoordinator {
-  private readonly registeredEvents: Set<string> = new Set();
   private readonly eventTargets: Map<keyof HTMLElementEventMap, Set<WNode<Node>>> = new Map();
   private readonly targetHandlers: WeakMap<Node, Consumer<any>[]> = new WeakMap();
 
@@ -11,10 +10,10 @@ export class GlobalEventCoordinator {
   // effects if it can propagate past shadow dom boundaries. We shouldnt bother optimizing handling for this case,
   // etc etc. Read into it. As for now I treat every event as composable, which is wrong.
   public attachEventHandler<K extends keyof HTMLElementEventMap>(event: K, node: WNode<Node>, handler: Consumer<HTMLElementEventMap[K]>): void {
-    if (!this.registeredEvents.has(event)) {
+    if (!this.eventTargets.has(event)) {
       // TODO(ericr): provide a way to detach the event handler. Not sure if this should be done here or in the dom wrapper
       // itself
-      this.registeredEvents.add(event);
+      this.eventTargets.set(event, new Set());
       document.addEventListener(event, this.handleEvent<K>);
     }
 
@@ -39,7 +38,7 @@ export class GlobalEventCoordinator {
     Object.defineProperty(event, "currentTarget", {get: () => path[curNode]});
 
     // bubble bottom-up
-    for (; curNode < path.length; ++curNode) {
+    for (; curNode < path.length && !event.cancelBubble; ++curNode) {
       const node = path[curNode] as Node;
       this.targetHandlers.get(node)?.forEach((h) => h(event));
     }
