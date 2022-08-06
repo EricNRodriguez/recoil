@@ -20,29 +20,17 @@ export const checkbox = createComponent(
     ctx.runEffect((): void => {
       const isChecked: boolean | null = args.isChecked.get();
 
-      // changes triggered inside an event handler will be reverted
-      // if preventDefault is called
-      setTimeout(() => {
-        checkboxElement.unwrap().checked = isChecked === true;
-        checkboxElement.unwrap().indeterminate = isChecked === null;
-      }, 0);
+      checkboxElement.unwrap().checked = isChecked === true;
+      checkboxElement.unwrap().indeterminate = isChecked === null;
     });
 
     if (args.isEnabled !== undefined) {
       // binding effect for enabled attribute
       ctx.runEffect((): void => {
         const isEnabled: boolean = args.isEnabled!.get();
-
-        // changes triggered inside an event handler will be reverted
-        // if preventDefault is called
-        setTimeout(() => {
-          checkboxElement.unwrap().disabled = !isEnabled;
-        }, 0);
+        checkboxElement.unwrap().disabled = !isEnabled;
       });
     }
-
-    // state change should be reactive
-    checkboxElement.unwrap().onclick = (e: Event) => e.preventDefault();
 
     return checkboxElement;
   }
