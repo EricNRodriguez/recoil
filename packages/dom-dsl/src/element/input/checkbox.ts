@@ -20,3 +20,4 @@ export const checkbox = createComponent(
       .bindProperty("disabled", (() => notNullOrUndefined(args.isEnabled) ? () => !args.isEnabled!.get() : () => false)());
   }
 );
+
