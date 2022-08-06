@@ -33,7 +33,9 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
         (this.unwrap() as any)[prop] = (value as IAtom<T>).get();
       });
     } else {
-      (this.unwrap() as any)[prop] = (value as Supplier<T>)();
+      this.registerEffect((): void => {
+        (this.unwrap() as any)[prop] = (value as Supplier<T>)();
+      });
     }
     return this as unknown as B;
   }
