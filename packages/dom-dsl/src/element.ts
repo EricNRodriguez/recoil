@@ -2,7 +2,7 @@ import { createElement, createFragment, WElement, WNode } from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom, ILeafAtom } from "../../atom";
 import { createComponent, IComponentContext } from "../index";
-import { clamp, notNullOrUndefined, Supplier } from "../../util";
+import {clamp, Consumer, notNullOrUndefined, Supplier} from "../../util";
 
 export type ButtonContent = WNode<Text> | string;
 
@@ -66,7 +66,8 @@ export const label = (content: LabelContent): WElement<HTMLLabelElement> => {
 export type NumberInputArgs = {
   max?: number;
   min?: number;
-  num: ILeafAtom<number>;
+  num: IAtom<number>;
+  onInput: Consumer<number>;
 };
 
 export const numberInput = createComponent(
@@ -107,7 +108,7 @@ export const numberInput = createComponent(
         inputElement.unwrap().valueAsNumber = clampedValue;
       }
 
-      args.num.set(clampedValue);
+      args.onInput(clampedValue);
     };
     inputElement.setEventHandler("click", onInput);
 
@@ -138,16 +139,19 @@ export const radioButton = createComponent(
 export const textInput = createComponent(
   (
     ctx: IComponentContext,
-    text: ILeafAtom<string>
+    text: IAtom<string>,
+    onInput: Consumer<string>,
   ): WElement<HTMLInputElement> => {
-    return createElement(
+    const elem: WElement<HTMLInputElement> = createElement(
       "input",
       {
         type: "text",
         value: text,
       },
       []
-    );
+    ).setEventHandler("input", () => onInput(elem.unwrap().value));
+
+    return elem;
   }
 );
 
