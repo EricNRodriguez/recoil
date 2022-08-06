@@ -2,19 +2,23 @@ import { WElement } from "./element";
 import { IAtom, isAtom } from "../../atom";
 import { Supplier } from "../../util";
 import { WNode } from "./node";
-import {GlobalEventCoordinator} from "./event";
+import { GlobalEventCoordinator } from "./event";
 
 type Props = Record<string, any | IAtom<any> | Supplier<any>>;
 type Children = WNode<Node>[];
 
-const globalEventCoordinator: GlobalEventCoordinator = new GlobalEventCoordinator();
+const globalEventCoordinator: GlobalEventCoordinator =
+  new GlobalEventCoordinator();
 
 export const createElement = <K extends keyof HTMLElementTagNameMap>(
   tag: K | HTMLElementTagNameMap[K],
   props: Props,
   children: Children
 ): WElement<HTMLElementTagNameMap[K]> => {
-  const node = new WElement(tag instanceof HTMLElement ? tag : document.createElement(tag), globalEventCoordinator);
+  const node = new WElement(
+    tag instanceof HTMLElement ? tag : document.createElement(tag),
+    globalEventCoordinator
+  );
 
   node.setChildren(...children);
 

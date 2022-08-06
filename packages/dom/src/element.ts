@@ -3,7 +3,7 @@ import { BaseWNode, BindedValue, WNode } from "./node";
 import { BiFunction, Method } from "../../util/src/function.interface";
 import { IAtom, isAtom, runEffect } from "../../atom";
 import { t } from "../../dom-dsl";
-import {GlobalEventCoordinator} from "./event";
+import { GlobalEventCoordinator } from "./event";
 export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
@@ -43,15 +43,6 @@ export abstract class BaseWElement<
   ): B {
     this.eventCoordinator.attachEventHandler(type, this, listener);
     // this.unwrap().addEventListener(type, listener);
-    return this as unknown as B;
-  }
-
-  public removeEventHandler<K extends keyof HTMLElementEventMap>(
-    type: K,
-    listener: Method<HTMLElement, HTMLElementEventMap[K], void>
-  ): B {
-    throw new Error("unimplemented - this should not be on main");
-    // this.unwrap().removeEventListener(type, listener);
     return this as unknown as B;
   }
 
