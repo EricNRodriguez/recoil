@@ -1,6 +1,7 @@
 import { createComponent, IComponentContext } from "../../../../dom-component";
 import { WElement } from "../../../../dom";
-import { IAtom } from "../../../../atom";
+import {deriveState, IAtom} from "../../../../atom";
+import {notNullOrUndefined} from "../../../../util";
 
 export type CheckboxArguments = {
   isChecked: IAtom<boolean | null>;
@@ -12,26 +13,10 @@ export const checkbox = createComponent(
     ctx: IComponentContext,
     args: CheckboxArguments
   ): WElement<HTMLInputElement> => {
-    const checkboxElement: WElement<HTMLInputElement> = new WElement(
-      document.createElement("input")
-    ).setAttribute("type", "checkbox");
-
-    // binding effect for checked attribute
-    ctx.runEffect((): void => {
-      const isChecked: boolean | null = args.isChecked.get();
-
-      checkboxElement.unwrap().checked = isChecked === true;
-      checkboxElement.unwrap().indeterminate = isChecked === null;
-    });
-
-    if (args.isEnabled !== undefined) {
-      // binding effect for enabled attribute
-      ctx.runEffect((): void => {
-        const isEnabled: boolean = args.isEnabled!.get();
-        checkboxElement.unwrap().disabled = !isEnabled;
-      });
-    }
-
-    return checkboxElement;
+    return new WElement(document.createElement("input"))
+      .setAttribute("type", "checkbox")
+      .setProperty("checked", deriveState(() => args.isChecked.get() === true))
+      .setProperty("indeterminate", deriveState(() => args.isChecked.get() === null))
+      .setProperty("disabled", notNullOrUndefined(args.isEnabled) ?  deriveState(() => !args.isEnabled?.get()) : true);
   }
 );
