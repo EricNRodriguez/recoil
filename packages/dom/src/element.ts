@@ -1,6 +1,7 @@
-import { BiConsumer, Consumer } from "../../util";
-import { BaseWNode, WNode } from "./node";
+import {BiConsumer, Consumer, Runnable} from "../../util";
+import {BaseWNode, RawOrTracked, WNode} from "./node";
 import { BiFunction, Method } from "../../util/src/function.interface";
+import {IAtom, isAtom, runEffect} from "../../atom";
 export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
@@ -11,8 +12,12 @@ export abstract class BaseWElement<
     super(element);
   }
 
-  public setAttribute(attribute: string, value: string): B {
-    this.unwrap().setAttribute(attribute, value);
+  public setAttribute(attribute: string, value: RawOrTracked<string>): B {
+    if (isAtom(value)) {
+      this.registerEffect(() => this.unwrap().setAttribute(attribute, (value as IAtom<string>).get()));
+    } else {
+      this.unwrap().setAttribute(attribute, value as string);
+    }
     return this as unknown as B;
   }
 
