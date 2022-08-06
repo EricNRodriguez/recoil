@@ -3,7 +3,7 @@ import { IndexedItem } from "../element";
 import { getItem, getKey } from "../element";
 import { MaybeNodeOrVNode } from "../element";
 import { WNode } from "../../../dom";
-import { IComponentContext, createComponent } from "../../../dom-component";
+import { IComponentContext, createComponent } from "../../index";
 import { Supplier, Function, notNullOrUndefined } from "../../../util";
 import { wrapInVNode } from "../../../dom/src/node";
 

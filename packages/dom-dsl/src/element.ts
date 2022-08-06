@@ -1,7 +1,7 @@
 import { createElement, createFragment, WElement, WNode } from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom, ILeafAtom } from "../../atom";
-import { createComponent, IComponentContext } from "../../dom-component";
+import { createComponent, IComponentContext } from "../index";
 import { clamp, notNullOrUndefined, Supplier } from "../../util";
 
 export type ButtonContent = WNode<Text> | string;

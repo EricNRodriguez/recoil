@@ -22,3 +22,9 @@ export { label, LabelContent } from "./src/element";
 export { input } from "./src/element";
 export { frag } from "./src/element";
 export { suspense } from "./src/control/suspense";
+export {
+  createComponent,
+  StatefulDomBuilder,
+  DomBuilder,
+} from "./src/component/component_factory";
+export { IComponentContext } from "./src/component/component_context";

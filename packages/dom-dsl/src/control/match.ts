@@ -1,4 +1,4 @@
-import { createComponent, IComponentContext } from "../../../dom-component";
+import { createComponent, IComponentContext } from "../../index";
 import { WNode } from "../../../dom";
 import { IAtom } from "../../../atom";
 import { frag } from "../element";
