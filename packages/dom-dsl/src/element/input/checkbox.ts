@@ -17,6 +17,6 @@ export const checkbox = createComponent(
       .setAttribute("type", "checkbox")
       .setProperty("checked", deriveState(() => args.isChecked.get() === true))
       .setProperty("indeterminate", deriveState(() => args.isChecked.get() === null))
-      .setProperty("disabled", notNullOrUndefined(args.isEnabled) ?  deriveState(() => !args.isEnabled?.get()) : true);
+      .setProperty("disabled", notNullOrUndefined(args.isEnabled) ?  deriveState(() => !args.isEnabled?.get()) : false);
   }
 );
