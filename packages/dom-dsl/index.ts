@@ -28,3 +28,4 @@ export { label, LabelContent } from "./src/element";
 export { input } from "./src/element";
 export { frag } from "./src/element";
 export { suspense } from "./src/control/suspense";
+export { InjectionKey} from "./src/component/inject";
