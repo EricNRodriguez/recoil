@@ -1,7 +1,10 @@
 import { Consumer, notNullOrUndefined } from "../../util";
 import { WNode } from "./node";
 
-type EventHandlerRef = {event: keyof HTMLElementEventMap, handler: Consumer<any>};
+type EventHandlerRef = {
+  event: keyof HTMLElementEventMap;
+  handler: Consumer<any>;
+};
 
 export class GlobalEventCoordinator {
   private readonly eventTargets: Map<string, WeakSet<EventTarget>> = new Map();
@@ -36,12 +39,12 @@ export class GlobalEventCoordinator {
 
   public detachEventHandlers<K extends keyof HTMLElementEventMap>(
     event: K,
-    target: EventTarget,
+    target: EventTarget
   ): void {
     this.eventTargets.get(event)?.delete(target);
     this.targetHandlers.set(
       target,
-      this.targetHandlers.get(target)?.filter(r => r.event === event) ?? [],
+      this.targetHandlers.get(target)?.filter((r) => r.event === event) ?? []
     );
   }
 
@@ -52,7 +55,6 @@ export class GlobalEventCoordinator {
     if (!event.bubbles) {
       throw new Error("delegated events should only be those that bubble");
     }
-
 
     let curTarget: EventTarget | null = event.target;
 
@@ -65,11 +67,14 @@ export class GlobalEventCoordinator {
       if (this.eventTargets.get(event.type)?.has(curTarget!) ?? false) {
         this.targetHandlers.get(curTarget!)?.forEach((h) => {
           h.event === event.type && h.handler(event);
-        })
+        });
       }
 
       // https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/host
-      if (notNullOrUndefined((curTarget as any)?.host) && (curTarget as any).host instanceof Node) {
+      if (
+        notNullOrUndefined((curTarget as any)?.host) &&
+        (curTarget as any).host instanceof Node
+      ) {
         // https://developer.mozilla.org/en-US/docs/Web/API/Event/composed
         curTarget = event.composed ? (curTarget as any).host : null;
         // since we have crossed a shadow dom boundary, we need to reset target to the shadow dom host node

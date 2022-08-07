@@ -41,8 +41,7 @@ export abstract class BaseWElement<
     type: K,
     listener: Method<HTMLElement, HTMLElementEventMap[K], void>
   ): B {
-    this.eventCoordinator.attachEventHandler(type, this, listener);
-    // this.unwrap().addEventListener(type, listener);
+    this.eventCoordinator.attachEventHandler(type, this.unwrap(), listener);
     return this as unknown as B;
   }
 
