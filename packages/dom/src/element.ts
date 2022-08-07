@@ -36,12 +36,16 @@ export abstract class BaseWElement<
     return this as unknown as B;
   }
 
-  // we don't want to register events, rather, we should be delegating.
   public setEventHandler<K extends keyof HTMLElementEventMap>(
     type: K,
-    listener: Method<HTMLElement, HTMLElementEventMap[K], void>
+    listener: Method<HTMLElement, HTMLElementEventMap[K], void>,
+    delegate: boolean = true
   ): B {
-    this.eventCoordinator.attachEventHandler(type, this.unwrap(), listener);
+    if (delegate) {
+      this.eventCoordinator.attachEventHandler(type, this.unwrap(), listener);
+    } else {
+      this.unwrap().addEventListener(type, listener);
+    }
     return this as unknown as B;
   }
 
