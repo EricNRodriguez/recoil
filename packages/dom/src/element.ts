@@ -1,8 +1,7 @@
-import { BiConsumer, Consumer, Runnable, Supplier } from "../../util";
+import { Supplier } from "../../util";
 import { BaseWNode, BindedValue, WNode } from "./node";
 import { BiFunction, Method } from "../../util/src/function.interface";
 import { IAtom, isAtom, runEffect } from "../../atom";
-import { t } from "../../dom-dsl";
 import { GlobalEventCoordinator } from "./event";
 export type ElementStyle = { [key: string]: string };
 
