@@ -1,7 +1,7 @@
 import { WElement, WNode } from "../../../dom";
 import { ISideEffectRef, runEffect } from "../../../atom";
 import { Consumer, Runnable } from "../../../util";
-import {InjectionKey, ScopedInjectionSymbolTable} from "./inject";
+import {InjectionKey, ScopedInjectionRegistry} from "./inject";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;
@@ -19,7 +19,6 @@ export interface IComponentContext {
   inject<T>(key: InjectionKey<T>): T | undefined;
 }
 
-
 export class ComponentContext implements IComponentContext {
   private static readonly registeredFinalizers: WeakMap<Object, Runnable[]> =
     new WeakMap<Object>();
@@ -27,10 +26,10 @@ export class ComponentContext implements IComponentContext {
     new FinalizationRegistry<Object>((id: Object) => {
       this.registeredFinalizers.get(id)?.forEach((fn) => fn());
     });
-  private readonly injectionRegistry: ScopedInjectionSymbolTable;
+  private readonly injectionRegistry: ScopedInjectionRegistry;
   private readonly deferredFunctions: Consumer<WNode<Node>>[] = [];
 
-  public constructor(injectionRegistry: ScopedInjectionSymbolTable) {
+  public constructor(injectionRegistry: ScopedInjectionRegistry) {
     this.injectionRegistry = injectionRegistry;
   }
 

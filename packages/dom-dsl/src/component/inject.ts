@@ -1,6 +1,6 @@
 export interface InjectionKey<T> extends Symbol {}
 
-export class ScopedInjectionSymbolTable {
+export class ScopedInjectionRegistry {
   private readonly symbols: Map<any, any>[] = [new Map()];
 
   public enterScope(): void {

@@ -1,6 +1,7 @@
 import { WElement, WNode } from "../../../dom";
-import { ComponentContext } from "./component_context";
-import {ScopedInjectionSymbolTable} from "./inject";
+import {ComponentContext, IComponentContext} from "./component_context";
+import {ScopedInjectionRegistry} from "./inject";
+import {Consumer, Function} from "../../../util";
 
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
@@ -15,20 +16,25 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-const globalInjectionScope: ScopedInjectionSymbolTable = new ScopedInjectionSymbolTable();
+const globalInjectionScope: ScopedInjectionRegistry = new ScopedInjectionRegistry();
+
+const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
+    try {
+      globalInjectionScope.enterScope();
+      return fn(new ComponentContext(globalInjectionScope));
+    } finally {
+      globalInjectionScope.exitScope();
+    }
+};
 
 export const createComponent = <T extends WNode<Node>>(
   buildDomTree: StatefulDomBuilder<T>
 ): DomBuilder<T> => {
   return (...args: any[]): T => {
-    try {
-      globalInjectionScope.enterScope();
-      const ctx: ComponentContext = new ComponentContext(globalInjectionScope);
+    return executeWithContext<T>((ctx: ComponentContext): T => {
       const node: T = buildDomTree(ctx, ...args);
       ctx.applyDeferredFunctions(node);
       return node;
-    } finally {
-      globalInjectionScope.exitScope();
-    }
+    });
   };
 };
