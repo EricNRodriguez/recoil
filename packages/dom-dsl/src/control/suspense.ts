@@ -20,11 +20,11 @@ export const suspense: SuspenseSignature = createComponent(
     const anchor = frag();
 
     if (notNullOrUndefined(fallback)) {
-      anchor.setChildren(fallback);
+      anchor.setChildren([fallback]);
     }
 
     child.then((value: WNode<Node>): void => {
-      anchor.setChildren(value);
+      anchor.setChildren([value]);
     });
 
     return anchor;

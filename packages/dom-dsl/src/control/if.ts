@@ -62,10 +62,10 @@ export const ifElse = createComponent(
       currentRenderedSubtree = cache.get(state);
 
       anchor.setChildren(
-        currentRenderedSubtree === nullOrUndefinedNode
+        [currentRenderedSubtree === nullOrUndefinedNode
           ? null
           : currentRenderedSubtree
-      );
+      ]);
     });
 
     return anchor;
@@ -81,7 +81,7 @@ const staticIfElse = (
 
   const content: MaybeNodeOrVNode = condition ? ifTrue() : ifFalse();
   if (notNullOrUndefined(content)) {
-    anchor.setChildren(condition ? ifTrue() : ifFalse());
+    anchor.setChildren([condition ? ifTrue() : ifFalse()]);
   }
   return anchor;
 };

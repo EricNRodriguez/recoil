@@ -32,7 +32,7 @@ export const foreach = createComponent(
         .map(wrapInVNode)
         .filter(notNullOrUndefined) as WNode<Node>[];
 
-      anchor.setChildren(...newChildren);
+      anchor.setChildren(newChildren);
 
       currentItemIndex = newItemNodesIndex;
     });

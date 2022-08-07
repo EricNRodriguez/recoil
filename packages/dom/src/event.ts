@@ -1,5 +1,4 @@
 import { Consumer, notNullOrUndefined } from "../../util";
-import { WNode } from "./node";
 
 type EventHandlerRef = {
   event: keyof HTMLElementEventMap;
