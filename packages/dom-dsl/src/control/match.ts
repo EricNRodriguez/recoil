@@ -24,7 +24,7 @@ export const match = createComponent(
 
       prevState = state.get();
       const content = matchCache.get(prevState);
-      anchor.setChildren(content);
+      anchor.setChildren([content]);
     });
 
     return anchor;

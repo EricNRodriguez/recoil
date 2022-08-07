@@ -1,11 +1,6 @@
-import {
-  notNullOrUndefined,
-  nullOrUndefined,
-  Runnable,
-  Supplier,
-} from "../../util";
+import {notNullOrUndefined, nullOrUndefined, Runnable, Supplier} from "../../util";
 import { reconcileNodeArrays } from "./reconcile";
-import { IAtom, isAtom, runEffect } from "../../atom";
+import {IAtom, isAtom, runEffect} from "../../atom";
 
 export type BindedValue<T> = Supplier<T> | IAtom<T>;
 
@@ -56,7 +51,9 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
     for (let wNode of this.getChildren()) {
       if (wNode.isFragment()) {
-        unpackedNodes.push(...wNode.getUnpackedChildren());
+        for (let child of wNode.getUnpackedChildren()) {
+          unpackedNodes.push(child);
+        }
       } else {
         unpackedNodes.push(wNode.unwrap());
       }
@@ -70,11 +67,11 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   }
 
   private rebindChildren(): void {
-    this.setChildren(...this.children);
+    this.setChildren(this.children);
   }
 
   public setChildren(
-    ...children: (WNode<Node> | Node | null | undefined)[]
+    children: (WNode<Node> | Node | null | undefined)[]
   ): B {
     const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)

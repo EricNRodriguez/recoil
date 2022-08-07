@@ -1,8 +1,7 @@
-import { BiConsumer, Consumer, Runnable, Supplier } from "../../util";
+import { Supplier } from "../../util";
 import { BaseWNode, BindedValue, WNode } from "./node";
 import { BiFunction, Method } from "../../util/src/function.interface";
 import { IAtom, isAtom, runEffect } from "../../atom";
-import { t } from "../../dom-dsl";
 import { GlobalEventCoordinator } from "./event";
 export type ElementStyle = { [key: string]: string };
 
@@ -39,7 +38,7 @@ export abstract class BaseWElement<
   public setEventHandler<K extends keyof HTMLElementEventMap>(
     type: K,
     listener: Method<HTMLElement, HTMLElementEventMap[K], void>,
-    delegate: boolean = true
+    delegate: boolean = false
   ): B {
     if (delegate) {
       this.eventCoordinator.attachEventHandler(type, this.unwrap(), listener);

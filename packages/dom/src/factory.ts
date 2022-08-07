@@ -20,7 +20,7 @@ export const createElement = <K extends keyof HTMLElementTagNameMap>(
     globalEventCoordinator
   );
 
-  node.setChildren(...children);
+  node.setChildren(children);
 
   Object.entries(props).forEach(([key, val]) => {
     if (typeof val === "string") {
@@ -36,5 +36,5 @@ export const createElement = <K extends keyof HTMLElementTagNameMap>(
 };
 
 export const createFragment = (children: Children): WNode<DocumentFragment> => {
-  return new WNode(document.createDocumentFragment()).setChildren(...children);
+  return new WNode(document.createDocumentFragment()).setChildren(children);
 };

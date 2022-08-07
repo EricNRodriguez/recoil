@@ -1,11 +1,6 @@
 import {
-  firstNonEqualIndex,
-  notNullOrUndefined,
   nullOrUndefined,
-  removeNullAndUndefinedItems,
-  Runnable,
 } from "../../util";
-import { maybeToObservable } from "typescript-monads";
 
 export type ReconcileNodeArraysArgs = {
   parent: Node;
@@ -47,7 +42,9 @@ export const reconcileNodeArrays = ({
       nextNodeAnchor = currentNodes[currentNodes.length - 1]?.nextSibling;
     }
 
-    frag.append(...newNodes.slice(newLeft, newRight));
+    for (let i = newLeft; i < newRight; ++i) {
+      frag.append(newNodes[i]);
+    }
     newLeft = newRight;
 
     parent.insertBefore(frag, nextNodeAnchor);

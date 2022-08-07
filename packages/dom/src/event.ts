@@ -1,5 +1,4 @@
 import { Consumer, notNullOrUndefined } from "../../util";
-import { WNode } from "./node";
 
 type EventHandlerRef = {
   event: keyof HTMLElementEventMap;
@@ -11,10 +10,9 @@ export class GlobalEventCoordinator {
   private readonly targetHandlers: WeakMap<EventTarget, EventHandlerRef[]> =
     new WeakMap();
 
-  // the idea here is to decide if we should delegate or if we should attach directly
-  // the answer comes from the event type itself, which can either be "composed" or not - this directly
-  // effects if it can propagate past shadow dom boundaries. We shouldnt bother optimizing handling for this case,
-  // etc etc. Read into it. As for now I treat every event as composable, which is wrong.
+  // registers a delegated event handler on the target. Bubbling is
+  // simulated, with support for events dispatched by nodes within a shadow
+  // dom.
   public attachEventHandler<K extends keyof HTMLElementEventMap>(
     event: K,
     target: EventTarget,
@@ -49,7 +47,7 @@ export class GlobalEventCoordinator {
     );
   }
 
-  // simulates the event bubbling phase
+  // simulates event bubbling
   private executeHandlersBottomUp = <K extends keyof HTMLElementEventMap>(
     event: HTMLElementEventMap[K]
   ): void => {
