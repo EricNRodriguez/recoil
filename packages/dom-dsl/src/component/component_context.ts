@@ -1,6 +1,7 @@
 import { WElement, WNode } from "../../../dom";
 import { ISideEffectRef, runEffect } from "../../../atom";
 import { Consumer, Runnable } from "../../../util";
+import {InjectionKey, ScopedInjectionSymbolTable} from "./inject";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;
@@ -12,7 +13,12 @@ export interface IComponentContext {
   onUnmount(sideEffect: Runnable): void;
 
   onCleanup(finalizer: Runnable): void;
+
+  provide<T>(key: InjectionKey<T>, value: T): void;
+
+  inject<T>(key: InjectionKey<T>): T | undefined;
 }
+
 
 export class ComponentContext implements IComponentContext {
   private static readonly registeredFinalizers: WeakMap<Object, Runnable[]> =
@@ -21,8 +27,12 @@ export class ComponentContext implements IComponentContext {
     new FinalizationRegistry<Object>((id: Object) => {
       this.registeredFinalizers.get(id)?.forEach((fn) => fn());
     });
-
+  private readonly injectionRegistry: ScopedInjectionSymbolTable;
   private readonly deferredFunctions: Consumer<WNode<Node>>[] = [];
+
+  public constructor(injectionRegistry: ScopedInjectionSymbolTable) {
+    this.injectionRegistry = injectionRegistry;
+  }
 
   public onInitialMount(sideEffect: Runnable): void {
     let called: boolean = false;
@@ -70,5 +80,13 @@ export class ComponentContext implements IComponentContext {
 
   public applyDeferredFunctions(element: WNode<Node>): void {
     this.deferredFunctions.forEach((fn) => fn(element));
+  }
+
+  public provide<T>(key: InjectionKey<T>, value: T): void {
+    this.injectionRegistry.set(key, value);
+  }
+
+  public inject<T>(key: InjectionKey<T>): T | undefined {
+    return this.injectionRegistry.get(key);
   }
 }
