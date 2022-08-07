@@ -1,7 +1,10 @@
 import { Consumer, notNullOrUndefined } from "../../util";
 import { WNode } from "./node";
 
-type EventHandlerRef = {event: keyof HTMLElementEventMap, handler: Consumer<any>};
+type EventHandlerRef = {
+  event: keyof HTMLElementEventMap;
+  handler: Consumer<any>;
+};
 
 export class GlobalEventCoordinator {
   private readonly eventTargets: Map<string, WeakSet<EventTarget>> = new Map();
@@ -15,8 +18,9 @@ export class GlobalEventCoordinator {
   public attachEventHandler<K extends keyof HTMLElementEventMap>(
     event: K,
     target: EventTarget,
-    handler: Consumer<HTMLElementEventMap[K]>
+    handler: Consumer<HTMLElementEventMap[K]>,
   ): void {
+
     if (!this.eventTargets.has(event)) {
       this.eventTargets.set(event, new WeakSet());
       document.addEventListener(event, this.executeHandlersBottomUp<K>);
@@ -36,12 +40,12 @@ export class GlobalEventCoordinator {
 
   public detachEventHandlers<K extends keyof HTMLElementEventMap>(
     event: K,
-    target: EventTarget,
+    target: EventTarget
   ): void {
     this.eventTargets.get(event)?.delete(target);
     this.targetHandlers.set(
       target,
-      this.targetHandlers.get(target)?.filter(r => r.event === event) ?? [],
+      this.targetHandlers.get(target)?.filter((r) => r.event === event) ?? []
     );
   }
 
@@ -53,10 +57,10 @@ export class GlobalEventCoordinator {
       throw new Error("delegated events should only be those that bubble");
     }
 
+    let curTarget: EventTarget | null = event.composedPath()[0];
+    let target: EventTarget | null = curTarget;
 
-    let curTarget: EventTarget | null = event.target;
-
-    Object.defineProperty(event, "target", { value: curTarget });
+    Object.defineProperty(event, "target", { get: () => target });
     Object.defineProperty(event, "currentTarget", { get: () => curTarget });
 
     // bubble bottom-up - we are traversing the ll manually due to the composedPath
@@ -73,7 +77,7 @@ export class GlobalEventCoordinator {
         // https://developer.mozilla.org/en-US/docs/Web/API/Event/composed
         curTarget = event.composed ? (curTarget as any).host : null;
         // since we have crossed a shadow dom boundary, we need to reset target to the shadow dom host node
-        Object.defineProperty(event, "target", { value: curTarget });
+        target = curTarget;
       } else {
         curTarget = (curTarget as any).parentNode;
       }
