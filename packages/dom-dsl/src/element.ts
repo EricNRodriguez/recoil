@@ -2,7 +2,7 @@ import { createElement, createFragment, WElement, WNode } from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom, ILeafAtom } from "../../atom";
 import { createComponent, IComponentContext } from "../index";
-import {clamp, Consumer, notNullOrUndefined, Supplier} from "../../util";
+import { clamp, Consumer, notNullOrUndefined, Supplier } from "../../util";
 
 export type ButtonContent = WNode<Text> | string;
 
@@ -140,7 +140,7 @@ export const textInput = createComponent(
   (
     ctx: IComponentContext,
     text: IAtom<string>,
-    onInput: Consumer<string>,
+    onInput: Consumer<string>
   ): WElement<HTMLInputElement> => {
     const elem: WElement<HTMLInputElement> = createElement(
       "input",
