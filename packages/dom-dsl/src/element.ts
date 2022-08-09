@@ -97,6 +97,53 @@ export const main = createDslElementBuilder("main");
 export const nav = createDslElementBuilder("nav");
 export const section = createDslElementBuilder("section");
 
+// text content
+export const blockquote = createDslElementBuilder("blockquote");
+export const dd = createDslElementBuilder("dd");
+export const div = createDslElementBuilder("div");
+export const dl = createDslElementBuilder("dl");
+export const dt = createDslElementBuilder("dt");
+export const figcaption = createDslElementBuilder("figcaption");
+export const figure = createDslElementBuilder("figure");
+export const hr = createDslElementBuilder("hr");
+export const li = createDslElementBuilder("li");
+export const menu = createDslElementBuilder("menu");
+export const ol = createDslElementBuilder("ol");
+export const p = createDslElementBuilder("p");
+export const pre = createDslElementBuilder("pre");
+export const ul = createDslElementBuilder("ul");
+
+// inline text semantics
+export const a = createDslElementBuilder("a");
+export const abbr = createDslElementBuilder("abbr");
+export const b = createDslElementBuilder("b");
+export const bdi = createDslElementBuilder("bdi");
+export const bdo = createDslElementBuilder("bdo");
+export const br = createDslElementBuilder("br");
+export const cite = createDslElementBuilder("cite");
+export const code = createDslElementBuilder("code");
+export const data = createDslElementBuilder("data");
+export const dfn = createDslElementBuilder("dfn");
+export const em = createDslElementBuilder("em");
+export const i = createDslElementBuilder("i");
+export const kbd = createDslElementBuilder("kbd");
+export const mark = createDslElementBuilder("mark");
+export const q = createDslElementBuilder("q");
+export const rp = createDslElementBuilder("rp");
+export const rt = createDslElementBuilder("rt");
+export const ruby = createDslElementBuilder("ruby");
+export const s = createDslElementBuilder("s");
+export const samp = createDslElementBuilder("samp");
+export const small = createDslElementBuilder("small");
+export const span = createDslElementBuilder("span");
+export const string = createDslElementBuilder("strong");
+export const sub = createDslElementBuilder("sub");
+export const sup = createDslElementBuilder("sup");
+export const time = createDslElementBuilder("time");
+export const mvar = createDslElementBuilder("var");
+export const wbr = createDslElementBuilder("wbr");
+
+
 // TODO: adapt everything below
 
 export type ButtonContent = WNode<Text> | string;
@@ -252,27 +299,10 @@ export const textInput = createComponent(
 
 export type AnchorContent = TextContent;
 
-export const a = (content: AnchorContent): WElement<HTMLAnchorElement> => {
-  return createElement("a", {}, [t(content)]);
-};
-
-export const br = (): WElement<HTMLBRElement> => {
-  return createElement("br", {}, []);
-};
-
-export type DivContent = WNode<Node> | string;
-
-export const div = (...children: DivContent[]): WElement<HTMLElement> => {
-  return createElement("div", {}, children.map(wrapTextInVNode));
-};
-
 export const frag = (...children: WNode<Node>[]): WNode<Node> => {
   return createFragment(children);
 };
 
-export const hr = (): WElement<HTMLHRElement> => {
-  return createElement("hr", {}, []);
-};
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
 
@@ -285,11 +315,6 @@ export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
 
 type ParagraphContent = WNode<Text> | string;
 
-export const p = (
-  children: ParagraphContent
-): WElement<HTMLParagraphElement> => {
-  return createElement("p", {}, [wrapTextInVNode(children)]);
-};
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 
