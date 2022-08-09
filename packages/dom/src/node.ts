@@ -1,6 +1,11 @@
-import {notNullOrUndefined, nullOrUndefined, Runnable, Supplier} from "../../util";
+import {
+  notNullOrUndefined,
+  nullOrUndefined,
+  Runnable,
+  Supplier,
+} from "../../util";
 import { reconcileNodeArrays } from "./reconcile";
-import {IAtom, isAtom, runEffect} from "../../atom";
+import { IAtom, isAtom, runEffect } from "../../atom";
 
 export type BindedValue<T> = Supplier<T> | IAtom<T>;
 
@@ -70,9 +75,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     this.setChildren(this.children);
   }
 
-  public setChildren(
-    children: (WNode<Node> | Node | null | undefined)[]
-  ): B {
+  public setChildren(children: (WNode<Node> | Node | null | undefined)[]): B {
     const newChildren: WNode<Node>[] = children
       .map(wrapInVNode)
       .filter(notNullOrUndefined) as WNode<Node>[];

@@ -1,8 +1,150 @@
 import { createElement, createFragment, WElement, WNode } from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
-import { IAtom, ILeafAtom } from "../../atom";
+import { IAtom } from "../../atom";
 import { createComponent, IComponentContext } from "../index";
-import { clamp, Consumer, notNullOrUndefined, Supplier } from "../../util";
+import {
+  clamp,
+  Consumer,
+  notNullOrUndefined,
+  nullOrUndefined,
+  Supplier,
+} from "../../util";
+
+export type Content = WNode<Node> | string;
+export type RawOrBindedText = IAtom<string> | Supplier<string> | string;
+export type Attributes = { [key: string]: RawOrBindedText };
+
+// prettier-ignore
+export type AttributesOnlyElementBuilder<K extends keyof HTMLElementTagNameMap> =
+  (attributes: Attributes) => WElement<HTMLElementTagNameMap[K]>;
+
+// prettier-ignore
+export type ChildrenOnlyElementBuilder<K extends keyof HTMLElementTagNameMap> =
+  (...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
+
+// prettier-ignore
+export type AttributeAndChildrenElementBuilder<K extends keyof HTMLElementTagNameMap> =
+  (attributes: Attributes, ...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
+
+// prettier-ignore
+export type EmptyElementBuilder<K extends keyof HTMLElementTagNameMap> =
+  () => WElement<HTMLElementTagNameMap[K]>;
+
+export type ElementBuilder<K extends keyof HTMLElementTagNameMap> =
+  AttributesOnlyElementBuilder<K> &
+    ChildrenOnlyElementBuilder<K> &
+    AttributeAndChildrenElementBuilder<K> &
+    EmptyElementBuilder<K>;
+
+// prettier-ignore
+const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
+  tag: K
+): ElementBuilder<K> => {
+  return (
+    firstArg?: Content | Attributes,
+    ...remainingChildren: Content[]
+  ): WElement<HTMLElementTagNameMap[K]> => {
+    const adaptedFirstArg = wrapTextInVNode(firstArg);
+    const adaptedRemainingChildren = remainingChildren.map(wrapTextInVNode);
+
+    if (nullOrUndefined(adaptedFirstArg)) {
+      return createElement(
+        tag,
+        {},
+        [],
+      );
+    } else if (adaptedFirstArg instanceof WNode) {
+      return createElement(
+        tag,
+        {},
+        [adaptedFirstArg, ...adaptedRemainingChildren],
+      );
+    } else {
+      return createElement(
+        tag,
+        adaptedFirstArg as Attributes,
+        adaptedRemainingChildren
+      );
+    }
+  };
+};
+
+// main root
+export const html = createDslElementBuilder("html");
+
+// document metadata
+export const base = createDslElementBuilder("base");
+export const head = createDslElementBuilder("head");
+export const link = createDslElementBuilder("link");
+export const meta = createDslElementBuilder("meta");
+export const style = createDslElementBuilder("style");
+export const title = createDslElementBuilder("title");
+
+// content sectioning
+export const body = createDslElementBuilder("body");
+export const address = createDslElementBuilder("address");
+export const article = createDslElementBuilder("article");
+export const aside = createDslElementBuilder("aside");
+export const footer = createDslElementBuilder("footer");
+export const header = createDslElementBuilder("header");
+export const h1 = createDslElementBuilder("h1");
+export const h2 = createDslElementBuilder("h2");
+export const h3 = createDslElementBuilder("h3");
+export const h4 = createDslElementBuilder("h4");
+export const h5 = createDslElementBuilder("h5");
+export const h6 = createDslElementBuilder("h6");
+export const main = createDslElementBuilder("main");
+export const nav = createDslElementBuilder("nav");
+export const section = createDslElementBuilder("section");
+
+// text content
+export const blockquote = createDslElementBuilder("blockquote");
+export const dd = createDslElementBuilder("dd");
+export const div = createDslElementBuilder("div");
+export const dl = createDslElementBuilder("dl");
+export const dt = createDslElementBuilder("dt");
+export const figcaption = createDslElementBuilder("figcaption");
+export const figure = createDslElementBuilder("figure");
+export const hr = createDslElementBuilder("hr");
+export const li = createDslElementBuilder("li");
+export const menu = createDslElementBuilder("menu");
+export const ol = createDslElementBuilder("ol");
+export const p = createDslElementBuilder("p");
+export const pre = createDslElementBuilder("pre");
+export const ul = createDslElementBuilder("ul");
+
+// inline text semantics
+export const a = createDslElementBuilder("a");
+export const abbr = createDslElementBuilder("abbr");
+export const b = createDslElementBuilder("b");
+export const bdi = createDslElementBuilder("bdi");
+export const bdo = createDslElementBuilder("bdo");
+export const br = createDslElementBuilder("br");
+export const cite = createDslElementBuilder("cite");
+export const code = createDslElementBuilder("code");
+export const data = createDslElementBuilder("data");
+export const dfn = createDslElementBuilder("dfn");
+export const em = createDslElementBuilder("em");
+export const i = createDslElementBuilder("i");
+export const kbd = createDslElementBuilder("kbd");
+export const mark = createDslElementBuilder("mark");
+export const q = createDslElementBuilder("q");
+export const rp = createDslElementBuilder("rp");
+export const rt = createDslElementBuilder("rt");
+export const ruby = createDslElementBuilder("ruby");
+export const s = createDslElementBuilder("s");
+export const samp = createDslElementBuilder("samp");
+export const small = createDslElementBuilder("small");
+export const span = createDslElementBuilder("span");
+export const string = createDslElementBuilder("strong");
+export const sub = createDslElementBuilder("sub");
+export const sup = createDslElementBuilder("sup");
+export const time = createDslElementBuilder("time");
+export const mvar = createDslElementBuilder("var");
+export const wbr = createDslElementBuilder("wbr");
+
+
+// TODO: adapt everything below
 
 export type ButtonContent = WNode<Text> | string;
 
@@ -157,54 +299,10 @@ export const textInput = createComponent(
 
 export type AnchorContent = TextContent;
 
-export const a = (content: AnchorContent): WElement<HTMLAnchorElement> => {
-  return createElement("a", {}, [t(content)]);
-};
-
-export const br = (): WElement<HTMLBRElement> => {
-  return createElement("br", {}, []);
-};
-
-export type DivContent = WNode<Node> | string;
-
-export const div = (...children: DivContent[]): WElement<HTMLElement> => {
-  return createElement("div", {}, children.map(wrapTextInVNode));
-};
-
 export const frag = (...children: WNode<Node>[]): WNode<Node> => {
   return createFragment(children);
 };
 
-export const head = (...content: WNode<Node>[]): WElement<HTMLHeadElement> => {
-  return createElement("head", {}, content);
-};
-
-export type HeaderContent = WNode<Node> | string;
-
-interface HeaderBuilder {
-  (content: HeaderContent): WElement<HTMLHeadingElement>;
-}
-
-const buildHeaderDslHelper = (headerNumber: string): HeaderBuilder => {
-  return (content: HeaderContent): WElement<HTMLHeadingElement> => {
-    return createElement(
-      `h${headerNumber}` as keyof HTMLElementTagNameMap,
-      {},
-      [wrapTextInVNode(content)]
-    ) as WElement<HTMLHeadingElement>;
-  };
-};
-
-export const h1 = buildHeaderDslHelper("1");
-export const h2 = buildHeaderDslHelper("2");
-export const h3 = buildHeaderDslHelper("3");
-export const h4 = buildHeaderDslHelper("4");
-export const h5 = buildHeaderDslHelper("5");
-export const h6 = buildHeaderDslHelper("6");
-
-export const hr = (): WElement<HTMLHRElement> => {
-  return createElement("hr", {}, []);
-};
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
 
@@ -212,20 +310,11 @@ export type IndexedItem<T> = [string, T];
 export const getKey = <T>(item: IndexedItem<T>): string => item[0];
 export const getItem = <T>(item: IndexedItem<T>): T => item[1];
 
-export const link = (): WElement<HTMLLinkElement> => {
-  return createElement("link", {}, []);
-};
-
 export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
 
 type ParagraphContent = WNode<Text> | string;
 
-export const p = (
-  children: ParagraphContent
-): WElement<HTMLParagraphElement> => {
-  return createElement("p", {}, [wrapTextInVNode(children)]);
-};
 
 export type TextContent = string | Supplier<string> | IAtom<string>;
 

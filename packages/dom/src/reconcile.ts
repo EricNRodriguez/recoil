@@ -1,6 +1,4 @@
-import {
-  nullOrUndefined,
-} from "../../util";
+import { nullOrUndefined } from "../../util";
 
 export type ReconcileNodeArraysArgs = {
   parent: Node;
