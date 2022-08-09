@@ -1,7 +1,7 @@
 import { WElement, WNode } from "../../../dom";
-import {ComponentContext, IComponentContext} from "./component_context";
-import {ScopedInjectionRegistry} from "./inject";
-import {Consumer, Function} from "../../../util";
+import { ComponentContext, IComponentContext } from "./component_context";
+import { ScopedInjectionRegistry } from "./inject";
+import { Consumer, Function } from "../../../util";
 
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
@@ -16,15 +16,16 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-const globalInjectionScope: ScopedInjectionRegistry = new ScopedInjectionRegistry();
+const globalInjectionScope: ScopedInjectionRegistry =
+  new ScopedInjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
-    try {
-      globalInjectionScope.enterScope();
-      return fn(new ComponentContext(globalInjectionScope));
-    } finally {
-      globalInjectionScope.exitScope();
-    }
+  try {
+    globalInjectionScope.enterScope();
+    return fn(new ComponentContext(globalInjectionScope));
+  } finally {
+    globalInjectionScope.exitScope();
+  }
 };
 
 export const createComponent = <T extends WNode<Node>>(

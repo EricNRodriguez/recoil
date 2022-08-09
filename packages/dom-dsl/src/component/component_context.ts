@@ -1,7 +1,7 @@
 import { WElement, WNode } from "../../../dom";
 import { ISideEffectRef, runEffect } from "../../../atom";
 import { Consumer, Runnable } from "../../../util";
-import {InjectionKey, ScopedInjectionRegistry} from "./inject";
+import { InjectionKey, ScopedInjectionRegistry } from "./inject";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;

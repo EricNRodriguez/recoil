@@ -61,10 +61,10 @@ export const ifElse = createComponent(
       currentRenderedState = state;
       currentRenderedSubtree = cache.get(state);
 
-      anchor.setChildren(
-        [currentRenderedSubtree === nullOrUndefinedNode
+      anchor.setChildren([
+        currentRenderedSubtree === nullOrUndefinedNode
           ? null
-          : currentRenderedSubtree
+          : currentRenderedSubtree,
       ]);
     });
 

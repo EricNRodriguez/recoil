@@ -16,9 +16,8 @@ export class GlobalEventCoordinator {
   public attachEventHandler<K extends keyof HTMLElementEventMap>(
     event: K,
     target: EventTarget,
-    handler: Consumer<HTMLElementEventMap[K]>,
+    handler: Consumer<HTMLElementEventMap[K]>
   ): void {
-
     if (!this.eventTargets.has(event)) {
       this.eventTargets.set(event, new WeakSet());
       document.addEventListener(event, this.executeHandlersBottomUp<K>);
@@ -67,11 +66,14 @@ export class GlobalEventCoordinator {
       if (this.eventTargets.get(event.type)?.has(curTarget!) ?? false) {
         this.targetHandlers.get(curTarget!)?.forEach((h) => {
           h.event === event.type && h.handler(event);
-        })
+        });
       }
 
       // https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/host
-      if (notNullOrUndefined((curTarget as any)?.host) && (curTarget as any).host instanceof Node) {
+      if (
+        notNullOrUndefined((curTarget as any)?.host) &&
+        (curTarget as any).host instanceof Node
+      ) {
         // https://developer.mozilla.org/en-US/docs/Web/API/Event/composed
         curTarget = event.composed ? (curTarget as any).host : null;
         // since we have crossed a shadow dom boundary, we need to reset target to the shadow dom host node
