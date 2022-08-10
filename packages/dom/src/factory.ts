@@ -4,7 +4,7 @@ import { Supplier } from "../../util";
 import { WNode } from "./node";
 import { GlobalEventCoordinator } from "./event";
 
-type Props = Record<string, any | IAtom<any> | Supplier<any>>;
+type Props = Record<string, any | IAtom<any>>;
 type Children = WNode<Node>[];
 
 const globalEventCoordinator: GlobalEventCoordinator =
@@ -23,9 +23,7 @@ export const createElement = <K extends keyof HTMLElementTagNameMap>(
   node.setChildren(children);
 
   Object.entries(props).forEach(([key, val]) => {
-    if (typeof val === "string") {
-      node.setProperty(key, val);
-    } else if (isAtom(val) || typeof val === "function") {
+    if (isAtom(val)) {
       node.bindProperty(key, val);
     } else {
       throw new Error("invalid prop type");

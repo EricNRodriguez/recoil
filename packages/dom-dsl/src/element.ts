@@ -1,4 +1,4 @@
-import { createElement, createFragment, WElement, WNode } from "../../dom";
+import {createElement, createFragment, isWNode, WElement, WNode} from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom } from "../../atom";
 import { createComponent, IComponentContext } from "../index";
@@ -53,11 +53,11 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
         {},
         [],
       );
-    } else if (adaptedFirstArg instanceof WNode) {
+    } else if (isWNode(adaptedFirstArg)) {
       return createElement(
         tag,
         {},
-        [adaptedFirstArg, ...adaptedRemainingChildren],
+        [adaptedFirstArg as WNode<any>, ...adaptedRemainingChildren],
       );
     } else {
       return createElement(
