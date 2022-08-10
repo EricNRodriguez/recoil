@@ -10,3 +10,4 @@ export { match } from "./src/control/match";
 export * from "./src/element";
 export { suspense } from "./src/control/suspense";
 export { InjectionKey } from "./src/component/inject";
+export {runApp} from "./src/run_app";
