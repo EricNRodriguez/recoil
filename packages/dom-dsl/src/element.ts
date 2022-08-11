@@ -143,21 +143,40 @@ export const time = createDslElementBuilder("time");
 export const mvar = createDslElementBuilder("var");
 export const wbr = createDslElementBuilder("wbr");
 
+// demarcating edits
+const del = createDslElementBuilder("del");
+const ins = createDslElementBuilder("ins");
+
+// table content
+const caption = createDslElementBuilder("caption");
+const col = createDslElementBuilder("col");
+const colgroup = createDslElementBuilder("colgroup");
+const table = createDslElementBuilder("table");
+const tbody = createDslElementBuilder("tbody");
+const td = createDslElementBuilder("td");
+const tfoot = createDslElementBuilder("tfoot");
+const th = createDslElementBuilder("th");
+const thead = createDslElementBuilder("thead");
+const tr = createDslElementBuilder("tr");
+
+// forms
+const button = createDslElementBuilder("button");
+const datalist = createDslElementBuilder("datalist");
+const fieldset = createDslElementBuilder("fieldset");
+const form = createDslElementBuilder("form");
+const input = createDslElementBuilder("input");
+const label = createDslElementBuilder("label");
+const legend = createDslElementBuilder("legend");
+const meter = createDslElementBuilder("meter");
+const optgroup = createDslElementBuilder("optgroup");
+const option = createDslElementBuilder("option");
+const output = createDslElementBuilder("output");
+const progress = createDslElementBuilder("progress");
+const select = createDslElementBuilder("select");
+const textarea = createDslElementBuilder("textarea");
+
 
 // TODO: adapt everything below
-
-export type ButtonContent = WNode<Text> | string;
-
-export const button = (content: ButtonContent): WElement<HTMLButtonElement> => {
-  return createElement(
-    "button",
-    {
-      type: "button",
-    },
-    [wrapTextInVNode(content)]
-  );
-};
-
 export type CheckboxArguments = {
   isChecked: IAtom<boolean | null>;
   isEnabled?: IAtom<boolean>;
@@ -190,20 +209,6 @@ export enum FormTarget {
   PARENT = "_parent",
   TOP = "_top",
 }
-
-export const form = (...content: WNode<Node>[]): WElement<HTMLFormElement> => {
-  return createElement("form", {}, content);
-};
-
-export const input = (): WElement<HTMLInputElement> => {
-  return createElement("input", {}, []);
-};
-
-export type LabelContent = TextContent;
-
-export const label = (content: LabelContent): WElement<HTMLLabelElement> => {
-  return createElement("label", {}, [t(content)]);
-};
 
 export type NumberInputArgs = {
   max?: number;
