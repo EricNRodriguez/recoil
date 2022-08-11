@@ -11,29 +11,24 @@ import {
 } from "../../util";
 
 export type Content = WNode<Node> | string;
-export type RawOrBindedText = IAtom<string> | Supplier<string> | string;
-export type Attributes = { [key: string]: RawOrBindedText };
-
-// prettier-ignore
-export type AttributesOnlyElementBuilder<K extends keyof HTMLElementTagNameMap> =
-  (attributes: Attributes) => WElement<HTMLElementTagNameMap[K]>;
+export type RawOrBinded = IAtom<any> | any
+export type Properties = { [key: string]: RawOrBinded };
 
 // prettier-ignore
 export type ChildrenOnlyElementBuilder<K extends keyof HTMLElementTagNameMap> =
   (...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
 
 // prettier-ignore
-export type AttributeAndChildrenElementBuilder<K extends keyof HTMLElementTagNameMap> =
-  (attributes: Attributes, ...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
+export type PropertiesAndChildrenElementBuilder<K extends keyof HTMLElementTagNameMap> =
+  (properties: Properties, ...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
 
 // prettier-ignore
 export type EmptyElementBuilder<K extends keyof HTMLElementTagNameMap> =
   () => WElement<HTMLElementTagNameMap[K]>;
 
 export type ElementBuilder<K extends keyof HTMLElementTagNameMap> =
-  AttributesOnlyElementBuilder<K> &
   ChildrenOnlyElementBuilder<K> &
-  AttributeAndChildrenElementBuilder<K> &
+  PropertiesAndChildrenElementBuilder<K> &
   EmptyElementBuilder<K>;
 
 // prettier-ignore
@@ -41,7 +36,7 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
   tag: K
 ): ElementBuilder<K> => {
   return (
-    firstArg?: Content | Attributes,
+    firstArg?: Content | Properties,
     ...remainingChildren: Content[]
   ): WElement<HTMLElementTagNameMap[K]> => {
     const adaptedFirstArg = wrapTextInVNode(firstArg);
@@ -62,7 +57,7 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
     } else {
       return createElement(
         tag,
-        adaptedFirstArg as Attributes,
+        adaptedFirstArg as Properties,
         adaptedRemainingChildren
       );
     }
