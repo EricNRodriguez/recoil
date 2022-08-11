@@ -1,20 +1,7 @@
-import {WeakCollection} from "../../../atom/src/weak_collection";
-import {notNullOrUndefined} from "../../../util";
-import {p} from "../element";
-
 export interface InjectionKey<T> extends Symbol {}
 
 export class ScopedInjectionRegistry {
   private readonly symbols: Map<any, any>[] = [new Map()];
-  private readonly parent: ScopedInjectionRegistry | undefined;
-
-  constructor(parent: ScopedInjectionRegistry | undefined) {
-    this.parent = parent;
-  }
-
-  public fork(): ScopedInjectionRegistry {
-    return new ScopedInjectionRegistry(this);
-  }
 
   public enterScope(): void {
     this.symbols.push(new Map());
@@ -26,7 +13,6 @@ export class ScopedInjectionRegistry {
 
   public set<T>(key: InjectionKey<T>, value: T): void {
     this.symbols[this.symbols.length - 1].set(key, value);
-    this.parent?.set(key, value);
   }
 
   public get<T>(key: InjectionKey<T>): T | undefined {
@@ -36,6 +22,6 @@ export class ScopedInjectionRegistry {
       }
     }
 
-    return this.parent?.get(key);
+    return undefined;
   }
 }

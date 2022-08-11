@@ -2,7 +2,6 @@ import { WElement, WNode } from "../../../dom";
 import { ComponentContext, IComponentContext } from "./component_context";
 import { ScopedInjectionRegistry } from "./inject";
 import { Consumer, Function } from "../../../util";
-import {blockquote} from "../element";
 
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
@@ -17,8 +16,8 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-let globalInjectionScope: ScopedInjectionRegistry =
-  new ScopedInjectionRegistry(undefined);
+const globalInjectionScope: ScopedInjectionRegistry =
+  new ScopedInjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   try {
@@ -40,16 +39,3 @@ export const createComponent = <T extends WNode<Node>>(
     });
   };
 };
-
-export const lazyChild = <T extends WNode<Node>>(child: (...args: any[]) => T): ((...args: any[]) => T) => {
-  const currentScopeFork = globalInjectionScope.fork();
-  return (...args: any[]): T => {
-    try {
-      var prev = globalInjectionScope;
-      globalInjectionScope = currentScopeFork;
-      return child(...args);
-    } finally {
-      globalInjectionScope = prev!;
-    }
-  };
-}
