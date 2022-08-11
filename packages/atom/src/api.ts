@@ -190,6 +190,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
       globalTrackingContext,
       globalEffectScheduler
     );
+    ref.run();
 
     (atom as any).$$$recoilFetchStateDerivation = [derivation, ref];
 
