@@ -1,11 +1,17 @@
-import { frag } from "../element";
-import { IndexedItem } from "../element";
-import { getItem, getKey } from "../element";
+import {frag, string} from "../element";
 import { MaybeNodeOrVNode } from "../element";
 import { WNode } from "../../../dom";
 import { IComponentContext, createComponent } from "../../index";
 import { Supplier, Function, notNullOrUndefined } from "../../../util";
 import { wrapInVNode } from "../../../dom/src/node";
+
+
+// key value pair used for efficient indexing of existing built elements
+export type IndexedItem<T> = [string, T];
+
+// utility lenses for unboxing index and item from an IndexedItem
+export const getKey = <T>(item: IndexedItem<T>): string => item[0];
+export const getItem = <T>(item: IndexedItem<T>): T => item[1];
 
 export const foreach = createComponent(
   <T extends Object>(
