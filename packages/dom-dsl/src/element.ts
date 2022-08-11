@@ -143,184 +143,53 @@ export const time = createDslElementBuilder("time");
 export const mvar = createDslElementBuilder("var");
 export const wbr = createDslElementBuilder("wbr");
 
+// demarcating edits
+const del = createDslElementBuilder("del");
+const ins = createDslElementBuilder("ins");
 
-// TODO: adapt everything below
+// table content
+const caption = createDslElementBuilder("caption");
+const col = createDslElementBuilder("col");
+const colgroup = createDslElementBuilder("colgroup");
+const table = createDslElementBuilder("table");
+const tbody = createDslElementBuilder("tbody");
+const td = createDslElementBuilder("td");
+const tfoot = createDslElementBuilder("tfoot");
+const th = createDslElementBuilder("th");
+const thead = createDslElementBuilder("thead");
+const tr = createDslElementBuilder("tr");
 
-export type ButtonContent = WNode<Text> | string;
+// forms
+const button = createDslElementBuilder("button");
+const datalist = createDslElementBuilder("datalist");
+const fieldset = createDslElementBuilder("fieldset");
+const form = createDslElementBuilder("form");
+const input = createDslElementBuilder("input");
+const label = createDslElementBuilder("label");
+const legend = createDslElementBuilder("legend");
+const meter = createDslElementBuilder("meter");
+const optgroup = createDslElementBuilder("optgroup");
+const option = createDslElementBuilder("option");
+const output = createDslElementBuilder("output");
+const progress = createDslElementBuilder("progress");
+const select = createDslElementBuilder("select");
+const textarea = createDslElementBuilder("textarea");
 
-export const button = (content: ButtonContent): WElement<HTMLButtonElement> => {
-  return createElement(
-    "button",
-    {
-      type: "button",
-    },
-    [wrapTextInVNode(content)]
-  );
-};
-
-export type CheckboxArguments = {
-  isChecked: IAtom<boolean | null>;
-  isEnabled?: IAtom<boolean>;
-};
-
-export const checkbox = createComponent(
-  (
-    ctx: IComponentContext,
-    args: CheckboxArguments
-  ): WElement<HTMLInputElement> => {
-    return createElement(
-      "input",
-      {
-        type: "checkbox",
-        checked: () => args.isChecked.get() === true,
-        indeterminate: () => args.isChecked.get() === null,
-        disabled: (() =>
-          notNullOrUndefined(args.isEnabled)
-            ? () => !args.isEnabled!.get()
-            : () => false)(),
-      },
-      []
-    );
-  }
-);
-
-export enum FormTarget {
-  BLANK = "_blank",
-  SELF = "_self",
-  PARENT = "_parent",
-  TOP = "_top",
-}
-
-export const form = (...content: WNode<Node>[]): WElement<HTMLFormElement> => {
-  return createElement("form", {}, content);
-};
-
-export const input = (): WElement<HTMLInputElement> => {
-  return createElement("input", {}, []);
-};
-
-export type LabelContent = TextContent;
-
-export const label = (content: LabelContent): WElement<HTMLLabelElement> => {
-  return createElement("label", {}, [t(content)]);
-};
-
-export type NumberInputArgs = {
-  max?: number;
-  min?: number;
-  num: IAtom<number>;
-  onInput: Consumer<number>;
-};
-
-export const numberInput = createComponent(
-  (
-    ctx: IComponentContext,
-    args: NumberInputArgs
-  ): WElement<HTMLInputElement> => {
-    const inputElement = createElement(
-      "input",
-      {
-        ...(notNullOrUndefined(args.max) ? { max: args.max } : {}),
-        ...(notNullOrUndefined(args.min) ? { min: args.min } : {}),
-        type: "number",
-        value: () =>
-          clamp({
-            max: args.max,
-            min: args.min,
-            val: args.num.get(),
-          }).toString(),
-      },
-      []
-    );
-
-    const onInput = (): void => {
-      const rawValue: number = inputElement.unwrap().valueAsNumber;
-
-      if (Number.isNaN(rawValue)) {
-        return;
-      }
-
-      const clampedValue: number = clamp({
-        max: args.max,
-        min: args.min,
-        val: rawValue,
-      });
-
-      if (rawValue !== clampedValue) {
-        inputElement.unwrap().valueAsNumber = clampedValue;
-      }
-
-      args.onInput(clampedValue);
-    };
-    inputElement.setEventHandler("click", onInput);
-
-    return inputElement;
-  }
-);
-
-export type RadioButtonArguments = {
-  isChecked: IAtom<boolean>;
-};
-
-export const radioButton = createComponent(
-  (
-    ctx: IComponentContext,
-    args: RadioButtonArguments
-  ): WElement<HTMLInputElement> => {
-    return createElement(
-      "input",
-      {
-        type: "radio",
-        checked: args.isChecked,
-      },
-      []
-    );
-  }
-);
-
-export const textInput = createComponent(
-  (
-    ctx: IComponentContext,
-    text: IAtom<string>,
-    onInput: Consumer<string>
-  ): WElement<HTMLInputElement> => {
-    const elem: WElement<HTMLInputElement> = createElement(
-      "input",
-      {
-        type: "text",
-        value: text,
-      },
-      []
-    ).setEventHandler("input", () => onInput(elem.unwrap().value));
-
-    return elem;
-  }
-);
-
-export type AnchorContent = TextContent;
+// interactive
+const details = createDslElementBuilder("details");
+const dialog = createDslElementBuilder("dialog");
+const summary = createDslElementBuilder("summary");
 
 export const frag = (...children: WNode<Node>[]): WNode<Node> => {
   return createFragment(children);
 };
 
-// key value pair used for efficient indexing of existing built elements
-export type IndexedItem<T> = [string, T];
-
-// utility lenses for unboxing index and item from an IndexedItem
-export const getKey = <T>(item: IndexedItem<T>): string => item[0];
-export const getItem = <T>(item: IndexedItem<T>): T => item[1];
-
 export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
 
-type ParagraphContent = WNode<Text> | string;
-
-
 export type TextContent = string | Supplier<string> | IAtom<string>;
-
 export const t = (content: TextContent): WNode<Node> => {
   const node = new WNode<Node>(document.createTextNode(""));
-
   if (typeof content === "string") {
     node.setProperty("textContent", content);
   } else {

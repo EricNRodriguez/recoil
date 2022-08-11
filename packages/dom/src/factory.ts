@@ -23,7 +23,11 @@ export const createElement = <K extends keyof HTMLElementTagNameMap>(
   node.setChildren(children);
 
   Object.entries(props).forEach(([key, val]) => {
-    node.setProperty(key, val);
+    if (isAtom(val)) {
+      node.bindProperty(key, val);
+    } else {
+      node.setProperty(key, val);
+    }
   });
 
   return node;
