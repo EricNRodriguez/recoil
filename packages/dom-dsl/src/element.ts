@@ -175,6 +175,10 @@ const progress = createDslElementBuilder("progress");
 const select = createDslElementBuilder("select");
 const textarea = createDslElementBuilder("textarea");
 
+// interactive
+const details = createDslElementBuilder("details");
+const dialog = createDslElementBuilder("dialog");
+const summary = createDslElementBuilder("summary");
 
 // TODO: adapt everything below
 export type CheckboxArguments = {
