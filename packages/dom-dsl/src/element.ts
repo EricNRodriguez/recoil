@@ -32,9 +32,9 @@ export type EmptyElementBuilder<K extends keyof HTMLElementTagNameMap> =
 
 export type ElementBuilder<K extends keyof HTMLElementTagNameMap> =
   AttributesOnlyElementBuilder<K> &
-    ChildrenOnlyElementBuilder<K> &
-    AttributeAndChildrenElementBuilder<K> &
-    EmptyElementBuilder<K>;
+  ChildrenOnlyElementBuilder<K> &
+  AttributeAndChildrenElementBuilder<K> &
+  EmptyElementBuilder<K>;
 
 // prettier-ignore
 const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
@@ -144,41 +144,41 @@ export const mvar = createDslElementBuilder("var");
 export const wbr = createDslElementBuilder("wbr");
 
 // demarcating edits
-const del = createDslElementBuilder("del");
-const ins = createDslElementBuilder("ins");
+export const del = createDslElementBuilder("del");
+export const ins = createDslElementBuilder("ins");
 
 // table content
-const caption = createDslElementBuilder("caption");
-const col = createDslElementBuilder("col");
-const colgroup = createDslElementBuilder("colgroup");
-const table = createDslElementBuilder("table");
-const tbody = createDslElementBuilder("tbody");
-const td = createDslElementBuilder("td");
-const tfoot = createDslElementBuilder("tfoot");
-const th = createDslElementBuilder("th");
-const thead = createDslElementBuilder("thead");
-const tr = createDslElementBuilder("tr");
+export const caption = createDslElementBuilder("caption");
+export const col = createDslElementBuilder("col");
+export const colgroup = createDslElementBuilder("colgroup");
+export const table = createDslElementBuilder("table");
+export const tbody = createDslElementBuilder("tbody");
+export const td = createDslElementBuilder("td");
+export const tfoot = createDslElementBuilder("tfoot");
+export const th = createDslElementBuilder("th");
+export const thead = createDslElementBuilder("thead");
+export const tr = createDslElementBuilder("tr");
 
 // forms
-const button = createDslElementBuilder("button");
-const datalist = createDslElementBuilder("datalist");
-const fieldset = createDslElementBuilder("fieldset");
-const form = createDslElementBuilder("form");
-const input = createDslElementBuilder("input");
-const label = createDslElementBuilder("label");
-const legend = createDslElementBuilder("legend");
-const meter = createDslElementBuilder("meter");
-const optgroup = createDslElementBuilder("optgroup");
-const option = createDslElementBuilder("option");
-const output = createDslElementBuilder("output");
-const progress = createDslElementBuilder("progress");
-const select = createDslElementBuilder("select");
-const textarea = createDslElementBuilder("textarea");
+export const button = createDslElementBuilder("button");
+export const datalist = createDslElementBuilder("datalist");
+export const fieldset = createDslElementBuilder("fieldset");
+export const form = createDslElementBuilder("form");
+export const input = createDslElementBuilder("input");
+export const label = createDslElementBuilder("label");
+export const legend = createDslElementBuilder("legend");
+export const meter = createDslElementBuilder("meter");
+export const optgroup = createDslElementBuilder("optgroup");
+export const option = createDslElementBuilder("option");
+export const output = createDslElementBuilder("output");
+export const progress = createDslElementBuilder("progress");
+export const select = createDslElementBuilder("select");
+export const textarea = createDslElementBuilder("textarea");
 
 // interactive
-const details = createDslElementBuilder("details");
-const dialog = createDslElementBuilder("dialog");
-const summary = createDslElementBuilder("summary");
+export const details = createDslElementBuilder("details");
+export const dialog = createDslElementBuilder("dialog");
+export const summary = createDslElementBuilder("summary");
 
 export const frag = (...children: WNode<Node>[]): WNode<Node> => {
   return createFragment(children);
