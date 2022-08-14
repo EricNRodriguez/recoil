@@ -51,7 +51,7 @@ export const createComponent = <T extends WNode<Node>>(
 
 /**
  * Wraps a lazy builder inside a closure such that the current injection scope state is captured and restored
- * on each invocation. I.e. the returned DomBuilder forms a cosure over the injection scope.
+ * on each invocation. I.e. the returned DomBuilder forms a closure over the injection scope.
  *
  * This is intended to be abstracted away inside control components that manage the rebuilding of components. The end user
  * shouldn't need to know how the injection api works, just that it does what is intuitive.
