@@ -1,4 +1,4 @@
-import {createState, ILeafAtom} from "../../../atom";
+import {createState, ILeafAtom, runUntracked} from "../../../atom";
 
 export interface InjectionKey<T> extends Symbol {}
 
@@ -8,22 +8,13 @@ export class ScopedInjectionRegistry {
   public static fork(parent: ScopedInjectionRegistry): ScopedInjectionRegistry {
       const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
       child.symbols.length = 0;
-      child.symbols.push(...parent.symbols);
-      child.enterScope();
+      child.symbols.push(...parent.symbols, new Map());
       return child;
-  }
-
-  public enterScope(): void {
-    this.symbols.push(new Map());
-  }
-
-  public exitScope(): void {
-    this.symbols.pop();
   }
 
   public set<T>(key: InjectionKey<T>, value: T): void {
     if (this.symbols[this.symbols.length-1].has(key)) {
-      this.symbols[this.symbols.length-1].get(key)?.set(value);
+      runUntracked(() => this.symbols[this.symbols.length-1].get(key)?.set(value));
     } else {
       this.symbols[this.symbols.length-1].set(key, createState(value));
     }
