@@ -1,6 +1,6 @@
 import { WElement, WNode } from "../../../dom";
 import { ComponentContext, IComponentContext } from "./component_context";
-import { ScopedInjectionRegistry } from "./inject";
+import { InjectionRegistry } from "./inject";
 import { Consumer, Function } from "../../../util";
 
 /**
@@ -16,8 +16,8 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-let globalInjectionScope: ScopedInjectionRegistry =
-  new ScopedInjectionRegistry();
+let globalInjectionScope: InjectionRegistry =
+  new InjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   const parentScope = globalInjectionScope;
@@ -26,7 +26,7 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   // in order to make provide calls made inside callbacks that execute after a builder has returned work as
   // you would expect, we need to fork and never pop. This allows for the same 'scoped' behaviour, but also
   // allows callbacks to work intuitively.
-  globalInjectionScope = ScopedInjectionRegistry.fork(parentScope);
+  globalInjectionScope = parentScope.fork();
 
   try {
     return fn(
@@ -62,9 +62,9 @@ export const createComponent = <T extends WNode<Node>>(
  * @param builder The builder function to close over the current injection scope
  */
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
-  const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
+  const capturedInjectionScope: InjectionRegistry = globalInjectionScope.fork();
   return (...args: any[]): T => {
-    const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
+    const currentInjectionScope: InjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
     try {
       return builder(...args);
