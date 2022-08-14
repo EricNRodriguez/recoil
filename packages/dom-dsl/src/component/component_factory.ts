@@ -16,15 +16,15 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-let globalInjectionScope: ScopedInjectionRegistry =
+let injectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
-  const prevInjScope = globalInjectionScope;
+  const prevInjScope = injectionScope;
 
-  const ch = ScopedInjectionRegistry.fork(globalInjectionScope);
+  const ch = ScopedInjectionRegistry.fork(injectionScope);
 
-  globalInjectionScope = ch;
+  injectionScope = ch;
   try {
     return fn(
       new ComponentContext(
@@ -32,7 +32,7 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
       )
     );
   } finally {
-    globalInjectionScope = prevInjScope;
+    injectionScope = prevInjScope;
   }
 };
 
@@ -59,14 +59,14 @@ export const createComponent = <T extends WNode<Node>>(
  * @param builder The builder function to close over the current injection scope
  */
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
-    const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
+    const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(injectionScope);
     return (...args: any[]): T => {
-        const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
-        globalInjectionScope = capturedInjectionScope;
+        const currentInjectionScope: ScopedInjectionRegistry = injectionScope;
+        injectionScope = capturedInjectionScope;
         try {
             return builder(...args);
         } finally {
-          globalInjectionScope = currentInjectionScope;
+          injectionScope = currentInjectionScope;
         }
     };
 }
