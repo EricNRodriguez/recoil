@@ -51,13 +51,17 @@ export const createComponent = <P, T extends WNode<Node>>(
 };
 
 /**
- * Wraps a lazy builder inside a closure such that the current injection scope state is captured and restored
- * on each invocation. I.e. the returned DomBuilder forms a closure over the injection scope.
+ * Wraps a lazy builder inside a closure such that the current contexts scope state is captured and restored
+ * on each invocation. I.e. the returned DomBuilder forms a closure over the context scope.
  *
  * This is intended to be abstracted away inside control components that manage the rebuilding of components. The end user
- * shouldn't need to know how the injection api works, just that it does what is intuitive.
+ * shouldn't need to know how the component api works internally, just that it does what is intuitive.
  *
- * @param builder The builder function to close over the current injection scope
+ * At this point in time, the only scoped state contained within the component API is that used by the dependency
+ * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of
+ * behaviour for any future behaviour that requires similar hierarchical scope.
+ *
+ * @param builder The builder function to close over the current context scope
  */
 export const lazy = <P, T extends WNode<Node>>(
   builder: DomBuilder<P, T>
