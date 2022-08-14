@@ -1,9 +1,9 @@
-import { createComponent, IComponentContext } from "../../index";
 import { WNode } from "../../../dom";
 import { IAtom } from "../../../atom";
 import { frag } from "../element";
 import { Function, WDerivationCache } from "../../../util";
-import {lazy} from "../component/component_factory";
+import {createComponent, lazy} from "../../../component";
+import {IComponentContext} from "../../../component";
 
 export const match = createComponent(
   <T extends Object>(

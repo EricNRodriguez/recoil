@@ -1,7 +1,7 @@
-import { frag } from "../../index";
-import { createComponent, IComponentContext } from "../../index";
+import {frag, IComponentContext} from "../../index";
 import { WNode } from "../../../dom";
 import { notNullOrUndefined } from "../../../util";
+import {createComponent} from "../../../component";
 
 export type SuspenseOptionalArgs = {
   fallback: WNode<Node>;
