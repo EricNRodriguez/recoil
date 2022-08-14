@@ -1,21 +1,18 @@
 import { IAtom, isAtom } from "../../../atom";
 import {
   Supplier,
-  notNullOrUndefined,
-  wrapStaticContentInProvider,
   WDerivationCache,
-  Producer,
 } from "../../../util";
 import { frag } from "../element";
-import { MaybeNodeOrVNode } from "../element";
-import { WElement, WNode } from "../../../dom";
+import { WNode } from "../../../dom";
 import { createComponent, IComponentContext } from "../../index";
-import { wrapInVNode } from "../../../dom/src/node";
+import {lazy} from "../component/component_factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
-export type IfElseContent = MaybeNodeOrVNode | Supplier<MaybeNodeOrVNode>;
+export type IfElseContent =  Supplier<WNode<Node>>;
 
+const nullOrUndefinedNode = new WNode(document.createComment("null"));
 export const ifElse = createComponent(
   (
     ctx: IComponentContext,
@@ -23,26 +20,19 @@ export const ifElse = createComponent(
     ifTrue: IfElseContent,
     ifFalse?: IfElseContent
   ): WNode<Node> => {
-    ifFalse ??= undefined;
+    ifFalse ??= () => nullOrUndefinedNode;
 
-    const ifTrueUnwrapped: Supplier<MaybeNodeOrVNode> =
-      wrapStaticContentInProvider(ifTrue);
-    const ifFalseUnwrapped: Supplier<MaybeNodeOrVNode> =
-      wrapStaticContentInProvider(ifFalse);
+    ifTrue = lazy(ifTrue);
+    ifFalse = lazy(ifFalse);
 
     if (typeof condition === "boolean") {
-      return staticIfElse(condition, ifTrueUnwrapped, ifFalseUnwrapped);
+      return staticIfElse(condition, ifTrue, ifFalse);
     }
 
-    const nullOrUndefinedNode = new WNode(document.createComment("null"));
-    const wrap = (fn: Producer<MaybeNodeOrVNode>): Producer<WNode<Node>> => {
-      return () => wrapInVNode(fn()) ?? nullOrUndefinedNode;
-    };
     const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
       boolean,
       WNode<Node>
-    >((value: boolean) =>
-      value ? wrap(ifTrueUnwrapped)() : wrap(ifFalseUnwrapped)()
+    >((value: boolean) => value ? ifTrue() : ifFalse!(),
     );
 
     const anchor = frag();
@@ -74,14 +64,14 @@ export const ifElse = createComponent(
 
 const staticIfElse = (
   condition: boolean,
-  ifTrue: Supplier<MaybeNodeOrVNode>,
-  ifFalse: Supplier<MaybeNodeOrVNode>
+  ifTrue: Supplier<WNode<Node>>,
+  ifFalse: Supplier<WNode<Node>>
 ): WNode<Node> => {
   const anchor = frag();
 
-  const content: MaybeNodeOrVNode = condition ? ifTrue() : ifFalse();
-  if (notNullOrUndefined(content)) {
-    anchor.setChildren([condition ? ifTrue() : ifFalse()]);
-  }
+  anchor.setChildren(
+    [condition ? ifTrue() : ifFalse()].filter((c) => c !== nullOrUndefinedNode),
+  );
+
   return anchor;
 };
