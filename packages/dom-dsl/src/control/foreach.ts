@@ -4,6 +4,7 @@ import { WNode } from "../../../dom";
 import { IComponentContext, createComponent } from "../../index";
 import { Supplier, Function, notNullOrUndefined } from "../../../util";
 import { wrapInVNode } from "../../../dom/src/node";
+import {lazy} from "../component/component_factory";
 
 
 // key value pair used for efficient indexing of existing built elements
@@ -19,6 +20,8 @@ export const foreach = createComponent(
     getItems: Supplier<IndexedItem<T>[]>,
     buildElement: Function<T, WNode<Node>>
   ): WNode<Node> => {
+    buildElement = lazy(buildElement);
+
     const anchor = frag();
 
     let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();

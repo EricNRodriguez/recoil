@@ -16,7 +16,7 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-const globalInjectionScope: ScopedInjectionRegistry =
+let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
@@ -39,3 +39,25 @@ export const createComponent = <T extends WNode<Node>>(
     });
   };
 };
+
+/**
+ * Wraps a lazy builder inside a closure such that the current injection scope state is captured and restored
+ * on each invocation. I.e. the returned DomBuilder forms a cosure over the injection scope.
+ *
+ * This is intended to be abstracted away inside control components that manage the rebuilding of components. The end user
+ * shouldn't need to know how the injection api works, just that it does what is intuitive.
+ *
+ * @param builder The builder function to close over the current injection scope
+ */
+export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
+    const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.from(globalInjectionScope);
+    return (...args: any[]): T => {
+        const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
+        globalInjectionScope = capturedInjectionScope;
+        try {
+            return builder(...args);
+        } finally {
+          globalInjectionScope = currentInjectionScope;
+        }
+    };
+}

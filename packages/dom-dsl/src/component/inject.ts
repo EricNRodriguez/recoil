@@ -3,6 +3,13 @@ export interface InjectionKey<T> extends Symbol {}
 export class ScopedInjectionRegistry {
   private readonly symbols: Map<any, any>[] = [new Map()];
 
+  public static from(parent: ScopedInjectionRegistry): ScopedInjectionRegistry {
+      const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
+      child.symbols.length = 0;
+      child.symbols.push(...parent.symbols);
+      return child;
+  }
+
   public enterScope(): void {
     this.symbols.push(new Map());
   }

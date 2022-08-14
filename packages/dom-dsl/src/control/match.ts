@@ -3,6 +3,7 @@ import { WNode } from "../../../dom";
 import { IAtom } from "../../../atom";
 import { frag } from "../element";
 import { Function, WDerivationCache } from "../../../util";
+import {lazy} from "../component/component_factory";
 
 export const match = createComponent(
   <T extends Object>(
@@ -10,8 +11,9 @@ export const match = createComponent(
     state: IAtom<T>,
     render: Function<T, WNode<Node>>
   ): WNode<Node> => {
-    const anchor = frag();
+    render = lazy(render);
 
+    const anchor = frag();
     const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(
       render
     );
