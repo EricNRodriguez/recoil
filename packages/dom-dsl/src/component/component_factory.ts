@@ -63,12 +63,10 @@ export const createComponent = <T extends WNode<Node>>(
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
     const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
     return (...args: any[]): T => {
-        const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
-        capturedInjectionScope.enterScope();
+        const currentInjectionScope: ScopedInjectionRegistry = capturedInjectionScope;
         try {
             return builder(...args);
         } finally {
-          capturedInjectionScope.exitScope();
           globalInjectionScope = currentInjectionScope;
         }
     };
