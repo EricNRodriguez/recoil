@@ -21,15 +21,19 @@ let globalInjectionScope: ScopedInjectionRegistry =
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   const prevInjScope = globalInjectionScope;
+
+  const ch = ScopedInjectionRegistry.fork(globalInjectionScope);
+  ch.enterScope();
+
+  globalInjectionScope = ch;
   try {
-    const ch = ScopedInjectionRegistry.fork(globalInjectionScope);
-    globalInjectionScope = ch;
     return fn(
       new ComponentContext(
         ch,
       )
     );
   } finally {
+    ch.exitScope();
     globalInjectionScope = prevInjScope;
   }
 };
@@ -60,10 +64,11 @@ export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<
     const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
     return (...args: any[]): T => {
         const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
-        globalInjectionScope = capturedInjectionScope;
+        capturedInjectionScope.enterScope();
         try {
             return builder(...args);
         } finally {
+          capturedInjectionScope.exitScope();
           globalInjectionScope = currentInjectionScope;
         }
     };
