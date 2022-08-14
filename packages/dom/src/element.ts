@@ -1,7 +1,5 @@
-import { Supplier } from "../../util";
-import { BaseWNode, BindedValue, WNode } from "./node";
-import { BiFunction, Method } from "../../util/src/function.interface";
-import { IAtom, isAtom, runEffect } from "../../atom";
+import { BaseWNode, WNode } from "./node";
+import { Method } from "../../util/src/function.interface";
 import { GlobalEventCoordinator } from "./event";
 export type ElementStyle = { [key: string]: string };
 
@@ -18,20 +16,6 @@ export abstract class BaseWElement<
 
   public setAttribute(attribute: string, value: string): B {
     this.unwrap().setAttribute(attribute, value as string);
-    return this as unknown as B;
-  }
-
-  public bindAttribute(attribute: string, value: BindedValue<string>): B {
-    if (isAtom(value)) {
-      this.registerEffect(() =>
-        this.unwrap().setAttribute(attribute, (value as IAtom<string>).get())
-      );
-    } else {
-      this.registerEffect(() =>
-        this.unwrap().setAttribute(attribute, (value as Supplier<string>)())
-      );
-    }
-
     return this as unknown as B;
   }
 

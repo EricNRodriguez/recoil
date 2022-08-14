@@ -1,12 +1,13 @@
 import {
   createElement,
   createFragment,
+  createTextNode,
   isWNode,
   WElement,
   WNode,
 } from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
-import { IAtom } from "../../atom";
+import { IAtom, isAtom } from "../../atom";
 import { nullOrUndefined, Supplier } from "../../util";
 
 export type Content = WNode<Node> | string;
@@ -181,14 +182,5 @@ export const frag = (...children: WNode<Node>[]): WNode<Node> => {
 export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
 
-export type TextContent = string | Supplier<string> | IAtom<string>;
-export const t = (content: TextContent): WNode<Node> => {
-  const node = new WNode<Node>(document.createTextNode(""));
-  if (typeof content === "string") {
-    node.setProperty("textContent", content);
-  } else {
-    node.bindProperty("textContent", content);
-  }
-
-  return node;
-};
+export type TextContent = string | IAtom<string>;
+export const t = (content: TextContent): WNode<Node> => createTextNode(content);

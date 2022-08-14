@@ -1,13 +1,5 @@
-import {
-  notNullOrUndefined,
-  nullOrUndefined,
-  Runnable,
-  Supplier,
-} from "../../util";
+import { notNullOrUndefined, nullOrUndefined, Runnable } from "../../util";
 import { reconcileNodeArrays } from "./reconcile";
-import { IAtom, isAtom, runEffect } from "../../atom";
-
-export type BindedValue<T> = Supplier<T> | IAtom<T>;
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private parent: WNode<Node> | null = null;
@@ -30,25 +22,6 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   public setProperty<T>(prop: string, value: T): B {
     (this.unwrap() as any)[prop] = value;
     return this as unknown as B;
-  }
-
-  public bindProperty<T>(prop: string, value: BindedValue<T>): B {
-    if (isAtom(value)) {
-      this.registerEffect((): void => {
-        (this.unwrap() as any)[prop] = (value as IAtom<T>).get();
-      });
-    } else {
-      this.registerEffect((): void => {
-        (this.unwrap() as any)[prop] = (value as Supplier<T>)();
-      });
-    }
-    return this as unknown as B;
-  }
-
-  protected registerEffect(effect: Runnable): void {
-    const ref = runEffect(effect);
-    this.registerOnMountHook(() => ref.activate());
-    this.registerOnUnmountHook(() => ref.deactivate());
   }
 
   private getUnpackedChildren(): Node[] {
