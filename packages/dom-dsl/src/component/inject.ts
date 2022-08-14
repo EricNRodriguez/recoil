@@ -1,4 +1,4 @@
-import {createState, ILeafAtom} from "../../../atom";
+import {createState, ILeafAtom, runUntracked} from "../../../atom";
 
 export interface InjectionKey<T> extends Symbol {}
 
@@ -14,7 +14,7 @@ export class ScopedInjectionRegistry {
 
   public set<T>(key: InjectionKey<T>, value: T): void {
     if (this.symbols[this.symbols.length-1].has(key)) {
-      this.symbols[this.symbols.length-1].get(key)?.set(value);
+      runUntracked(() => this.symbols[this.symbols.length-1].get(key)?.set(value));
     } else {
       this.symbols[this.symbols.length-1].set(key, createState(value));
     }

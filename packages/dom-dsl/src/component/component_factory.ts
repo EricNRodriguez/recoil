@@ -16,23 +16,26 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-let injectionScope: ScopedInjectionRegistry =
+let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
-  const prevInjScope = injectionScope;
+  const parentScope = globalInjectionScope;
 
-  const ch = ScopedInjectionRegistry.fork(injectionScope);
+  // At first sight it might seem unintuitive / stupid that we are forking instead of pushing a new scope, however
+  // in order to make provide calls made inside callbacks that execute after a builder has returned work as
+  // you would expect, we need to fork and never pop. This allows for the same 'scoped' behaviour, but also
+  // allows callbacks to work intuitively.
+  globalInjectionScope = ScopedInjectionRegistry.fork(parentScope);
 
-  injectionScope = ch;
   try {
     return fn(
       new ComponentContext(
-        ch,
+        globalInjectionScope,
       )
     );
   } finally {
-    injectionScope = prevInjScope;
+    globalInjectionScope = parentScope;
   }
 };
 
@@ -59,14 +62,14 @@ export const createComponent = <T extends WNode<Node>>(
  * @param builder The builder function to close over the current injection scope
  */
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
-    const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(injectionScope);
-    return (...args: any[]): T => {
-        const currentInjectionScope: ScopedInjectionRegistry = injectionScope;
-        injectionScope = capturedInjectionScope;
-        try {
-            return builder(...args);
-        } finally {
-          injectionScope = currentInjectionScope;
-        }
-    };
+  const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
+  return (...args: any[]): T => {
+    const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
+    globalInjectionScope = capturedInjectionScope;
+    try {
+      return builder(...args);
+    } finally {
+      globalInjectionScope = currentInjectionScope;
+    }
+  };
 }
