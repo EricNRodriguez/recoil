@@ -1,10 +1,9 @@
 import {frag, string} from "../element";
 import { MaybeNodeOrVNode } from "../element";
 import { WNode } from "../../../dom";
-import { IComponentContext, createComponent } from "../../index";
 import { Supplier, Function, notNullOrUndefined } from "../../../util";
 import { wrapInVNode } from "../../../dom/src/node";
-import {lazy} from "../component/component_factory";
+import {createComponent, IComponentContext, lazy} from "../../../component";
 
 
 // key value pair used for efficient indexing of existing built elements

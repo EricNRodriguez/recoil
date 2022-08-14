@@ -1,4 +1,4 @@
-import {createState, ILeafAtom, runUntracked} from "../../../atom";
+import {createState, ILeafAtom, runUntracked} from "../../atom";
 
 export interface InjectionKey<T> extends Symbol {}
 

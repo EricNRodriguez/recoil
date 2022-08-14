@@ -1,11 +1,7 @@
 import {createElement, createFragment, isWNode, WElement, WNode} from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom } from "../../atom";
-import { createComponent, IComponentContext } from "../index";
 import {
-  clamp,
-  Consumer,
-  notNullOrUndefined,
   nullOrUndefined,
   Supplier,
 } from "../../util";

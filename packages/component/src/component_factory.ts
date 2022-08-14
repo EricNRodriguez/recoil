@@ -1,7 +1,7 @@
-import { WElement, WNode } from "../../../dom";
+import { WElement, WNode } from "../../dom";
 import { ComponentContext, IComponentContext } from "./component_context";
 import { ScopedInjectionRegistry } from "./inject";
-import { Consumer, Function } from "../../../util";
+import { Consumer, Function } from "../../util";
 
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)

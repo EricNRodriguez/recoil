@@ -5,8 +5,8 @@ import {
 } from "../../../util";
 import { frag } from "../element";
 import { WNode } from "../../../dom";
-import { createComponent, IComponentContext } from "../../index";
-import {lazy} from "../component/component_factory";
+import {createComponent, lazy} from "../../../component/src/component_factory";
+import {IComponentContext} from "../../../component";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
