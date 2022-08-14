@@ -1,31 +1,31 @@
+import {createState, ILeafAtom} from "../../../atom";
+
 export interface InjectionKey<T> extends Symbol {}
 
+// A store with tracked reads/writes
 export class ScopedInjectionRegistry {
-  private readonly symbols: Map<any, any>[] = [new Map()];
+  private readonly symbols: Map<any, ILeafAtom<any>>[] = [new Map()];
 
-  public static from(parent: ScopedInjectionRegistry): ScopedInjectionRegistry {
+  public static fork(parent: ScopedInjectionRegistry): ScopedInjectionRegistry {
       const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
       child.symbols.length = 0;
-      child.symbols.push(...parent.symbols);
+      // push existing scopes + a fresh scope
+      child.symbols.push(...parent.symbols, new Map());
       return child;
   }
 
-  public enterScope(): void {
-    this.symbols.push(new Map());
-  }
-
-  public exitScope(): void {
-    this.symbols.pop();
-  }
-
   public set<T>(key: InjectionKey<T>, value: T): void {
-    this.symbols[this.symbols.length - 1].set(key, value);
+    if (this.symbols[this.symbols.length-1].has(key)) {
+      this.symbols[this.symbols.length-1].get(key)?.set(value);
+    } else {
+      this.symbols[this.symbols.length-1].set(key, createState(value));
+    }
   }
 
   public get<T>(key: InjectionKey<T>): T | undefined {
     for (let i = this.symbols.length - 1; i >= 0; --i) {
       if (this.symbols[i].has(key)) {
-        return this.symbols[i].get(key);
+        return this.symbols[i].get(key)?.get();
       }
     }
 
