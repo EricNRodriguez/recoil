@@ -8,7 +8,7 @@ import { Consumer, Function } from "../../util";
  */
 export type StatefulDomBuilder<P, T extends WNode<Node>> = (
   ctx: ComponentContext,
-  props: P,
+  props: P
 ) => T;
 
 /**
@@ -29,11 +29,7 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   globalInjectionScope = parentScope.fork();
 
   try {
-    return fn(
-      new ComponentContext(
-        globalInjectionScope,
-      )
-    );
+    return fn(new ComponentContext(globalInjectionScope));
   } finally {
     globalInjectionScope = parentScope;
   }
@@ -43,7 +39,7 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
 // which makes partial application completely unsafe type-wise, so I have opted for single arg components, in the
 // form of 'props'. See: https://github.com/microsoft/TypeScript/issues/25256
 export const createComponent = <P, T extends WNode<Node>>(
-  buildDomTree: StatefulDomBuilder<P,T>
+  buildDomTree: StatefulDomBuilder<P, T>
 ): DomBuilder<P, T> => {
   return (props: P): T => {
     return executeWithContext<T>((ctx: ComponentContext): T => {
@@ -63,8 +59,11 @@ export const createComponent = <P, T extends WNode<Node>>(
  *
  * @param builder The builder function to close over the current injection scope
  */
-export const lazy = <P, T extends WNode<Node>>(builder: DomBuilder<P, T>): DomBuilder<P, T> => {
-  const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
+export const lazy = <P, T extends WNode<Node>>(
+  builder: DomBuilder<P, T>
+): DomBuilder<P, T> => {
+  const capturedInjectionScope: ScopedInjectionRegistry =
+    globalInjectionScope.fork();
   return (props: P): T => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
@@ -74,4 +73,4 @@ export const lazy = <P, T extends WNode<Node>>(builder: DomBuilder<P, T>): DomBu
       globalInjectionScope = currentInjectionScope;
     }
   };
-}
+};

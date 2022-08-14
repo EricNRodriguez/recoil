@@ -1,11 +1,8 @@
-import {frag, IComponentContext} from "../../index";
+import { frag, IComponentContext } from "../../index";
 import { WNode } from "../../../dom";
 import { notNullOrUndefined } from "../../../util";
-import {createComponent} from "../../../component";
+import { createComponent } from "../../../component";
 
-export type SuspenseOptionalArgs = {
-  fallback: WNode<Node>;
-};
 
 export type SuspenseProps = {
   child: Promise<WNode<Node>>;
@@ -13,10 +10,7 @@ export type SuspenseProps = {
 };
 
 export const suspense = createComponent(
-  (
-    ctx: IComponentContext,
-    props: SuspenseProps
-  ): WNode<Node> => {
+  (ctx: IComponentContext, props: SuspenseProps): WNode<Node> => {
     const anchor = frag();
 
     if (notNullOrUndefined(props.fallback)) {
