@@ -9,9 +9,16 @@ export class ScopedInjectionRegistry {
   public static fork(parent: ScopedInjectionRegistry): ScopedInjectionRegistry {
       const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
       child.symbols.length = 0;
-      // push existing scopes + a fresh scope
-      child.symbols.push(...parent.symbols, new Map());
+      child.symbols.push(...parent.symbols);
       return child;
+  }
+
+  public enterScope(): void {
+    this.symbols.push(new Map());
+  }
+
+  public exitScope(): void {
+    this.symbols.pop();
   }
 
   public set<T>(key: InjectionKey<T>, value: T): void {
