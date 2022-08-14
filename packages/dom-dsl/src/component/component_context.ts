@@ -1,7 +1,7 @@
 import { WElement, WNode } from "../../../dom";
 import { ISideEffectRef, runEffect } from "../../../atom";
 import { Consumer, Runnable } from "../../../util";
-import { InjectionKey, InjectionRegistry } from "./inject";
+import { InjectionKey, ScopedInjectionRegistry } from "./inject";
 
 export interface IComponentContext {
   runEffect(sideEffect: Runnable): void;
@@ -26,10 +26,10 @@ export class ComponentContext implements IComponentContext {
     new FinalizationRegistry<Object>((id: Object) => {
       this.registeredFinalizers.get(id)?.forEach((fn) => fn());
     });
-  private readonly injectionRegistry: InjectionRegistry;
+  private readonly injectionRegistry: ScopedInjectionRegistry;
   private readonly deferredFunctions: Consumer<WNode<Node>>[] = [];
 
-  public constructor(injectionRegistry: InjectionRegistry) {
+  public constructor(injectionRegistry: ScopedInjectionRegistry) {
     this.injectionRegistry = injectionRegistry;
   }
 
