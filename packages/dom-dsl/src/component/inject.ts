@@ -5,10 +5,10 @@ export interface InjectionKey<T> extends Symbol {}
 export class ScopedInjectionRegistry {
   private readonly symbols: Map<any, ILeafAtom<any>>[] = [new Map()];
 
-  public static fork(parent: ScopedInjectionRegistry): ScopedInjectionRegistry {
+  public  fork(): ScopedInjectionRegistry {
       const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
       child.symbols.length = 0;
-      child.symbols.push(...parent.symbols, new Map());
+      child.symbols.push(...this.symbols, new Map());
       return child;
   }
 

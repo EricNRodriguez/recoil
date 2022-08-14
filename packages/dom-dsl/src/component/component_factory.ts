@@ -26,7 +26,7 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   // in order to make provide calls made inside callbacks that execute after a builder has returned work as
   // you would expect, we need to fork and never pop. This allows for the same 'scoped' behaviour, but also
   // allows callbacks to work intuitively.
-  globalInjectionScope = ScopedInjectionRegistry.fork(parentScope);
+  globalInjectionScope = parentScope.fork();
 
   try {
     return fn(
@@ -62,7 +62,7 @@ export const createComponent = <T extends WNode<Node>>(
  * @param builder The builder function to close over the current injection scope
  */
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
-  const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
+  const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
   return (...args: any[]): T => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
