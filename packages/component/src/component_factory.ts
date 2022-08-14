@@ -39,7 +39,6 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   }
 };
 
-
 // NOTE: ts has a disappointingly small degree of support for trafficking free params in a type safe way,
 // which makes partial application completely unsafe type-wise, so I have opted for single arg components, in the
 // form of 'props'. See: https://github.com/microsoft/TypeScript/issues/25256

@@ -12,27 +12,33 @@ export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
 export type IfElseContent =  Supplier<WNode<Node>>;
 
+export type IfElseProps = {
+  condition: IfElseCondition;
+  ifTrue: IfElseContent;
+  ifFalse?: IfElseContent;
+};
+
 const nullOrUndefinedNode = new WNode(document.createComment("null"));
 export const ifElse = createComponent(
   (
     ctx: IComponentContext,
-    condition: IfElseCondition,
-    ifTrue: IfElseContent,
-    ifFalse?: IfElseContent
+    props: IfElseProps,
   ): WNode<Node> => {
+    let {condition, ifTrue, ifFalse} = props;
+
     ifFalse ??= () => nullOrUndefinedNode;
 
-    ifTrue = lazy(ifTrue);
-    ifFalse = lazy(ifFalse);
+    const ifTrueWrapped = () => lazy((_) => ifTrue())(null);
+    const ifFalseWrapped = () => lazy((_) => ifFalse!())(null);
 
     if (typeof condition === "boolean") {
-      return staticIfElse(condition, ifTrue, ifFalse);
+      return staticIfElse(condition, ifTrueWrapped, ifFalseWrapped);
     }
 
     const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
       boolean,
       WNode<Node>
-    >((value: boolean) => value ? ifTrue() : ifFalse!(),
+    >((value: boolean) => value ? ifTrueWrapped() : ifFalseWrapped(),
     );
 
     const anchor = frag();
