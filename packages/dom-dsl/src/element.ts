@@ -175,9 +175,7 @@ export const details = createDslElementBuilder("details");
 export const dialog = createDslElementBuilder("dialog");
 export const summary = createDslElementBuilder("summary");
 
-export const frag = (...children: WNode<Node>[]): WNode<Node> => {
-  return createFragment(children);
-};
+export const frag = (...children: WNode<Node>[]): WNode<Node> => createFragment(children);
 
 export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
