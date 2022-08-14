@@ -6,15 +6,15 @@ import { Consumer, Function } from "../../util";
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
  */
-export type StatefulDomBuilder<T extends WNode<Node>> = (
+export type StatefulDomBuilder<P, T extends WNode<Node>> = (
   ctx: ComponentContext,
-  ...args: any[]
+  props: P,
 ) => T;
 
 /**
  * A plain old javascript function that returns a wNode (or a subclass of it)
  */
-export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
+export type DomBuilder<P, T extends WNode<Node>> = (props: P) => T;
 
 let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
@@ -40,12 +40,15 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
 };
 
 
-export const createComponent = <T extends WNode<Node>>(
-  buildDomTree: StatefulDomBuilder<T>
-): DomBuilder<T> => {
-  return (...args: any[]): T => {
+// NOTE: ts has a disappointingly small degree of support for trafficking free params in a type safe way,
+// which makes partial application completely unsafe type-wise, so I have opted for single arg components, in the
+// form of 'props'. See: https://github.com/microsoft/TypeScript/issues/25256
+export const createComponent = <P, T extends WNode<Node>>(
+  buildDomTree: StatefulDomBuilder<P,T>
+): DomBuilder<P, T> => {
+  return (props: P): T => {
     return executeWithContext<T>((ctx: ComponentContext): T => {
-      const node: T = buildDomTree(ctx, ...args);
+      const node: T = buildDomTree(ctx, props);
       ctx.applyDeferredFunctions(node);
       return node;
     });
@@ -61,13 +64,13 @@ export const createComponent = <T extends WNode<Node>>(
  *
  * @param builder The builder function to close over the current injection scope
  */
-export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
+export const lazy = <P, T extends WNode<Node>>(builder: DomBuilder<P, T>): DomBuilder<P, T> => {
   const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
-  return (...args: any[]): T => {
+  return (props: P): T => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
     try {
-      return builder(...args);
+      return builder(props);
     } finally {
       globalInjectionScope = currentInjectionScope;
     }
