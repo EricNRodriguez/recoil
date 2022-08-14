@@ -4,6 +4,14 @@ import { Consumer, Runnable } from "../../util";
 import { InjectionKey, ScopedInjectionRegistry } from "./inject";
 
 export interface IComponentContext {
+  /**
+   * Runs a side effect against the components dom subtree.
+   *
+   * The effect will be automatically activated/deactivated with the mounting/unmounting
+   * of the component, preventing unnecessary background updates to the dom.
+   *
+   * @param sideEffect The side effect that will be re-run every time its deps are dirtied.
+   */
   runEffect(sideEffect: Runnable): void;
 
   onMount(sideEffect: Runnable): void;
@@ -14,8 +22,21 @@ export interface IComponentContext {
 
   onCleanup(finalizer: Runnable): void;
 
+  /**
+   * A type safe DI provider analogous to that provided by the vue composition API.
+   *
+   * @param key The injection key.
+   * @param value The raw value.
+   */
   provide<T>(key: InjectionKey<T>, value: T): void;
 
+  /**
+   * Returns the value registered against the key, in the current components scope.
+   *
+   * This is a tracked operation.
+   *
+   * @param key The injection key.
+   */
   inject<T>(key: InjectionKey<T>): T | undefined;
 }
 
