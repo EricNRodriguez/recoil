@@ -14,8 +14,8 @@ export const getKey = <T>(item: IndexedItem<T>): string => item[0];
 export const getItem = <T>(item: IndexedItem<T>): T => item[1];
 
 export type ForEachProps<T> = {
-  getItems: Supplier<IndexedItem<T>[]>;
-  buildElement: Function<T, WNode<Node>>;
+  items: Supplier<IndexedItem<T>[]>;
+  render: Function<T, WNode<Node>>;
 };
 
 
@@ -24,20 +24,20 @@ export const foreach = createComponent(
     ctx: IComponentContext,
     props: ForEachProps<T>,
   ): WNode<Node> => {
-    let {getItems, buildElement} = props;
-    buildElement = lazy(buildElement);
+    let {items, render} = props;
+    render = lazy(render);
 
     const anchor = frag();
 
     let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
 
     ctx.runEffect((): void => {
-      const newItems: IndexedItem<T>[] = getItems();
+      const newItems: IndexedItem<T>[] = items();
       const newItemOrder: string[] = newItems.map(getKey);
       const newItemNodesIndex: Map<string, MaybeNodeOrVNode> = new Map(
         newItems.map((item: IndexedItem<T>): [string, MaybeNodeOrVNode] => [
           getKey(item),
-          currentItemIndex.get(getKey(item)) ?? buildElement(getItem(item)),
+          currentItemIndex.get(getKey(item)) ?? render(getItem(item)),
         ])
       );
 
