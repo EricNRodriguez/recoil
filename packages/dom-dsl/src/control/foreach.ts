@@ -13,12 +13,18 @@ export type IndexedItem<T> = [string, T];
 export const getKey = <T>(item: IndexedItem<T>): string => item[0];
 export const getItem = <T>(item: IndexedItem<T>): T => item[1];
 
+export type ForEachProps<T> = {
+  getItems: Supplier<IndexedItem<T>[]>;
+  buildElement: Function<T, WNode<Node>>;
+};
+
+
 export const foreach = createComponent(
   <T extends Object>(
     ctx: IComponentContext,
-    getItems: Supplier<IndexedItem<T>[]>,
-    buildElement: Function<T, WNode<Node>>
+    props: ForEachProps<T>,
   ): WNode<Node> => {
+    let {getItems, buildElement} = props;
     buildElement = lazy(buildElement);
 
     const anchor = frag();

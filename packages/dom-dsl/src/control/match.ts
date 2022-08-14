@@ -5,12 +5,18 @@ import { Function, WDerivationCache } from "../../../util";
 import {createComponent, lazy} from "../../../component";
 import {IComponentContext} from "../../../component";
 
+export type MatchProps<T> = {
+  state: IAtom<T>;
+  render: Function<T, WNode<Node>>;
+};
+
 export const match = createComponent(
   <T extends Object>(
     ctx: IComponentContext,
-    state: IAtom<T>,
-    render: Function<T, WNode<Node>>
+    props: MatchProps<T>,
   ): WNode<Node> => {
+    let {state, render} = props;
+
     render = lazy(render);
 
     const anchor = frag();

@@ -7,23 +7,23 @@ export type SuspenseOptionalArgs = {
   fallback: WNode<Node>;
 };
 
-export type SuspenseSignature = (
-  child: Promise<WNode<Node>>,
-  { fallback }: SuspenseOptionalArgs
-) => WNode<Node>;
-export const suspense: SuspenseSignature = createComponent(
+export type SuspenseProps = {
+  child: Promise<WNode<Node>>;
+  fallback?: WNode<Node>;
+};
+
+export const suspense = createComponent(
   (
     ctx: IComponentContext,
-    child: Promise<WNode<Node>>,
-    { fallback }: SuspenseOptionalArgs
+    props: SuspenseProps
   ): WNode<Node> => {
     const anchor = frag();
 
-    if (notNullOrUndefined(fallback)) {
-      anchor.setChildren([fallback]);
+    if (notNullOrUndefined(props.fallback)) {
+      anchor.setChildren([props.fallback]);
     }
 
-    child.then((value: WNode<Node>): void => {
+    props.child.then((value: WNode<Node>): void => {
       anchor.setChildren([value]);
     });
 
