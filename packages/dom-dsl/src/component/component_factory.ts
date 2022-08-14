@@ -1,6 +1,6 @@
 import { WElement, WNode } from "../../../dom";
 import { ComponentContext, IComponentContext } from "./component_context";
-import { InjectionRegistry } from "./inject";
+import { ScopedInjectionRegistry } from "./inject";
 import { Consumer, Function } from "../../../util";
 
 /**
@@ -16,8 +16,8 @@ export type StatefulDomBuilder<T extends WNode<Node>> = (
  */
 export type DomBuilder<T extends WNode<Node>> = (...args: any[]) => T;
 
-let globalInjectionScope: InjectionRegistry =
-  new InjectionRegistry();
+let globalInjectionScope: ScopedInjectionRegistry =
+  new ScopedInjectionRegistry();
 
 const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   const parentScope = globalInjectionScope;
@@ -62,9 +62,9 @@ export const createComponent = <T extends WNode<Node>>(
  * @param builder The builder function to close over the current injection scope
  */
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
-  const capturedInjectionScope: InjectionRegistry = globalInjectionScope.fork();
+  const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
   return (...args: any[]): T => {
-    const currentInjectionScope: InjectionRegistry = globalInjectionScope;
+    const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
     try {
       return builder(...args);

@@ -2,27 +2,31 @@ import {createState, ILeafAtom, runUntracked} from "../../../atom";
 
 export interface InjectionKey<T> extends Symbol {}
 
-export class InjectionRegistry {
-  private readonly parentRegistry: InjectionRegistry | undefined;
-  private readonly symbols: Map<any, ILeafAtom<any>> = new Map();
+export class ScopedInjectionRegistry {
+  private readonly symbols: Map<any, ILeafAtom<any>>[] = [new Map()];
 
-  constructor(parentRegistry?: InjectionRegistry) {
-    this.parentRegistry = parentRegistry;
-  }
-
-  public  fork(): InjectionRegistry {
-      return new InjectionRegistry(this);
+  public  fork(): ScopedInjectionRegistry {
+      const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
+      child.symbols.length = 0;
+      child.symbols.push(...this.symbols, new Map());
+      return child;
   }
 
   public set<T>(key: InjectionKey<T>, value: T): void {
-    if (this.symbols.has(key)) {
-      runUntracked(() => this.symbols.get(key)?.set(value));
+    if (this.symbols[this.symbols.length-1].has(key)) {
+      runUntracked(() => this.symbols[this.symbols.length-1].get(key)?.set(value));
     } else {
-     this.symbols.set(key, createState(value));
+      this.symbols[this.symbols.length-1].set(key, createState(value));
     }
   }
 
   public get<T>(key: InjectionKey<T>): T | undefined {
-    return this.symbols.get(key)?.get() ?? this.parentRegistry?.get(key);
+    for (let i = this.symbols.length - 1; i >= 0; --i) {
+      if (this.symbols[i].has(key)) {
+        return this.symbols[i].get(key)?.get();
+      }
+    }
+
+    return undefined;
   }
 }
