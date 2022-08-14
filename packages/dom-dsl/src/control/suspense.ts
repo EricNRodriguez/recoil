@@ -3,7 +3,6 @@ import { WNode } from "../../../dom";
 import { notNullOrUndefined } from "../../../util";
 import { createComponent } from "../../../component";
 
-
 export type SuspenseProps = {
   child: Promise<WNode<Node>>;
   fallback?: WNode<Node>;
