@@ -2,7 +2,6 @@ import {createState, ILeafAtom} from "../../../atom";
 
 export interface InjectionKey<T> extends Symbol {}
 
-// A store with tracked reads/writes
 export class ScopedInjectionRegistry {
   private readonly symbols: Map<any, ILeafAtom<any>>[] = [new Map()];
 
@@ -10,6 +9,7 @@ export class ScopedInjectionRegistry {
       const child: ScopedInjectionRegistry = new ScopedInjectionRegistry();
       child.symbols.length = 0;
       child.symbols.push(...parent.symbols);
+      child.enterScope();
       return child;
   }
 

@@ -23,7 +23,6 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   const prevInjScope = globalInjectionScope;
 
   const ch = ScopedInjectionRegistry.fork(globalInjectionScope);
-  ch.enterScope();
 
   globalInjectionScope = ch;
   try {
@@ -33,7 +32,6 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
       )
     );
   } finally {
-    ch.exitScope();
     globalInjectionScope = prevInjScope;
   }
 };
@@ -53,7 +51,7 @@ export const createComponent = <T extends WNode<Node>>(
 
 /**
  * Wraps a lazy builder inside a closure such that the current injection scope state is captured and restored
- * on each invocation. I.e. the returned DomBuilder forms a cosure over the injection scope.
+ * on each invocation. I.e. the returned DomBuilder forms a closure over the injection scope.
  *
  * This is intended to be abstracted away inside control components that manage the rebuilding of components. The end user
  * shouldn't need to know how the injection api works, just that it does what is intuitive.
@@ -63,7 +61,8 @@ export const createComponent = <T extends WNode<Node>>(
 export const lazy = <T extends WNode<Node>>(builder: DomBuilder<T>): DomBuilder<T> => {
     const capturedInjectionScope: ScopedInjectionRegistry = ScopedInjectionRegistry.fork(globalInjectionScope);
     return (...args: any[]): T => {
-        const currentInjectionScope: ScopedInjectionRegistry = capturedInjectionScope;
+        const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
+        globalInjectionScope = capturedInjectionScope;
         try {
             return builder(...args);
         } finally {
