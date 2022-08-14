@@ -1,16 +1,16 @@
 import { IAtom, isAtom } from "../../../atom";
-import {
-  Supplier,
-  WDerivationCache,
-} from "../../../util";
+import { Supplier, WDerivationCache } from "../../../util";
 import { frag } from "../element";
 import { WNode } from "../../../dom";
-import {createComponent, lazy} from "../../../component/src/component_factory";
-import {IComponentContext} from "../../../component";
+import {
+  createComponent,
+  lazy,
+} from "../../../component/src/component_factory";
+import { IComponentContext } from "../../../component";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
-export type IfElseContent =  Supplier<WNode<Node>>;
+export type IfElseContent = Supplier<WNode<Node>>;
 
 export type IfElseProps = {
   condition: IfElseCondition;
@@ -20,11 +20,8 @@ export type IfElseProps = {
 
 const nullOrUndefinedNode = new WNode(document.createComment("null"));
 export const ifElse = createComponent(
-  (
-    ctx: IComponentContext,
-    props: IfElseProps,
-  ): WNode<Node> => {
-    let {condition, ifTrue, ifFalse} = props;
+  (ctx: IComponentContext, props: IfElseProps): WNode<Node> => {
+    let { condition, ifTrue, ifFalse } = props;
 
     ifFalse ??= () => nullOrUndefinedNode;
 
@@ -38,8 +35,7 @@ export const ifElse = createComponent(
     const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
       boolean,
       WNode<Node>
-    >((value: boolean) => value ? ifTrueWrapped() : ifFalseWrapped(),
-    );
+    >((value: boolean) => (value ? ifTrueWrapped() : ifFalseWrapped()));
 
     const anchor = frag();
 
@@ -76,7 +72,7 @@ const staticIfElse = (
   const anchor = frag();
 
   anchor.setChildren(
-    [condition ? ifTrue() : ifFalse()].filter((c) => c !== nullOrUndefinedNode),
+    [condition ? ifTrue() : ifFalse()].filter((c) => c !== nullOrUndefinedNode)
   );
 
   return anchor;

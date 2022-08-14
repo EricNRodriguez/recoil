@@ -1,13 +1,16 @@
-import {createElement, createFragment, isWNode, WElement, WNode} from "../../dom";
+import {
+  createElement,
+  createFragment,
+  isWNode,
+  WElement,
+  WNode,
+} from "../../dom";
 import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom } from "../../atom";
-import {
-  nullOrUndefined,
-  Supplier,
-} from "../../util";
+import { nullOrUndefined, Supplier } from "../../util";
 
 export type Content = WNode<Node> | string;
-export type RawOrBinded = IAtom<any> | any
+export type RawOrBinded = IAtom<any> | any;
 export type Properties = { [key: string]: RawOrBinded };
 
 // prettier-ignore
@@ -24,8 +27,8 @@ export type EmptyElementBuilder<K extends keyof HTMLElementTagNameMap> =
 
 export type ElementBuilder<K extends keyof HTMLElementTagNameMap> =
   ChildrenOnlyElementBuilder<K> &
-  PropertiesAndChildrenElementBuilder<K> &
-  EmptyElementBuilder<K>;
+    PropertiesAndChildrenElementBuilder<K> &
+    EmptyElementBuilder<K>;
 
 // prettier-ignore
 const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(

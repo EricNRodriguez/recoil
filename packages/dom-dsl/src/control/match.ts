@@ -2,8 +2,8 @@ import { WNode } from "../../../dom";
 import { IAtom } from "../../../atom";
 import { frag } from "../element";
 import { Function, WDerivationCache } from "../../../util";
-import {createComponent, lazy} from "../../../component";
-import {IComponentContext} from "../../../component";
+import { createComponent, lazy } from "../../../component";
+import { IComponentContext } from "../../../component";
 
 export type MatchProps<T> = {
   state: IAtom<T>;
@@ -13,9 +13,9 @@ export type MatchProps<T> = {
 export const match = createComponent(
   <T extends Object>(
     ctx: IComponentContext,
-    props: MatchProps<T>,
+    props: MatchProps<T>
   ): WNode<Node> => {
-    let {state, render} = props;
+    let { state, render } = props;
 
     render = lazy(render);
 

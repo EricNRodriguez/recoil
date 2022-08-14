@@ -1,10 +1,9 @@
-import {frag, string} from "../element";
+import { frag, string } from "../element";
 import { MaybeNodeOrVNode } from "../element";
 import { WNode } from "../../../dom";
 import { Supplier, Function, notNullOrUndefined } from "../../../util";
 import { wrapInVNode } from "../../../dom/src/node";
-import {createComponent, IComponentContext, lazy} from "../../../component";
-
+import { createComponent, IComponentContext, lazy } from "../../../component";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
@@ -18,13 +17,12 @@ export type ForEachProps<T> = {
   render: Function<T, WNode<Node>>;
 };
 
-
 export const foreach = createComponent(
   <T extends Object>(
     ctx: IComponentContext,
-    props: ForEachProps<T>,
+    props: ForEachProps<T>
   ): WNode<Node> => {
-    let {items, render} = props;
+    let { items, render } = props;
     render = lazy(render);
 
     const anchor = frag();
