@@ -6,15 +6,16 @@ import { Consumer, Function } from "../../util";
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
  */
-export type StatefulDomBuilder<P, T extends WNode<Node>> = (
+export type StatefulDomBuilder<P extends Object, T extends WNode<Node>> = (
   ctx: ComponentContext,
-  props: P
+  props: P,
+  ...children: WNode<Node>[]
 ) => T;
 
 /**
  * A plain old javascript function that returns a wNode (or a subclass of it)
  */
-export type DomBuilder<P, T extends WNode<Node>> = (props: P) => T;
+export type DomBuilder<P extends Object, T extends WNode<Node>> = (props: P, ...children: WNode<Node>[]) => T;
 
 let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
