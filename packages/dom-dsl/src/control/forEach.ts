@@ -17,7 +17,7 @@ export type ForEachProps<T> = {
   render: Function<T, WNode<Node>>;
 };
 
-export const foreach = createComponent(
+export const forEach = createComponent(
   <T extends Object>(
     ctx: IComponentContext,
     props: ForEachProps<T>

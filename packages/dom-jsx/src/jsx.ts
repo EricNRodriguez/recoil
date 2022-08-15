@@ -10,14 +10,7 @@ export const jsx = (tag: string | DomBuilder<Object, WNode<Node>> | Symbol, prop
     }
 
     if (typeof tag === "function") {
-      // NOTE: how do we pass children through??? via the props?? or do we sort of encourage the component
-      // api to take props and children as well??
-      //
-      // I think it may be worth exploring a component api that is closer to jsx. i.e. a ctx, then maybe props and
-      // maybe props and children? I think this is an option worth exploring. We can do it with function overloading,
-      // and it will make for a clean api that works well with jsx? this is also easier since we can pass more than the
-      // specified number of args to a function in js and we wont get an error...
-      return (tag as DomBuilder<Object, WNode<Node>>)(props);
+      return (tag as DomBuilder<Object, WNode<Node>>)(props, ...children);
     }
 
     if (typeof tag !== "string") {
@@ -26,8 +19,8 @@ export const jsx = (tag: string | DomBuilder<Object, WNode<Node>> | Symbol, prop
     }
 
     return createElement(
-      tag as any,
-      props as any,
+      tag as keyof HTMLElementTagNameMap,
+      props as Object,
       [...children]
     );
 };
