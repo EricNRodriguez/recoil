@@ -42,9 +42,9 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
 export const createComponent = <P, T extends WNode<Node>>(
   buildDomTree: StatefulDomBuilder<P, T>
 ): DomBuilder<P, T> => {
-  return (props: P): T => {
+  return (props: P, ...children: WNode<Node>[]): T => {
     return executeWithContext<T>((ctx: ComponentContext): T => {
-      const node: T = buildDomTree(ctx, props);
+      const node: T = buildDomTree(ctx, props, ...children);
       ctx.applyDeferredFunctions(node);
       return node;
     });
@@ -69,11 +69,11 @@ export const lazy = <P, T extends WNode<Node>>(
 ): DomBuilder<P, T> => {
   const capturedInjectionScope: ScopedInjectionRegistry =
     globalInjectionScope.fork();
-  return (props: P): T => {
+  return (props: P, ...children: WNode<Node>[]): T => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
     try {
-      return builder(props);
+      return builder(props, ...children);
     } finally {
       globalInjectionScope = currentInjectionScope;
     }
