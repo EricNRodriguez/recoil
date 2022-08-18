@@ -1,9 +1,28 @@
 import {createComponent, IComponentContext} from "../../component";
 import {WNode} from "../../dom";
-import {Function, nullOrUndefined, Supplier} from "../../util";
+import {Function, nullOrUndefined, Producer, Supplier} from "../../util";
 import {forEach, IndexedItem} from "../../dom-dsl/src/control/forEach";
-import {IAtom} from "../../atom";
-import {frag, ifElse, tr} from "../../dom-dsl";
+import {IAtom, isAtom} from "../../atom";
+import {frag} from "../../dom-dsl";
+import {nonEmpty} from "../../util/src/type_check";
+
+export type SupplyProps = {
+    get: Producer<WNode<Node>>;
+};
+
+export const Supply = createComponent((ctx: IComponentContext, props: SupplyProps,  ...children: WNode<Node>[]): WNode<Node> => {
+    const node = frag();
+
+    if (nonEmpty(children)) {
+      throw new Error("Supply children must be provided through the supplyNodes attribute");
+    }
+
+    ctx.runEffect((): void => {
+        node.setChildren([props.get()]);
+    });
+
+    return node;
+});
 
 export type ForProps<T> = {
   items: Supplier<IndexedItem<T>[]>;
@@ -18,36 +37,20 @@ export const For = createComponent(<T>(ctx: IComponentContext, props: ForProps<T
   return forEach<T>(props);
 });
 
-const mintedTrueComponents: WeakSet<WNode<Node>> = new WeakSet();
 export const True = createComponent((ctx: IComponentContext, props: {}, ...children: WNode<Node>[]): WNode<Node> => {
-  const node = frag(...children);
-  mintedTrueComponents.add(node);
-  return node;
+  return Case({value: true}, ...children);
 });
 
-const mintedFalseComponents: WeakSet<WNode<Node>> = new WeakSet();
 export const False = createComponent((ctx: IComponentContext, props: {}, ...children: WNode<Node>[]): WNode<Node> => {
-  const node = frag(...children);
-  mintedFalseComponents.add(node);
-  return node;
+  return Case({value: false}, ...children);
 });
 
 export type IfProps = {
-    condition: boolean | IAtom<boolean>;
+  condition: boolean | IAtom<boolean>;
 };
 
 export const If = createComponent((ctx: IComponentContext, props: IfProps, ...children: WNode<Node>[]): WNode<Node> => {
-  const trueChildren = children
-    .filter(mintedTrueComponents.has.bind(mintedTrueComponents));
-
-  const falseChildren = children
-    .filter(mintedFalseComponents.has.bind(mintedFalseComponents));
-
-  return ifElse({
-    condition: props.condition,
-    ifTrue: () => frag(...trueChildren),
-    ifFalse: () => frag(...falseChildren),
-  });
+  return Switch({value: props.condition}, ...children);
 });
 
 export type CaseProps<T> = {
@@ -61,9 +64,8 @@ export const Case = createComponent(<T>(ctx: IComponentContext, props: CaseProps
   return node;
 });
 
-
 export type SwitchProps<T> = {
-  value: IAtom<T>;
+  value: T | IAtom<T>;
 };
 
 export const Switch = createComponent(<T>(ctx: IComponentContext, props: SwitchProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
@@ -72,15 +74,18 @@ export const Switch = createComponent(<T>(ctx: IComponentContext, props: SwitchP
   ctx.runEffect((): void => {
     node.setChildren([]);
 
-    const val = props.value.get();
+    const val = isAtom(props.value) ? (props.value as IAtom<T>).get() : props.value;
     for (let child of children) {
+      if (!mintedCaseComponents.has(child)) {
+        throw new Error("direct children of Switch component must be Case components");
+      }
       const childVal = mintedCaseComponents.get(child) ?? undefined;
       if (nullOrUndefined(childVal)) {
         continue;
       }
       if (childVal === val) {
-          node.setChildren([child]);
-          return;
+        node.setChildren([child]);
+        return;
       }
     }
   });
