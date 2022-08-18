@@ -13,3 +13,7 @@ export const nullOrUndefined = <T>(item: T): boolean => {
 export const notNullOrUndefined = <T>(item: T): boolean => {
   return !nullOrUndefined(item);
 };
+
+export const nonEmpty = <T>(col: T[]): boolean => {
+  return col.length !== 0;
+};
