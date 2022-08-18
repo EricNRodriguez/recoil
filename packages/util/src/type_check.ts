@@ -16,4 +16,4 @@ export const notNullOrUndefined = <T>(item: T): boolean => {
 
 export const nonEmpty = <T>(col: T[]): boolean => {
   return col.length !== 0;
-}
+};

@@ -8,16 +8,20 @@ export type ComponentChild = WNode<Node> | Promise<WNode<Node>>;
 /**
  * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
  */
-export type StatefulDomBuilder<P extends Object, T extends WNode<Node>, C extends ComponentChild> = (
-  ctx: ComponentContext,
-  props: P,
-  ...children: C[]
-) => T;
+export type StatefulDomBuilder<
+  P extends Object,
+  T extends WNode<Node>,
+  C extends ComponentChild
+> = (ctx: ComponentContext, props: P, ...children: C[]) => T;
 
 /**
  * A plain old javascript function that returns a wNode (or a subclass of it)
  */
-export type DomBuilder<P extends Object, T extends WNode<Node>, C extends ComponentChild> = (props: P, ...children: C[]) => T;
+export type DomBuilder<
+  P extends Object,
+  T extends WNode<Node>,
+  C extends ComponentChild
+> = (props: P, ...children: C[]) => T;
 
 let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
@@ -41,7 +45,11 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
 // NOTE: ts has a disappointingly small degree of support for trafficking free params in a type safe way,
 // which makes partial application completely unsafe type-wise, so I have opted for single arg components, in the
 // form of 'props'. See: https://github.com/microsoft/TypeScript/issues/25256
-export const createComponent = <P, T extends WNode<Node>, C extends ComponentChild>(
+export const createComponent = <
+  P,
+  T extends WNode<Node>,
+  C extends ComponentChild
+>(
   buildDomTree: StatefulDomBuilder<P, T, C>
 ): DomBuilder<P, T, C> => {
   return (props: P, ...children: C[]): T => {
