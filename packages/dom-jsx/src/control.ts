@@ -153,22 +153,16 @@ export type SuspenseProps = {
   default?: WNode<Node>;
 };
 
-export const Suspense = createComponent(
-  (
-    ctx: IComponentContext,
-    props: SuspenseProps,
-    ...children: Promise<WNode<Node>>[]
-  ): WNode<Node> => {
-    const anchor = frag();
+export const Suspense = (props: SuspenseProps, ...children: Promise<WNode<Node>>[]): WNode<Node> => {
+  const anchor = frag();
 
-    if (notNullOrUndefined(props.default)) {
-      anchor.setChildren([props.default]);
-    }
-
-    Promise.all(children).then((syncChildren: WNode<Node>[]) => {
-      anchor.setChildren(syncChildren);
-    });
-
-    return anchor;
+  if (notNullOrUndefined(props.default)) {
+    anchor.setChildren([props.default]);
   }
-);
+
+  Promise.all(children).then((syncChildren: WNode<Node>[]) => {
+    anchor.setChildren(syncChildren);
+  });
+
+  return anchor;
+};
