@@ -1,6 +1,6 @@
 import {createComponent, IComponentContext} from "../../component";
 import {WNode} from "../../dom";
-import {Function, Supplier} from "../../util";
+import {Function, nullOrUndefined, Supplier} from "../../util";
 import {forEach, IndexedItem} from "../../dom-dsl/src/control/forEach";
 import {IAtom} from "../../atom";
 import {frag, ifElse, tr} from "../../dom-dsl";
@@ -25,7 +25,6 @@ export const True = createComponent((ctx: IComponentContext, props: {}, ...child
   return node;
 });
 
-
 const mintedFalseComponents: WeakSet<WNode<Node>> = new WeakSet();
 export const False = createComponent((ctx: IComponentContext, props: {}, ...children: WNode<Node>[]): WNode<Node> => {
   const node = frag(...children);
@@ -49,4 +48,42 @@ export const If = createComponent((ctx: IComponentContext, props: IfProps, ...ch
     ifTrue: () => frag(...trueChildren),
     ifFalse: () => frag(...falseChildren),
   });
+});
+
+export type CaseProps<T> = {
+  value: T;
+};
+
+const mintedCaseComponents: WeakMap<WNode<Node>, any> = new WeakMap();
+export const Case = createComponent(<T>(ctx: IComponentContext, props: CaseProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
+  const node = frag(...children);
+  mintedCaseComponents.set(node, props.value);
+  return node;
+});
+
+
+export type SwitchProps<T> = {
+  value: IAtom<T>;
+};
+
+export const Switch = createComponent(<T>(ctx: IComponentContext, props: SwitchProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
+  const node = frag();
+
+  ctx.runEffect((): void => {
+    node.setChildren([]);
+
+    const val = props.value.get();
+    for (let child of children) {
+      const childVal = mintedCaseComponents.get(child) ?? undefined;
+      if (nullOrUndefined(childVal)) {
+        continue;
+      }
+      if (childVal === val) {
+          node.setChildren([childVal]);
+          return;
+      }
+    }
+  });
+
+  return node;
 });
