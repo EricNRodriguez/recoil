@@ -79,7 +79,7 @@ export const Switch = createComponent(<T>(ctx: IComponentContext, props: SwitchP
         continue;
       }
       if (childVal === val) {
-          node.setChildren([childVal]);
+          node.setChildren([child]);
           return;
       }
     }
