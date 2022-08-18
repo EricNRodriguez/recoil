@@ -1,9 +1,9 @@
 import {createComponent, IComponentContext} from "../../component";
 import {WNode} from "../../dom";
-import {Function, nullOrUndefined, Producer, Supplier} from "../../util";
+import {Function, notNullOrUndefined, nullOrUndefined, Producer, Supplier} from "../../util";
 import {forEach, IndexedItem} from "../../dom-dsl/src/control/forEach";
 import {IAtom, isAtom} from "../../atom";
-import {frag} from "../../dom-dsl";
+import {frag, th} from "../../dom-dsl";
 import {nonEmpty} from "../../util/src/type_check";
 
 export type SupplyProps = {
@@ -92,3 +92,22 @@ export const Switch = createComponent(<T>(ctx: IComponentContext, props: SwitchP
 
   return node;
 });
+
+export type SuspenseProps = {
+    default?: WNode<Node>;
+};
+
+export const Suspense = createComponent((ctx: IComponentContext, props: SuspenseProps, ...children: Promise<WNode<Node>>[]): WNode<Node> => {
+    const anchor = frag();
+
+    if (notNullOrUndefined(props.default)) {
+      anchor.setChildren([props.default]);
+    }
+
+    Promise.all(children).then((syncChildren: WNode<Node>[]) => {
+      anchor.setChildren(syncChildren);
+    });
+
+    return anchor;
+  }
+);
