@@ -4,7 +4,7 @@ import {frag, t} from "../../dom-dsl";
 
 export const Fragment = Symbol();
 
-export const jsx = (tag: string | DomBuilder<Object, WNode<Node>> | Symbol, props: Object, children: WNode<Node>[]): WNode<Node> => {
+export const jsx = (tag: string | DomBuilder<Object, WNode<Node>> | Symbol, props: Object, ...children: WNode<Node>[]): WNode<Node> => {
     if (tag === Fragment) {
       return frag(...children);
     }
