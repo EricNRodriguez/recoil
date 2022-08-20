@@ -1,7 +1,7 @@
 import {IAtom} from "../../../atom";
 import {WNode} from "../../../dom/src/core/node";
 import {Function, WDerivationCache} from "../../../util";
-import {createComponent, lazy} from "../../../dom/src/component/api/component_factory";
+import {createComponent, closeOverComponentScope} from "../../../dom/src/component/api/component_factory";
 import {IComponentContext} from "../../../dom/src/component/api/component_context";
 import {createFragment} from "../../../dom/src/core/factory";
 
@@ -17,7 +17,7 @@ export const match = createComponent(
   ): WNode<Node> => {
     let { state, render } = props;
 
-    render = lazy(render);
+    render = closeOverComponentScope(render);
 
     const anchor = createFragment([]);
     const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(

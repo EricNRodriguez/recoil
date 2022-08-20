@@ -31,14 +31,14 @@ export type Component<Props extends Object, Children extends unknown[], ReturnNo
 /**
  * Curries a component context into the provided component builder
  *
- * @param buildDomTree A component builder
+ * @param buildComponent A component builder
  */
 export const createComponent = <Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>>(
-  buildDomTree: (ctx: IComponentContext, ...args: Parameters<Component<Props, Children, ReturnNode>>) => ReturnNode,
+  buildComponent: (ctx: IComponentContext, ...args: Parameters<Component<Props, Children, ReturnNode>>) => ReturnNode,
 ): Component<Props, Children, ReturnNode> => {
   return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
     return executeWithContext<ReturnNode>((ctx: ComponentContext): ReturnNode => {
-      const node: ReturnNode = buildDomTree(ctx, ...args);
+      const node: ReturnNode = buildComponent(ctx, ...args);
       ctx.applyDeferredFunctions(node);
       return node;
     });
@@ -46,7 +46,7 @@ export const createComponent = <Props extends Object, Children extends unknown[]
 };
 
 /**
- * Wraps a lazy builder inside a closure such that the current contexts scope state is captured and restored
+ * Wraps a component inside a closure such that the current contexts scope state is captured and restored
  * on each invocation. I.e. the returned DomBuilder forms a closure over the context scope.
  *
  * This is intended to be abstracted away inside control components that manage the rebuilding of components. The end user
@@ -58,7 +58,7 @@ export const createComponent = <Props extends Object, Children extends unknown[]
  *
  * @param component The component to close over the current context scope
  */
-export const lazy = <Props extends Object, ReturnNode extends WNode<Node>, Children extends unknown[]>(
+export const closeOverComponentScope = <Props extends Object, ReturnNode extends WNode<Node>, Children extends unknown[]>(
   component: Component<Props, Children, ReturnNode>,
 ): Component<Props, Children, ReturnNode> => {
   const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();

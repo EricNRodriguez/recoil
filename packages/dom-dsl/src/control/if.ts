@@ -1,7 +1,7 @@
 import {IAtom, isAtom} from "../../../atom";
 import {Supplier, WDerivationCache} from "../../../util";
 import {WNode} from "../../../dom/src/core/node";
-import {createComponent, lazy} from "../../../dom/src/component/api/component_factory";
+import {createComponent, closeOverComponentScope} from "../../../dom/src/component/api/component_factory";
 import {IComponentContext} from "../../../dom/src/component/api/component_context";
 import {createFragment} from "../../../dom/src/core/factory";
 
@@ -22,8 +22,8 @@ export const ifElse = createComponent(
 
     ifFalse ??= () => nullOrUndefinedNode;
 
-    const ifTrueWrapped = () => lazy((_) => ifTrue())({});
-    const ifFalseWrapped = () => lazy((_) => ifFalse!())({});
+    const ifTrueWrapped = () => closeOverComponentScope((_) => ifTrue())({});
+    const ifFalseWrapped = () => closeOverComponentScope((_) => ifFalse!())({});
 
     if (typeof condition === "boolean") {
       return staticIfElse(condition, ifTrueWrapped, ifFalseWrapped);
