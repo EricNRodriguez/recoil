@@ -1,9 +1,9 @@
 import {notNullOrUndefined, Supplier} from "../../../util";
 import {WNode, wrapInVNode} from "../../../dom/src/core/node";
-import {IComponentContext} from "../../../dom/src/component/api/component_context";
-import {createComponent, closeOverComponentScope} from "../../../dom/src/component/api/component_factory";
+import {IComponentContext} from "../../../dom";
+import {createComponent} from "../../../dom";
 import {Function} from "../../../util";
-import {createFragment} from "../../../dom/src/core/factory";
+import {createFragment} from "../../../dom";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
@@ -25,7 +25,6 @@ export const forEach = createComponent(
     props: ForEachProps<T>
   ): WNode<Node> => {
     let { items, render } = props;
-    render = closeOverComponentScope(render);
 
     const anchor = createFragment([]);
 

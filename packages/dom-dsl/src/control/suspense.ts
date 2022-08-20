@@ -1,7 +1,7 @@
-import {WNode} from "../../../dom/src/core/node";
-import {createComponent} from "../../../dom/src/component/api/component_factory";
-import {IComponentContext} from "../../../dom/src/component/api/component_context";
-import {createFragment} from "../../../dom/src/core/factory";
+import {WNode} from "../../../dom";
+import {createComponent} from "../../../dom";
+import {IComponentContext} from "../../../dom";
+import {createFragment} from "../../../dom";
 import {notNullOrUndefined} from "../../../util";
 
 export type SuspenseProps = {

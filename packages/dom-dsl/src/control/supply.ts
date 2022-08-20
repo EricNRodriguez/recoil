@@ -1,8 +1,8 @@
 import {Producer} from "../../../util";
-import {WNode} from "../../../dom/src/core/node";
-import {frag} from "../../index";
-import {createComponent} from "../../../dom/src/component/api/component_factory";
-import {IComponentContext} from "../../../dom/src/component/api/component_context";
+import {WNode} from "../../../dom";
+import {frag} from "../element";
+import {createComponent} from "../../../dom";
+import {IComponentContext} from "../../../dom";
 
 export type SupplyProps = {
   get: Producer<WNode<Node>>;
