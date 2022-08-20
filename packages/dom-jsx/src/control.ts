@@ -1,4 +1,4 @@
-import {IComponentContext, WNode} from "../../dom";
+import {createComponent, IComponentContext, WNode} from "../../dom";
 import {
   Function,
   notNullOrUndefined,
@@ -10,7 +10,6 @@ import { forEach, IndexedItem } from "../../dom-dsl/src/control/forEach";
 import { IAtom, isAtom } from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import { nonEmpty } from "../../util/src/type_check";
-import {createComponent} from "../../dom/src/component/api/component_factory";
 
 export type SupplyProps = {
   get: Producer<WNode<Node>>;
@@ -47,14 +46,7 @@ export const For = createComponent(
   <T>(
     ctx: IComponentContext,
     props: ForProps<T>,
-    ...children: WNode<Node>[]
   ): WNode<Node> => {
-    if (children.length !== 0) {
-      throw new Error(
-        "For component requires children to be specified through the item attribute"
-      );
-    }
-
     return forEach<T>(props);
   }
 );
