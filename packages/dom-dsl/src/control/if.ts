@@ -1,10 +1,9 @@
 import {IAtom, isAtom} from "../../../atom";
 import {Supplier, WDerivationCache} from "../../../util";
-import {WNode} from "../../../dom";
-import {createComponent} from "../../../dom";
-import {IComponentContext} from "../../../dom";
-import {createFragment} from "../../../dom";
-import {div} from "../element";
+import {WNode} from "../../../dom/src/core/node";
+import {createComponent, closeOverComponentScope} from "../../../dom/src/component/api/component_factory";
+import {IComponentContext} from "../../../dom/src/component/api/component_context";
+import {createFragment} from "../../../dom/src/core/factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
@@ -23,14 +22,17 @@ export const ifElse = createComponent(
 
     ifFalse ??= () => nullOrUndefinedNode;
 
+    const ifTrueWrapped = () => closeOverComponentScope((_) => ifTrue())({});
+    const ifFalseWrapped = () => closeOverComponentScope((_) => ifFalse!())({});
+
     if (typeof condition === "boolean") {
-      return staticIfElse(condition, ifTrue, ifFalse);
+      return staticIfElse(condition, ifTrueWrapped, ifFalseWrapped);
     }
 
     const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
       boolean,
       WNode<Node>
-    >((value: boolean) => (value ? ifTrue() : ifFalse!()));
+    >((value: boolean) => (value ? ifTrueWrapped() : ifFalseWrapped()));
 
     const anchor = createFragment([]);
 
