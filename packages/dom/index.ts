@@ -1,9 +1,9 @@
-export { WNode, isWNode } from "./src/core/node";
-export { WElement } from "./src/core/element";
-export { createElement, createFragment, createTextNode } from "./src/core/factory";
+export { WNode, isWNode } from "./src/node";
+export { WElement } from "./src/element";
+export { createElement, createFragment, createTextNode } from "./src/factory";
 export {
   createComponent,
   closeOverComponentScope,
   Component
-} from "../dom/src/component/api/component_factory";
-export { IComponentContext } from "../dom/src/component/api/component_context";
+} from "../component/src/api";
+export { IComponentContext } from "../component/src/context";

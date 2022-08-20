@@ -1,9 +1,9 @@
 import {IAtom} from "../../../atom";
-import {WNode} from "../../../dom/src/core/node";
+import {WNode} from "../../../dom/src/node";
 import {Function, WDerivationCache} from "../../../util";
-import {createComponent, closeOverComponentScope} from "../../../dom/src/component/api/component_factory";
-import {IComponentContext} from "../../../dom/src/component/api/component_context";
-import {createFragment} from "../../../dom/src/core/factory";
+import {createComponent} from "../../../component/src/api";
+import {IComponentContext} from "../../../component/src/context";
+import {createFragment} from "../../../dom/src/factory";
 
 export type MatchProps<T> = {
   state: IAtom<T>;
@@ -16,8 +16,6 @@ export const match = createComponent(
     props: MatchProps<T>
   ): WNode<Node> => {
     let { state, render } = props;
-
-    render = closeOverComponentScope(render);
 
     const anchor = createFragment([]);
     const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(
