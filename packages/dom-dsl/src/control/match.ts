@@ -1,9 +1,9 @@
-import { WNode } from "../../../dom";
-import { IAtom } from "../../../atom";
-import { frag } from "../element";
-import { Function, WDerivationCache } from "../../../util";
-import { createComponent, lazy } from "../../../component";
-import { IComponentContext } from "../../../component";
+import {IAtom} from "../../../atom";
+import {WNode} from "../../../dom/src/core/node";
+import {Function, WDerivationCache} from "../../../util";
+import {createComponent, lazy} from "../../../dom/src/component/api/component_factory";
+import {IComponentContext} from "../../../dom/src/component/api/component_context";
+import {createFragment} from "../../../dom/src/core/factory";
 
 export type MatchProps<T> = {
   state: IAtom<T>;
@@ -19,7 +19,7 @@ export const match = createComponent(
 
     render = lazy(render);
 
-    const anchor = frag();
+    const anchor = createFragment([]);
     const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(
       render
     );

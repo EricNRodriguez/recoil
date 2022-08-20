@@ -1,12 +1,14 @@
-import { frag, string } from "../element";
-import { MaybeNodeOrVNode } from "../element";
-import { WNode } from "../../../dom";
-import { Supplier, Function, notNullOrUndefined } from "../../../util";
-import { wrapInVNode } from "../../../dom/src/node";
-import { createComponent, IComponentContext, lazy } from "../../../component";
+import {notNullOrUndefined, Supplier} from "../../../util";
+import {WNode, wrapInVNode} from "../../../dom/src/core/node";
+import {IComponentContext} from "../../../dom/src/component/api/component_context";
+import {createComponent, lazy} from "../../../dom/src/component/api/component_factory";
+import {Function} from "../../../util";
+import {createFragment} from "../../../dom/src/core/factory";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
+
+export type MaybeNodeOrWNode = Node | WNode<Node> | undefined | null;
 
 // utility lenses for unboxing index and item from an IndexedItem
 export const getKey = <T>(item: IndexedItem<T>): string => item[0];
@@ -25,15 +27,15 @@ export const forEach = createComponent(
     let { items, render } = props;
     render = lazy(render);
 
-    const anchor = frag();
+    const anchor = createFragment([]);
 
-    let currentItemIndex: Map<string, MaybeNodeOrVNode> = new Map();
+    let currentItemIndex: Map<string, MaybeNodeOrWNode> = new Map();
 
     ctx.runEffect((): void => {
       const newItems: IndexedItem<T>[] = items();
       const newItemOrder: string[] = newItems.map(getKey);
-      const newItemNodesIndex: Map<string, MaybeNodeOrVNode> = new Map(
-        newItems.map((item: IndexedItem<T>): [string, MaybeNodeOrVNode] => [
+      const newItemNodesIndex: Map<string, MaybeNodeOrWNode> = new Map(
+        newItems.map((item: IndexedItem<T>): [string, MaybeNodeOrWNode] => [
           getKey(item),
           currentItemIndex.get(getKey(item)) ?? render(getItem(item)),
         ])

@@ -1,21 +1,7 @@
-import { WElement, WNode } from "../../dom";
-import { ComponentContext, IComponentContext } from "./component_context";
-import { ScopedInjectionRegistry } from "./inject";
-import { Consumer, Function } from "../../util";
-
-/**
- * A plain old javascript function that consumes a IComponentContext and returns a wNode (or subclass of it)
- */
-export type StatefulDomBuilder<P extends Object, T extends WNode<Node>> = (
-  ctx: ComponentContext,
-  props: P,
-  ...children: WNode<Node>[]
-) => T;
-
-/**
- * A plain old javascript function that returns a wNode (or a subclass of it)
- */
-export type DomBuilder<P extends Object, T extends WNode<Node>> = (props: P, ...children: WNode<Node>[]) => T;
+import {ComponentContext, IComponentContext} from "./component_context";
+import {ScopedInjectionRegistry} from "./inject";
+import {Function} from "../../../../util";
+import {WNode} from "../../core/node";
 
 let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
@@ -36,15 +22,23 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   }
 };
 
-// NOTE: ts has a disappointingly small degree of support for trafficking free params in a type safe way,
-// which makes partial application completely unsafe type-wise, so I have opted for single arg components, in the
-// form of 'props'. See: https://github.com/microsoft/TypeScript/issues/25256
-export const createComponent = <P, T extends WNode<Node>>(
-  buildDomTree: StatefulDomBuilder<P, T>
-): DomBuilder<P, T> => {
-  return (props: P, ...children: WNode<Node>[]): T => {
-    return executeWithContext<T>((ctx: ComponentContext): T => {
-      const node: T = buildDomTree(ctx, props, ...children);
+/**
+ * A plain old javascript function that accepts a props object and zero or more children, and returns a WNode<Node>
+ */
+export type Component<Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>> =
+  (props: Props, ...children: [...Children]) => ReturnNode;
+
+/**
+ * Curries a component context into the provided component builder
+ *
+ * @param buildDomTree A component builder
+ */
+export const createComponent = <Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>>(
+  buildDomTree: (ctx: IComponentContext, ...args: Parameters<Component<Props, Children, ReturnNode>>) => ReturnNode,
+): Component<Props, Children, ReturnNode> => {
+  return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
+    return executeWithContext<ReturnNode>((ctx: ComponentContext): ReturnNode => {
+      const node: ReturnNode = buildDomTree(ctx, ...args);
       ctx.applyDeferredFunctions(node);
       return node;
     });
@@ -62,20 +56,19 @@ export const createComponent = <P, T extends WNode<Node>>(
  * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of
  * behaviour for any future behaviour that requires similar hierarchical scope.
  *
- * @param builder The builder function to close over the current context scope
+ * @param component The component to close over the current context scope
  */
-export const lazy = <P, T extends WNode<Node>>(
-  builder: DomBuilder<P, T>
-): DomBuilder<P, T> => {
-  const capturedInjectionScope: ScopedInjectionRegistry =
-    globalInjectionScope.fork();
-  return (props: P, ...children: WNode<Node>[]): T => {
+export const lazy = <Props extends Object, ReturnNode extends WNode<Node>, Children extends unknown[]>(
+  component: Component<Props, Children, ReturnNode>,
+): Component<Props, Children, ReturnNode> => {
+  const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
+  return (...args: Parameters<typeof component>): ReturnNode => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
     try {
-      return builder(props, ...children);
+      return component(...args);
     } finally {
       globalInjectionScope = currentInjectionScope;
     }
-  };
+  }
 };

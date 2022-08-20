@@ -1,5 +1,4 @@
-import { createComponent, IComponentContext } from "../../component";
-import { WNode } from "../../dom";
+import {IComponentContext, WNode} from "../../dom";
 import {
   Function,
   notNullOrUndefined,
@@ -11,6 +10,7 @@ import { forEach, IndexedItem } from "../../dom-dsl/src/control/forEach";
 import { IAtom, isAtom } from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import { nonEmpty } from "../../util/src/type_check";
+import {createComponent} from "../../dom/src/component/api/component_factory";
 
 export type SupplyProps = {
   get: Producer<WNode<Node>>;
