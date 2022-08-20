@@ -6,9 +6,9 @@ import {
   WElement,
   WNode,
 } from "../../dom";
-import { wrapTextInVNode } from "./util/dom_util";
 import { IAtom, isAtom } from "../../atom";
 import { nullOrUndefined, Supplier } from "../../util";
+import {wrapTextInWNode} from "../../dom/src/core/util";
 
 export type Content = WNode<Node> | string;
 export type RawOrBinded = IAtom<any> | any;
@@ -39,8 +39,8 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
     firstArg?: Content | Properties,
     ...remainingChildren: Content[]
   ): WElement<HTMLElementTagNameMap[K]> => {
-    const adaptedFirstArg = wrapTextInVNode(firstArg);
-    const adaptedRemainingChildren = remainingChildren.map(wrapTextInVNode);
+    const adaptedFirstArg = wrapTextInWNode(firstArg);
+    const adaptedRemainingChildren = remainingChildren.map(wrapTextInWNode);
 
     if (nullOrUndefined(adaptedFirstArg)) {
       return createElement(

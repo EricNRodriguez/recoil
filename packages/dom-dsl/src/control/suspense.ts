@@ -1,25 +1,21 @@
-import { frag, IComponentContext } from "../../index";
-import { WNode } from "../../../dom";
-import { notNullOrUndefined } from "../../../util";
-import { createComponent } from "../../../component";
+import {WNode} from "../../../dom/src/core/node";
+import {createComponent} from "../../../dom/src/component/api/component_factory";
+import {IComponentContext} from "../../../dom/src/component/api/component_context";
+import {createFragment} from "../../../dom/src/core/factory";
+import {notNullOrUndefined} from "../../../util";
 
 export type SuspenseProps = {
-  child: Promise<WNode<Node>>;
   fallback?: WNode<Node>;
 };
 
-export const suspense = createComponent(
-  (ctx: IComponentContext, props: SuspenseProps): WNode<Node> => {
-    const anchor = frag();
+export const suspense = createComponent((ctx: IComponentContext, props: SuspenseProps, child: Promise<WNode<Node>>): WNode<Node> => {
+  const anchor = createFragment([]);
 
-    if (notNullOrUndefined(props.fallback)) {
-      anchor.setChildren([props.fallback]);
-    }
-
-    props.child.then((value: WNode<Node>): void => {
-      anchor.setChildren([value]);
-    });
-
-    return anchor;
+  if (notNullOrUndefined(props.fallback)) {
+    anchor.setChildren([props.fallback]);
   }
-);
+
+  child.then((c) => anchor.setChildren([c]));
+
+  return anchor;
+});

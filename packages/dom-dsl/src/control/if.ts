@@ -1,12 +1,9 @@
-import { IAtom, isAtom } from "../../../atom";
-import { Supplier, WDerivationCache } from "../../../util";
-import { frag } from "../element";
-import { WNode } from "../../../dom";
-import {
-  createComponent,
-  lazy,
-} from "../../../component/src/component_factory";
-import { IComponentContext } from "../../../component";
+import {IAtom, isAtom} from "../../../atom";
+import {Supplier, WDerivationCache} from "../../../util";
+import {WNode} from "../../../dom/src/core/node";
+import {createComponent, lazy} from "../../../dom/src/component/api/component_factory";
+import {IComponentContext} from "../../../dom/src/component/api/component_context";
+import {createFragment} from "../../../dom/src/core/factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
@@ -25,8 +22,8 @@ export const ifElse = createComponent(
 
     ifFalse ??= () => nullOrUndefinedNode;
 
-    const ifTrueWrapped = () => lazy((_) => ifTrue())(null);
-    const ifFalseWrapped = () => lazy((_) => ifFalse!())(null);
+    const ifTrueWrapped = () => lazy((_) => ifTrue())({});
+    const ifFalseWrapped = () => lazy((_) => ifFalse!())({});
 
     if (typeof condition === "boolean") {
       return staticIfElse(condition, ifTrueWrapped, ifFalseWrapped);
@@ -37,7 +34,7 @@ export const ifElse = createComponent(
       WNode<Node>
     >((value: boolean) => (value ? ifTrueWrapped() : ifFalseWrapped()));
 
-    const anchor = frag();
+    const anchor = createFragment([]);
 
     let currentRenderedState: boolean;
     let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
@@ -69,7 +66,7 @@ const staticIfElse = (
   ifTrue: Supplier<WNode<Node>>,
   ifFalse: Supplier<WNode<Node>>
 ): WNode<Node> => {
-  const anchor = frag();
+  const anchor = createFragment([]);
 
   anchor.setChildren(
     [condition ? ifTrue() : ifFalse()].filter((c) => c !== nullOrUndefinedNode)
