@@ -1,7 +1,7 @@
 import {notNullOrUndefined, Supplier} from "../../../util";
 import {WNode, wrapInVNode} from "../../../dom/src/core/node";
 import {IComponentContext} from "../../../dom/src/component/api/component_context";
-import {createComponent, lazy} from "../../../dom/src/component/api/component_factory";
+import {createComponent, closeOverComponentScope} from "../../../dom/src/component/api/component_factory";
 import {Function} from "../../../util";
 import {createFragment} from "../../../dom/src/core/factory";
 
@@ -25,7 +25,7 @@ export const forEach = createComponent(
     props: ForEachProps<T>
   ): WNode<Node> => {
     let { items, render } = props;
-    render = lazy(render);
+    render = closeOverComponentScope(render);
 
     const anchor = createFragment([]);
 
