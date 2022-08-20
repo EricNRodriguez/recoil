@@ -31,14 +31,14 @@ export type Component<Props extends Object, Children extends unknown[], ReturnNo
 /**
  * Curries a component context into the provided component builder
  *
- * @param buildDomTree A component builder
+ * @param buildComponent A component builder
  */
 export const createComponent = <Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>>(
-  buildDomTree: (ctx: IComponentContext, ...args: Parameters<Component<Props, Children, ReturnNode>>) => ReturnNode,
+  buildComponent: (ctx: IComponentContext, ...args: Parameters<Component<Props, Children, ReturnNode>>) => ReturnNode,
 ): Component<Props, Children, ReturnNode> => {
   return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
     return executeWithContext<ReturnNode>((ctx: ComponentContext): ReturnNode => {
-      const node: ReturnNode = buildDomTree(ctx, ...args);
+      const node: ReturnNode = buildComponent(ctx, ...args);
       ctx.applyDeferredFunctions(node);
       return node;
     });
