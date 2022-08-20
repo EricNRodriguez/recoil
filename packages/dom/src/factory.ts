@@ -1,5 +1,5 @@
 import { WElement } from "./element";
-import { IAtom, isAtom, ISideEffectRef, runEffect } from "../../../atom";
+import { IAtom, isAtom, ISideEffectRef, runEffect } from "../../atom";
 import { WNode } from "./node";
 import { GlobalEventCoordinator } from "./event";
 

@@ -1,4 +1,4 @@
-import { Consumer, notNullOrUndefined } from "../../../util";
+import { Consumer, notNullOrUndefined } from "../../util";
 
 type EventHandlerRef = {
   event: keyof HTMLElementEventMap;

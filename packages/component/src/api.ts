@@ -1,7 +1,7 @@
-import {ComponentContext, IComponentContext} from "./component_context";
+import {ComponentContext, IComponentContext} from "./context";
 import {ScopedInjectionRegistry} from "./inject";
-import {Function} from "../../../../util";
-import {WNode} from "../../core/node";
+import {Function, Supplier} from "../../util";
+import {WNode} from "../../dom/src/node";
 
 let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
@@ -45,11 +45,21 @@ export const createComponent = <Props extends Object, Children extends unknown[]
   };
 };
 
+export type LazyComponent<Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>> =
+  (props: Props, ...children: [...Children]) => Supplier<ReturnNode>;
+
+export const makeLazy = <Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>>(component: Component<Props, Children, ReturnNode>): LazyComponent<Props, Children, ReturnNode> => {
+  const closedComponent = closeOverComponentScope(component);
+  return (...args: Parameters<typeof component>) => {
+      return () => closedComponent(...args);
+    };
+};
+
 /**
  * Wraps a component inside a closure such that the current contexts scope state is captured and restored
  * on each invocation. I.e. the returned DomBuilder forms a closure over the context scope.
  *
- * This is intended to be abstracted away inside control components that manage the rebuilding of components. The end user
+ * This is intended to be abstracted away inside component components that manage the rebuilding of components. The end user
  * shouldn't need to know how the component api works internally, just that it does what is intuitive.
  *
  * At this point in time, the only scoped state contained within the component API is that used by the dependency
@@ -58,7 +68,7 @@ export const createComponent = <Props extends Object, Children extends unknown[]
  *
  * @param component The component to close over the current context scope
  */
-export const closeOverComponentScope = <Props extends Object, ReturnNode extends WNode<Node>, Children extends unknown[]>(
+const closeOverComponentScope = <Props extends Object, ReturnNode extends WNode<Node>, Children extends unknown[]>(
   component: Component<Props, Children, ReturnNode>,
 ): Component<Props, Children, ReturnNode> => {
   const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
