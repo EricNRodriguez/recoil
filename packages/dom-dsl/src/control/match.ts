@@ -1,8 +1,7 @@
 import { IAtom } from "../../../atom";
 import { WNode } from "../../../dom/src/node";
 import { Function, WDerivationCache } from "../../../util";
-import { createComponent } from "../../../component/src/api";
-import { IComponentContext } from "../../../component/src/context";
+import {createComponent, runMountedEffect} from "../../../component/src/api";
 import { createFragment } from "../../../dom/src/factory";
 
 export type MatchProps<T> = {
@@ -12,7 +11,6 @@ export type MatchProps<T> = {
 
 export const match = createComponent(
   <T extends Object>(
-    ctx: IComponentContext,
     props: MatchProps<T>
   ): WNode<Node> => {
     let { state, render } = props;
@@ -23,7 +21,7 @@ export const match = createComponent(
     );
 
     let prevState: T;
-    ctx.runEffect((): void => {
+    runMountedEffect((): void => {
       if (prevState === state.get()) {
         return;
       }

@@ -1,12 +1,101 @@
-import { ComponentContext, IComponentContext } from "./context";
-import { ScopedInjectionRegistry } from "./inject";
-import { Function, Supplier } from "../../util";
+import {InjectionKey, ScopedInjectionRegistry} from "./inject";
+import {Consumer, Producer, Runnable, Supplier} from "../../util";
 import { WNode } from "../../dom";
+import {ISideEffectRef, runEffect} from "../../atom";
+import {nonEmpty} from "../../util/src/type_check";
 
-let globalInjectionScope: ScopedInjectionRegistry =
-  new ScopedInjectionRegistry();
+class DeferredCallbackRegistry<T> {
+  private readonly scope: (Consumer<T>[])[] = [];
 
-const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
+  public defer(fn: Consumer<T>): void {
+    if (!nonEmpty(this.scope)) {
+      throw new Error("unable to defer functions outside of a scope");
+    }
+
+    this.scope[this.scope.length-1].push(fn);
+  }
+
+  public execute<R extends T>(job: Producer<R>): R {
+    try {
+      this.scope.push([]);
+      const result: R = job();
+      this.scope[this.scope.length-1].forEach((fn: Consumer<T>) => fn(result));
+      return result;
+    } finally {
+      this.scope.pop();
+    }
+  }
+}
+
+const contextDeferredCallbackRegistry = new DeferredCallbackRegistry<WNode<Node>>();
+
+export const onInitialMount = (fn: Runnable): void => {
+  let called: boolean = false;
+  contextDeferredCallbackRegistry.defer((node) =>
+    node.registerOnMountHook(() => {
+      if (called) {
+        return;
+      }
+
+      try {
+        fn();
+      } finally {
+        called = true;
+      }
+    })
+  );
+};
+
+export const onMount = (fn: Runnable): void => {
+  contextDeferredCallbackRegistry.defer((node) => node.registerOnMountHook(fn));
+};
+
+export const onUnmount = (fn: Runnable): void => {
+  contextDeferredCallbackRegistry.defer((node) => node.registerOnMountHook(fn));
+};
+
+/**
+ * Runs a side effect against the components dom subtree.
+ *
+ * The effect will be automatically activated/deactivated with the mounting/unmounting
+ * of the component, preventing unnecessary background updates to the dom.
+ *
+ * @param sideEffect The side effect that will be re-run every time its deps are dirtied.
+ */
+export const runMountedEffect = (sideEffect: Runnable): void => {
+  const ref: ISideEffectRef = runEffect(sideEffect);
+  contextDeferredCallbackRegistry.defer((node) =>
+    node.registerOnMountHook(ref.activate.bind(ref))
+  );
+  contextDeferredCallbackRegistry.defer((node) =>
+    node.registerOnUnmountHook(ref.deactivate.bind(ref))
+  );
+};
+
+let globalInjectionScope = new ScopedInjectionRegistry();
+
+/**
+ * A type safe DI provider analogous to that provided by the vue composition API.
+ *
+ * @param key The injection key.
+ * @param value The raw value.
+ */
+export const provide = <T>(key: InjectionKey<T>, value: T): void => {
+  globalInjectionScope.set(key, value);
+};
+
+/**
+ * Returns the value registered against the key, in the current components scope.
+ *
+ * This is a tracked operation.
+ *
+ * @param key The injection key.
+ */
+export const inject = <T>(key: InjectionKey<T>): T | undefined => {
+  return globalInjectionScope.get(key);
+};
+
+const runInInjectionScope = <T>(fn: Producer<T>): T => {
   const parentScope = globalInjectionScope;
 
   // At first sight it might seem unintuitive / stupid that we are forking instead of pushing a new scope, however
@@ -16,7 +105,7 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
   globalInjectionScope = parentScope.fork();
 
   try {
-    return fn(new ComponentContext(globalInjectionScope));
+    return fn();
   } finally {
     globalInjectionScope = parentScope;
   }
@@ -42,17 +131,14 @@ export const createComponent = <
   ReturnNode extends WNode<Node>
 >(
   buildComponent: (
-    ctx: IComponentContext,
     ...args: Parameters<Component<Props, Children, ReturnNode>>
   ) => ReturnNode
 ): Component<Props, Children, ReturnNode> => {
   return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
-    return executeWithContext<ReturnNode>(
-      (ctx: ComponentContext): ReturnNode => {
-        const node: ReturnNode = buildComponent(ctx, ...args);
-        ctx.applyDeferredFunctions(node);
-        return node;
-      }
+    return runInInjectionScope<ReturnNode>(
+      () => contextDeferredCallbackRegistry.execute(() => {
+        return buildComponent(...args);
+      })
     );
   };
 };

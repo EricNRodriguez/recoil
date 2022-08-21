@@ -1,18 +1,17 @@
 import { Producer } from "../../../util";
 import { WNode } from "../../../dom/src/node";
 import { frag } from "../../index";
-import { createComponent } from "../../../component/src/api";
-import { IComponentContext } from "../../../component/src/context";
+import {createComponent, runMountedEffect} from "../../../component/src/api";
 
 export type SupplyProps = {
   get: Producer<WNode<Node>>;
 };
 
 export const supply = createComponent(
-  (ctx: IComponentContext, props: SupplyProps): WNode<Node> => {
+  (props: SupplyProps): WNode<Node> => {
     const node = frag();
 
-    ctx.runEffect((): void => {
+    runMountedEffect((): void => {
       node.setChildren([props.get()]);
     });
 
