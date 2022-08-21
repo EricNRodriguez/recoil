@@ -1,6 +1,6 @@
 import { notNullOrUndefined, Supplier } from "../../../util";
 import { WNode, wrapInVNode } from "../../../dom/src/node";
-import {createComponent, runMountedEffect} from "../../../component";
+import {closeOverComponentState, createComponent, runMountedEffect} from "../../../component";
 import { Function } from "../../../util";
 import { createFragment } from "../../../dom";
 
@@ -20,6 +20,8 @@ export type ForEachProps<T> = {
 
 export const forEach = createComponent(<T extends Object>(props: ForEachProps<T>): WNode<Node> => {
     let { items, render } = props;
+
+    render = closeOverComponentState(render);
 
     const anchor = createFragment([]);
 

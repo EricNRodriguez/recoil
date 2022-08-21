@@ -1,7 +1,7 @@
 import { IAtom } from "../../../atom";
 import { WNode } from "../../../dom/src/node";
 import { Function, WDerivationCache } from "../../../util";
-import {createComponent, runMountedEffect} from "../../../component/src/api";
+import {closeOverComponentState, createComponent, runMountedEffect} from "../../../component/src/api";
 import { createFragment } from "../../../dom/src/factory";
 
 export type MatchProps<T> = {
@@ -14,6 +14,8 @@ export const match = createComponent(
     props: MatchProps<T>
   ): WNode<Node> => {
     let { state, render } = props;
+
+    render = closeOverComponentState(render);
 
     const anchor = createFragment([]);
     const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(

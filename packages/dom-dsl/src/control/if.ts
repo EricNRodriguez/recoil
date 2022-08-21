@@ -1,7 +1,7 @@
 import { IAtom, isAtom } from "../../../atom";
 import { Supplier, WDerivationCache } from "../../../util";
 import { WNode } from "../../../dom/src/node";
-import {createComponent, runMountedEffect} from "../../../component/src/api";
+import {closeOverComponentState, createComponent, runMountedEffect} from "../../../component/src/api";
 import { createFragment } from "../../../dom/src/factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
@@ -20,6 +20,9 @@ export const ifElse = createComponent(
     let { condition, ifTrue, ifFalse } = props;
 
     ifFalse ??= () => nullOrUndefinedNode;
+
+    ifTrue = closeOverComponentState(ifTrue);
+    ifFalse = closeOverComponentState(ifFalse);
 
     if (typeof condition === "boolean") {
       return staticIfElse(condition, ifTrue, ifFalse);
