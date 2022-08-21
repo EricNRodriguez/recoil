@@ -1,9 +1,9 @@
-import {notNullOrUndefined, Supplier} from "../../../util";
-import {WNode, wrapInVNode} from "../../../dom/src/node";
-import {IComponentContext} from "../../../component/src/context";
-import {createComponent} from "../../../component/src/api";
-import {Function} from "../../../util";
-import {createFragment} from "../../../dom/src/factory";
+import { notNullOrUndefined, Supplier } from "../../../util";
+import { WNode, wrapInVNode } from "../../../dom/src/node";
+import { IComponentContext } from "../../../component/src/context";
+import { createComponent } from "../../../component/src/api";
+import { Function } from "../../../util";
+import { createFragment } from "../../../dom/src/factory";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];

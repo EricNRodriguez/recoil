@@ -4,6 +4,6 @@ export { createElement, createFragment, createTextNode } from "./src/factory";
 export {
   createComponent,
   closeOverComponentScope,
-  Component
+  Component,
 } from "../component/src/api";
 export { IComponentContext } from "../component/src/context";

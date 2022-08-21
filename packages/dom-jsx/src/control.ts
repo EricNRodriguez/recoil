@@ -1,4 +1,4 @@
-import {createComponent, IComponentContext, WNode} from "../../dom";
+import { createComponent, IComponentContext, WNode } from "../../dom";
 import {
   Function,
   notNullOrUndefined,
@@ -43,10 +43,7 @@ export type ForProps<T> = {
 };
 
 export const For = createComponent(
-  <T>(
-    ctx: IComponentContext,
-    props: ForProps<T>,
-  ): WNode<Node> => {
+  <T>(ctx: IComponentContext, props: ForProps<T>): WNode<Node> => {
     return forEach<T>(props);
   }
 );
@@ -145,7 +142,10 @@ export type SuspenseProps = {
   default?: WNode<Node>;
 };
 
-export const Suspense = (props: SuspenseProps, ...children: Promise<WNode<Node>>[]): WNode<Node> => {
+export const Suspense = (
+  props: SuspenseProps,
+  ...children: Promise<WNode<Node>>[]
+): WNode<Node> => {
   const anchor = frag();
 
   if (notNullOrUndefined(props.default)) {

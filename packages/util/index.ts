@@ -22,4 +22,4 @@ export { firstNonEqualIndex } from "./src/list";
 
 export { WDerivationCache } from "./src/weak_cache";
 
-export {NonEmpty} from "./src/type";
+export { NonEmpty } from "./src/type";
