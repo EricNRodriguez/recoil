@@ -30,12 +30,16 @@ class DeferredContextCallbackRegistry<T extends WNode<Node>> {
 }
 
 const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<
-  WNode<Node>
+  WElement<HTMLElement>
 >();
+
+export const defer = (deferredFunction: Consumer<WElement<HTMLElement>>): void => {
+  contextDeferredCallbackRegistry.defer(deferredFunction);
+}
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
-  contextDeferredCallbackRegistry.defer((node) =>
+  defer((node) =>
     node.registerOnMountHook(() => {
       if (called) {
         return;
@@ -51,11 +55,11 @@ export const onInitialMount = (fn: Runnable): void => {
 };
 
 export const onMount = (fn: Runnable): void => {
-  contextDeferredCallbackRegistry.defer((node) => node.registerOnMountHook(fn));
+  defer((node) => node.registerOnMountHook(fn));
 };
 
 export const onUnmount = (fn: Runnable): void => {
-  contextDeferredCallbackRegistry.defer((node) => node.registerOnMountHook(fn));
+  defer((node) => node.registerOnMountHook(fn));
 };
 
 /**
@@ -68,10 +72,10 @@ export const onUnmount = (fn: Runnable): void => {
  */
 export const runMountedEffect = (sideEffect: Runnable): void => {
   const ref: ISideEffectRef = runEffect(sideEffect);
-  contextDeferredCallbackRegistry.defer((node) =>
+  defer((node) =>
     node.registerOnMountHook(ref.activate.bind(ref))
   );
-  contextDeferredCallbackRegistry.defer((node) =>
+  defer((node) =>
     node.registerOnUnmountHook(ref.deactivate.bind(ref))
   );
 };

@@ -8,6 +8,7 @@ The api provides two core DX improvements:
    2. `onUnmount`
    3. `onInitialMount`
    4. `runMountedEffect`
+   5. `defer`: An exposed implementation detail enabling custom application-specific hooks to be built.
 2. A type-safe (tracked) dependency injection API, analogous to that provided by the vue composition API.
    1. `inject`
    2. `provide`
