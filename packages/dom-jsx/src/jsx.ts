@@ -7,7 +7,6 @@ export type Component<
   ReturnNode extends WNode<Node>
   > = (props: Props, ...children: [...Children]) => ReturnNode;
 
-
 export const Fragment = Symbol();
 
 export const jsx = (

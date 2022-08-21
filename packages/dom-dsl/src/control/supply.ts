@@ -1,6 +1,6 @@
 import { Producer } from "../../../util";
-import { WNode } from "../../../dom/src/node";
-import { frag } from "../../index";
+import { WNode } from "../../../dom";
+import { frag } from "../element";
 import { runEffect } from "../../../atom";
 
 export type SupplyProps = {

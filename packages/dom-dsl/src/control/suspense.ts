@@ -1,5 +1,4 @@
-import { WNode } from "../../../dom/src/node";
-import { createFragment } from "../../../dom/src/factory";
+import { WNode, createFragment } from "../../../dom";
 import { notNullOrUndefined } from "../../../util";
 
 export type SuspenseProps = {

@@ -1,7 +1,6 @@
 import { IAtom, isAtom, runEffect } from "../../../atom";
 import { Supplier, WDerivationCache } from "../../../util";
-import { WNode } from "../../../dom/src/node";
-import { createFragment } from "../../../dom/src/factory";
+import { WNode, createFragment } from "../../../dom";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 

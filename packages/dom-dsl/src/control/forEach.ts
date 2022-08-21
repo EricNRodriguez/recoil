@@ -1,13 +1,11 @@
 import { notNullOrUndefined, Supplier } from "../../../util";
-import { WNode, wrapInVNode } from "../../../dom/src/node";
+import { WNode } from "../../../dom"
 import { Function } from "../../../util";
 import { createFragment } from "../../../dom";
 import { runEffect } from "../../../atom";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
-
-export type MaybeNodeOrWNode = Node | WNode<Node> | undefined | null;
 
 // utility lenses for unboxing index and item from an IndexedItem
 export const getKey = <T>(item: IndexedItem<T>): string => item[0];
@@ -25,13 +23,13 @@ export const forEach = <T extends Object>(
 
   const anchor = createFragment([]);
 
-  let currentItemIndex: Map<string, MaybeNodeOrWNode> = new Map();
+  let currentItemIndex: Map<string, WNode<Node>> = new Map();
 
   const ref = runEffect((): void => {
     const newItems: IndexedItem<T>[] = items();
     const newItemOrder: string[] = newItems.map(getKey);
-    const newItemNodesIndex: Map<string, MaybeNodeOrWNode> = new Map(
-      newItems.map((item: IndexedItem<T>): [string, MaybeNodeOrWNode] => [
+    const newItemNodesIndex: Map<string, WNode<Node>> = new Map(
+      newItems.map((item: IndexedItem<T>): [string, WNode<Node>] => [
         getKey(item),
         currentItemIndex.get(getKey(item)) ?? render(getItem(item)),
       ])
@@ -39,7 +37,6 @@ export const forEach = <T extends Object>(
 
     const newChildren: WNode<Node>[] = newItemOrder
       .map((key) => newItemNodesIndex.get(key))
-      .map(wrapInVNode)
       .filter(notNullOrUndefined) as WNode<Node>[];
 
     anchor.setChildren(newChildren);
