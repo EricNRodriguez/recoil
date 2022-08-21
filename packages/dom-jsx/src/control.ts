@@ -5,10 +5,10 @@ import {
   Producer,
   Supplier,
 } from "../../util";
-import { forEach, IndexedItem } from "../../dom-dsl"
+import {forEach, ifElse, IndexedItem, match} from "../../dom-dsl"
 import {IAtom, isAtom, runEffect} from "../../atom";
 import { frag, th } from "../../dom-dsl";
-import {WElement, WNode} from "../../dom";
+import {createFragment, WElement, WNode} from "../../dom";
 import {Component} from "./jsx";
 
 export type SupplyProps = {
@@ -16,15 +16,15 @@ export type SupplyProps = {
 };
 
 export const Supply: Component<SupplyProps, [], WNode<Node>> = (props: SupplyProps): WNode<Node> => {
-    const node = frag();
+  const node = frag();
 
-    const ref = runEffect((): void => {
-      node.setChildren([props.getChild()]);
-    });
-    node.registerOnMountHook(() => ref.activate());
-    node.registerOnUnmountHook(() => ref.deactivate());
+  const ref = runEffect((): void => {
+    node.setChildren([props.getChild()]);
+  });
+  node.registerOnMountHook(() => ref.activate());
+  node.registerOnUnmountHook(() => ref.deactivate());
 
-    return node;
+  return node;
 };
 export type ForProps<T> = {
   items: Supplier<IndexedItem<T>[]>;
@@ -32,62 +32,38 @@ export type ForProps<T> = {
 };
 
 export const For = <T>(props: ForProps<T>): WNode<Node> => {
-    return forEach<T>(props);
-  }
-;
+  return forEach<T>(props);
+};
 
 export type IfProps = {
   condition: boolean | IAtom<boolean>;
+  true: Supplier<WNode<Node>>;
+  false?: Supplier<WNode<Node>>;
 };
 
-export const If = (props: IfProps, ...children: WNode<Node>[]): WNode<Node> => {
-    return Switch({ value: props.condition }, ...children);
-};
-
-export type CaseProps<T> = {
-  value: T;
-};
-
-const mintedCaseComponents: WeakMap<WNode<Node>, any> = new WeakMap();
-export const Case = <T>(props: CaseProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
-    const node = frag(...children);
-    mintedCaseComponents.set(node, props.value);
-    return node;
+export const If = (props: IfProps): WNode<Node> => {
+  return ifElse({
+    condition: props.condition,
+    ifTrue: props.true,
+    ifFalse: props.false,
+  });
 };
 
 export type SwitchProps<T> = {
-  value: T | IAtom<T>;
-};
+  value: IAtom<T>;
+  cases: [T, Component<{}, [], WNode<Node>>][];
+  default?: Supplier<WNode<Node>>;
+}
 
-export const Switch = <T>(props: SwitchProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
-    const node = frag();
-
-    const ref =runEffect((): void => {
-      node.setChildren([]);
-
-      const val = isAtom(props.value)
-        ? (props.value as IAtom<T>).get()
-        : props.value;
-      for (let child of children) {
-        if (!mintedCaseComponents.has(child)) {
-          throw new Error(
-            "direct children of Switch context must be Case components"
-          );
-        }
-        const childVal = mintedCaseComponents.get(child) ?? undefined;
-        if (nullOrUndefined(childVal)) {
-          continue;
-        }
-        if (childVal === val) {
-          node.setChildren([child]);
-          return;
-        }
-      }
-    });
-    node.registerOnUnmountHook(() => ref.deactivate());
-    node.registerOnMountHook(() => ref.activate());
-
-    return node;
+export const Switch = <T>(props: SwitchProps<T>): WNode<Node> => {
+  const caseMatchMap = new Map(props.cases);
+  return match({
+    state: props.value,
+    render: (value: T) => {
+      const result = caseMatchMap.get(value) ?? props.default ?? (() => createFragment([]));
+      return result({});
+    },
+  });
 };
 
 export type SuspenseProps = {
