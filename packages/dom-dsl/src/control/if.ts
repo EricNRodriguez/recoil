@@ -1,9 +1,9 @@
-import {IAtom, isAtom} from "../../../atom";
-import {Supplier, WDerivationCache} from "../../../util";
-import {WNode} from "../../../dom/src/node";
-import {createComponent} from "../../../component/src/api";
-import {IComponentContext} from "../../../component/src/context";
-import {createFragment} from "../../../dom/src/factory";
+import { IAtom, isAtom } from "../../../atom";
+import { Supplier, WDerivationCache } from "../../../util";
+import { WNode } from "../../../dom/src/node";
+import { createComponent } from "../../../component/src/api";
+import { IComponentContext } from "../../../component/src/context";
+import { createFragment } from "../../../dom/src/factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 

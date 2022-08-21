@@ -1,7 +1,7 @@
-import {ComponentContext, IComponentContext} from "./context";
-import {ScopedInjectionRegistry} from "./inject";
-import {Function, Supplier} from "../../util";
-import {WNode} from "../../dom/src/node";
+import { ComponentContext, IComponentContext } from "./context";
+import { ScopedInjectionRegistry } from "./inject";
+import { Function, Supplier } from "../../util";
+import { WNode } from "../../dom";
 
 let globalInjectionScope: ScopedInjectionRegistry =
   new ScopedInjectionRegistry();
@@ -25,34 +25,56 @@ const executeWithContext = <T>(fn: Function<ComponentContext, T>): T => {
 /**
  * A plain old javascript function that accepts a props object and zero or more children, and returns a WNode<Node>
  */
-export type Component<Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>> =
-  (props: Props, ...children: [...Children]) => ReturnNode;
+export type Component<
+  Props extends Object,
+  Children extends unknown[],
+  ReturnNode extends WNode<Node>
+> = (props: Props, ...children: [...Children]) => ReturnNode;
 
 /**
  * Curries a component context into the provided component builder
  *
  * @param buildComponent A component builder
  */
-export const createComponent = <Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>>(
-  buildComponent: (ctx: IComponentContext, ...args: Parameters<Component<Props, Children, ReturnNode>>) => ReturnNode,
+export const createComponent = <
+  Props extends Object,
+  Children extends unknown[],
+  ReturnNode extends WNode<Node>
+>(
+  buildComponent: (
+    ctx: IComponentContext,
+    ...args: Parameters<Component<Props, Children, ReturnNode>>
+  ) => ReturnNode
 ): Component<Props, Children, ReturnNode> => {
   return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
-    return executeWithContext<ReturnNode>((ctx: ComponentContext): ReturnNode => {
-      const node: ReturnNode = buildComponent(ctx, ...args);
-      ctx.applyDeferredFunctions(node);
-      return node;
-    });
+    return executeWithContext<ReturnNode>(
+      (ctx: ComponentContext): ReturnNode => {
+        const node: ReturnNode = buildComponent(ctx, ...args);
+        ctx.applyDeferredFunctions(node);
+        return node;
+      }
+    );
   };
 };
 
-export type LazyComponent<Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>> =
-  (props: Props, ...children: [...Children]) => Supplier<ReturnNode>;
+export type Lazy<T> = Supplier<T>;
+export type LazyComponent<
+  Props extends Object,
+  Children extends unknown[],
+  ReturnNode extends WNode<Node>
+> = (props: Props, ...children: [...Children]) => Lazy<ReturnNode>;
 
-export const makeLazy = <Props extends Object, Children extends unknown[], ReturnNode extends WNode<Node>>(component: Component<Props, Children, ReturnNode>): LazyComponent<Props, Children, ReturnNode> => {
+export const makeLazy = <
+  Props extends Object,
+  Children extends unknown[],
+  ReturnNode extends WNode<Node>
+>(
+  component: Component<Props, Children, ReturnNode>
+): LazyComponent<Props, Children, ReturnNode> => {
   const closedComponent = closeOverComponentScope(component);
   return (...args: Parameters<typeof component>) => {
-      return () => closedComponent(...args);
-    };
+    return () => closedComponent(...args);
+  };
 };
 
 /**
@@ -68,10 +90,15 @@ export const makeLazy = <Props extends Object, Children extends unknown[], Retur
  *
  * @param component The component to close over the current context scope
  */
-const closeOverComponentScope = <Props extends Object, ReturnNode extends WNode<Node>, Children extends unknown[]>(
-  component: Component<Props, Children, ReturnNode>,
+const closeOverComponentScope = <
+  Props extends Object,
+  ReturnNode extends WNode<Node>,
+  Children extends unknown[]
+>(
+  component: Component<Props, Children, ReturnNode>
 ): Component<Props, Children, ReturnNode> => {
-  const capturedInjectionScope: ScopedInjectionRegistry = globalInjectionScope.fork();
+  const capturedInjectionScope: ScopedInjectionRegistry =
+    globalInjectionScope.fork();
   return (...args: Parameters<typeof component>): ReturnNode => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
@@ -80,5 +107,5 @@ const closeOverComponentScope = <Props extends Object, ReturnNode extends WNode<
     } finally {
       globalInjectionScope = currentInjectionScope;
     }
-  }
+  };
 };
