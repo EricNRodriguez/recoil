@@ -4,7 +4,7 @@ import { WNode } from "../../dom";
 import {ISideEffectRef, runEffect} from "../../atom";
 import {nonEmpty} from "../../util/src/type_check";
 
-class DeferredCallbackRegistry<T> {
+class DeferredComponentCallbackRegistry<T extends WNode<Node>> {
   private readonly scope: (Consumer<T>[])[] = [];
 
   public defer(fn: Consumer<T>): void {
@@ -27,7 +27,7 @@ class DeferredCallbackRegistry<T> {
   }
 }
 
-const contextDeferredCallbackRegistry = new DeferredCallbackRegistry<WNode<Node>>();
+const contextDeferredCallbackRegistry = new DeferredComponentCallbackRegistry<WNode<Node>>();
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
