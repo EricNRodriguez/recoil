@@ -1,8 +1,7 @@
 import { IAtom, isAtom } from "../../../atom";
 import { Supplier, WDerivationCache } from "../../../util";
 import { WNode } from "../../../dom/src/node";
-import { createComponent } from "../../../component/src/api";
-import { IComponentContext } from "../../../component/src/context";
+import {createComponent, runMountedEffect} from "../../../component/src/api";
 import { createFragment } from "../../../dom/src/factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
@@ -17,7 +16,7 @@ export type IfElseProps = {
 
 const nullOrUndefinedNode = new WNode(document.createComment("null"));
 export const ifElse = createComponent(
-  (ctx: IComponentContext, props: IfElseProps): WNode<Node> => {
+  (props: IfElseProps): WNode<Node> => {
     let { condition, ifTrue, ifFalse } = props;
 
     ifFalse ??= () => nullOrUndefinedNode;
@@ -35,7 +34,7 @@ export const ifElse = createComponent(
 
     let currentRenderedState: boolean;
     let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
-    ctx.runEffect((): void => {
+    runMountedEffect((): void => {
       const state: boolean = isAtom(condition)
         ? (condition as IAtom<boolean>).get()
         : (condition as Supplier<boolean>)();

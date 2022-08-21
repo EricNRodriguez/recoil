@@ -1,9 +1,8 @@
 import { notNullOrUndefined, Supplier } from "../../../util";
 import { WNode, wrapInVNode } from "../../../dom/src/node";
-import { IComponentContext } from "../../../component/src/context";
-import { createComponent } from "../../../component/src/api";
+import {createComponent, runMountedEffect} from "../../../component";
 import { Function } from "../../../util";
-import { createFragment } from "../../../dom/src/factory";
+import { createFragment } from "../../../dom";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
@@ -19,18 +18,14 @@ export type ForEachProps<T> = {
   render: Function<T, WNode<Node>>;
 };
 
-export const forEach = createComponent(
-  <T extends Object>(
-    ctx: IComponentContext,
-    props: ForEachProps<T>
-  ): WNode<Node> => {
+export const forEach = createComponent(<T extends Object>(props: ForEachProps<T>): WNode<Node> => {
     let { items, render } = props;
 
     const anchor = createFragment([]);
 
     let currentItemIndex: Map<string, MaybeNodeOrWNode> = new Map();
 
-    ctx.runEffect((): void => {
+    runMountedEffect((): void => {
       const newItems: IndexedItem<T>[] = items();
       const newItemOrder: string[] = newItems.map(getKey);
       const newItemNodesIndex: Map<string, MaybeNodeOrWNode> = new Map(
