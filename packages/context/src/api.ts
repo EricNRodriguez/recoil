@@ -116,29 +116,19 @@ const runInInjectionScope = <T>(fn: Producer<T>): T => {
 };
 
 /**
- * A plain old javascript function that accepts a props object and zero or more children, and returns a WNode<Node>
- */
-export type Component<
-  Props extends Object,
-  Children extends WNode<Node>[],
-  ReturnNode extends WNode<Node>
-> = (props: Props, ...children: [...Children]) => ReturnNode;
-
-/**
  * Curries a context context into the provided context builder
  *
  * @param buildComponent A context builder
  */
 export const createContextualComponent = <
-  Props extends Object,
-  Children extends WNode<Node>[],
+  Args extends unknown[],
   ReturnNode extends WNode<Node>
 >(
   buildComponent: (
-    ...args: Parameters<Component<Props, Children, ReturnNode>>
+    ...args: [...Args]
   ) => ReturnNode
-): Component<Props, Children, ReturnNode> => {
-  return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
+) => {
+  return (...args: [...Args]) => {
     return runInInjectionScope<ReturnNode>(() =>
       contextDeferredCallbackRegistry.execute(() => {
         return buildComponent(...args);

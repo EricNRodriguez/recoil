@@ -1,6 +1,12 @@
 import { frag, t } from "../../dom-dsl";
-import {Component} from "../../context";
 import {createElement, WNode} from "../../dom";
+
+export type Component<
+  Props extends Object,
+  Children extends WNode<Node>[],
+  ReturnNode extends WNode<Node>
+  > = (props: Props, ...children: [...Children]) => ReturnNode;
+
 
 export const Fragment = Symbol();
 
