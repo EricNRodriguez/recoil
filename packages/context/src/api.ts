@@ -148,7 +148,7 @@ export const withContext = <
  *
  * @param fn The function to close over the current context scope
  */
-export const closeOverContextState = <Args extends unknown[], ReturnType>(
+export const captureContextState = <Args extends unknown[], ReturnType>(
   fn: (...args: [...Args]) => ReturnType
 ): typeof fn => {
   const capturedInjectionScope: ScopedInjectionRegistry =
