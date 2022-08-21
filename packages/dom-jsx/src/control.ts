@@ -1,4 +1,3 @@
-import { createContextualComponent, WNode } from "../../dom";
 import {
   Function,
   notNullOrUndefined,
@@ -10,7 +9,8 @@ import { forEach, IndexedItem } from "../../dom-dsl/src/control/forEach";
 import { IAtom, isAtom } from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import { nonEmpty } from "../../util/src/type_check";
-import { runMountedEffect } from "../../context";
+import {createContextualComponent, runMountedEffect} from "../../context";
+import {WNode} from "../../dom";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;
@@ -119,9 +119,7 @@ export type SuspenseProps = {
   default?: WNode<Node>;
 };
 
-export const Suspense = (
-  props: SuspenseProps,
-  ...children: Promise<WNode<Node>>[]
+export const Suspense = (props: SuspenseProps, ...children: Promise<WNode<Node>>[]
 ): WNode<Node> => {
   const anchor = frag();
 

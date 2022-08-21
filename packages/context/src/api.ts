@@ -59,7 +59,7 @@ export const onUnmount = (fn: Runnable): void => {
 };
 
 /**
- * Runs a side effect against the components dom subtree.
+ * Runs a side effect against the dom subtree enclosed by this context
  *
  * The effect will be automatically activated/deactivated with the mounting/unmounting
  * of the context, preventing unnecessary background updates to the dom.
@@ -120,7 +120,7 @@ const runInInjectionScope = <T>(fn: Producer<T>): T => {
  */
 export type Component<
   Props extends Object,
-  Children extends unknown[],
+  Children extends WNode<Node>[],
   ReturnNode extends WNode<Node>
 > = (props: Props, ...children: [...Children]) => ReturnNode;
 
@@ -131,7 +131,7 @@ export type Component<
  */
 export const createContextualComponent = <
   Props extends Object,
-  Children extends unknown[],
+  Children extends WNode<Node>[],
   ReturnNode extends WNode<Node>
 >(
   buildComponent: (
@@ -150,9 +150,6 @@ export const createContextualComponent = <
 /**
  * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each context
  * run inside the callback.
- *
- * This is intended to be abstracted away inside context components that manage the rebuilding of components. The end user
- * shouldn't need to know how the context api works internally, just that it does what is intuitive.
  *
  * At this point in time, the only scoped state contained within the context API is that used by the dependency
  * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of

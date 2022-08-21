@@ -1,5 +1,6 @@
-import { Component, createElement, WNode } from "../../dom";
 import { frag, t } from "../../dom-dsl";
+import {Component} from "../../context";
+import {createElement, WNode} from "../../dom";
 
 export const Fragment = Symbol();
 
