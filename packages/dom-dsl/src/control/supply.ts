@@ -1,20 +1,20 @@
 import { Producer } from "../../../util";
 import { WNode } from "../../../dom/src/node";
 import { frag } from "../../index";
-import {createComponent, runMountedEffect} from "../../../component/src/api";
+import { runEffect } from "../../../atom";
 
 export type SupplyProps = {
   get: Producer<WNode<Node>>;
 };
 
-export const supply = createComponent(
-  (props: SupplyProps): WNode<Node> => {
-    const node = frag();
+export const supply = (props: SupplyProps): WNode<Node> => {
+  const node = frag();
 
-    runMountedEffect((): void => {
-      node.setChildren([props.get()]);
-    });
+  const ref = runEffect((): void => {
+    node.setChildren([props.get()]);
+  });
+  node.registerOnMountHook(() => ref.activate());
+  node.registerOnUnmountHook(() => ref.deactivate());
 
-    return node;
-  }
-);
+  return node;
+};

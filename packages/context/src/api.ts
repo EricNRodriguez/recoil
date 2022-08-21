@@ -1,25 +1,27 @@
-import {InjectionKey, ScopedInjectionRegistry} from "./inject";
-import {Consumer, Producer, Runnable, Supplier} from "../../util";
+import { InjectionKey, ScopedInjectionRegistry } from "./inject";
+import { Consumer, Producer, Runnable, Supplier } from "../../util";
 import { WNode } from "../../dom";
-import {ISideEffectRef, runEffect} from "../../atom";
-import {nonEmpty} from "../../util/src/type_check";
+import { ISideEffectRef, runEffect } from "../../atom";
+import { nonEmpty } from "../../util/src/type_check";
 
-class DeferredComponentCallbackRegistry<T extends WNode<Node>> {
-  private readonly scope: (Consumer<T>[])[] = [];
+class DeferredContextCallbackRegistry<T extends WNode<Node>> {
+  private readonly scope: Consumer<T>[][] = [];
 
   public defer(fn: Consumer<T>): void {
     if (!nonEmpty(this.scope)) {
       throw new Error("unable to defer functions outside of a scope");
     }
 
-    this.scope[this.scope.length-1].push(fn);
+    this.scope[this.scope.length - 1].push(fn);
   }
 
   public execute<R extends T>(job: Producer<R>): R {
     try {
       this.scope.push([]);
       const result: R = job();
-      this.scope[this.scope.length-1].forEach((fn: Consumer<T>) => fn(result));
+      this.scope[this.scope.length - 1].forEach((fn: Consumer<T>) =>
+        fn(result)
+      );
       return result;
     } finally {
       this.scope.pop();
@@ -27,7 +29,9 @@ class DeferredComponentCallbackRegistry<T extends WNode<Node>> {
   }
 }
 
-const contextDeferredCallbackRegistry = new DeferredComponentCallbackRegistry<WNode<Node>>();
+const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<
+  WNode<Node>
+>();
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
@@ -58,7 +62,7 @@ export const onUnmount = (fn: Runnable): void => {
  * Runs a side effect against the components dom subtree.
  *
  * The effect will be automatically activated/deactivated with the mounting/unmounting
- * of the component, preventing unnecessary background updates to the dom.
+ * of the context, preventing unnecessary background updates to the dom.
  *
  * @param sideEffect The side effect that will be re-run every time its deps are dirtied.
  */
@@ -121,11 +125,11 @@ export type Component<
 > = (props: Props, ...children: [...Children]) => ReturnNode;
 
 /**
- * Curries a component context into the provided component builder
+ * Curries a context context into the provided context builder
  *
- * @param buildComponent A component builder
+ * @param buildComponent A context builder
  */
-export const createComponent = <
+export const createContextualComponent = <
   Props extends Object,
   Children extends unknown[],
   ReturnNode extends WNode<Node>
@@ -135,8 +139,8 @@ export const createComponent = <
   ) => ReturnNode
 ): Component<Props, Children, ReturnNode> => {
   return (...args: Parameters<Component<Props, Children, ReturnNode>>) => {
-    return runInInjectionScope<ReturnNode>(
-      () => contextDeferredCallbackRegistry.execute(() => {
+    return runInInjectionScope<ReturnNode>(() =>
+      contextDeferredCallbackRegistry.execute(() => {
         return buildComponent(...args);
       })
     );
@@ -144,23 +148,20 @@ export const createComponent = <
 };
 
 /**
- * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each component
+ * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each context
  * run inside the callback.
  *
- * This is intended to be abstracted away inside component components that manage the rebuilding of components. The end user
- * shouldn't need to know how the component api works internally, just that it does what is intuitive.
+ * This is intended to be abstracted away inside context components that manage the rebuilding of components. The end user
+ * shouldn't need to know how the context api works internally, just that it does what is intuitive.
  *
- * At this point in time, the only scoped state contained within the component API is that used by the dependency
+ * At this point in time, the only scoped state contained within the context API is that used by the dependency
  * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of
  * behaviour for any future behaviour that requires similar hierarchical scope.
  *
  * @param fn The function to close over the current context scope
  */
-export const closeOverComponentState = <
-  Args extends unknown[],
-  ReturnType,
->(
-  fn: (...args: [...Args]) => ReturnType,
+export const closeOverContextState = <Args extends unknown[], ReturnType>(
+  fn: (...args: [...Args]) => ReturnType
 ): typeof fn => {
   const capturedInjectionScope: ScopedInjectionRegistry =
     globalInjectionScope.fork();

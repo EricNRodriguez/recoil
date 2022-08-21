@@ -1,7 +1,6 @@
-import { IAtom, isAtom } from "../../../atom";
+import { IAtom, isAtom, runEffect } from "../../../atom";
 import { Supplier, WDerivationCache } from "../../../util";
 import { WNode } from "../../../dom/src/node";
-import {closeOverComponentState, createComponent, runMountedEffect} from "../../../component/src/api";
 import { createFragment } from "../../../dom/src/factory";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
@@ -15,51 +14,47 @@ export type IfElseProps = {
 };
 
 const nullOrUndefinedNode = new WNode(document.createComment("null"));
-export const ifElse = createComponent(
-  (props: IfElseProps): WNode<Node> => {
-    let { condition, ifTrue, ifFalse } = props;
+export const ifElse = (props: IfElseProps): WNode<Node> => {
+  let { condition, ifTrue, ifFalse } = props;
 
-    ifFalse ??= () => nullOrUndefinedNode;
+  ifFalse ??= () => nullOrUndefinedNode;
 
-    ifTrue = closeOverComponentState(ifTrue);
-    ifFalse = closeOverComponentState(ifFalse);
+  if (typeof condition === "boolean") {
+    return staticIfElse(condition, ifTrue, ifFalse);
+  }
 
-    if (typeof condition === "boolean") {
-      return staticIfElse(condition, ifTrue, ifFalse);
+  const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
+    boolean,
+    WNode<Node>
+  >((value: boolean) => (value ? ifTrue() : ifFalse!()));
+
+  const anchor = createFragment([]);
+
+  let currentRenderedState: boolean;
+  let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
+  const ref = runEffect((): void => {
+    const state: boolean = isAtom(condition)
+      ? (condition as IAtom<boolean>).get()
+      : (condition as Supplier<boolean>)();
+
+    if (state === currentRenderedState) {
+      return;
     }
 
-    const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
-      boolean,
-      WNode<Node>
-    >((value: boolean) => (value ? ifTrue() : ifFalse!()));
+    currentRenderedState = state;
+    currentRenderedSubtree = cache.get(state);
 
-    const anchor = createFragment([]);
+    anchor.setChildren([
+      currentRenderedSubtree === nullOrUndefinedNode
+        ? null
+        : currentRenderedSubtree,
+    ]);
+  });
+  anchor.registerOnUnmountHook(() => ref.deactivate());
+  anchor.registerOnMountHook(() => ref.activate());
 
-    let currentRenderedState: boolean;
-    let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
-    runMountedEffect((): void => {
-      const state: boolean = isAtom(condition)
-        ? (condition as IAtom<boolean>).get()
-        : (condition as Supplier<boolean>)();
-
-      if (state === currentRenderedState) {
-        return;
-      }
-
-      currentRenderedState = state;
-      currentRenderedSubtree = cache.get(state);
-
-      anchor.setChildren([
-        currentRenderedSubtree === nullOrUndefinedNode
-          ? null
-          : currentRenderedSubtree,
-      ]);
-    });
-
-    return anchor;
-  }
-);
-
+  return anchor;
+};
 const staticIfElse = (
   condition: boolean,
   ifTrue: Supplier<WNode<Node>>,

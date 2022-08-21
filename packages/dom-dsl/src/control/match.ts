@@ -1,7 +1,6 @@
-import { IAtom } from "../../../atom";
+import { IAtom, runEffect } from "../../../atom";
 import { WNode } from "../../../dom/src/node";
 import { Function, WDerivationCache } from "../../../util";
-import {closeOverComponentState, createComponent, runMountedEffect} from "../../../component/src/api";
 import { createFragment } from "../../../dom/src/factory";
 
 export type MatchProps<T> = {
@@ -9,30 +8,26 @@ export type MatchProps<T> = {
   render: Function<T, WNode<Node>>;
 };
 
-export const match = createComponent(
-  <T extends Object>(
-    props: MatchProps<T>
-  ): WNode<Node> => {
-    let { state, render } = props;
+export const match = <T extends Object>(props: MatchProps<T>): WNode<Node> => {
+  let { state, render } = props;
 
-    render = closeOverComponentState(render);
+  const anchor = createFragment([]);
+  const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(
+    render
+  );
 
-    const anchor = createFragment([]);
-    const matchCache: WDerivationCache<T, WNode<Node>> = new WDerivationCache(
-      render
-    );
+  let prevState: T;
+  const ref = runEffect((): void => {
+    if (prevState === state.get()) {
+      return;
+    }
 
-    let prevState: T;
-    runMountedEffect((): void => {
-      if (prevState === state.get()) {
-        return;
-      }
+    prevState = state.get();
+    const content = matchCache.get(prevState);
+    anchor.setChildren([content]);
+  });
+  anchor.registerOnMountHook(() => ref.activate());
+  anchor.registerOnUnmountHook(() => ref.deactivate());
 
-      prevState = state.get();
-      const content = matchCache.get(prevState);
-      anchor.setChildren([content]);
-    });
-
-    return anchor;
-  }
-);
+  return anchor;
+};
