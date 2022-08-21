@@ -12,7 +12,7 @@ import { frag, th } from "../../dom-dsl";
 import { nonEmpty } from "../../util/src/type_check";
 
 export type SupplyProps = {
-  get: Producer<WNode<Node>>;
+  getChild: Producer<WNode<Node>>;
 };
 
 export const Supply = createComponent(
@@ -30,7 +30,7 @@ export const Supply = createComponent(
     }
 
     ctx.runEffect((): void => {
-      node.setChildren([props.get()]);
+      node.setChildren([props.getChild()]);
     });
 
     return node;
