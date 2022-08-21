@@ -1,6 +1,6 @@
 import { InjectionKey, ScopedInjectionRegistry } from "./inject";
 import { Consumer, Producer, Runnable, Supplier } from "../../util";
-import { WNode } from "../../dom";
+import {WElement, WNode} from "../../dom";
 import { ISideEffectRef, runEffect } from "../../atom";
 import { nonEmpty } from "../../util/src/type_check";
 
@@ -123,7 +123,7 @@ const runInInjectionScope = <T>(fn: Producer<T>): T => {
  */
 export const withContext = <
   Args extends unknown[],
-  ReturnNode extends WNode<Node>
+  ReturnNode extends WElement<HTMLElement>
 >(
   component: (
     ...args: [...Args]

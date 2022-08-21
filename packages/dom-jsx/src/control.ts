@@ -5,90 +5,64 @@ import {
   Producer,
   Supplier,
 } from "../../util";
-import { forEach, IndexedItem } from "../../dom-dsl/src/control/forEach";
-import { IAtom, isAtom } from "../../atom";
+import { forEach, IndexedItem } from "../../dom-dsl"
+import {IAtom, isAtom, runEffect} from "../../atom";
 import { frag, th } from "../../dom-dsl";
-import { nonEmpty } from "../../util/src/type_check";
-import {withContext, runMountedEffect} from "../../context";
-import {WNode} from "../../dom";
+import {WElement, WNode} from "../../dom";
+import {Component} from "./jsx";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;
 };
 
-export const Supply = withContext(
-  (props: SupplyProps, ...children: WNode<Node>[]): WNode<Node> => {
+export const Supply: Component<SupplyProps, [], WNode<Node>> = (props: SupplyProps): WNode<Node> => {
     const node = frag();
 
-    if (nonEmpty(children)) {
-      throw new Error(
-        "Supply children must be provided through the supplyNodes attribute"
-      );
-    }
-
-    runMountedEffect((): void => {
+    const ref = runEffect((): void => {
       node.setChildren([props.getChild()]);
     });
+    node.registerOnMountHook(() => ref.activate());
+    node.registerOnUnmountHook(() => ref.deactivate());
 
     return node;
-  }
-);
-
+};
 export type ForProps<T> = {
   items: Supplier<IndexedItem<T>[]>;
   render: Function<T, WNode<Node>>;
 };
 
-export const For = withContext(
-  <T>(props: ForProps<T>): WNode<Node> => {
+export const For = <T>(props: ForProps<T>): WNode<Node> => {
     return forEach<T>(props);
   }
-);
-
-export const True = withContext(
-  (props: {}, ...children: WNode<Node>[]): WNode<Node> => {
-    return Case({ value: true }, ...children);
-  }
-);
-
-export const False = withContext(
-  (props: {}, ...children: WNode<Node>[]): WNode<Node> => {
-    return Case({ value: false }, ...children);
-  }
-);
+;
 
 export type IfProps = {
   condition: boolean | IAtom<boolean>;
 };
 
-export const If = withContext(
-  (props: IfProps, ...children: WNode<Node>[]): WNode<Node> => {
+export const If = (props: IfProps, ...children: WNode<Node>[]): WNode<Node> => {
     return Switch({ value: props.condition }, ...children);
-  }
-);
+};
 
 export type CaseProps<T> = {
   value: T;
 };
 
 const mintedCaseComponents: WeakMap<WNode<Node>, any> = new WeakMap();
-export const Case = withContext(
-  <T>(props: CaseProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
+export const Case = <T>(props: CaseProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
     const node = frag(...children);
     mintedCaseComponents.set(node, props.value);
     return node;
-  }
-);
+};
 
 export type SwitchProps<T> = {
   value: T | IAtom<T>;
 };
 
-export const Switch = withContext(
-  <T>(props: SwitchProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
+export const Switch = <T>(props: SwitchProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
     const node = frag();
 
-    runMountedEffect((): void => {
+    const ref =runEffect((): void => {
       node.setChildren([]);
 
       const val = isAtom(props.value)
@@ -110,10 +84,11 @@ export const Switch = withContext(
         }
       }
     });
+    node.registerOnUnmountHook(() => ref.deactivate());
+    node.registerOnMountHook(() => ref.activate());
 
     return node;
-  }
-);
+};
 
 export type SuspenseProps = {
   default?: WNode<Node>;
