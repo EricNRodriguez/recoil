@@ -143,26 +143,6 @@ export const createComponent = <
   };
 };
 
-export type Lazy<T> = Supplier<T>;
-export type LazyComponent<
-  Props extends Object,
-  Children extends unknown[],
-  ReturnNode extends WNode<Node>
-> = (props: Props, ...children: [...Children]) => Lazy<ReturnNode>;
-
-export const makeLazy = <
-  Props extends Object,
-  Children extends unknown[],
-  ReturnNode extends WNode<Node>
->(
-  component: Component<Props, Children, ReturnNode>
-): LazyComponent<Props, Children, ReturnNode> => {
-  const closedComponent = closeOverComponentScope(component);
-  return (...args: Parameters<typeof component>) => {
-    return () => closedComponent(...args);
-  };
-};
-
 /**
  * Wraps a component inside a closure such that the current contexts scope state is captured and restored
  * on each invocation. I.e. the returned DomBuilder forms a closure over the context scope.
@@ -176,7 +156,7 @@ export const makeLazy = <
  *
  * @param component The component to close over the current context scope
  */
-const closeOverComponentScope = <
+export const closeOverParentComponentScope = <
   Props extends Object,
   ReturnNode extends WNode<Node>,
   Children extends unknown[]
