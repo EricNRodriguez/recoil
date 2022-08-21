@@ -143,29 +143,9 @@ export const createComponent = <
   };
 };
 
-export type Lazy<T> = Supplier<T>;
-export type LazyComponent<
-  Props extends Object,
-  Children extends unknown[],
-  ReturnNode extends WNode<Node>
-> = (props: Props, ...children: [...Children]) => Lazy<ReturnNode>;
-
-export const makeLazy = <
-  Props extends Object,
-  Children extends unknown[],
-  ReturnNode extends WNode<Node>
->(
-  component: Component<Props, Children, ReturnNode>
-): LazyComponent<Props, Children, ReturnNode> => {
-  const closedComponent = closeOverComponentScope(component);
-  return (...args: Parameters<typeof component>) => {
-    return () => closedComponent(...args);
-  };
-};
-
 /**
- * Wraps a component inside a closure such that the current contexts scope state is captured and restored
- * on each invocation. I.e. the returned DomBuilder forms a closure over the context scope.
+ * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each component
+ * run inside the callback.
  *
  * This is intended to be abstracted away inside component components that manage the rebuilding of components. The end user
  * shouldn't need to know how the component api works internally, just that it does what is intuitive.
@@ -174,22 +154,21 @@ export const makeLazy = <
  * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of
  * behaviour for any future behaviour that requires similar hierarchical scope.
  *
- * @param component The component to close over the current context scope
+ * @param fn The function to close over the current context scope
  */
-const closeOverComponentScope = <
-  Props extends Object,
-  ReturnNode extends WNode<Node>,
-  Children extends unknown[]
+export const closeOverComponentState = <
+  Args extends unknown[],
+  ReturnType,
 >(
-  component: Component<Props, Children, ReturnNode>
-): Component<Props, Children, ReturnNode> => {
+  fn: (...args: [...Args]) => ReturnType,
+): typeof fn => {
   const capturedInjectionScope: ScopedInjectionRegistry =
     globalInjectionScope.fork();
-  return (...args: Parameters<typeof component>): ReturnNode => {
+  return (...args: [...Args]): ReturnType => {
     const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
     globalInjectionScope = capturedInjectionScope;
     try {
-      return component(...args);
+      return fn(...args);
     } finally {
       globalInjectionScope = currentInjectionScope;
     }

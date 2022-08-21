@@ -1,6 +1,5 @@
 import { Component, createElement, WNode } from "../../dom";
 import { frag, t } from "../../dom-dsl";
-import {Lazy, LazyComponent} from "../../component";
 
 export const Fragment = Symbol();
 
@@ -8,7 +7,7 @@ export const jsx = (
   tag: string | Component<Object, WNode<Node>[], WNode<Node>> | Symbol,
   props: Object,
   ...children: WNode<Node>[]
-): WNode<Node> | Lazy<WNode<Node>> => {
+): WNode<Node> => {
   if (tag === Fragment) {
     return frag(...children);
   }
