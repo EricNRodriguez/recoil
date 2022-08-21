@@ -1,4 +1,4 @@
-import { createComponent, IComponentContext, WNode } from "../../dom";
+import { createComponent, WNode } from "../../dom";
 import {
   Function,
   notNullOrUndefined,
@@ -10,6 +10,7 @@ import { forEach, IndexedItem } from "../../dom-dsl/src/control/forEach";
 import { IAtom, isAtom } from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import { nonEmpty } from "../../util/src/type_check";
+import {runMountedEffect} from "../../component";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;
@@ -17,7 +18,6 @@ export type SupplyProps = {
 
 export const Supply = createComponent(
   (
-    ctx: IComponentContext,
     props: SupplyProps,
     ...children: WNode<Node>[]
   ): WNode<Node> => {
@@ -29,7 +29,7 @@ export const Supply = createComponent(
       );
     }
 
-    ctx.runEffect((): void => {
+    runMountedEffect((): void => {
       node.setChildren([props.getChild()]);
     });
 
@@ -43,14 +43,13 @@ export type ForProps<T> = {
 };
 
 export const For = createComponent(
-  <T>(ctx: IComponentContext, props: ForProps<T>): WNode<Node> => {
+  <T>(props: ForProps<T>): WNode<Node> => {
     return forEach<T>(props);
   }
 );
 
 export const True = createComponent(
   (
-    ctx: IComponentContext,
     props: {},
     ...children: WNode<Node>[]
   ): WNode<Node> => {
@@ -60,7 +59,6 @@ export const True = createComponent(
 
 export const False = createComponent(
   (
-    ctx: IComponentContext,
     props: {},
     ...children: WNode<Node>[]
   ): WNode<Node> => {
@@ -74,7 +72,6 @@ export type IfProps = {
 
 export const If = createComponent(
   (
-    ctx: IComponentContext,
     props: IfProps,
     ...children: WNode<Node>[]
   ): WNode<Node> => {
@@ -89,7 +86,6 @@ export type CaseProps<T> = {
 const mintedCaseComponents: WeakMap<WNode<Node>, any> = new WeakMap();
 export const Case = createComponent(
   <T>(
-    ctx: IComponentContext,
     props: CaseProps<T>,
     ...children: WNode<Node>[]
   ): WNode<Node> => {
@@ -105,13 +101,12 @@ export type SwitchProps<T> = {
 
 export const Switch = createComponent(
   <T>(
-    ctx: IComponentContext,
     props: SwitchProps<T>,
     ...children: WNode<Node>[]
   ): WNode<Node> => {
     const node = frag();
 
-    ctx.runEffect((): void => {
+    runMountedEffect((): void => {
       node.setChildren([]);
 
       const val = isAtom(props.value)
