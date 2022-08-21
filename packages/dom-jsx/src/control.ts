@@ -9,14 +9,14 @@ import { forEach, IndexedItem } from "../../dom-dsl/src/control/forEach";
 import { IAtom, isAtom } from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import { nonEmpty } from "../../util/src/type_check";
-import {createContextualComponent, runMountedEffect} from "../../context";
+import {withContext, runMountedEffect} from "../../context";
 import {WNode} from "../../dom";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;
 };
 
-export const Supply = createContextualComponent(
+export const Supply = withContext(
   (props: SupplyProps, ...children: WNode<Node>[]): WNode<Node> => {
     const node = frag();
 
@@ -39,19 +39,19 @@ export type ForProps<T> = {
   render: Function<T, WNode<Node>>;
 };
 
-export const For = createContextualComponent(
+export const For = withContext(
   <T>(props: ForProps<T>): WNode<Node> => {
     return forEach<T>(props);
   }
 );
 
-export const True = createContextualComponent(
+export const True = withContext(
   (props: {}, ...children: WNode<Node>[]): WNode<Node> => {
     return Case({ value: true }, ...children);
   }
 );
 
-export const False = createContextualComponent(
+export const False = withContext(
   (props: {}, ...children: WNode<Node>[]): WNode<Node> => {
     return Case({ value: false }, ...children);
   }
@@ -61,7 +61,7 @@ export type IfProps = {
   condition: boolean | IAtom<boolean>;
 };
 
-export const If = createContextualComponent(
+export const If = withContext(
   (props: IfProps, ...children: WNode<Node>[]): WNode<Node> => {
     return Switch({ value: props.condition }, ...children);
   }
@@ -72,7 +72,7 @@ export type CaseProps<T> = {
 };
 
 const mintedCaseComponents: WeakMap<WNode<Node>, any> = new WeakMap();
-export const Case = createContextualComponent(
+export const Case = withContext(
   <T>(props: CaseProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
     const node = frag(...children);
     mintedCaseComponents.set(node, props.value);
@@ -84,7 +84,7 @@ export type SwitchProps<T> = {
   value: T | IAtom<T>;
 };
 
-export const Switch = createContextualComponent(
+export const Switch = withContext(
   <T>(props: SwitchProps<T>, ...children: WNode<Node>[]): WNode<Node> => {
     const node = frag();
 

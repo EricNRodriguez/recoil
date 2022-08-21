@@ -116,30 +116,31 @@ const runInInjectionScope = <T>(fn: Producer<T>): T => {
 };
 
 /**
- * Curries a context context into the provided context builder
+ * Decorates the provided component with a context, allowing the hooks provided by this api
+ * to be used.
  *
- * @param buildComponent A context builder
+ * @param component A context builder
  */
-export const createContextualComponent = <
+export const withContext = <
   Args extends unknown[],
   ReturnNode extends WNode<Node>
 >(
-  buildComponent: (
+  component: (
     ...args: [...Args]
   ) => ReturnNode
 ) => {
   return (...args: [...Args]) => {
     return runInInjectionScope<ReturnNode>(() =>
       contextDeferredCallbackRegistry.execute(() => {
-        return buildComponent(...args);
+        return component(...args);
       })
     );
   };
 };
 
 /**
- * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each context
- * run inside the callback.
+ * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each
+ * sub-context run inside the callback.
  *
  * At this point in time, the only scoped state contained within the context API is that used by the dependency
  * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of
