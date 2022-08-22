@@ -59,7 +59,7 @@ export const onMount = (fn: Runnable): void => {
 };
 
 export const onUnmount = (fn: Runnable): void => {
-  defer((node) => node.registerOnMountHook(fn));
+  defer((node) => node.registerOnUnmountHook(fn));
 };
 
 /**
