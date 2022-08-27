@@ -1,4 +1,4 @@
-import { InjectionKey, ScopedInjectionRegistry } from "./inject";
+import {SymbolKey, ExecutionScopeManager} from "./inject";
 import { Consumer, Producer, Runnable, Supplier } from "../../util";
 import {WElement, WNode} from "../../dom";
 import { ISideEffectRef, runEffect } from "../../atom";
@@ -29,9 +29,7 @@ class DeferredContextCallbackRegistry<T extends WNode<Node>> {
   }
 }
 
-const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<
-  WElement<HTMLElement>
->();
+const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<WElement<HTMLElement>>();
 
 export const defer = (deferredFunction: Consumer<WElement<HTMLElement>>): void => {
   contextDeferredCallbackRegistry.defer(deferredFunction);
@@ -80,7 +78,7 @@ export const runMountedEffect = (sideEffect: Runnable): void => {
   );
 };
 
-let globalInjectionScope = new ScopedInjectionRegistry();
+const scopeManager = new ExecutionScopeManager();
 
 /**
  * A type safe DI provider analogous to that provided by the vue composition API.
@@ -88,8 +86,8 @@ let globalInjectionScope = new ScopedInjectionRegistry();
  * @param key The injection key.
  * @param value The raw value.
  */
-export const provide = <T>(key: InjectionKey<T>, value: T): void => {
-  globalInjectionScope.set(key, value);
+export const provide = <T>(key: SymbolKey<T>, value: T): void => {
+  scopeManager.getCurrentScope().set(key, value);
 };
 
 /**
@@ -99,24 +97,8 @@ export const provide = <T>(key: InjectionKey<T>, value: T): void => {
  *
  * @param key The injection key.
  */
-export const inject = <T>(key: InjectionKey<T>): T | undefined => {
-  return globalInjectionScope.get(key);
-};
-
-const runInInjectionScope = <T>(fn: Producer<T>): T => {
-  const parentScope = globalInjectionScope;
-
-  // At first sight it might seem unintuitive / stupid that we are forking instead of pushing a new scope, however
-  // in order to make provide calls made inside callbacks that execute after a builder has returned work as
-  // you would expect, we need to fork and never pop. This allows for the same 'scoped' behaviour, but also
-  // allows callbacks to work intuitively.
-  globalInjectionScope = parentScope.fork();
-
-  try {
-    return fn();
-  } finally {
-    globalInjectionScope = parentScope;
-  }
+export const inject = <T>(key: SymbolKey<T>): T | undefined => {
+  return scopeManager.getCurrentScope().get(key);
 };
 
 /**
@@ -128,18 +110,13 @@ const runInInjectionScope = <T>(fn: Producer<T>): T => {
 export const withContext = <
   Args extends unknown[],
   ReturnNode extends WElement<HTMLElement>
->(
-  component: (
-    ...args: [...Args]
-  ) => ReturnNode
-) => {
-  return (...args: [...Args]) => {
-    return runInInjectionScope<ReturnNode>(() =>
-      contextDeferredCallbackRegistry.execute(() => {
-        return component(...args);
-      })
-    );
-  };
+>(component: (...args: [...Args]) => ReturnNode) => {
+  return scopeManager.withChildScope((...args: [...Args]) => {
+    // runs the registered callbacks against the returned WElement
+    return contextDeferredCallbackRegistry.execute(() => {
+      return component(...args);
+    });
+  });
 };
 
 /**
@@ -152,18 +129,4 @@ export const withContext = <
  *
  * @param fn The function to close over the current context scope
  */
-export const captureContextState = <Args extends unknown[], ReturnType>(
-  fn: (...args: [...Args]) => ReturnType
-): typeof fn => {
-  const capturedInjectionScope: ScopedInjectionRegistry =
-    globalInjectionScope.fork();
-  return (...args: [...Args]): ReturnType => {
-    const currentInjectionScope: ScopedInjectionRegistry = globalInjectionScope;
-    globalInjectionScope = capturedInjectionScope;
-    try {
-      return fn(...args);
-    } finally {
-      globalInjectionScope = currentInjectionScope;
-    }
-  };
-};
+export const captureContextState = scopeManager.withCurrentScope.bind(scopeManager);
