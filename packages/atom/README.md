@@ -7,22 +7,22 @@ The reactive system can be summarised by 3 core primitives:
    - a reactive variable
    - contains a getter and a setter. 
 2. Non leaf nodes
-    - a reactive variable that is `derived` from other reactive variables. Conceptually it is a computation, with all state being used being reactive nodes. 
+    - a reactive variable that is `derived` from other reactive variables. Conceptually it is a computation, with all state coming from other reactive nodes. 
     - forms a node in the DAG (due to caching)
     - dependencies are automatically detected at runtime (optimal)
 3. Side effects
-    - a function/job etc that should be run every time its dependants (nodes) change.
+    - a function/job etc that should be run every time its dependants (nodes that it uses) change.
 
 
 # API
 
-### Factory Methods
+### Types
 
 ```ts
 
 interface ILeafAtom<T> extends IAtom<T> {
   /**
-   * An atomic set. All dependants will be auto-diritied.
+   * An atomic set. This will propagate through the DAG - i.e. all dependants will be auto-dirtied.
    */
   set(value: T): void;
   
@@ -60,7 +60,11 @@ interface IAtom<T> {
    */
   transform<R>(transform: Function<T, R>): IAtom<R>;
 }
+
 ```
+
+### Factory Methods
+
 
 ###### Leaf Nodes
 
