@@ -80,7 +80,7 @@ type SwitchProps<T> = {
 
 #### Core Differences to `dom-dsl`:
 1. events specified as attributes will not be delegated by default. To delegate, you need to call addEventHandler on the returned dom node.
-
+2. custom components should begin with an upper case. This is required by the babel jsx transpiler being used.
 
 # Standard Todo Example 
 
