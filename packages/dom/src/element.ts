@@ -31,15 +31,6 @@ export abstract class BaseWElement<
     }
     return this as unknown as B;
   }
-
-  public setStyle(style: ElementStyle): B {
-    Object.entries(style).forEach(
-      ([property, value]: [string, string]): void => {
-        this.unwrap().style.setProperty(property, value);
-      }
-    );
-    return this as unknown as B;
-  }
 }
 
 export class WElement<T extends HTMLElement>
