@@ -1,6 +1,6 @@
 # Overview
 
-An experimental jsx implementation to be used in place of the `dom-dsl`. 
+An experimental jsx implementation to be used in place of the `dom-dsl`. Internally it shares many similarities with the `dom-dsl` package, and as a result is able to be used interchangeably at this point in time (this is likely going to be removed after a custom transpiler is written).
 
 #### Data Binding 
 
