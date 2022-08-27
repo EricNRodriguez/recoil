@@ -13,3 +13,6 @@ The api provides two core DX improvements:
    1. `inject`
    2. `provide`
 
+In order to make a component `contextual`, wrap it with `withContext`. 
+
+> WARNING: In order for DI to work with lazily constructed/reconstructed DOM trees, the callback needs to close over the DI scope at the current time, and hence, is required to be wrapped with a `captureContextState` call. 
