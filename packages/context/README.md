@@ -16,3 +16,39 @@ The api provides two core DX improvements:
 In order to make a component `contextual`, wrap it with `withContext`. 
 
 > WARNING: In order for DI to work with lazily constructed/reconstructed DOM trees, the callback needs to close over the DI scope at the current time, and hence, is required to be wrapped with a `captureContextState` call. 
+
+# Example
+
+```tsx
+
+export const TodoList = withContext((): WElement<HTMLElement> => {
+  const model = inject(todoModelInjectionKey)!;
+
+  const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
+  const renderTodoItem = captureContextState((item: TodoItem) => {
+      return <TodoListItem item={item} />
+  });
+
+  return (
+      <div>
+        <h2>
+          Todo List:
+        </h2>
+        <p>
+          {$(() => model.getItems().length)} items
+        </p>
+        <button onclick={() => model.duplicate()}>
+          double!
+        </button>
+        <TodoItemInput />
+        <If condition={() => model.getItems().length > 0}
+            true={br}
+        />
+        <For items={() => model.getItems().map(withUuidKey)}
+             render={renderTodoItem}
+       />
+      </div>
+  );
+});
+
+```
