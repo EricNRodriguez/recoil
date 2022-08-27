@@ -6,6 +6,20 @@ An experimental jsx implementation to be used in place of the `dom-dsl`.
 
 Text nodes can be binded to atomic values through the `$` helper function, which can be treated similarly to `t` from `dom-dsl`.
 
+### Components 
+
+Unlike `dom-dsl`, components that return jsx must adhere to a strict type.
+
+```ts
+type Component<
+  Props extends Object,
+  Children extends WNode<Node>[],
+  ReturnNode extends WNode<Node>
+> = (props: Props, ...children: [...Children]) => ReturnNode;
+```
+
+The type system is still able to infer leaf components (no children), hence prop-only components are also valid.
+
 #### Control Elements
 
 ###### For
