@@ -26,6 +26,7 @@ export const Supply: Component<SupplyProps, [], WNode<Node>> = (props: SupplyPro
 
   return node;
 };
+
 export type ForProps<T> = {
   items: Supplier<IndexedItem<T>[]>;
   render: Function<T, WNode<Node>>;
@@ -51,7 +52,7 @@ export const If = (props: IfProps): WNode<Node> => {
 
 export type SwitchProps<T> = {
   value: IAtom<T>;
-  cases: [T, Component<{}, [], WNode<Node>>][];
+  cases: [T, Supplier<WNode<Node>>][];
   default?: Supplier<WNode<Node>>;
 }
 
@@ -61,7 +62,7 @@ export const Switch = <T>(props: SwitchProps<T>): WNode<Node> => {
     state: props.value,
     render: (value: T) => {
       const result = caseMatchMap.get(value) ?? props.default ?? (() => createFragment([]));
-      return result({});
+      return result();
     },
   });
 };
