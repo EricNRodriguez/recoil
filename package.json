@@ -28,7 +28,7 @@
   },
   "packageManager": "yarn@3.2.2",
   "dependencies": {
-    "typescript-monads": "^7.2.0"
+    "typescript-monads": "^8.0.0"
   },
   "main": "./index.ts"
 }

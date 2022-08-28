@@ -1098,7 +1098,7 @@ __metadata:
     tsc-alias: ^1.7.0
     tsconfig-paths: ^4.1.0
     typescript: ^4.7.4
-    typescript-monads: ^7.2.0
+    typescript-monads: ^8.0.0
   languageName: unknown
   linkType: soft
 
@@ -1368,15 +1368,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-monads@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "typescript-monads@npm:7.2.0"
+"typescript-monads@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "typescript-monads@npm:8.0.0"
   dependencies:
     rxjs: ^7
   dependenciesMeta:
     rxjs:
       optional: true
-  checksum: ba3598eb492819f14d9a14591ec088318aaec6e48aea074c7f5cf4b2a32ed08f74ca60c0d7a91f145732d60d60087da1d784d719431162ed117b072d11507019
+  checksum: 9f577b636509d61bd5624609e9a885215d49baae1507af6a636906562cf05b248aa964793586da09f6123d7208aa078e6efff0307a4d83faba9b91677d1c45da
   languageName: node
   linkType: hard
 
