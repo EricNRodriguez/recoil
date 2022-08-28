@@ -189,7 +189,7 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   public getUntracked(): T {
     this.getContext().enterNewTrackingContext();
     try {
-      return this.deriveValue();
+      return this.get();
     } finally {
       this.getContext().exitCurrentTrackingContext();
     }
