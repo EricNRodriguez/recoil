@@ -1,5 +1,5 @@
 import { ILeafAtom, ISideEffectRef } from "./atom.interface";
-import { LeafAtomImpl, DerivedAtom, SideEffect } from "./atom";
+import {LeafAtomImpl, DerivedAtom, SideEffect, VirtualDerivedAtom} from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../util";
 import { AtomTrackingContext } from "./context";
@@ -221,17 +221,22 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  * derivation are dirtied. Evaluation can either be lazy or eager, depending on
  * the effects registered against it.
  *
- * Which computations to wrap in derivations should be considered carefully, ideally through profiling. This
+ * Which computations to wrap in cached derivations should be considered carefully, ideally through profiling. This
  * is because all writes to leaf atoms have a linear time complexity on the depth of the dependency DAG. Hence,
  * they should be used as tracked cache (memoization) primitive.
  *
  * @param deriveValue A synchronous factory for the state
+ * @param cache Determines if the returned Atom is a skip connection in the DAG or an actual node.
  * @returns An atom containing the derived state, which automatically tracks the dependencies that were used to
  *          create it
  */
 export const deriveState = ApiFunctionBuilder.getInstance().build(
-  <T>(deriveValue: Producer<T>): IAtom<T> => {
-    return new DerivedAtom(deriveValue, globalTrackingContext);
+  <T>(deriveValue: Producer<T>, cache: boolean = true): IAtom<T> => {
+    if (cache) {
+      return new DerivedAtom(deriveValue, globalTrackingContext);
+    } else {
+      return new VirtualDerivedAtom(globalTrackingContext, deriveValue);
+    }
   }
 );
 

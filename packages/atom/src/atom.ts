@@ -3,7 +3,7 @@ import { IAtom, ILeafAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
-import { Producer, Runnable, Function } from "../../util";
+import {Producer, Runnable, Function, Supplier} from "../../util";
 
 export const isAtom = (obj: any): boolean => {
   return (
@@ -13,45 +13,6 @@ export const isAtom = (obj: any): boolean => {
     "invalidate" in obj
   );
 };
-
-/**
- * A lightweight derivation that makes an atomic transformation to a single atom.
- *
- * Conceptually it is a skip connection in the DAG.
- *
- * A different way of looking at it is that its a non-caching DerivedAtom
- *
- * This implementation detail reduces the large overhead of creating and managing a derivation for the sole
- * purpose of something analogous to a type conversion from IAtom<number> to IAtom<string>, etc.
- */
-class TransformedAtom<T, R> implements IAtom<R> {
-  private readonly base: IAtom<T>;
-  private readonly mutation: Function<T, R>;
-
-  public constructor(base: IAtom<T>, mutation: Function<T, R>) {
-    this.base = base;
-    this.mutation = mutation;
-  }
-
-  public get(): R {
-    return this.mutation(this.base.get());
-  }
-
-  public getUntracked(): R {
-    return this.mutation(this.base.getUntracked());
-  }
-
-  public invalidate(): void {
-    this.base.invalidate();
-  }
-
-  public transform<R2>(mutation:Function<R, R2>): IAtom<R2> {
-    return new TransformedAtom(
-      this.base,
-      (v: T) => mutation(this.mutation(v)),
-    );
-  }
-}
 
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
@@ -93,9 +54,9 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public transform<R>(mutation:Function<T, R>): IAtom<R> {
-    return new TransformedAtom(
-      this,
-      mutation
+    return new VirtualDerivedAtom(
+      this.context,
+      () => mutation(this.get()),
     );
   }
 }
@@ -155,6 +116,47 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
         "stateful set called on leaf atom during derivation"
       );
     }
+  }
+}
+
+/**
+ * A derivation that is logically a node in the DAG, but is actually just a virtual node - the runtime graph
+ * has no knowledge of it.
+ */
+export class VirtualDerivedAtom<T> implements IAtom<T> {
+  private readonly context: AtomTrackingContext;
+  private readonly derivation: Supplier<T>;
+  private readonly tracker: ILeafAtom<boolean>;
+
+  constructor(context: AtomTrackingContext, derivation: Supplier<T>) {
+    this.context = context;
+    this.derivation = derivation;
+    this.tracker = new LeafAtomImpl(false, context);
+  }
+
+  public get(): T {
+    this.tracker.get();
+    return this.derivation();
+  }
+
+  public getUntracked(): T {
+    this.context.enterNewTrackingContext();
+    try {
+      return this.get();
+    } finally {
+      this.context.exitCurrentTrackingContext();
+    }
+  }
+
+  public invalidate(): void {
+    this.tracker.invalidate();
+  }
+
+  public transform<R>(transform: Function<T, R>): IAtom<R> {
+    return new VirtualDerivedAtom(
+      this.context,
+      () => transform(this.get())
+    );
   }
 }
 

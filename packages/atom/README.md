@@ -82,7 +82,7 @@ fetchState<T | undefined>(getValue: () => Promise<T>): IAtom<T | undefined>
 ###### Non Leaf Nodes
 
 ``` ts
-deriveState<T>(deriveValue: () => T): IAtom<T>
+deriveState<T>(deriveValue: () => T, cached: boolean = true): IAtom<T>
 ```
 
 ###### Side Effects
