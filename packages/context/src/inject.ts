@@ -1,4 +1,4 @@
-import { createState, ILeafAtom, runUntracked } from "atom";
+import { createState, ILeafAtom, runUntracked } from "../../atom";
 
 /**
  * A typesafe key for a symbol in the symbol table.

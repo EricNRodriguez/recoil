@@ -1,8 +1,8 @@
 import {SymbolKey, ExecutionScopeManager} from "./inject";
-import { Consumer, Producer, Runnable, Supplier } from "utils";
-import {WElement, WNode} from "dom";
-import { ISideEffectRef, runEffect } from "atom";
-import { nonEmpty } from "utils/src/type_check";
+import { Consumer, Producer, Runnable, Supplier } from "../../utils";
+import {WElement, WNode} from "../../dom";
+import { ISideEffectRef, runEffect } from "../../atom";
+import { nonEmpty } from "../../utils/src/type_check";
 
 class DeferredContextCallbackRegistry<T extends WNode<Node>> {
   private readonly scope: Consumer<T>[][] = [];

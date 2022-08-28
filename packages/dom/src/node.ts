@@ -1,4 +1,4 @@
-import { notNullOrUndefined, nullOrUndefined, Runnable } from "utils";
+import { notNullOrUndefined, nullOrUndefined, Runnable } from "../../utils";
 import { reconcileNodeArrays } from "./reconcile";
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {

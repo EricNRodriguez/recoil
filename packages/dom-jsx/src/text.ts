@@ -1,6 +1,6 @@
-import {Supplier} from "utils";
-import {deriveState, IAtom, isAtom} from "atom";
-import {createTextNode, WNode} from "dom";
+import {Supplier} from "../../utils";
+import {deriveState, IAtom, isAtom} from "../../atom";
+import {createTextNode, WNode} from "../../dom";
 
 export type TextNodeTypes = string | boolean | number;
 export type TextNodeSource = TextNodeTypes | Supplier<TextNodeTypes> | IAtom<TextNodeTypes>;
