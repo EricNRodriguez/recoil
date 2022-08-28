@@ -28,5 +28,5 @@
   "dependencies": {
     "typescript-monads": "^7.2.0"
   },
-  "main": "./index.ts",
+  "main": "./index.ts"
 }
