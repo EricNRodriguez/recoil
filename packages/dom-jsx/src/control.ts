@@ -4,11 +4,11 @@ import {
   nullOrUndefined,
   Producer,
   Supplier,
-} from "../../util";
-import {forEach, ifElse, IndexedItem, match} from "../../dom-dsl"
-import {IAtom, isAtom, runEffect} from "../../atom";
-import { frag, th } from "../../dom-dsl";
-import {createFragment, WElement, WNode} from "../../dom";
+} from "util";
+import {forEach, ifElse, IndexedItem, match} from "dom-dsl"
+import {IAtom, isAtom, runEffect} from "atom";
+import { frag, th } from "dom-dsl";
+import {createFragment, WElement, WNode} from "dom";
 import {Component} from "./jsx";
 
 export type SupplyProps = {

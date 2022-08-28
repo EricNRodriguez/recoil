@@ -1,4 +1,4 @@
-import { WNode } from "../../dom";
+import { WNode } from "dom";
 
 type DefaultModuleType = {
   default: (...args: any[]) => WNode<Node>;
