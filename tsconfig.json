@@ -104,14 +104,16 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "files": [
+  "include": [
+    "packages/atom",
+    "packages/context",
+    "packages/dom",
+    "packages/dom-dsl",
+    "packages/dom-jsx",
+    "packages/lazy"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
   ]
-//  "include": [
-//    "packages/atom",
-//    "packages/context",
-//    "packages/dom",
-//    "packages/dom-dsl",
-//    "packages/dom-jsx",
-//    "packages/lazy"
-//  ]
 }
