@@ -38,7 +38,7 @@ class BaseAtom {
             .tapSome(this.parents.register.bind(this.parents));
     }
     map(mutation) {
-        return new VirtualDerivedAtom(this.context, () => mutation(this.get()));
+        return new DerivedAtom(() => mutation(this.get()), this.context);
     }
 }
 class LeafAtomImpl extends BaseAtom {
@@ -108,7 +108,7 @@ class VirtualDerivedAtom {
         this.tracker.invalidate();
     }
     map(transform) {
-        return new VirtualDerivedAtom(this.context, () => transform(this.get()));
+        return new DerivedAtom(() => transform(this.get()), this.context);
     }
 }
 exports.VirtualDerivedAtom = VirtualDerivedAtom;

@@ -55,9 +55,9 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public map<R>(mutation:Function<T, R>): IAtom<R> {
-    return new VirtualDerivedAtom(
-      this.context,
+    return new DerivedAtom(
       () => mutation(this.get()),
+      this.context,
     );
   }
 }
@@ -154,9 +154,9 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
   }
 
   public map<R>(transform: Function<T, R>): IAtom<R> {
-    return new VirtualDerivedAtom(
-      this.context,
-      () => transform(this.get())
+    return new DerivedAtom(
+      () => transform(this.get()),
+      this.context
     );
   }
 }
