@@ -133,13 +133,11 @@ class DerivedAtom extends BaseAtom {
         }
     }
     getUntracked() {
-        this.getContext().enterNewTrackingContext();
-        try {
-            return this.get();
-        }
-        finally {
-            this.getContext().exitCurrentTrackingContext();
-        }
+        this.value = this.value.match({
+            none: () => typescript_monads_1.Maybe.some(this.deriveValue()),
+            some: (some) => typescript_monads_1.Maybe.some(some),
+        });
+        return this.value.valueOrThrow("value should be some after derivation");
     }
     childReady() {
         this.numChildrenNotReady--;
