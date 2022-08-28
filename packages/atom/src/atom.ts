@@ -10,7 +10,8 @@ export const isAtom = (obj: any): boolean => {
     obj instanceof Object &&
     "get" in obj &&
     "getUntracked" in obj &&
-    "invalidate" in obj
+    "invalidate" in obj &&
+    "map" in obj
   );
 };
 
