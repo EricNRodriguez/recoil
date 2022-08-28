@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w",
-    "build": "tsc"
+    "build": "tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,5 @@
   "dependencies": {
     "typescript-monads": "^8.0.0"
   },
-  "main": "./index.ts"
+  "main": "index.ts"
 }

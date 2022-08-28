@@ -1,0 +1,1 @@
+{"version":3,"file":"util.js","sourceRoot":"","sources":["../../../packages/dom/src/util.ts"],"names":[],"mappings":";;;AACA,uCAA2C;AAEpC,MAAM,eAAe,GAAG,CAAI,OAAmB,EAAmB,EAAE;IACzE,IAAI,OAAO,OAAO,KAAK,QAAQ,EAAE;QAC/B,OAAO,IAAA,wBAAc,EAAC,OAAiB,CAAC,CAAC;KAC1C;SAAM;QACL,OAAO,OAAO,CAAC;KAChB;AACH,CAAC,CAAC;AANW,QAAA,eAAe,mBAM1B"}

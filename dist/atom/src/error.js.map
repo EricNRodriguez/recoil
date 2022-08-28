@@ -1,0 +1,1 @@
+{"version":3,"file":"error.js","sourceRoot":"","sources":["../../../packages/atom/src/error.ts"],"names":[],"mappings":";;;AAAA,MAAa,uBAAwB,SAAQ,KAAK;IAC7B;IAAnB,YAAmB,OAAe;QAChC,KAAK,CAAC,OAAO,CAAC,CAAC;QADE,YAAO,GAAP,OAAO,CAAQ;QAEhC,IAAI,CAAC,IAAI,GAAG,yBAAyB,CAAC;QACtC,IAAI,CAAC,KAAK,GAAS,IAAI,KAAK,EAAG,CAAC,KAAK,CAAC;IACxC,CAAC;CACF;AAND,0DAMC"}

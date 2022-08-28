@@ -1,0 +1,1 @@
+{"version":3,"file":"suspense.d.ts","sourceRoot":"","sources":["../../../../packages/dom-dsl/src/control/suspense.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAkB,MAAM,cAAc,CAAC;AAGrD,oBAAY,aAAa,GAAG;IAC1B,QAAQ,CAAC,EAAE,KAAK,CAAC,IAAI,CAAC,CAAC;CACxB,CAAC;AAEF,eAAO,MAAM,QAAQ,UACZ,aAAa,SACb,QAAQ,MAAM,IAAI,CAAC,CAAC,KAC1B,MAAM,IAAI,CAUZ,CAAC"}
