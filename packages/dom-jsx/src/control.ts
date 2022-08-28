@@ -32,7 +32,7 @@ export type ForProps<T> = {
   render: Function<T, WNode<Node>>;
 };
 
-export const For = <T>(props: ForProps<T>): WNode<Node> => {
+export const For = <T extends Object>(props: ForProps<T>): WNode<Node> => {
   return forEach<T>(props);
 };
 
@@ -56,7 +56,7 @@ export type SwitchProps<T> = {
   default?: Supplier<WNode<Node>>;
 }
 
-export const Switch = <T>(props: SwitchProps<T>): WNode<Node> => {
+export const Switch = <T extends Object>(props: SwitchProps<T>): WNode<Node> => {
   const caseMatchMap = new Map(props.cases);
   return match({
     state: props.value,

@@ -11,7 +11,7 @@ export declare type ForProps<T> = {
     items: Supplier<IndexedItem<T>[]>;
     render: Function<T, WNode<Node>>;
 };
-export declare const For: <T>(props: ForProps<T>) => WNode<Node>;
+export declare const For: <T extends Object>(props: ForProps<T>) => WNode<Node>;
 export declare type IfProps = {
     condition: boolean | IAtom<boolean>;
     true: Supplier<WNode<Node>>;
@@ -23,7 +23,7 @@ export declare type SwitchProps<T> = {
     cases: [T, Supplier<WNode<Node>>][];
     default?: Supplier<WNode<Node>>;
 };
-export declare const Switch: <T>(props: SwitchProps<T>) => WNode<Node>;
+export declare const Switch: <T extends Object>(props: SwitchProps<T>) => WNode<Node>;
 export declare type SuspenseProps = {
     default?: WNode<Node>;
 };
