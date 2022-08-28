@@ -53,7 +53,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
       .tapSome(this.parents.register.bind(this.parents));
   }
 
-  public transform<R>(mutation:Function<T, R>): IAtom<R> {
+  public map<R>(mutation:Function<T, R>): IAtom<R> {
     return new VirtualDerivedAtom(
       this.context,
       () => mutation(this.get()),
@@ -152,7 +152,7 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
     this.tracker.invalidate();
   }
 
-  public transform<R>(transform: Function<T, R>): IAtom<R> {
+  public map<R>(transform: Function<T, R>): IAtom<R> {
     return new VirtualDerivedAtom(
       this.context,
       () => transform(this.get())

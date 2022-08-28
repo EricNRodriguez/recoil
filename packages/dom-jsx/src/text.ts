@@ -6,7 +6,7 @@ export type TextNodeTypes = string | boolean | number;
 export type TextNodeSource = TextNodeTypes | Supplier<TextNodeTypes> | IAtom<TextNodeTypes>;
 export const $ = (data: TextNodeSource): WNode<Node> => {
     if (isAtom(data)) {
-        return createTextNode((data as IAtom<TextNodeTypes>).transform((v: TextNodeTypes) => v.toString()));
+        return createTextNode((data as IAtom<TextNodeTypes>).map((v: TextNodeTypes) => v.toString()));
     } else if (typeof data === "function") {
         return createTextNode(deriveState(() => (data as Supplier<TextNodeTypes>)().toString()));
     } else {

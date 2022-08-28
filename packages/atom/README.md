@@ -58,7 +58,7 @@ interface IAtom<T> {
    * Intended use cases are for type changes, formatting etc, where a new DAG node is pure overhead, but you want an atom
    * because an interface etc expects one.
    */
-  transform<R>(transform: Function<T, R>): IAtom<R>;
+  map<R>(transform: Function<T, R>): IAtom<R>;
 }
 
 ```

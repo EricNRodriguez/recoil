@@ -9,7 +9,7 @@ export interface IAtom<T> {
   get(): T;
   getUntracked(): T;
   invalidate(): void;
-  transform<R>(transform: Function<T, R>): IAtom<R>;
+  map<R>(transform: Function<T, R>): IAtom<R>;
 }
 
 export interface ILeafAtom<T> extends IAtom<T> {
