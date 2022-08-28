@@ -180,19 +180,19 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   private executeScopedDerivation(): T {
     try {
       this.getContext().pushParent(this);
-      return this.getUntracked();
+      return this.deriveValue();
     } finally {
       this.getContext().popParent();
     }
   }
 
   public getUntracked(): T {
-    this.value = this.value.match({
-      none: (): IMaybe<T> => Maybe.some(this.deriveValue()),
-      some: (some: NonNullable<T>): IMaybe<T> => Maybe.some(some),
-    });
-
-    return this.value.valueOrThrow("value should be some after derivation");
+    this.getContext().enterNewTrackingContext();
+    try {
+      return this.deriveValue();
+    } finally {
+      this.getContext().exitCurrentTrackingContext();
+    }
   }
 
   public childReady() {
