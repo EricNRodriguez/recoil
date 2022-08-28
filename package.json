@@ -25,11 +25,6 @@
   },
   "packageManager": "yarn@3.2.2",
   "dependencies": {
-    "@types/uuid": "^8.3.4",
-    "typescript-monads": "^7.2.0",
-    "uuid": "^8.3.2"
-  },
-  "exports": {
-    "./*": "./packages/*"
+    "typescript-monads": "^7.2.0"
   }
 }
