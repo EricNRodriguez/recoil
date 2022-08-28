@@ -1,1 +1,0 @@
-{"version":3,"file":"run_app.js","sourceRoot":"","sources":["../../../packages/dom-dsl/src/run_app.ts"],"names":[],"mappings":";;;AAAA,mCAAiD;AAE1C,MAAM,MAAM,GAAG,CAAC,MAAmB,EAAE,GAAgB,EAAQ,EAAE;IACnE,MAAc,CAAC,wBAAwB,GAAG,IAAA,mBAAa,EAAC,MAAM,EAAE,EAAE,EAAE;QACnE,GAAG;KACJ,CAAC,CAAC,KAAK,EAAE,CAAC;AACb,CAAC,CAAC;AAJW,QAAA,MAAM,UAIjB"}

@@ -29,5 +29,8 @@
   "dependencies": {
     "typescript-monads": "^8.0.0"
   },
-  "main": "index.ts"
+  "main": "index.ts",
+  "release": {
+    "pkgRoot": "dist"
+  }
 }
