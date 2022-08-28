@@ -4,7 +4,6 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node packages/index.ts",
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w",
     "build": "tsc"
   },
