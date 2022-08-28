@@ -7,7 +7,7 @@ import {
   WNode,
 } from "dom";
 import { IAtom, isAtom } from "atom";
-import { nullOrUndefined, Supplier } from "util";
+import { nullOrUndefined, Supplier } from "utils";
 import { wrapTextInWNode } from "dom/src/util";
 
 export type Content = WNode<Node> | string;

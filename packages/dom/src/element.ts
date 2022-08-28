@@ -1,5 +1,5 @@
 import { BaseWNode, WNode } from "./node";
-import { Method } from "util/src/function.interface";
+import { Method } from "utils/src/function.interface";
 import { GlobalEventCoordinator } from "./event";
 export type ElementStyle = { [key: string]: string };
 

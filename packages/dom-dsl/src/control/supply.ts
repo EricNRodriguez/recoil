@@ -1,4 +1,4 @@
-import { Producer } from "util";
+import { Producer } from "utils";
 import { WNode } from "dom";
 import { frag } from "../element";
 import { runEffect } from "atom";

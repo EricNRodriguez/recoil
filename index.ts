@@ -1,9 +1,9 @@
-export * from "packages/atom";
-export * from "packages/dom";
-export * from "packages/context";
+export * from "atom";
+export * from "dom";
+export * from "context";
 
-export * from "packages/dom-dsl";
-export * from "packages/dom-jsx";
-export {runApp} from "packages/dom-dsl";
+export * from "dom-dsl";
+export * from "dom-jsx";
+export {runApp} from "dom-dsl";
 
-export * from "packages/lazy";
+export * from "lazy";

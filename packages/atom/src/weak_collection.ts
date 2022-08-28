@@ -1,4 +1,4 @@
-import { Consumer } from "../../util";
+import { Consumer } from "../../utils";
 
 export class WeakCollection<T extends Object> {
   private items: WeakRef<T>[] = [];

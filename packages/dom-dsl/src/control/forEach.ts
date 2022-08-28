@@ -1,6 +1,6 @@
-import { notNullOrUndefined, Supplier } from "util";
+import { notNullOrUndefined, Supplier } from "utils";
 import { WNode } from "dom"
-import { Function } from "util";
+import { Function } from "utils";
 import { createFragment } from "dom";
 import { runEffect } from "atom";
 

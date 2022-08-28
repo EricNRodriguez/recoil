@@ -1,4 +1,4 @@
-import {Function} from "../../util";
+import {Function} from "../../utils";
 
 export interface ISideEffectRef {
   activate(): void;

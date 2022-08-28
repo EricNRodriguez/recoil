@@ -1,4 +1,4 @@
-import { Runnable } from "../../util";
+import { Runnable } from "../../utils";
 import { IEffectScheduler } from "./atom";
 
 enum StateKind {
