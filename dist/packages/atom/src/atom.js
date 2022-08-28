@@ -135,7 +135,7 @@ class DerivedAtom extends BaseAtom {
     getUntracked() {
         this.getContext().enterNewTrackingContext();
         try {
-            return this.get();
+            return this.deriveValue();
         }
         finally {
             this.getContext().exitCurrentTrackingContext();
