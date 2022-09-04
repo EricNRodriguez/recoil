@@ -180,7 +180,7 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   private executeScopedDerivation(): T {
     try {
       this.getContext().pushParent(this);
-      return this.deriveValue();
+      return this.getValue();
     } finally {
       this.getContext().popParent();
     }
@@ -189,10 +189,18 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   public getUntracked(): T {
     this.getContext().enterNewTrackingContext();
     try {
-      return this.deriveValue();
+      return this.executeScopedDerivation();
     } finally {
       this.getContext().exitCurrentTrackingContext();
     }
+  }
+
+  private getValue(): T {
+    if (this.value.isNone()) {
+      this.value = Maybe.some(this.deriveValue());
+    }
+
+    return this.value.valueOrThrow();
   }
 
   public childReady() {
