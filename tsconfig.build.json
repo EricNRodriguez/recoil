@@ -30,9 +30,9 @@
     "declarationDir": "dist",
     "declarationMap": true,
     "sourceMap": true
-  }
-//  "include": [
-//    "./packages/**/index.ts",
-//    "./index.ts",
-//  ]
+  },
+  "include": [
+    "./packages/**/index.ts",
+    "./index.ts",
+  ]
 }
