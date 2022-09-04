@@ -7,21 +7,20 @@
       "esnext",
       "dom"
     ],
-//    "rootDir": "./packages",
     "outDir": "dist",
     "downlevelIteration": true,
-//    "isolatedModules": false, // LOOK INTO THIS
+    "isolatedModules": false, // TODO(ericr): LOOK INTO THIS
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-////    "noImplicitAny": true,
-//    "noImplicitUseStrict": false,
-//    "noEmitHelpers": false,
-//    "noLib": false,
-////    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "noImplicitUseStrict": false,
+    "noEmitHelpers": false,
+    "noLib": false,
+//    "noUnusedLocals": true,
     "noEmitOnError": true,
-//    "allowSyntheticDefaultImports": false,
-//    "skipLibCheck": true,
-//    "skipDefaultLibCheck": true,
+    "allowSyntheticDefaultImports": false,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -32,7 +31,7 @@
     "sourceMap": true
   },
   "include": [
-    "./packages/**/index.ts",
-    "./index.ts",
+    "./src/**/index.ts",
+    "./src/index.ts"
   ]
 }

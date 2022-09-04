@@ -1,4 +1,5 @@
-import { createState, ILeafAtom, runUntracked } from "../../atom";
+import { createState, runUntracked } from "../../atom";
+import type {ILeafAtom} from "../../atom";
 
 /**
  * A typesafe key for a symbol in the symbol table.
@@ -6,7 +7,11 @@ import { createState, ILeafAtom, runUntracked } from "../../atom";
 export interface SymbolKey<T> extends Symbol {}
 
 export class SymbolTable {
-  private readonly symbols: Map<any, ILeafAtom<any>>[] = [new Map()];
+  private readonly symbols: Map<any, ILeafAtom<any>>[];
+
+  constructor() {
+    this.symbols = [new Map()];
+  }
 
   public fork(): SymbolTable {
     const child: SymbolTable = new SymbolTable();

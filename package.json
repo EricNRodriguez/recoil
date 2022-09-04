@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -37,8 +37,5 @@
   "main": "index.ts",
   "release": {
     "pkgRoot": "dist"
-  },
-  "workspaces": [
-    "./packages/atom"
-  ]
+  }
 }

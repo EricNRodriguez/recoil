@@ -1,24 +1,31 @@
 import dts from 'rollup-plugin-dts'
 import esbuild from 'rollup-plugin-esbuild'
+import typescript from "@rollup/plugin-typescript";
 
 export default [
     {
-        input: `index.ts`,
-        plugins: [esbuild()],
+        input: `./src/index.ts`,
+        plugins: [
+            esbuild(),
+            typescript({tsconfig: "./tsconfig.build.json"}),
+        ],
         output: [
             {
-                file: `dist/bundle.js`,
+                file: `dist/index.js`,
                 format: 'cjs',
                 sourcemap: true,
-                // exports: 'default',
+                compact: true
             },
         ]
     },
     {
-        input: `index.ts`,
-        plugins: [dts()],
+        input: `./src/index.ts`,
+        plugins: [
+            dts(),
+            typescript({tsconfig: "./tsconfig.build.json"}),
+        ],
         output: {
-            file: `dist/bundle.d.ts`,
+            file: `dist/index.d.ts`,
             format: 'es',
         },
     }
