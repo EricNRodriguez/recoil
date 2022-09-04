@@ -1,12 +1,11 @@
 {
-  "name": "recoil-js",
-  "version": "0.0.0-development",
+  "name": "test-recoil-js",
+  "version": "0.0.01-development",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w",
-    "build": "rollup -c",
-    "prepare": "npm run build"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
