@@ -16,6 +16,9 @@ export default [
                 sourcemap: true,
                 compact: true
             },
+        ],
+        external: [
+            "typescript-monads"
         ]
     },
     {
@@ -25,8 +28,12 @@ export default [
             typescript({tsconfig: "./tsconfig.build.json"}),
         ],
         output: {
-            file: `dist/index.d.ts`,
+            file: `dist/index.d.js`,
             format: 'es',
+            sourcemap: true,
         },
+        external: [
+            "typescript-monads"
+        ]
     }
 ]
