@@ -1,5 +1,5 @@
-import {Consumer} from "../../utils/function.interface";
-import {notNullOrUndefined} from "../../utils/type_check";
+import {Consumer} from "../../shared/function.interface";
+import {notNullOrUndefined} from "../../shared/type_check";
 
 type EventHandlerRef = {
   event: keyof HTMLElementEventMap;

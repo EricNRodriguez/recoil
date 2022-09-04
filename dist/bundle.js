@@ -14,8 +14,10 @@ class StatefulSideEffectError extends Error {
 }
 
 class WeakCollection {
-  items = [];
-  itemsSet = /* @__PURE__ */ new WeakSet([]);
+  constructor() {
+    this.items = [];
+    this.itemsSet = /* @__PURE__ */ new WeakSet([]);
+  }
   getItems() {
     const items = [
       ...this.items.map((ref) => ref.deref()).filter((item) => item !== void 0).map((item) => item)
@@ -64,9 +66,8 @@ const isAtom = (obj) => {
   return obj instanceof Object && "get" in obj && "getUntracked" in obj && "invalidate" in obj && "map" in obj;
 };
 class BaseAtom {
-  context;
-  parents = new WeakCollection();
   constructor(context) {
+    this.parents = new WeakCollection();
     this.context = context;
   }
   getParents() {
@@ -95,7 +96,6 @@ class BaseAtom {
   }
 }
 class LeafAtomImpl extends BaseAtom {
-  value;
   constructor(value, context) {
     super(context);
     this.value = value;
@@ -135,9 +135,6 @@ class LeafAtomImpl extends BaseAtom {
   }
 }
 class VirtualDerivedAtom {
-  context;
-  derivation;
-  tracker;
   constructor(context, derivation) {
     this.context = context;
     this.derivation = derivation;
@@ -166,11 +163,10 @@ class VirtualDerivedAtom {
   }
 }
 class DerivedAtom extends BaseAtom {
-  deriveValue;
-  value = typescriptMonads.Maybe.none();
-  numChildrenNotReady = 0;
   constructor(deriveValue, context) {
     super(context);
+    this.value = typescriptMonads.Maybe.none();
+    this.numChildrenNotReady = 0;
     this.deriveValue = deriveValue;
   }
   get() {
@@ -217,12 +213,17 @@ class DerivedAtom extends BaseAtom {
   }
 }
 class SideEffect {
-  effect;
-  effectScheduler;
-  context;
-  numChildrenNotReady = 0;
-  state = { status: "active" /* ACTIVE */ };
   constructor(effect, context, effectScheduler) {
+    this.numChildrenNotReady = 0;
+    this.state = { status: "active" /* ACTIVE */ };
+    this.runScoped = () => {
+      try {
+        this.context.pushParent(this);
+        this.effect();
+      } finally {
+        this.context.popParent();
+      }
+    };
     this.effect = effect;
     this.context = context;
     this.effectScheduler = effectScheduler;
@@ -230,14 +231,6 @@ class SideEffect {
   run() {
     this.effectScheduler.schedule(this.runScoped);
   }
-  runScoped = () => {
-    try {
-      this.context.pushParent(this);
-      this.effect();
-    } finally {
-      this.context.popParent();
-    }
-  };
   childReady() {
     this.numChildrenNotReady--;
     if (this.numChildrenNotReady === 0) {
@@ -271,7 +264,9 @@ class SideEffect {
 }
 
 class AtomTrackingContext {
-  scopeStack = [[]];
+  constructor() {
+    this.scopeStack = [[]];
+  }
   getCurrentScope() {
     return this.scopeStack[this.scopeStack.length - 1];
   }
@@ -300,7 +295,9 @@ class AtomTrackingContext {
 }
 
 class BatchingEffectScheduler {
-  state = { kind: "eager" /* EAGER */ };
+  constructor() {
+    this.state = { kind: "eager" /* EAGER */ };
+  }
   schedule(update) {
     switch (this.state.kind) {
       case "batch" /* BATCH */:
@@ -341,12 +338,13 @@ class BatchingEffectScheduler {
 
 const globalTrackingContext = new AtomTrackingContext();
 const globalEffectScheduler = new BatchingEffectScheduler();
-class ApiFunctionBuilder {
-  static instance = new ApiFunctionBuilder();
-  decoratorRegistry = /* @__PURE__ */ new Map();
-  baseFuncRegistry = /* @__PURE__ */ new Map();
+const _ApiFunctionBuilder = class {
+  constructor() {
+    this.decoratorRegistry = /* @__PURE__ */ new Map();
+    this.baseFuncRegistry = /* @__PURE__ */ new Map();
+  }
   static getInstance() {
-    return ApiFunctionBuilder.instance;
+    return _ApiFunctionBuilder.instance;
   }
   build(baseFunc) {
     const externalFunc = (...args) => {
@@ -363,9 +361,10 @@ class ApiFunctionBuilder {
     this.decoratorRegistry.get(apiFn).push(decorator);
   }
   deregisterDecorator(apiFn, decorator) {
+    var _a;
     this.decoratorRegistry.set(
       apiFn,
-      (this.decoratorRegistry.get(apiFn) ?? []).filter(
+      ((_a = this.decoratorRegistry.get(apiFn)) != null ? _a : []).filter(
         (dec) => dec !== decorator
       )
     );
@@ -383,7 +382,9 @@ class ApiFunctionBuilder {
       baseFunc
     );
   }
-}
+};
+let ApiFunctionBuilder = _ApiFunctionBuilder;
+ApiFunctionBuilder.instance = new _ApiFunctionBuilder();
 const registerDecorator = (apiFn, decorator) => {
   return ApiFunctionBuilder.getInstance().registerDecorator(apiFn, decorator);
 };
@@ -525,6 +526,7 @@ const reconcileNodeArrays = ({
     newNodes.map((node, idx) => [node, idx])
   );
   const appendRestOfNewNodes = () => {
+    var _a;
     let nextNodeAnchor = null;
     if (newRight < newNodes.length) {
       if (newLeft > 0) {
@@ -533,7 +535,7 @@ const reconcileNodeArrays = ({
         nextNodeAnchor = newNodes[newRight];
       }
     } else {
-      nextNodeAnchor = currentNodes[currentNodes.length - 1]?.nextSibling;
+      nextNodeAnchor = (_a = currentNodes[currentNodes.length - 1]) == null ? void 0 : _a.nextSibling;
     }
     for (let i = newLeft; i < newRight; ++i) {
       frag$1.append(newNodes[i]);
@@ -605,14 +607,12 @@ const reconcileNodeArrays = ({
 };
 
 class BaseWNode {
-  parent = null;
-  node;
-  isDocumentFragment;
-  children = [];
-  onMountHooks = /* @__PURE__ */ new Set();
-  onUnmountHooks = /* @__PURE__ */ new Set();
-  currentlyMounted = false;
   constructor(node) {
+    this.parent = null;
+    this.children = [];
+    this.onMountHooks = /* @__PURE__ */ new Set();
+    this.onUnmountHooks = /* @__PURE__ */ new Set();
+    this.currentlyMounted = false;
     this.node = node;
     this.isDocumentFragment = this.node instanceof DocumentFragment;
   }
@@ -643,6 +643,7 @@ class BaseWNode {
     this.setChildren(this.children);
   }
   setChildren(children) {
+    var _a;
     const newChildren = children.map(wrapInVNode).filter(notNullOrUndefined);
     const newChildrenSet = new Set(newChildren);
     if (this.isMounted()) {
@@ -658,7 +659,7 @@ class BaseWNode {
       this.syncMountStatusOfChild(nc);
     });
     if (this.isFragment()) {
-      this.getParent()?.rebindChildren();
+      (_a = this.getParent()) == null ? void 0 : _a.rebindChildren();
       return this;
     }
     reconcileNodeArrays({
@@ -737,7 +738,6 @@ const wrapInVNode = (node) => {
 };
 
 class BaseWElement extends BaseWNode {
-  eventCoordinator;
   constructor(element, eventCoordinator) {
     super(element);
     this.eventCoordinator = eventCoordinator;
@@ -762,8 +762,34 @@ class WElement extends BaseWElement {
 }
 
 class GlobalEventCoordinator {
-  eventTargets = /* @__PURE__ */ new Map();
-  targetHandlers = /* @__PURE__ */ new WeakMap();
+  constructor() {
+    this.eventTargets = /* @__PURE__ */ new Map();
+    this.targetHandlers = /* @__PURE__ */ new WeakMap();
+    this.executeHandlersBottomUp = (event) => {
+      var _a, _b, _c;
+      if (!event.bubbles) {
+        throw new Error("delegated events should only be those that bubble");
+      }
+      let curTarget = event.composedPath()[0];
+      let target = curTarget;
+      Object.defineProperty(event, "target", { get: () => target });
+      Object.defineProperty(event, "currentTarget", { get: () => curTarget });
+      while (notNullOrUndefined(curTarget) && !event.cancelBubble) {
+        if ((_b = (_a = this.eventTargets.get(event.type)) == null ? void 0 : _a.has(curTarget)) != null ? _b : false) {
+          (_c = this.targetHandlers.get(curTarget)) == null ? void 0 : _c.forEach((h) => {
+            h.event === event.type && h.handler(event);
+          });
+        }
+        if (notNullOrUndefined(curTarget == null ? void 0 : curTarget.host) && curTarget.host instanceof Node) {
+          curTarget = event.composed ? curTarget.host : null;
+          target = curTarget;
+        } else {
+          curTarget = curTarget.parentNode;
+        }
+      }
+      return;
+    };
+  }
   attachEventHandler(event, target, handler) {
     if (!this.eventTargets.has(event)) {
       this.eventTargets.set(event, /* @__PURE__ */ new WeakSet());
@@ -780,35 +806,13 @@ class GlobalEventCoordinator {
     return;
   }
   detachEventHandlers(event, target) {
-    this.eventTargets.get(event)?.delete(target);
+    var _a, _b, _c;
+    (_a = this.eventTargets.get(event)) == null ? void 0 : _a.delete(target);
     this.targetHandlers.set(
       target,
-      this.targetHandlers.get(target)?.filter((r) => r.event === event) ?? []
+      (_c = (_b = this.targetHandlers.get(target)) == null ? void 0 : _b.filter((r) => r.event === event)) != null ? _c : []
     );
   }
-  executeHandlersBottomUp = (event) => {
-    if (!event.bubbles) {
-      throw new Error("delegated events should only be those that bubble");
-    }
-    let curTarget = event.composedPath()[0];
-    let target = curTarget;
-    Object.defineProperty(event, "target", { get: () => target });
-    Object.defineProperty(event, "currentTarget", { get: () => curTarget });
-    while (notNullOrUndefined(curTarget) && !event.cancelBubble) {
-      if (this.eventTargets.get(event.type)?.has(curTarget) ?? false) {
-        this.targetHandlers.get(curTarget)?.forEach((h) => {
-          h.event === event.type && h.handler(event);
-        });
-      }
-      if (notNullOrUndefined(curTarget?.host) && curTarget.host instanceof Node) {
-        curTarget = event.composed ? curTarget.host : null;
-        target = curTarget;
-      } else {
-        curTarget = curTarget.parentNode;
-      }
-    }
-    return;
-  };
 }
 
 const globalEventCoordinator = new GlobalEventCoordinator();
@@ -857,7 +861,9 @@ const lazy = (getModule) => {
 };
 
 class SymbolTable {
-  symbols = [/* @__PURE__ */ new Map()];
+  constructor() {
+    this.symbols = [/* @__PURE__ */ new Map()];
+  }
   fork() {
     const child = new SymbolTable();
     child.symbols.length = 0;
@@ -867,23 +873,29 @@ class SymbolTable {
   set(key, value) {
     if (this.symbols[this.symbols.length - 1].has(key)) {
       runUntracked(
-        () => this.symbols[this.symbols.length - 1].get(key)?.set(value)
+        () => {
+          var _a;
+          return (_a = this.symbols[this.symbols.length - 1].get(key)) == null ? void 0 : _a.set(value);
+        }
       );
     } else {
       this.symbols[this.symbols.length - 1].set(key, createState(value));
     }
   }
   get(key) {
+    var _a;
     for (let i = this.symbols.length - 1; i >= 0; --i) {
       if (this.symbols[i].has(key)) {
-        return this.symbols[i].get(key)?.get();
+        return (_a = this.symbols[i].get(key)) == null ? void 0 : _a.get();
       }
     }
     return void 0;
   }
 }
 class ExecutionScopeManager {
-  currentScope = new SymbolTable();
+  constructor() {
+    this.currentScope = new SymbolTable();
+  }
   getCurrentScope() {
     return this.currentScope;
   }
@@ -913,7 +925,9 @@ class ExecutionScopeManager {
 }
 
 class DeferredContextCallbackRegistry {
-  scope = [];
+  constructor() {
+    this.scope = [];
+  }
   defer(fn) {
     if (!nonEmpty(this.scope)) {
       throw new Error("unable to defer functions outside of a scope");

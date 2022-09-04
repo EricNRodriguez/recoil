@@ -3,8 +3,8 @@ import {IAtom, isAtom, runEffect} from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import {createFragment, WElement, WNode} from "../../dom";
 import {Component} from "./jsx";
-import {Producer, Supplier, Function} from "../../utils/function.interface";
-import {notNullOrUndefined} from "../../utils/type_check";
+import {Producer, Supplier, Function} from "../../shared/function.interface";
+import {notNullOrUndefined} from "../../shared/type_check";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;

@@ -1,7 +1,7 @@
 import { ILeafAtom, ISideEffectRef } from "./atom.interface";
 import {LeafAtomImpl, DerivedAtom, SideEffect, VirtualDerivedAtom} from "./atom";
 import { IAtom } from "./atom.interface";
-import { Producer, Runnable } from "../../utils/function.interface";
+import { Producer, Runnable } from "../../shared/function.interface";
 import { AtomTrackingContext } from "./context";
 import { BatchingEffectScheduler } from "./effect_scheduler";
 

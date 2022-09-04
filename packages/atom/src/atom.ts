@@ -3,7 +3,7 @@ import { IAtom, ILeafAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
-import {Producer, Runnable, Function, Supplier} from "../../utils/function.interface";
+import {Producer, Runnable, Function, Supplier} from "../../shared/function.interface";
 
 export const isAtom = (obj: any): boolean => {
   return (

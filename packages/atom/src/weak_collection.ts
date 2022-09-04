@@ -1,4 +1,4 @@
-import { Consumer } from "../../utils/function.interface";
+import { Consumer } from "../../shared/function.interface";
 
 export class WeakCollection<T extends Object> {
   private items: WeakRef<T>[] = [];

@@ -1,4 +1,4 @@
-import {nullOrUndefined} from "../../utils/type_check";
+import {nullOrUndefined} from "../../shared/type_check";
 
 export type ReconcileNodeArraysArgs = {
   parent: Node;
