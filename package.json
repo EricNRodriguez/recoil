@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepare": "build"
   },
   "repository": {
     "type": "git",
