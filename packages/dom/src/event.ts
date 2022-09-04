@@ -1,4 +1,5 @@
-import { Consumer, notNullOrUndefined } from "../../utils";
+import {Consumer} from "../../utils/function.interface";
+import {notNullOrUndefined} from "../../utils/type_check";
 
 type EventHandlerRef = {
   event: keyof HTMLElementEventMap;

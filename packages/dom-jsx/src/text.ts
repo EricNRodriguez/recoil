@@ -1,4 +1,4 @@
-import {Supplier} from "../../utils";
+import {Supplier} from "../../utils/function.interface";
 import {deriveState, IAtom, isAtom} from "../../atom";
 import {createTextNode, WNode} from "../../dom";
 

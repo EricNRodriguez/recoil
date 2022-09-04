@@ -1,4 +1,4 @@
-import { Producer } from "../../../utils";
+import { Producer } from "../../../utils/function.interface";
 import { WNode } from "../../../dom";
 import { frag } from "../element";
 import { runEffect } from "../../../atom";

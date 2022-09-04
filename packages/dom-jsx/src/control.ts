@@ -1,15 +1,10 @@
-import {
-  Function,
-  notNullOrUndefined,
-  nullOrUndefined,
-  Producer,
-  Supplier,
-} from "../../utils";
 import {forEach, ifElse, IndexedItem, match} from "../../dom-dsl";
 import {IAtom, isAtom, runEffect} from "../../atom";
 import { frag, th } from "../../dom-dsl";
 import {createFragment, WElement, WNode} from "../../dom";
 import {Component} from "./jsx";
+import {Producer, Supplier, Function} from "../../utils/function.interface";
+import {notNullOrUndefined} from "../../utils/type_check";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;

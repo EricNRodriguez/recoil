@@ -1,5 +1,5 @@
 import { WNode, createFragment } from "../../../dom";
-import { notNullOrUndefined } from "../../../utils";
+import { notNullOrUndefined } from "../../../utils/type_check";
 
 export type SuspenseProps = {
   fallback?: WNode<Node>;

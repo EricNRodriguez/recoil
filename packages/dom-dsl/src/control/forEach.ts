@@ -1,8 +1,8 @@
-import { notNullOrUndefined, Supplier } from "../../../utils";
 import { WNode } from "../../../dom"
-import { Function } from "../../../utils";
+import {Function, Supplier} from "../../../utils/function.interface";
 import { createFragment } from "../../../dom";
 import { runEffect } from "../../../atom";
+import {notNullOrUndefined} from "../../../utils/type_check";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
