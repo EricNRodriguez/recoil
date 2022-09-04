@@ -31,6 +31,7 @@ export default [
             file: `dist/index.d.js`,
             format: 'es',
             sourcemap: true,
+            compact: true
         },
         external: [
             "typescript-monads"

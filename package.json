@@ -1,5 +1,5 @@
 {
-  "name": "recoil",
+  "name": "recoil-js",
   "version": "0.0.0-development",
   "description": "",
   "scripts": {
@@ -35,7 +35,8 @@
   "dependencies": {
     "typescript-monads": "^8.0.0"
   },
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "release": {
     "pkgRoot": "dist"
   }

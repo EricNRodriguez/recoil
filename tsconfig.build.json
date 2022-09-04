@@ -16,7 +16,6 @@
     "noImplicitUseStrict": false,
     "noEmitHelpers": false,
     "noLib": false,
-//    "noUnusedLocals": true,
     "noEmitOnError": true,
     "allowSyntheticDefaultImports": false,
     "skipLibCheck": true,
