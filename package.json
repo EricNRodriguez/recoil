@@ -39,6 +39,6 @@
     "pkgRoot": "dist"
   },
   "workspaces": [
-    "./packages/atom"
+    "./packages/*"
   ]
 }
