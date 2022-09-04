@@ -1,33 +1,25 @@
-import typescript from '@rollup/plugin-typescript'
-import pkg from './package.json'
+import dts from 'rollup-plugin-dts'
+import esbuild from 'rollup-plugin-esbuild'
 
 export default [
     {
-        input: 'dist/index.js',
-        output: {
-            name: 'atom',
-            file: `dist/${pkg.main}`,
-            format: 'umd',
-            globals: {
-                // rxjs: 'rxjs',
-                // 'rxjs/operators': 'rxjs/operators'
+        input: `index.ts`,
+        plugins: [esbuild()],
+        output: [
+            {
+                file: `dist/bundle.js`,
+                format: 'cjs',
+                sourcemap: true,
+                // exports: 'default',
             },
-            sourcemap: true
-        },
-        external: [
-            // 'rxjs',
-            // 'rxjs/operators'
         ]
     },
     {
-        input: 'index.ts',
-        output: [
-            { file: `dist/${pkg.module}`, format: 'es', sourcemap: true },
-            { file: `dist/${pkg.commonJs}`, format: 'cjs', sourcemap: true }
-        ],
-        external: [
-            //     'rxjs',
-            //     'rxjs/operators'
-        ],
-        plugins: [typescript({ tsconfig: 'tsconfig.build.json' })]
-    }]
+        input: `index.ts`,
+        plugins: [dts()],
+        output: {
+            file: `dist/bundle.d.ts`,
+            format: 'es',
+        },
+    }
+]

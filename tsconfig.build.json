@@ -7,7 +7,7 @@
       "esnext",
       "dom"
     ],
-    "rootDir": "./packages",
+//    "rootDir": "./packages",
     "outDir": "dist",
     "downlevelIteration": true,
 //    "isolatedModules": false, // LOOK INTO THIS
@@ -33,6 +33,6 @@
   },
   "include": [
     "./packages/**/index.ts",
-//    "./packages/shared/*.ts",
+    "./index.ts",
   ]
 }

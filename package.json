@@ -20,7 +20,10 @@
   "homepage": "https://github.com/EricNRodriguez/recoil#readme",
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.4.0",
+    "esbuild": "^0.15.6",
     "rollup": "^2.79.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-esbuild": "^4.10.1",
     "ts-node": "^10.8.1",
     "tsc": "^2.0.4",
     "tsc-alias": "^1.7.0",
