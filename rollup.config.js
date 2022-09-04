@@ -1,12 +1,11 @@
-import dts from 'rollup-plugin-dts'
-import esbuild from 'rollup-plugin-esbuild'
 import typescript from "@rollup/plugin-typescript";
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default [
     {
         input: `./src/index.ts`,
         plugins: [
-            esbuild(),
+            nodeResolve(),
             typescript({tsconfig: "./tsconfig.build.json"}),
         ],
         output: [
@@ -17,22 +16,6 @@ export default [
                 compact: true
             },
         ],
-        external: [
-            "typescript-monads"
-        ]
-    },
-    {
-        input: `./src/index.ts`,
-        plugins: [
-            dts(),
-            typescript({tsconfig: "./tsconfig.build.json"}),
-        ],
-        output: {
-            file: `dist/index.d.js`,
-            format: 'es',
-            sourcemap: true,
-            compact: true
-        },
         external: [
             "typescript-monads"
         ]
