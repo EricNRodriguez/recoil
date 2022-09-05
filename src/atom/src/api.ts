@@ -165,14 +165,9 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
       globalTrackingContext
     );
 
-    const derivation = new DerivedAtom<Promise<T>>(
-      producer,
-      globalTrackingContext
-    );
-
     const sideEffectRunnable = (): void => {
       let currentReactionVersion = reactionVersion++;
-      derivation.get().then((val: T): void => {
+      producer().then((val: T): void => {
         if (val === undefined) {
           return;
         }
@@ -192,7 +187,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     );
     ref.run();
 
-    (atom as any).$$$recoilFetchStateDerivation = [derivation, ref];
+    (atom as any).$$$recoilFetchStateDerivation = ref;
 
     return atom;
   }
