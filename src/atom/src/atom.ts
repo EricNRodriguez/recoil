@@ -1,5 +1,5 @@
 import { Maybe, IMaybe } from "typescript-monads";
-import { IAtom, ILeafAtom } from "./atom.interface";
+import { IAtom, IMutableAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
@@ -66,7 +66,7 @@ export interface IEffectScheduler {
   schedule(effect: Runnable): void;
 }
 
-export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
+export class MutableAtom<T> extends BaseAtom<T> implements IMutableAtom<T> {
   private value: T;
 
   constructor(value: T, context: AtomTrackingContext) {
@@ -127,12 +127,12 @@ export class LeafAtomImpl<T> extends BaseAtom<T> implements ILeafAtom<T> {
 export class VirtualDerivedAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
   private readonly derivation: Supplier<T>;
-  private readonly tracker: ILeafAtom<boolean>;
+  private readonly tracker: IMutableAtom<boolean>;
 
   constructor(context: AtomTrackingContext, derivation: Supplier<T>) {
     this.context = context;
     this.derivation = derivation;
-    this.tracker = new LeafAtomImpl(false, context);
+    this.tracker = new MutableAtom(false, context);
   }
 
   public get(): T {

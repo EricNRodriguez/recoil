@@ -3,10 +3,10 @@
 `atom` is a performant reactive DAG, derived at runtime. Unlike traditional reactive libraries (cough rxjs), this should be enjoyable to use. 
 
 The reactive system can be summarised by 3 core primitives:
-1. Leaf nodes
+1. mutable nodes
    - a reactive variable
    - contains a getter and a setter. 
-2. Non leaf nodes
+2. derived nodes
     - a reactive variable that is `derived` from other reactive variables. Conceptually it is a computation, with all state coming from other reactive nodes. 
     - forms a node in the DAG (due to caching)
     - dependencies are automatically detected at runtime (optimal)
@@ -20,7 +20,7 @@ The reactive system can be summarised by 3 core primitives:
 
 ```ts
 
-interface ILeafAtom<T> extends IAtom<T> {
+interface IMutableAtom<T> extends IAtom<T> {
   /**
    * An atomic set. This will propagate through the DAG - i.e. all dependants will be auto-dirtied.
    */
@@ -66,25 +66,26 @@ interface IAtom<T> {
 ### Factory Methods
 
 
-###### Leaf Nodes
+###### Mutable Nodes
 
 ```ts
-createState<T>(value: T): ILeafAtom<T>
+createState<T>(value: T): IMutableAtom<T>
 
 ````
+
+
+###### Derived Nodes
+
+``` ts
+deriveState<T>(deriveValue: () => T, cached: boolean = true): IAtom<T>
+```
+
 
 ```ts
 
 fetchState<T | undefined>(getValue: () => Promise<T>): IAtom<T | undefined>
 
 ````
-
-###### Non Leaf Nodes
-
-``` ts
-deriveState<T>(deriveValue: () => T, cached: boolean = true): IAtom<T>
-```
-
 ###### Side Effects
 
 ```ts

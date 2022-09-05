@@ -1,5 +1,5 @@
 import { createState, runUntracked } from "../../atom";
-import type {ILeafAtom} from "../../atom";
+import type {IMutableAtom} from "../../atom";
 
 /**
  * A typesafe key for a symbol in the symbol table.
@@ -7,7 +7,7 @@ import type {ILeafAtom} from "../../atom";
 export interface SymbolKey<T> extends Symbol {}
 
 export class SymbolTable {
-  private readonly symbols: Map<any, ILeafAtom<any>>[];
+  private readonly symbols: Map<any, IMutableAtom<any>>[];
 
   constructor() {
     this.symbols = [new Map()];

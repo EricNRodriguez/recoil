@@ -1,5 +1,5 @@
-import { ILeafAtom, ISideEffectRef } from "./atom.interface";
-import {LeafAtomImpl, DerivedAtom, SideEffect, VirtualDerivedAtom} from "./atom";
+import { IMutableAtom, ISideEffectRef } from "./atom.interface";
+import {MutableAtom, DerivedAtom, SideEffect, VirtualDerivedAtom} from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../shared/function.interface";
 import { AtomTrackingContext } from "./context";
@@ -160,7 +160,7 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
 
-    const atom = new LeafAtomImpl<T | undefined>(
+    const atom = new MutableAtom<T | undefined>(
       undefined,
       globalTrackingContext
     );
@@ -198,17 +198,17 @@ export const fetchState = ApiFunctionBuilder.getInstance().build(
   }
 );
 
-export type CreateStateSignature<T> = (value: T) => ILeafAtom<T>;
+export type CreateStateSignature<T> = (value: T) => IMutableAtom<T>;
 
 /**
- * A factory method for a leaf atom instance.
+ * A factory method for a mutable atom instance.
  *
  * @param value The value to be stored in the atom.
  * @returns The atom
  */
 export const createState = ApiFunctionBuilder.getInstance().build(
-  <T>(value: T): ILeafAtom<T> => {
-    return new LeafAtomImpl(value, globalTrackingContext);
+  <T>(value: T): IMutableAtom<T> => {
+    return new MutableAtom(value, globalTrackingContext);
   }
 );
 
@@ -222,7 +222,7 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  * the effects registered against it.
  *
  * Which computations to wrap in cached derivations should be considered carefully, ideally through profiling. This
- * is because all writes to leaf atoms have a linear time complexity on the depth of the dependency DAG. Hence,
+ * is because all writes to mutable atoms have a linear time complexity on the depth of the dependency DAG. Hence,
  * they should be used as tracked cache (memoization) primitive.
  *
  * @param deriveValue A synchronous factory for the state
@@ -276,16 +276,16 @@ export const runEffect: RunEffectSignature =
  * such that they write/read to the atom.
  */
 export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
-  const registry: WeakMap<Object, ILeafAtom<any>> = new WeakMap<
+  const registry: WeakMap<Object, IMutableAtom<any>> = new WeakMap<
     Object,
-    ILeafAtom<any>
+    IMutableAtom<any>
   >();
 
   return function (target: Object, propertyKey: string) {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, new LeafAtomImpl(newVal, globalTrackingContext));
+          registry.set(this, new MutableAtom(newVal, globalTrackingContext));
         } else {
           registry.get(this)!.set(newVal);
         }

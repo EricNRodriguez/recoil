@@ -12,7 +12,7 @@ export interface IAtom<T> {
   map<R>(transform: Function<T, R>): IAtom<R>;
 }
 
-export interface ILeafAtom<T> extends IAtom<T> {
+export interface IMutableAtom<T> extends IAtom<T> {
   set(value: T): void;
   update(fn: (val: T) => T): void;
 }
