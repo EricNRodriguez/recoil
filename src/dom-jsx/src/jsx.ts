@@ -1,5 +1,5 @@
 import { frag, t } from "../../dom-dsl";
-import {createElement, WNode} from "../../dom";
+import { createElement, WNode } from "../../dom";
 
 /**
  * A strict definition for all custom jsx components to adhere to.
@@ -8,7 +8,7 @@ export type Component<
   Props extends Object,
   Children extends WNode<Node>[],
   ReturnNode extends WNode<Node>
-  > = (props: Props, ...children: [...Children]) => ReturnNode;
+> = (props: Props, ...children: [...Children]) => ReturnNode;
 
 export const Fragment = Symbol();
 

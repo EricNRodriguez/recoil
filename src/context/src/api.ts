@@ -1,8 +1,13 @@
-import {SymbolKey, ExecutionScopeManager} from "./inject";
-import { Consumer, Producer, Runnable, Supplier } from "../../shared/function.interface";
-import {WElement, WNode} from "../../dom";
+import { SymbolKey, ExecutionScopeManager } from "./inject";
+import {
+  Consumer,
+  Producer,
+  Runnable,
+  Supplier,
+} from "../../shared/function.interface";
+import { WElement, WNode } from "../../dom";
 import type { ISideEffectRef } from "../../atom";
-import {runEffect} from "../../atom";
+import { runEffect } from "../../atom";
 import { nonEmpty } from "../../shared/type_check";
 
 class DeferredContextCallbackRegistry<T extends WNode<Node>> {
@@ -34,11 +39,15 @@ class DeferredContextCallbackRegistry<T extends WNode<Node>> {
   }
 }
 
-const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<WElement<HTMLElement>>();
+const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<
+  WElement<HTMLElement>
+>();
 
-export const defer = (deferredFunction: Consumer<WElement<HTMLElement>>): void => {
+export const defer = (
+  deferredFunction: Consumer<WElement<HTMLElement>>
+): void => {
   contextDeferredCallbackRegistry.defer(deferredFunction);
-}
+};
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
@@ -75,12 +84,8 @@ export const onUnmount = (fn: Runnable): void => {
  */
 export const runMountedEffect = (sideEffect: Runnable): void => {
   const ref: ISideEffectRef = runEffect(sideEffect);
-  defer((node) =>
-    node.registerOnMountHook(ref.activate.bind(ref))
-  );
-  defer((node) =>
-    node.registerOnUnmountHook(ref.deactivate.bind(ref))
-  );
+  defer((node) => node.registerOnMountHook(ref.activate.bind(ref)));
+  defer((node) => node.registerOnUnmountHook(ref.deactivate.bind(ref)));
 };
 
 const scopeManager = new ExecutionScopeManager();
@@ -115,7 +120,9 @@ export const inject = <T>(key: SymbolKey<T>): T | undefined => {
 export const withContext = <
   Args extends unknown[],
   ReturnNode extends WElement<HTMLElement>
->(component: (...args: [...Args]) => ReturnNode) => {
+>(
+  component: (...args: [...Args]) => ReturnNode
+) => {
   return scopeManager.withChildScope((...args: [...Args]) => {
     // runs the registered callbacks against the returned WElement
     return contextDeferredCallbackRegistry.execute(() => {
@@ -134,4 +141,5 @@ export const withContext = <
  *
  * @param fn The function to close over the current context scope
  */
-export const captureContextState = scopeManager.withCurrentScope.bind(scopeManager);
+export const captureContextState =
+  scopeManager.withCurrentScope.bind(scopeManager);

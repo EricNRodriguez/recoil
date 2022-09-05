@@ -1,7 +1,7 @@
 import { IAtom, runEffect } from "../../../atom";
 import { WNode, createFragment } from "../../../dom";
-import {WDerivationCache} from "../../../shared/weak_cache";
-import {Function} from "../../../shared/function.interface";
+import { WDerivationCache } from "../../../shared/weak_cache";
+import { Function } from "../../../shared/function.interface";
 
 export type MatchProps<T> = {
   state: IAtom<T>;

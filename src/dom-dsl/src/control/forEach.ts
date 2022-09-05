@@ -1,8 +1,8 @@
-import { WNode } from "../../../dom"
-import {Function, Supplier} from "../../../shared/function.interface";
+import { WNode } from "../../../dom";
+import { Function, Supplier } from "../../../shared/function.interface";
 import { createFragment } from "../../../dom";
 import { runEffect } from "../../../atom";
-import {notNullOrUndefined} from "../../../shared/type_check";
+import { notNullOrUndefined } from "../../../shared/type_check";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];

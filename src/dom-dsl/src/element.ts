@@ -8,7 +8,7 @@ import {
 } from "../../dom";
 import { IAtom, isAtom } from "../../atom";
 import { wrapTextInWNode } from "../../dom/src/util";
-import {nullOrUndefined} from "../../shared/type_check";
+import { nullOrUndefined } from "../../shared/type_check";
 
 export type Content = WNode<Node> | string;
 export type RawOrBinded = IAtom<any> | any;

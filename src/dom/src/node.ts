@@ -1,6 +1,6 @@
 import { reconcileNodeArrays } from "./reconcile";
-import {Runnable} from "../../shared/function.interface";
-import {notNullOrUndefined, nullOrUndefined} from "../../shared/type_check";
+import { Runnable } from "../../shared/function.interface";
+import { notNullOrUndefined, nullOrUndefined } from "../../shared/type_check";
 
 export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private parent: WNode<Node> | null = null;

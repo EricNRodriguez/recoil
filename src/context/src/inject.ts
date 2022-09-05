@@ -1,5 +1,5 @@
 import { createState, runUntracked } from "../../atom";
-import type {IMutableAtom} from "../../atom";
+import type { IMutableAtom } from "../../atom";
 
 /**
  * A typesafe key for a symbol in the symbol table.
@@ -54,7 +54,9 @@ export class ExecutionScopeManager {
    *
    * @param fn The function to be decorated
    */
-  public withChildScope<Args extends unknown[], ReturnType>(fn: (...args: [...Args]) => ReturnType) {
+  public withChildScope<Args extends unknown[], ReturnType>(
+    fn: (...args: [...Args]) => ReturnType
+  ) {
     return (...args: [...Args]): ReturnType => {
       const parentScope = this.currentScope;
 
@@ -79,16 +81,18 @@ export class ExecutionScopeManager {
    *
    * @param fn The function to be decorated.
    */
-  public withCurrentScope<Args extends unknown[], ReturnType>(fn: (...args: [...Args]) => ReturnType) {
+  public withCurrentScope<Args extends unknown[], ReturnType>(
+    fn: (...args: [...Args]) => ReturnType
+  ) {
     const capturedScope = this.currentScope.fork();
     return (...args: [...Args]): ReturnType => {
-        const currentScope = this.currentScope;
-        this.currentScope = capturedScope;
-        try {
-            return fn(...args);
-        } finally {
-          this.currentScope = currentScope;
-        }
+      const currentScope = this.currentScope;
+      this.currentScope = capturedScope;
+      try {
+        return fn(...args);
+      } finally {
+        this.currentScope = currentScope;
+      }
     };
   }
 }

@@ -3,7 +3,12 @@ import { IAtom, IMutableAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
 import { WeakCollection } from "./weak_collection";
-import {Producer, Runnable, Function, Supplier} from "../../shared/function.interface";
+import {
+  Producer,
+  Runnable,
+  Function,
+  Supplier,
+} from "../../shared/function.interface";
 
 export const isAtom = (obj: any): boolean => {
   return (
@@ -54,11 +59,8 @@ abstract class BaseAtom<T> implements IAtom<T> {
       .tapSome(this.parents.register.bind(this.parents));
   }
 
-  public map<R>(mutation:Function<T, R>): IAtom<R> {
-    return new VirtualDerivedAtom(
-      this.context,
-      () => mutation(this.get()),
-    );
+  public map<R>(mutation: Function<T, R>): IAtom<R> {
+    return new VirtualDerivedAtom(this.context, () => mutation(this.get()));
   }
 }
 
@@ -154,10 +156,7 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
   }
 
   public map<R>(transform: Function<T, R>): IAtom<R> {
-    return new VirtualDerivedAtom(
-      this.context,
-      () => transform(this.get()),
-    );
+    return new VirtualDerivedAtom(this.context, () => transform(this.get()));
   }
 }
 

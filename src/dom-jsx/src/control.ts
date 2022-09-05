@@ -1,16 +1,18 @@
-import {forEach, ifElse, IndexedItem, match} from "../../dom-dsl";
-import {IAtom, isAtom, runEffect} from "../../atom";
+import { forEach, ifElse, IndexedItem, match } from "../../dom-dsl";
+import { IAtom, isAtom, runEffect } from "../../atom";
 import { frag, th } from "../../dom-dsl";
-import {createFragment, WElement, WNode} from "../../dom";
-import {Component} from "./jsx";
-import {Producer, Supplier, Function} from "../../shared/function.interface";
-import {notNullOrUndefined} from "../../shared/type_check";
+import { createFragment, WElement, WNode } from "../../dom";
+import { Component } from "./jsx";
+import { Producer, Supplier, Function } from "../../shared/function.interface";
+import { notNullOrUndefined } from "../../shared/type_check";
 
 export type SupplyProps = {
   getChild: Producer<WNode<Node>>;
 };
 
-export const Supply: Component<SupplyProps, [], WNode<Node>> = (props: SupplyProps): WNode<Node> => {
+export const Supply: Component<SupplyProps, [], WNode<Node>> = (
+  props: SupplyProps
+): WNode<Node> => {
   const node = frag();
 
   const ref = runEffect((): void => {
@@ -49,14 +51,17 @@ export type SwitchProps<T> = {
   value: IAtom<T>;
   cases: [T, Supplier<WNode<Node>>][];
   default?: Supplier<WNode<Node>>;
-}
+};
 
-export const Switch = <T extends Object>(props: SwitchProps<T>): WNode<Node> => {
+export const Switch = <T extends Object>(
+  props: SwitchProps<T>
+): WNode<Node> => {
   const caseMatchMap = new Map(props.cases);
   return match({
     state: props.value,
     render: (value: T) => {
-      const result = caseMatchMap.get(value) ?? props.default ?? (() => createFragment([]));
+      const result =
+        caseMatchMap.get(value) ?? props.default ?? (() => createFragment([]));
       return result();
     },
   });
@@ -66,7 +71,9 @@ export type SuspenseProps = {
   default?: WNode<Node>;
 };
 
-export const Suspense = (props: SuspenseProps, ...children: Promise<WNode<Node>>[]
+export const Suspense = (
+  props: SuspenseProps,
+  ...children: Promise<WNode<Node>>[]
 ): WNode<Node> => {
   const anchor = frag();
 

@@ -1,5 +1,10 @@
 import { IMutableAtom, ISideEffectRef } from "./atom.interface";
-import {MutableAtom, DerivedAtom, SideEffect, VirtualDerivedAtom} from "./atom";
+import {
+  MutableAtom,
+  DerivedAtom,
+  SideEffect,
+  VirtualDerivedAtom,
+} from "./atom";
 import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "../../shared/function.interface";
 import { AtomTrackingContext } from "./context";
@@ -24,7 +29,6 @@ export type FunctionDecorator<F extends Function> = (fn: F) => F;
  * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
  */
 class ApiFunctionBuilder {
-
   private decoratorRegistry: Map<Function, FunctionDecorator<any>[]> =
     new Map();
   private baseFuncRegistry: Map<Function, Function> = new Map();
@@ -250,8 +254,8 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  * @param effect The side effect
  * @returns A reference to the side effect (see the above doc)
  */
-export const runEffect: RunEffectSignature =
-  apiFunctionBuilder.build((effect: Runnable): ISideEffectRef => {
+export const runEffect: RunEffectSignature = apiFunctionBuilder.build(
+  (effect: Runnable): ISideEffectRef => {
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,
@@ -261,7 +265,8 @@ export const runEffect: RunEffectSignature =
     sideEffect.run();
 
     return sideEffect;
-  });
+  }
+);
 
 /**
  * A utility decorator that auto-wraps instance variables in atoms, and overrides the set and get methods
@@ -292,30 +297,28 @@ export const state = apiFunctionBuilder.build((): void | any => {
 /**
  * A utility decorator that auto-wraps methods in derived atoms.
  */
-export const derivedState = apiFunctionBuilder.build(
-  (): string | any => {
-    return (
-      target: Object,
-      propertyKey: string,
-      descriptor: PropertyDescriptor
-    ): any => {
-      const registry: WeakMap<Object, DerivedAtom<any>> = new WeakMap();
-      const originalFn = descriptor.value;
+export const derivedState = apiFunctionBuilder.build((): string | any => {
+  return (
+    target: Object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ): any => {
+    const registry: WeakMap<Object, DerivedAtom<any>> = new WeakMap();
+    const originalFn = descriptor.value;
 
-      descriptor.value = function (...args: any[]): any {
-        if (!registry.has(this)) {
-          registry.set(
-            this,
-            new DerivedAtom(() => {
-              return originalFn.apply(this, args);
-            }, globalTrackingContext)
-          );
-        }
-        return registry.get(this)!.get();
-      };
+    descriptor.value = function (...args: any[]): any {
+      if (!registry.has(this)) {
+        registry.set(
+          this,
+          new DerivedAtom(() => {
+            return originalFn.apply(this, args);
+          }, globalTrackingContext)
+        );
+      }
+      return registry.get(this)!.get();
     };
-  }
-);
+  };
+});
 
 /**
  * Executes a callback that is not tracked by external contexts. I.e. reads made within the callback

@@ -1,4 +1,4 @@
-import {Function} from "../../shared/function.interface";
+import { Function } from "../../shared/function.interface";
 
 export interface ISideEffectRef {
   activate(): void;
