@@ -24,15 +24,10 @@ export type FunctionDecorator<F extends Function> = (fn: F) => F;
  * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
  */
 class ApiFunctionBuilder {
-  private static instance: ApiFunctionBuilder = new ApiFunctionBuilder();
 
   private decoratorRegistry: Map<Function, FunctionDecorator<any>[]> =
     new Map();
   private baseFuncRegistry: Map<Function, Function> = new Map();
-
-  public static getInstance(): ApiFunctionBuilder {
-    return ApiFunctionBuilder.instance;
-  }
 
   /**
    * A higher order method that provides runtime decoration support to the injected function
@@ -114,6 +109,8 @@ class ApiFunctionBuilder {
   }
 }
 
+const apiFunctionBuilder: ApiFunctionBuilder = new ApiFunctionBuilder();
+
 /**
  * Registers a runtime decorator against one of the public factory methods exposed by this module.
  *
@@ -124,7 +121,7 @@ export const registerDecorator = <F extends Function>(
   apiFn: F,
   decorator: FunctionDecorator<F>
 ): void => {
-  return ApiFunctionBuilder.getInstance().registerDecorator(apiFn, decorator);
+  return apiFunctionBuilder.registerDecorator(apiFn, decorator);
 };
 
 /**
@@ -137,7 +134,7 @@ export const deregisterDecorator = <F extends Function>(
   apiFn: F,
   decorator: FunctionDecorator<F>
 ): void => {
-  return ApiFunctionBuilder.getInstance().deregisterDecorator(apiFn, decorator);
+  return apiFunctionBuilder.deregisterDecorator(apiFn, decorator);
 };
 
 export type FetchStateSignature<T> = (
@@ -155,7 +152,7 @@ export type FetchStateSignature<T> = (
  *                 change.
  * @returns A maybe atom containing the fetched state (or undefined in the instance when the state is being fetched)
  */
-export const fetchState = ApiFunctionBuilder.getInstance().build(
+export const fetchState = apiFunctionBuilder.build(
   <T>(producer: Producer<Promise<T>>): IAtom<T | undefined> => {
     let reactionVersion: number = 0;
     let writeVersion: number = 0;
@@ -201,7 +198,7 @@ export type CreateStateSignature<T> = (value: T) => IMutableAtom<T>;
  * @param value The value to be stored in the atom.
  * @returns The atom
  */
-export const createState = ApiFunctionBuilder.getInstance().build(
+export const createState = apiFunctionBuilder.build(
   <T>(value: T): IMutableAtom<T> => {
     return new MutableAtom(value, globalTrackingContext);
   }
@@ -225,7 +222,7 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
  * @returns An atom containing the derived state, which automatically tracks the dependencies that were used to
  *          create it
  */
-export const deriveState = ApiFunctionBuilder.getInstance().build(
+export const deriveState = apiFunctionBuilder.build(
   <T>(deriveValue: Producer<T>, cache: boolean = true): IAtom<T> => {
     if (cache) {
       return new DerivedAtom(deriveValue, globalTrackingContext);
@@ -254,7 +251,7 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  * @returns A reference to the side effect (see the above doc)
  */
 export const runEffect: RunEffectSignature =
-  ApiFunctionBuilder.getInstance().build((effect: Runnable): ISideEffectRef => {
+  apiFunctionBuilder.build((effect: Runnable): ISideEffectRef => {
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,
@@ -270,7 +267,7 @@ export const runEffect: RunEffectSignature =
  * A utility decorator that auto-wraps instance variables in atoms, and overrides the set and get methods
  * such that they write/read to the atom.
  */
-export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
+export const state = apiFunctionBuilder.build((): void | any => {
   const registry: WeakMap<Object, IMutableAtom<any>> = new WeakMap<
     Object,
     IMutableAtom<any>
@@ -295,7 +292,7 @@ export const state = ApiFunctionBuilder.getInstance().build((): void | any => {
 /**
  * A utility decorator that auto-wraps methods in derived atoms.
  */
-export const derivedState = ApiFunctionBuilder.getInstance().build(
+export const derivedState = apiFunctionBuilder.build(
   (): string | any => {
     return (
       target: Object,
