@@ -6,8 +6,8 @@ import {
   Supplier,
 } from "shared";
 import { WElement, WNode } from "dom";
-import { ISideEffectRef } from "atom";
-import { runEffect } from "atom";
+import { ISideEffectRef } from "recoiljs-atom";
+import { runEffect } from "recoiljs-atom";
 import { nonEmpty } from "shared";
 
 class DeferredContextCallbackRegistry<T extends WNode<Node>> {

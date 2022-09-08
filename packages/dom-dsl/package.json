@@ -26,8 +26,8 @@
     "shared": "../shared"
   },
   "peerDependencies": {
-    "atom": "*",
-    "dom": "*"
+    "dom": "*",
+    "recoiljs-atom": "*"
   },
   "devDependencies": {
     "rollup-plugin-typescript2": "^0.33.0",

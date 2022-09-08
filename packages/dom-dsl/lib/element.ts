@@ -6,7 +6,7 @@ import {
   WElement,
   WNode,
 } from "dom";
-import { IAtom, isAtom } from "atom";
+import { IAtom, isAtom } from "recoiljs-atom";
 import { wrapTextInWNode } from "dom/lib/util";
 import { nullOrUndefined } from "shared";
 
@@ -40,7 +40,7 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
     ...remainingChildren: Content[]
   ): WElement<HTMLElementTagNameMap[K]> => {
     const adaptedFirstArg = wrapTextInWNode(firstArg);
-    const adaptedRemainingChildren = remainingChildren.map(wrapTextInWNode);
+    const adaptedRemainingChildren = remainingChildren.map(wrapTextInWNode) as WNode<Node>[];
 
     if (nullOrUndefined(adaptedFirstArg)) {
       return createElement(

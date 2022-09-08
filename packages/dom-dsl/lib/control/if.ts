@@ -1,4 +1,4 @@
-import { IAtom, isAtom, runEffect } from "atom";
+import { IAtom, isAtom, runEffect } from "recoiljs-atom";
 import { WNode, createFragment } from "dom";
 import { Supplier, WDerivationCache } from "shared"
 
