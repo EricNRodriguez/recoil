@@ -21,13 +21,16 @@
     "url": "https://github.com/EricNRodriguez/recoil/issues"
   },
   "dependencies": {
-    "shared": "../shared",
+    "shared": "../shared"
+  },
+  "peerDependencies": {
     "typescript-monads": "^8.0.0"
   },
   "scripts": {
     "build": "rollup -c"
   },
   "devDependencies": {
-    "rollup": "^2.79.0"
+    "rollup": "^2.79.0",
+    "typescript-monads": "^8.0.0"
   }
 }

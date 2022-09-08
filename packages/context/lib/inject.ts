@@ -1,5 +1,5 @@
-import { createState, runUntracked } from "../../atom";
-import type { IMutableAtom } from "../../atom";
+import { createState, runUntracked } from "atom";
+import type { IMutableAtom } from "atom";
 
 /**
  * A typesafe key for a symbol in the symbol table.

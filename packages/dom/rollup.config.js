@@ -1,12 +1,16 @@
 import typescript from "rollup-plugin-typescript2";
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-
+import excludeDependenciesFromBundle from "rollup-plugin-exclude-dependencies-from-bundle";
 export default [
     {
         input: `./lib/index.ts`,
         plugins: [
             nodeResolve(),
             typescript({tsconfig: "./tsconfig.build.json"}),
+            excludeDependenciesFromBundle({
+                "peerDependencies": true,
+                "dependencies": false,
+            })
         ],
         output: [
             {
@@ -15,6 +19,6 @@ export default [
                 sourcemap: true,
                 compact: true
             },
-        ]
+        ],
     }
 ]

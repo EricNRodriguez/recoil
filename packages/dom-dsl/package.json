@@ -24,9 +24,11 @@
     "url": "https://github.com/EricNRodriguez/recoil/issues"
   },
   "dependencies": {
-    "atom": "../atom",
-    "dom": "../dom",
     "shared": "../shared"
+  },
+  "peerDependencies": {
+    "atom": "../atom",
+    "dom": "../dom"
   },
   "devDependencies": {
     "rollup-plugin-typescript2": "^0.33.0",

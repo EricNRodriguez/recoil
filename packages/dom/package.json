@@ -28,7 +28,9 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "atom": "../atom",
     "shared": "../shared"
+  },
+  "peerDependencies": {
+    "atom": "../atom"
   }
 }

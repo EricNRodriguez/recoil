@@ -27,9 +27,11 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
+    "shared": "../shared"
+  },
+  "peerDependencies": {
     "atom": "../atom",
     "dom": "../dom",
-    "dom-dsl": "../dom-dsl",
-    "shared": "../shared"
+    "dom-dsl": "../dom-dsl"
   }
 }
