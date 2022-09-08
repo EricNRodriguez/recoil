@@ -25,9 +25,7 @@ export const TodoList = withContext((): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
 
   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
-  const renderTodoItem = captureContextState((item: TodoItem) => {
-      return <TodoListItem item={item} />
-  });
+  const renderTodoItem = captureContextState((item: TodoItem) => <TodoListItem item={item} />);
 
   return (
       <div>
