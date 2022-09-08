@@ -1,4 +1,4 @@
-import { WNode } from "dom";
+import { WNode } from "recoiljs-dom";
 
 type DefaultModuleType = {
   default: (...args: any[]) => WNode<Node>;

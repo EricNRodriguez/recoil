@@ -5,9 +5,9 @@ import {
   isWNode,
   WElement,
   WNode,
-} from "dom";
+} from "recoiljs-dom";
 import { IAtom, isAtom } from "recoiljs-atom";
-import { wrapTextInWNode } from "dom/lib/util";
+import { wrapTextInWNode } from "recoiljs-dom/lib/util";
 import { nullOrUndefined } from "shared";
 
 export type Content = WNode<Node> | string;

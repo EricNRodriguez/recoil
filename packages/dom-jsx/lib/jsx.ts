@@ -1,5 +1,5 @@
 import { frag, t } from "dom-dsl";
-import { createElement, WNode } from "dom";
+import { createElement, WNode } from "recoiljs-dom";
 
 /**
  * A strict definition for all custom jsx components to adhere to.

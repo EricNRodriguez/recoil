@@ -28,8 +28,8 @@
     "typescript-monads": "^8.0.0"
   },
   "peerDependencies": {
-    "dom": "*",
-    "recoiljs-atom": "*"
+    "recoiljs-atom": "*",
+    "recoiljs-dom": "*"
   },
   "devDependencies": {
     "rollup": "^2.79.0",

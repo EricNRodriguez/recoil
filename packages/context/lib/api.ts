@@ -5,7 +5,7 @@ import {
   Runnable,
   Supplier,
 } from "shared";
-import { WElement, WNode } from "dom";
+import { WElement, WNode } from "recoiljs-dom";
 import { ISideEffectRef } from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import { nonEmpty } from "shared";

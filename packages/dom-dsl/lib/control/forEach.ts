@@ -1,6 +1,6 @@
-import { WNode } from "dom";
+import { WNode } from "recoiljs-dom";
 import { Function, Supplier } from "shared";
-import { createFragment } from "dom";
+import { createFragment } from "recoiljs-dom";
 import { runEffect } from "recoiljs-atom";
 import { notNullOrUndefined } from "shared";
 

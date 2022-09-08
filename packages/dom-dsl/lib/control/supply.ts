@@ -1,5 +1,5 @@
 import { Producer } from "shared"
-import { WNode } from "dom";
+import { WNode } from "recoiljs-dom";
 import { frag } from "../element";
 import { runEffect } from "recoiljs-atom";
 
