@@ -2374,20 +2374,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-jsx@workspace:packages/dom-jsx":
-  version: 0.0.0-use.local
-  resolution: "dom-jsx@workspace:packages/dom-jsx"
-  dependencies:
-    rollup-plugin-typescript2: ^0.33.0
-    shared: ../shared
-    typescript: ^4.8.2
-  peerDependencies:
-    recoiljs-atom: "*"
-    recoiljs-dom: "*"
-    recoiljs-dom-dsl: "*"
-  languageName: unknown
-  linkType: soft
-
 "dot-prop@npm:^5.1.0":
   version: 5.3.0
   resolution: "dot-prop@npm:5.3.0"
@@ -5178,6 +5164,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"recoiljs-dom-jsx@workspace:packages/dom-jsx":
+  version: 0.0.0-use.local
+  resolution: "recoiljs-dom-jsx@workspace:packages/dom-jsx"
+  dependencies:
+    rollup-plugin-typescript2: ^0.33.0
+    shared: ../shared
+    typescript: ^4.8.2
+  peerDependencies:
+    recoiljs-atom: "*"
+    recoiljs-dom: "*"
+    recoiljs-dom-dsl: "*"
+  languageName: unknown
+  linkType: soft
+
 "recoiljs-dom@workspace:packages/dom":
   version: 0.0.0-use.local
   resolution: "recoiljs-dom@workspace:packages/dom"
@@ -5466,13 +5466,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shared@file:../shared::locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=85c431&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
-  checksum: f3408fc341aa4fd835f2c757f839b8a29bb5c0c549999ddfb538def08d2b0e9c371372912ac6d37f027ba65d0aaa2bf5b580981c37fff890885c21cf509dff69
-  languageName: node
-  linkType: hard
-
 "shared@file:../shared::locator=recoiljs-atom%40workspace%3Apackages%2Fatom":
   version: 0.0.0
   resolution: "shared@file:../shared#../shared::hash=85c431&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
@@ -5497,6 +5490,13 @@ __metadata:
 "shared@file:../shared::locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
   version: 0.0.0
   resolution: "shared@file:../shared#../shared::hash=85c431&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
+  checksum: f3408fc341aa4fd835f2c757f839b8a29bb5c0c549999ddfb538def08d2b0e9c371372912ac6d37f027ba65d0aaa2bf5b580981c37fff890885c21cf509dff69
+  languageName: node
+  linkType: hard
+
+"shared@file:../shared::locator=recoiljs-dom-jsx%40workspace%3Apackages%2Fdom-jsx":
+  version: 0.0.0
+  resolution: "shared@file:../shared#../shared::hash=85c431&locator=recoiljs-dom-jsx%40workspace%3Apackages%2Fdom-jsx"
   checksum: f3408fc341aa4fd835f2c757f839b8a29bb5c0c549999ddfb538def08d2b0e9c371372912ac6d37f027ba65d0aaa2bf5b580981c37fff890885c21cf509dff69
   languageName: node
   linkType: hard
