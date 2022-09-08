@@ -1,4 +1,4 @@
-import { WNode, createFragment } from "dom";
+import { WNode, createFragment } from "recoiljs-dom";
 import { notNullOrUndefined } from "shared"
 
 export type SuspenseProps = {

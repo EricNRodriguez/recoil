@@ -1,6 +1,6 @@
 import { Supplier } from "shared";
-import { deriveState, IAtom, isAtom } from "atom";
-import { createTextNode, WNode } from "dom";
+import { deriveState, IAtom, isAtom } from "recoiljs-atom";
+import { createTextNode, WNode } from "recoiljs-dom";
 
 export type TextNodeTypes = string | boolean | number;
 export type TextNodeSource =

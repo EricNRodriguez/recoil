@@ -1,5 +1,5 @@
-import { createState, runUntracked } from "atom";
-import type { IMutableAtom } from "atom";
+import { createState, runUntracked } from "recoiljs-atom";
+import type { IMutableAtom } from "recoiljs-atom";
 
 /**
  * A typesafe key for a symbol in the symbol table.

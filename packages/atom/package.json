@@ -1,11 +1,11 @@
 {
-  "name": "atom",
+  "name": "recoiljs-atom",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "eric <eric@g.com>",
   "homepage": "https://github.com/EricNRodriguez/recoil#readme",
   "license": "ISC",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"

@@ -1,11 +1,11 @@
 {
-  "name": "context",
+  "name": "recoiljs-context",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "eric <eric@g.com>",
   "homepage": "https://github.com/EricNRodriguez/recoil#readme",
   "license": "ISC",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -28,8 +28,8 @@
     "typescript-monads": "^8.0.0"
   },
   "peerDependencies": {
-    "atom": "*",
-    "dom": "*"
+    "recoiljs-atom": "*",
+    "recoiljs-dom": "*"
   },
   "devDependencies": {
     "rollup": "^2.79.0",

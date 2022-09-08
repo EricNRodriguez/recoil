@@ -1,7 +1,7 @@
-import { WNode } from "dom";
+import { WNode } from "recoiljs-dom";
 import { Function, Supplier } from "shared";
-import { createFragment } from "dom";
-import { runEffect } from "atom";
+import { createFragment } from "recoiljs-dom";
+import { runEffect } from "recoiljs-atom";
 import { notNullOrUndefined } from "shared";
 
 // key value pair used for efficient indexing of existing built elements

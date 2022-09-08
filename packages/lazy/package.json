@@ -1,11 +1,11 @@
 {
-  "name": "lazy",
+  "name": "recoiljs-lazy",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "eric <eric@g.com>",
   "homepage": "https://github.com/EricNRodriguez/recoil#readme",
   "license": "ISC",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -27,6 +27,6 @@
     "typescript": "^4.8.2"
   },
   "peerDependencies": {
-    "dom": "../dom"
+    "recoiljs-dom": "*"
   }
 }
