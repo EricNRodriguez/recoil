@@ -3732,16 +3732,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lazy@workspace:packages/lazy":
-  version: 0.0.0-use.local
-  resolution: "lazy@workspace:packages/lazy"
-  dependencies:
-    typescript: ^4.8.2
-  peerDependencies:
-    recoiljs-dom: "*"
-  languageName: unknown
-  linkType: soft
-
 "lerna@npm:^5.5.0":
   version: 5.5.0
   resolution: "lerna@npm:5.5.0"
@@ -5187,6 +5177,16 @@ __metadata:
     typescript: ^4.8.2
   peerDependencies:
     recoiljs-atom: "*"
+  languageName: unknown
+  linkType: soft
+
+"recoiljs-lazy@workspace:packages/lazy":
+  version: 0.0.0-use.local
+  resolution: "recoiljs-lazy@workspace:packages/lazy"
+  dependencies:
+    typescript: ^4.8.2
+  peerDependencies:
+    recoiljs-dom: "*"
   languageName: unknown
   linkType: soft
 
