@@ -2374,19 +2374,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-dsl@workspace:packages/dom-dsl":
-  version: 0.0.0-use.local
-  resolution: "dom-dsl@workspace:packages/dom-dsl"
-  dependencies:
-    rollup-plugin-typescript2: ^0.33.0
-    shared: ../shared
-    typescript: ^4.8.2
-  peerDependencies:
-    recoiljs-atom: "*"
-    recoiljs-dom: "*"
-  languageName: unknown
-  linkType: soft
-
 "dom-jsx@workspace:packages/dom-jsx":
   version: 0.0.0-use.local
   resolution: "dom-jsx@workspace:packages/dom-jsx"
@@ -2395,9 +2382,9 @@ __metadata:
     shared: ../shared
     typescript: ^4.8.2
   peerDependencies:
-    dom-dsl: "*"
     recoiljs-atom: "*"
     recoiljs-dom: "*"
+    recoiljs-dom-dsl: "*"
   languageName: unknown
   linkType: soft
 
@@ -5178,6 +5165,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"recoiljs-dom-dsl@workspace:packages/dom-dsl":
+  version: 0.0.0-use.local
+  resolution: "recoiljs-dom-dsl@workspace:packages/dom-dsl"
+  dependencies:
+    rollup-plugin-typescript2: ^0.33.0
+    shared: ../shared
+    typescript: ^4.8.2
+  peerDependencies:
+    recoiljs-atom: "*"
+    recoiljs-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "recoiljs-dom@workspace:packages/dom":
   version: 0.0.0-use.local
   resolution: "recoiljs-dom@workspace:packages/dom"
@@ -5466,13 +5466,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shared@file:../shared::locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=85c431&locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  checksum: f3408fc341aa4fd835f2c757f839b8a29bb5c0c549999ddfb538def08d2b0e9c371372912ac6d37f027ba65d0aaa2bf5b580981c37fff890885c21cf509dff69
-  languageName: node
-  linkType: hard
-
 "shared@file:../shared::locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx":
   version: 0.0.0
   resolution: "shared@file:../shared#../shared::hash=85c431&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
@@ -5497,6 +5490,13 @@ __metadata:
 "shared@file:../shared::locator=recoiljs-dom%40workspace%3Apackages%2Fdom":
   version: 0.0.0
   resolution: "shared@file:../shared#../shared::hash=85c431&locator=recoiljs-dom%40workspace%3Apackages%2Fdom"
+  checksum: f3408fc341aa4fd835f2c757f839b8a29bb5c0c549999ddfb538def08d2b0e9c371372912ac6d37f027ba65d0aaa2bf5b580981c37fff890885c21cf509dff69
+  languageName: node
+  linkType: hard
+
+"shared@file:../shared::locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
+  version: 0.0.0
+  resolution: "shared@file:../shared#../shared::hash=85c431&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
   checksum: f3408fc341aa4fd835f2c757f839b8a29bb5c0c549999ddfb538def08d2b0e9c371372912ac6d37f027ba65d0aaa2bf5b580981c37fff890885c21cf509dff69
   languageName: node
   linkType: hard

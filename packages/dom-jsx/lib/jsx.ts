@@ -1,4 +1,4 @@
-import { frag, t } from "dom-dsl";
+import { frag, t } from "recoiljs-dom-dsl";
 import { createElement, WNode } from "recoiljs-dom";
 
 /**

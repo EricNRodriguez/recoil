@@ -31,8 +31,8 @@
     "shared": "../shared"
   },
   "peerDependencies": {
+    "recoiljs-atom": "*",
     "recoiljs-dom": "*",
-    "dom-dsl": "*",
-    "recoiljs-atom": "*"
+    "recoiljs-dom-dsl": "*"
   }
 }

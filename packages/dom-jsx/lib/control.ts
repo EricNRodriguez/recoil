@@ -1,6 +1,6 @@
-import { forEach, ifElse, IndexedItem, match } from "dom-dsl";
+import { forEach, ifElse, IndexedItem, match } from "recoiljs-dom-dsl";
 import { IAtom, isAtom, runEffect } from "recoiljs-atom";
-import { frag, th } from "dom-dsl";
+import { frag, th } from "recoiljs-dom-dsl";
 import { createFragment, WElement, WNode } from "recoiljs-dom";
 import { Component } from "./jsx";
 import { Producer, Supplier, Function } from "shared";
