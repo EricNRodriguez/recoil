@@ -1,53 +1,9 @@
 import { SymbolKey, ExecutionScopeManager } from "./inject";
-import {
-  Consumer,
-  Producer,
-  Runnable,
-  Supplier,
-} from "shared";
+import {Runnable,} from "shared";
 import { WElement, WNode } from "recoiljs-dom";
 import { ISideEffectRef } from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
-import { nonEmpty } from "shared";
-
-class DeferredContextCallbackRegistry<T extends WNode<Node>> {
-  private readonly scope: Consumer<T>[][];
-
-  constructor() {
-    this.scope = [];
-  }
-
-  public defer(fn: Consumer<T>): void {
-    if (!nonEmpty(this.scope)) {
-      throw new Error("unable to defer functions outside of a scope");
-    }
-
-    this.scope[this.scope.length - 1].push(fn);
-  }
-
-  public execute<R extends T>(job: Producer<R>): R {
-    try {
-      this.scope.push([]);
-      const result: R = job();
-      this.scope[this.scope.length - 1].forEach((fn: Consumer<T>) =>
-        fn(result)
-      );
-      return result;
-    } finally {
-      this.scope.pop();
-    }
-  }
-}
-
-const contextDeferredCallbackRegistry = new DeferredContextCallbackRegistry<
-  WElement<HTMLElement>
->();
-
-export const defer = (
-  deferredFunction: Consumer<WElement<HTMLElement>>
-): void => {
-  contextDeferredCallbackRegistry.defer(deferredFunction);
-};
+import {defer, execute} from "./defer";
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
@@ -124,8 +80,7 @@ export const withContext = <
   component: (...args: [...Args]) => ReturnNode
 ) => {
   return scopeManager.withChildScope((...args: [...Args]) => {
-    // runs the registered callbacks against the returned WElement
-    return contextDeferredCallbackRegistry.execute(() => {
+    return execute(() => {
       return component(...args);
     });
   });
