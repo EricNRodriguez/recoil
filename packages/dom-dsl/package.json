@@ -5,10 +5,9 @@
   "author": "eric <eric@g.com>",
   "homepage": "https://github.com/EricNRodriguez/recoil#readme",
   "license": "ISC",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+    "lib": "lib"
   },
   "files": [
     "lib"
@@ -27,8 +26,8 @@
     "shared": "../shared"
   },
   "peerDependencies": {
-    "atom": "../atom",
-    "dom": "../dom"
+    "atom": "*",
+    "dom": "*"
   },
   "devDependencies": {
     "rollup-plugin-typescript2": "^0.33.0",

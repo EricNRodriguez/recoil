@@ -1650,94 +1650,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"atom@file:../atom::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540file%253A..%252Fdom-dsl%2523..%252Fdom-dsl%253A%253Ahash%253D1c7a27%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540file%253A..%252Fdom-dsl%2523..%252Fdom-dsl%253A%253Ahash%253D1c7a27%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Dlazy%2540workspace%253Apackages%252Flazy":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Dlazy%2540workspace%253Apackages%252Flazy"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom%40workspace%3Apackages%2Fdom":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom%40workspace%3Apackages%2Fdom"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom-dsl%40file%3A..%2Fdom-dsl%23..%2Fdom-dsl%3A%3Ahash%3D1c7a27%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom-dsl%40file%3A..%2Fdom-dsl%23..%2Fdom-dsl%3A%3Ahash%3D1c7a27%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
-"atom@file:../atom::locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx":
-  version: 0.0.0
-  resolution: "atom@file:../atom#../atom::hash=1810df&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
-  dependencies:
-    shared: ../shared
-  peerDependencies:
-    typescript-monads: ^8.0.0
-  checksum: f01eb306c63fda65bdb755d68e0f2d885b1927228daa1d9a7558258b0b4c1f0391a3b3d6a4b6943d2d52113192990a4ad93e73235bbf15a0d8715ec2cb12dd4d
-  languageName: node
-  linkType: hard
-
 "atom@workspace:packages/atom":
   version: 0.0.0-use.local
   resolution: "atom@workspace:packages/atom"
@@ -2489,26 +2401,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-dsl@file:../dom-dsl::locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx":
-  version: 0.0.0
-  resolution: "dom-dsl@file:../dom-dsl#../dom-dsl::hash=1c7a27&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
-  dependencies:
-    atom: ../atom
-    dom: ../dom
-    shared: ../shared
-  checksum: 7ce46422e37a7e0984bc4d94a3c6e350af59f319a278b03a7c268200fa6ce30be220a4f0bb2fcb095dcfa9a4232debe1c3247a365fa800e22cbbc7917cfc38f1
-  languageName: node
-  linkType: hard
-
 "dom-dsl@workspace:packages/dom-dsl":
   version: 0.0.0-use.local
   resolution: "dom-dsl@workspace:packages/dom-dsl"
   dependencies:
-    atom: ../atom
-    dom: ../dom
     rollup-plugin-typescript2: ^0.33.0
     shared: ../shared
     typescript: ^4.8.2
+  peerDependencies:
+    atom: "*"
+    dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -2516,62 +2418,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dom-jsx@workspace:packages/dom-jsx"
   dependencies:
-    atom: ../atom
-    dom: ../dom
-    dom-dsl: ../dom-dsl
     shared: ../shared
     typescript: ^4.8.2
+  peerDependencies:
+    atom: "*"
+    dom: "*"
+    dom-dsl: "*"
   languageName: unknown
   linkType: soft
-
-"dom@file:../dom::locator=dom-dsl%40file%3A..%2Fdom-dsl%23..%2Fdom-dsl%3A%3Ahash%3D1c7a27%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx":
-  version: 0.0.0
-  resolution: "dom@file:../dom#../dom::hash=75f6a2&locator=dom-dsl%40file%3A..%2Fdom-dsl%23..%2Fdom-dsl%3A%3Ahash%3D1c7a27%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx"
-  dependencies:
-    atom: ../atom
-    shared: ../shared
-  checksum: d9bc711a15ad8c83ddb68331f5e983b562493bdbc92511be72a4e5bb8cf5024ff278475855d8c9df095c6b14eaadf7edfeffbf0510293bf3c84439473cd52255
-  languageName: node
-  linkType: hard
-
-"dom@file:../dom::locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl":
-  version: 0.0.0
-  resolution: "dom@file:../dom#../dom::hash=75f6a2&locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  dependencies:
-    atom: ../atom
-    shared: ../shared
-  checksum: d9bc711a15ad8c83ddb68331f5e983b562493bdbc92511be72a4e5bb8cf5024ff278475855d8c9df095c6b14eaadf7edfeffbf0510293bf3c84439473cd52255
-  languageName: node
-  linkType: hard
-
-"dom@file:../dom::locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx":
-  version: 0.0.0
-  resolution: "dom@file:../dom#../dom::hash=75f6a2&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
-  dependencies:
-    atom: ../atom
-    shared: ../shared
-  checksum: d9bc711a15ad8c83ddb68331f5e983b562493bdbc92511be72a4e5bb8cf5024ff278475855d8c9df095c6b14eaadf7edfeffbf0510293bf3c84439473cd52255
-  languageName: node
-  linkType: hard
-
-"dom@file:../dom::locator=lazy%40workspace%3Apackages%2Flazy":
-  version: 0.0.0
-  resolution: "dom@file:../dom#../dom::hash=75f6a2&locator=lazy%40workspace%3Apackages%2Flazy"
-  dependencies:
-    atom: ../atom
-    shared: ../shared
-  checksum: d9bc711a15ad8c83ddb68331f5e983b562493bdbc92511be72a4e5bb8cf5024ff278475855d8c9df095c6b14eaadf7edfeffbf0510293bf3c84439473cd52255
-  languageName: node
-  linkType: hard
 
 "dom@workspace:packages/dom":
   version: 0.0.0-use.local
   resolution: "dom@workspace:packages/dom"
   dependencies:
-    atom: ../atom
     rollup-plugin-typescript2: ^0.33.0
     shared: ../shared
     typescript: ^4.8.2
+  peerDependencies:
+    atom: "*"
   languageName: unknown
   linkType: soft
 
@@ -3937,8 +3801,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "lazy@workspace:packages/lazy"
   dependencies:
-    dom: ../dom
     typescript: ^4.8.2
+  peerDependencies:
+    dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -5600,129 +5465,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Ddom-dsl%252540file%25253A..%25252Fdom-dsl%252523..%25252Fdom-dsl%25253A%25253Ahash%25253D1c7a27%252526locator%25253Ddom-jsx%25252540workspace%2525253Apackages%2525252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Ddom-dsl%252540file%25253A..%25252Fdom-dsl%252523..%25252Fdom-dsl%25253A%25253Ahash%25253D1c7a27%252526locator%25253Ddom-jsx%25252540workspace%2525253Apackages%2525252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Ddom-dsl%252540workspace%25253Apackages%25252Fdom-dsl":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Ddom-dsl%252540workspace%25253Apackages%25252Fdom-dsl"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Dlazy%252540workspace%25253Apackages%25252Flazy":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540file%253A..%252Fdom%2523..%252Fdom%253A%253Ahash%253D75f6a2%2526locator%253Dlazy%252540workspace%25253Apackages%25252Flazy"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540workspace%253Apackages%252Fdom":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom%2540workspace%253Apackages%252Fdom"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom-dsl%2540file%253A..%252Fdom-dsl%2523..%252Fdom-dsl%253A%253Ahash%253D1c7a27%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom-dsl%2540file%253A..%252Fdom-dsl%2523..%252Fdom-dsl%253A%253Ahash%253D1c7a27%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40file%3A..%2Fatom%23..%2Fatom%3A%3Ahash%3D1810df%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
 "shared@file:../shared::locator=atom%40workspace%3Apackages%2Fatom":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=atom%40workspace%3Apackages%2Fatom"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
+  resolution: "shared@file:../shared#../shared::hash=f1834a&locator=atom%40workspace%3Apackages%2Fatom"
+  checksum: 3ce18a3f56b72bec67449615443a70f1b98df0920ddfa2c17a4792ce4ae84e3813775e801f0060593d85cb62eaa865f4b68ea34363d2207485b2a21d1b263b74
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=context%40workspace%3Apackages%2Fcontext":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=context%40workspace%3Apackages%2Fcontext"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540file%253A..%252Fdom-dsl%2523..%252Fdom-dsl%253A%253Ahash%253D1c7a27%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540file%253A..%252Fdom-dsl%2523..%252Fdom-dsl%253A%253Ahash%253D1c7a27%2526locator%253Ddom-jsx%252540workspace%25253Apackages%25252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540workspace%253Apackages%252Fdom-dsl":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-dsl%2540workspace%253Apackages%252Fdom-dsl"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Dlazy%2540workspace%253Apackages%252Flazy":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom%40file%3A..%2Fdom%23..%2Fdom%3A%3Ahash%3D75f6a2%26locator%3Dlazy%2540workspace%253Apackages%252Flazy"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
+  resolution: "shared@file:../shared#../shared::hash=f1834a&locator=context%40workspace%3Apackages%2Fcontext"
+  checksum: 3ce18a3f56b72bec67449615443a70f1b98df0920ddfa2c17a4792ce4ae84e3813775e801f0060593d85cb62eaa865f4b68ea34363d2207485b2a21d1b263b74
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=dom%40workspace%3Apackages%2Fdom":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom%40workspace%3Apackages%2Fdom"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
-  languageName: node
-  linkType: hard
-
-"shared@file:../shared::locator=dom-dsl%40file%3A..%2Fdom-dsl%23..%2Fdom-dsl%3A%3Ahash%3D1c7a27%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx":
-  version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom-dsl%40file%3A..%2Fdom-dsl%23..%2Fdom-dsl%3A%3Ahash%3D1c7a27%26locator%3Ddom-jsx%2540workspace%253Apackages%252Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
+  resolution: "shared@file:../shared#../shared::hash=f1834a&locator=dom%40workspace%3Apackages%2Fdom"
+  checksum: 3ce18a3f56b72bec67449615443a70f1b98df0920ddfa2c17a4792ce4ae84e3813775e801f0060593d85cb62eaa865f4b68ea34363d2207485b2a21d1b263b74
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
+  resolution: "shared@file:../shared#../shared::hash=f1834a&locator=dom-dsl%40workspace%3Apackages%2Fdom-dsl"
+  checksum: 3ce18a3f56b72bec67449615443a70f1b98df0920ddfa2c17a4792ce4ae84e3813775e801f0060593d85cb62eaa865f4b68ea34363d2207485b2a21d1b263b74
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=cf5977&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
-  checksum: 71ef04e0afbb3c1472c053abe2a086a641f04a3a90751a2a3bc14c746466f7bd488daf1e366b83e094b1452d0d7a5aeaadbd14016ddbd132798c3242f50bc960
+  resolution: "shared@file:../shared#../shared::hash=f1834a&locator=dom-jsx%40workspace%3Apackages%2Fdom-jsx"
+  checksum: 3ce18a3f56b72bec67449615443a70f1b98df0920ddfa2c17a4792ce4ae84e3813775e801f0060593d85cb62eaa865f4b68ea34363d2207485b2a21d1b263b74
   languageName: node
   linkType: hard
 
