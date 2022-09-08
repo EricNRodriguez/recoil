@@ -1,0 +1,39 @@
+{
+  "name": "context",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "eric <eric@g.com>",
+  "homepage": "https://github.com/EricNRodriguez/recoil#readme",
+  "license": "ISC",
+  "main": "lib/index.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricNRodriguez/recoil.git"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "bugs": {
+    "url": "https://github.com/EricNRodriguez/recoil/issues"
+  },
+  "dependencies": {
+    "shared": "../shared",
+    "typescript-monads": "^8.0.0"
+  },
+  "peerDependencies": {
+    "atom": "*",
+    "dom": "*"
+  },
+  "devDependencies": {
+    "rollup": "^2.79.0",
+    "rollup-plugin-exclude-dependencies-from-bundle": "^1.1.22",
+    "typescript": "^4.8.2"
+  }
+}

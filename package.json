@@ -1,43 +1,25 @@
 {
-  "name": "test-recoil-js",
-  "version": "0.0.01-development",
-  "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier '{,!(node_modules)/**/}*.ts' -w",
-    "build": "rollup -c"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EricNRodriguez/recoil.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/EricNRodriguez/recoil/issues"
-  },
-  "homepage": "https://github.com/EricNRodriguez/recoil#readme",
+  "name": "recoil-js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.4.0",
     "esbuild": "^0.15.6",
+    "lerna": "^5.5.0",
     "rollup": "^2.79.0",
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-esbuild": "^4.10.1",
+    "rollup-plugin-exclude-dependencies-from-bundle": "^1.1.22",
     "ts-node": "^10.8.1",
     "tsc": "^2.0.4",
     "tsc-alias": "^1.7.0",
     "tsconfig-paths": "^4.1.0",
     "typescript": "^4.7.4"
   },
-  "packageManager": "yarn@3.2.2",
-  "dependencies": {
-    "typescript-monads": "^8.0.0"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "release": {
-    "pkgRoot": "dist"
+  "scripts": {
+    "format": "prettier '{,!(node_modules)/**/}*.ts' -w"
   }
 }

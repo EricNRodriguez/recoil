@@ -7,7 +7,6 @@
       "esnext",
       "dom"
     ],
-    "outDir": "dist",
     "downlevelIteration": true,
     "isolatedModules": false, // TODO(ericr): LOOK INTO THIS
     "experimentalDecorators": true,
@@ -25,12 +24,7 @@
     "strictFunctionTypes": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "declarationDir": "dist",
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": [
-    "./src/**/index.ts",
-    "./src/index.ts"
-  ]
 }
