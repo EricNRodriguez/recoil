@@ -1,7 +1,6 @@
 import { BaseWNode, WNode } from "./node";
 import { Method } from "shared";
 import { GlobalEventCoordinator } from "./event";
-export type ElementStyle = { [key: string]: string };
 
 export abstract class BaseWElement<
   A extends HTMLElement,

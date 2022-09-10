@@ -6,13 +6,25 @@ import {
   WElement,
   WNode,
 } from "recoiljs-dom";
-import { IAtom, isAtom } from "recoiljs-atom";
+import { IAtom } from "recoiljs-atom";
 import { wrapTextInWNode } from "recoiljs-dom/lib/util";
 import { nullOrUndefined } from "shared";
+import {bindProps} from "./binding/dom";
+import {Children, Props} from "recoiljs-dom";
 
 export type Content = WNode<Node> | string;
 export type RawOrBinded = IAtom<any> | any;
 export type Properties = { [key: string]: RawOrBinded };
+
+export const createBindedElement = <K extends keyof HTMLElementTagNameMap>(
+  tag: K | HTMLElementTagNameMap[K],
+  props: Props,
+  children: Children
+): WElement<HTMLElementTagNameMap[K]> => {
+  const element = createElement(tag, {}, children);
+  bindProps(element, props);
+  return element;
+};
 
 // prettier-ignore
 export type ChildrenOnlyElementBuilder<K extends keyof HTMLElementTagNameMap> =
@@ -43,23 +55,24 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
     const adaptedRemainingChildren = remainingChildren.map(wrapTextInWNode) as WNode<Node>[];
 
     if (nullOrUndefined(adaptedFirstArg)) {
-      return createElement(
+      return createBindedElement(
         tag,
         {},
         [],
       );
     } else if (isWNode(adaptedFirstArg)) {
-      return createElement(
+      return createBindedElement(
         tag,
         {},
         [adaptedFirstArg as WNode<any>, ...adaptedRemainingChildren],
       );
     } else {
-      return createElement(
+      const element = createBindedElement(
         tag,
         adaptedFirstArg as Properties,
         adaptedRemainingChildren
       );
+      return element;
     }
   };
 };
@@ -182,4 +195,8 @@ export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
 
 export type TextContent = string | IAtom<string>;
-export const t = (content: TextContent): WNode<Node> => createTextNode(content);
+export const t = (content: TextContent): WNode<Node> => {
+  const node = createTextNode("");
+  bindProps(node, {textContent: content});
+  return node;
+}
