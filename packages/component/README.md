@@ -23,11 +23,11 @@ For application specific extensions, the `createComponent` and `makeLazy` method
 
 ```tsx
 
-export const TodoList = withContext((): WElement<HTMLElement> => {
+export const TodoList = createComponent((): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
 
   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
-  const renderTodoItem = captureContextState((item: TodoItem) => <TodoListItem item={item} />);
+  const renderTodoItem = makeLazy((item: TodoItem) => <TodoListItem item={item} />);
 
   return (
       <div>
