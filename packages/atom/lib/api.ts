@@ -6,10 +6,10 @@ import {
   VirtualDerivedAtom,
 } from "./atom";
 import { IAtom } from "./atom.interface";
-import { Producer, Runnable } from "shared";
+import {F, FDecorator, Producer, Runnable} from "shared";
 import { AtomTrackingContext } from "./context";
 import { BatchingEffectScheduler } from "./effect_scheduler";
-import {DecoratableApiFunctionBuilder, FunctionDecorator} from "shared";
+import {DecoratableApiFunctionBuilder} from "shared";
 
 /**
  * A shared tracking context for all atoms created through this api
@@ -32,9 +32,9 @@ const apiFunctionBuilder: DecoratableApiFunctionBuilder = new DecoratableApiFunc
  * @param apiFn The exposed function
  * @param decorator The higher order decorator to be applied for all subsequent calls of the apiFn
  */
-export const registerDecorator = <F extends Function>(
-  apiFn: F,
-  decorator: FunctionDecorator<F>
+export const registerDecorator = <Args extends unknown[], ReturnType>(
+  apiFn: F<Args, ReturnType>,
+  decorator: FDecorator<Args, ReturnType>
 ): void => {
   return apiFunctionBuilder.registerDecorator(apiFn, decorator);
 };
@@ -45,9 +45,9 @@ export const registerDecorator = <F extends Function>(
  * @param apiFn The exposed function
  * @param decorator The higher order decorator to be removed
  */
-export const deregisterDecorator = <F extends Function>(
-  apiFn: F,
-  decorator: FunctionDecorator<F>
+export const deregisterDecorator = <Args extends unknown[], ReturnType>(
+  apiFn: F<Args, ReturnType>,
+  decorator: FDecorator<Args, ReturnType>
 ): void => {
   return apiFunctionBuilder.deregisterDecorator(apiFn, decorator);
 };

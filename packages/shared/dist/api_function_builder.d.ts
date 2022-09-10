@@ -1,10 +1,4 @@
-/**
- * A generic higher order function
- */
-export declare type FunctionDecorator<F extends Function> = (fn: F) => F;
-/**
- * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
- */
+import { F, FDecorator } from "./type";
 export declare class DecoratableApiFunctionBuilder {
     private decoratorRegistry;
     private baseFuncRegistry;
@@ -14,21 +8,21 @@ export declare class DecoratableApiFunctionBuilder {
      * @param baseFunc The function wrapped by the return function
      * @returns A wrapper function around the injected function, which may be further decorated at runtime.
      */
-    build<F extends Function>(baseFunc: F): F;
+    build<Args extends unknown[], ReturnType>(baseFunc: F<Args, ReturnType>): F<Args, ReturnType>;
     /**
      * Registers runtime decorators for methods constructed by the build method
      *
      * @param apiFn The method _returned_ by the build method (not the injected function!)
      * @param decorator The higher order function to wrap the apiFn
      */
-    registerDecorator<F extends Function>(apiFn: F, decorator: FunctionDecorator<F>): void;
+    registerDecorator<Args extends unknown[], ReturnType>(apiFn: F<Args, ReturnType>, decorator: FDecorator<Args, ReturnType>): void;
     /**
      * Unregisters any runtime decorators injected via the registerDecorator method
      *
      * @param apiFn The method _returned_ by the build method (not the injected function!)
      * @param decorator The higher order decorator that is to be removed
      */
-    deregisterDecorator<F extends Function>(apiFn: F, decorator: FunctionDecorator<F>): void;
+    deregisterDecorator<Args extends unknown[], ReturnType>(apiFn: F<Args, ReturnType>, decorator: FDecorator<Args, ReturnType>): void;
     /**
      * Takes the external function and applies all registered decorators in FIFO order of registration, returning
      * the decorated function. This is done lazily at runtime to enable runtime decoration.

@@ -50,10 +50,7 @@ const nonEmpty = (col) => {
             }
         }
     }
-}/**
- * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
- */
-class DecoratableApiFunctionBuilder {
+}class DecoratableApiFunctionBuilder {
     decoratorRegistry = new Map();
     baseFuncRegistry = new Map();
     /**

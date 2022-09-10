@@ -1,13 +1,7 @@
-/**
- * A generic higher order function
- */
-export type FunctionDecorator<F extends Function> = (fn: F) => F;
+import {F, FDecorator} from "./type";
 
-/**
- * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
- */
 export class DecoratableApiFunctionBuilder {
-  private decoratorRegistry: Map<Function, FunctionDecorator<any>[]> =
+  private decoratorRegistry: Map<Function, FDecorator<any, any>[]> =
     new Map();
   private baseFuncRegistry: Map<Function, Function> = new Map();
 
@@ -17,10 +11,10 @@ export class DecoratableApiFunctionBuilder {
    * @param baseFunc The function wrapped by the return function
    * @returns A wrapper function around the injected function, which may be further decorated at runtime.
    */
-  public build<F extends Function>(baseFunc: F): F {
-    const externalFunc: F = ((...args: any[]): any => {
+  public build<Args extends unknown[], ReturnType>(baseFunc: F<Args, ReturnType>): F<Args, ReturnType> {
+    const externalFunc: F<Args, ReturnType> = ((...args) => {
       return this.composeFunction(externalFunc)(...args);
-    }) as unknown as F;
+    });
 
     this.decoratorRegistry.set(externalFunc, []);
     this.baseFuncRegistry.set(externalFunc, baseFunc);
@@ -34,9 +28,9 @@ export class DecoratableApiFunctionBuilder {
    * @param apiFn The method _returned_ by the build method (not the injected function!)
    * @param decorator The higher order function to wrap the apiFn
    */
-  public registerDecorator<F extends Function>(
-    apiFn: F,
-    decorator: FunctionDecorator<F>
+  public registerDecorator<Args extends unknown[], ReturnType>(
+    apiFn: F<Args, ReturnType>,
+    decorator: FDecorator<Args, ReturnType>
   ): void {
     if (!this.decoratorRegistry.has(apiFn)) {
       // TODO(ericr): more specific error type
@@ -52,9 +46,9 @@ export class DecoratableApiFunctionBuilder {
    * @param apiFn The method _returned_ by the build method (not the injected function!)
    * @param decorator The higher order decorator that is to be removed
    */
-  public deregisterDecorator<F extends Function>(
-    apiFn: F,
-    decorator: FunctionDecorator<F>
+  public deregisterDecorator<Args extends unknown[], ReturnType>(
+    apiFn: F<Args, ReturnType>,
+    decorator: FDecorator<Args, ReturnType>
   ): void {
     this.decoratorRegistry.set(
       apiFn,
@@ -72,19 +66,17 @@ export class DecoratableApiFunctionBuilder {
    * @returns The composed function, being the registered base function with all of the currently registered decorators
    *          applied.
    */
-  private composeFunction<F extends Function>(externalFunc: F): F {
+  private composeFunction<Args extends unknown[], ReturnType>(externalFunc: F<Args, ReturnType>): F<Args, ReturnType> {
     if (!this.baseFuncRegistry.has(externalFunc)) {
       // TODO(ericr): more specific message and type
       throw new Error("unable to compose unknown function");
     }
 
-    const baseFunc: F = this.baseFuncRegistry.get(externalFunc) as F;
-    const decorations: FunctionDecorator<F>[] = this.decoratorRegistry.get(
-      externalFunc
-    ) as FunctionDecorator<F>[];
+    const baseFunc: F<Args, ReturnType> = this.baseFuncRegistry.get(externalFunc) as F<Args, ReturnType>;
+    const decorations: FDecorator<Args, ReturnType>[] = this.decoratorRegistry.get(externalFunc) as FDecorator<Args, ReturnType>[];
 
     return decorations.reduceRight(
-      (composedFunc: F, decorator: FunctionDecorator<F>): F =>
+      (composedFunc: F<Args, ReturnType>, decorator: FDecorator<Args, ReturnType>): F<Args, ReturnType> =>
         decorator(composedFunc),
       baseFunc
     );
