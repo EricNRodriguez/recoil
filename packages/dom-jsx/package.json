@@ -18,7 +18,7 @@
     "url": "git+https://github.com/EricNRodriguez/recoil.git"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "rollup -c"
   },
   "bugs": {
     "url": "https://github.com/EricNRodriguez/recoil/issues"
@@ -28,8 +28,8 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "recoiljs-dom-dsl": "*",
-    "shared": "*"
+    "shared": "*",
+    "recoiljs-dom-dsl": "*"
   },
   "peerDependencies": {
     "recoiljs-atom": "*",
