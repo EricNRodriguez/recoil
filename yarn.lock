@@ -2520,6 +2520,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"batch-updater-example@workspace:examples/batch-updater":
+  version: 0.0.0-use.local
+  resolution: "batch-updater-example@workspace:examples/batch-updater"
+  dependencies:
+    parcel: ^2.6.2
+    recoiljs-atom: "*"
+    recoiljs-context: "*"
+    recoiljs-dom: "*"
+    recoiljs-dom-dsl: "*"
+    recoiljs-dom-jsx: "*"
+    tsc: ^2.0.4
+    typescript: ^4.7.4
+    typescript-monads: ^7.2.0
+  languageName: unknown
+  linkType: soft
+
 "before-after-hook@npm:^2.2.0":
   version: 2.2.2
   resolution: "before-after-hook@npm:2.2.2"
@@ -3126,6 +3142,22 @@ __metadata:
   checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
   languageName: node
   linkType: hard
+
+"coupled-counter-example@workspace:examples/coupled-counter":
+  version: 0.0.0-use.local
+  resolution: "coupled-counter-example@workspace:examples/coupled-counter"
+  dependencies:
+    parcel: ^2.6.2
+    recoiljs-atom: "*"
+    recoiljs-context: "*"
+    recoiljs-dom: "*"
+    recoiljs-dom-dsl: "*"
+    recoiljs-dom-jsx: "*"
+    tsc: ^2.0.4
+    typescript: ^4.7.4
+    typescript-monads: ^7.2.0
+  languageName: unknown
+  linkType: soft
 
 "create-require@npm:^1.1.0":
   version: 1.1.1
@@ -6511,22 +6543,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil-example@workspace:examples/coupled-counter":
-  version: 0.0.0-use.local
-  resolution: "recoil-example@workspace:examples/coupled-counter"
-  dependencies:
-    parcel: ^2.6.2
-    recoiljs-atom: "*"
-    recoiljs-context: "workspace:^"
-    recoiljs-dom: "*"
-    recoiljs-dom-dsl: "workspace:^"
-    recoiljs-dom-jsx: "workspace:^"
-    tsc: ^2.0.4
-    typescript: ^4.7.4
-    typescript-monads: ^7.2.0
-  languageName: unknown
-  linkType: soft
-
 "recoil-js@workspace:.":
   version: 0.0.0-use.local
   resolution: "recoil-js@workspace:."
@@ -6564,7 +6580,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"recoiljs-context@workspace:^, recoiljs-context@workspace:packages/context":
+"recoiljs-context@*, recoiljs-context@workspace:^, recoiljs-context@workspace:packages/context":
   version: 0.0.0-use.local
   resolution: "recoiljs-context@workspace:packages/context"
   dependencies:
@@ -6579,7 +6595,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"recoiljs-dom-dsl@workspace:^, recoiljs-dom-dsl@workspace:packages/dom-dsl":
+"recoiljs-dom-dsl@*, recoiljs-dom-dsl@workspace:^, recoiljs-dom-dsl@workspace:packages/dom-dsl":
   version: 0.0.0-use.local
   resolution: "recoiljs-dom-dsl@workspace:packages/dom-dsl"
   dependencies:
@@ -6592,7 +6608,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"recoiljs-dom-jsx@workspace:^, recoiljs-dom-jsx@workspace:packages/dom-jsx":
+"recoiljs-dom-jsx@*, recoiljs-dom-jsx@workspace:^, recoiljs-dom-jsx@workspace:packages/dom-jsx":
   version: 0.0.0-use.local
   resolution: "recoiljs-dom-jsx@workspace:packages/dom-jsx"
   dependencies:
