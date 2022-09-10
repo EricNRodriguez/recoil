@@ -1,0 +1,36 @@
+{
+  "name": "timezone-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel index.html --port=8080",
+    "dev-verbose": "parcel index.html --port=8080 --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricNRodriguez/recoil-example.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EricNRodriguez/recoil-example/issues"
+  },
+  "homepage": "https://github.com/EricNRodriguez/recoil-example#readme",
+  "devDependencies": {
+    "parcel": "^2.6.2",
+    "tsc": "^2.0.4",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "recoiljs-atom": "*",
+    "recoiljs-context": "*",
+    "recoiljs-dom": "*",
+    "recoiljs-dom-dsl": "*",
+    "recoiljs-dom-jsx": "*",
+    "recoiljs-lazy": "workspace:^",
+    "typescript-monads": "^7.2.0"
+  }
+}
