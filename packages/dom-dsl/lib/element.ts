@@ -21,7 +21,7 @@ export const createBindedElement = <K extends keyof HTMLElementTagNameMap>(
   props: Props,
   children: Children
 ): WElement<HTMLElementTagNameMap[K]> => {
-  const element = createElement(tag, {}, children);
+  const element = createElement(tag as any, {}, children);
   bindProps(element, props);
   return element;
 };
