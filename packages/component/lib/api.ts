@@ -97,9 +97,9 @@ export const decorateCreateComponent: Consumer<CreateComponentDecorator> = (deco
  **
  * @param fn The function to close over the current component scope
  */
-export const makeLazy = (fn: Producer<WNode<Node>>): Producer<WNode<Node>> => {
+export const makeLazy = apiFunctionBuilder.build((fn: Producer<WNode<Node>>): Producer<WNode<Node>> => {
   return scopeManager.withCurrentScope(fn)
-}
+});
 
 export type MakeLazyDecorator = FDecorator<Parameters<typeof makeLazy>, ReturnType<typeof makeLazy>>;
 export const decorateMakeLazy: Consumer<MakeLazyDecorator> = (decorator) =>
