@@ -1,5 +1,5 @@
 import {createElement, WNode } from "recoiljs-dom";
-import { withContext } from "../../../packages/component";
+import { createComponent } from "recoiljs-component";
 import {runApp, div} from "recoiljs-dom-dsl"
 
 customElements.define('user-card', class extends HTMLElement {
@@ -12,7 +12,7 @@ customElements.define('user-card', class extends HTMLElement {
     }
 });
 
-const app = withContext((): WNode<Node> => {
+const app = createComponent((): WNode<Node> => {
     return div(
       createElement("user-card" as any, {}, [])
         .setEventHandler("click", (e: any) => {

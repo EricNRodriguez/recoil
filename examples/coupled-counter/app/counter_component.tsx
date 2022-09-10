@@ -3,7 +3,7 @@
 import {WElement, WNode} from "recoiljs-dom";
 import {IAtom, createState, state, runUntracked, IMutableAtom, deriveState} from "recoiljs-atom";
 import {br, button, div, hr, ifElse, t} from "recoiljs-dom-dsl";
-import {withContext, runMountedEffect, onMount, onUnmount, onInitialMount, inject, captureContextState} from "../../../packages/component";
+import {createComponent, runMountedEffect, onMount, onUnmount, onInitialMount, inject, makeLazy} from "recoiljs-component";
 import {Log} from "./log_component";
 import {loggerInjectionKey} from "./constant";
 import {jsx, $, If, For} from "recoiljs-dom-jsx";
@@ -20,7 +20,7 @@ export class Logger {
     }
 }
 
-export const CoupledCounter = withContext((): WElement<HTMLElement> => {
+export const CoupledCounter = createComponent((): WElement<HTMLElement> => {
   const a = createState<number>(0);
   const b = createState<number>(0);
   const c = createState<number>(0);
@@ -52,8 +52,8 @@ export const CoupledCounter = withContext((): WElement<HTMLElement> => {
         <br />
         <If
           condition={state}
-          true={captureContextState(() => <DComponent a={a} b={b} />)}
-          false={captureContextState(() => <EComponent a={a} b={b} c={c} />)}
+          true={makeLazy(() => <DComponent a={a} b={b} />)}
+          false={makeLazy(() => <EComponent a={a} b={b} c={c} />)}
         />
         <hr />
         <Log />
@@ -66,7 +66,7 @@ export type dComponentProps = {
   b: IAtom<number>;
 }
 
-const DComponent = withContext((props: dComponentProps): WElement<HTMLElement> => {
+const DComponent = createComponent((props: dComponentProps): WElement<HTMLElement> => {
   const logger = inject(loggerInjectionKey)!;
   const {a, b} = props;
 
@@ -97,7 +97,7 @@ export type eComponentProps = {
 };
 const toString = (v: any) => v.toString();
 
-const EComponent = withContext((props: eComponentProps,): WElement<HTMLElement> => {
+const EComponent = createComponent((props: eComponentProps,): WElement<HTMLElement> => {
   const logger = inject(loggerInjectionKey)!;
   const {a, b, c} = props;
 

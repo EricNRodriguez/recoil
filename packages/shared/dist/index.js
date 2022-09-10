@@ -107,7 +107,6 @@ class DecoratableApiFunctionBuilder {
         }
         const baseFunc = this.baseFuncRegistry.get(externalFunc);
         const decorations = this.decoratorRegistry.get(externalFunc);
-        decorations[0](baseFunc);
         return decorations.reduceRight((composedFunc, decorator) => decorator(composedFunc), baseFunc);
     }
 }export{DecoratableApiFunctionBuilder,WDerivationCache,clamp,firstNonEqualIndex,nonEmpty,notNullOrUndefined,nullOrUndefined,removeNullAndUndefinedItems,wrapStaticContentInProvider};//# sourceMappingURL=index.js.map
