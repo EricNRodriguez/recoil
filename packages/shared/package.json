@@ -25,6 +25,7 @@
     "url": "https://github.com/EricNRodriguez/recoil/issues"
   },
   "devDependencies": {
+    "rollup": "^2.79.0",
     "typescript": "^4.8.2"
   }
 }
