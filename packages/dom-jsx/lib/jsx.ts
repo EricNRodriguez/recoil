@@ -18,7 +18,7 @@ export const jsx = (
   ...children: WNode<Node>[]
 ): WNode<Node> => {
   if (tag === Fragment) {
-    return createFragment(...children);
+    return createFragment(children);
   }
 
   if (typeof tag === "function") {
