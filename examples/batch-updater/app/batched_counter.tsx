@@ -3,7 +3,7 @@
 import {createState, deriveState, IAtom, IMutableAtom, isAtom, runBatched, runUntracked} from "recoiljs-atom";
 import {button, div, h3, hr} from "recoiljs-dom-dsl";
 import {createTextNode, WElement, WNode} from "recoiljs-dom";
-import {withContext, runMountedEffect} from "recoiljs-context";
+import {withContext, runMountedEffect} from "../../../packages/component";
 import {jsx, $} from "recoiljs-dom-jsx";
 
 export const BatchedCounter = (): WNode<Node> => {

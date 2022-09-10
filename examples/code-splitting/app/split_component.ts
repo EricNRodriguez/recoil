@@ -1,5 +1,5 @@
 import {WElement} from "recoiljs-dom";
-import {withContext, onMount} from "recoiljs-context";
+import {withContext, onMount} from "../../../packages/component";
 import {div} from "recoiljs-dom-dsl";
 
 export default withContext((): WElement<HTMLElement> => {

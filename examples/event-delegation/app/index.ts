@@ -1,5 +1,5 @@
 import {createElement, WNode } from "recoiljs-dom";
-import { withContext } from "recoiljs-context";
+import { withContext } from "../../../packages/component";
 import {runApp, div} from "recoiljs-dom-dsl"
 
 customElements.define('user-card', class extends HTMLElement {

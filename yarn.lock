@@ -2526,7 +2526,7 @@ __metadata:
   dependencies:
     parcel: ^2.6.2
     recoiljs-atom: "*"
-    recoiljs-context: "*"
+    recoiljs-component: "*"
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
@@ -2895,7 +2895,7 @@ __metadata:
   dependencies:
     parcel: ^2.6.2
     recoiljs-atom: "*"
-    recoiljs-context: "*"
+    recoiljs-component: "*"
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
@@ -3166,7 +3166,7 @@ __metadata:
   dependencies:
     parcel: ^2.6.2
     recoiljs-atom: "*"
-    recoiljs-context: "*"
+    recoiljs-component: "*"
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
@@ -3809,7 +3809,7 @@ __metadata:
   dependencies:
     parcel: ^2.6.2
     recoiljs-atom: "*"
-    recoiljs-context: "*"
+    recoiljs-component: "*"
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
@@ -6585,7 +6585,7 @@ __metadata:
     esbuild: ^0.15.6
     lerna: ^5.5.0
     recoiljs-atom: "workspace:^"
-    recoiljs-context: "workspace:^"
+    recoiljs-component: "workspace:^"
     recoiljs-dom: "workspace:^"
     recoiljs-dom-dsl: "workspace:^"
     recoiljs-dom-jsx: "workspace:^"
@@ -6613,9 +6613,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"recoiljs-context@*, recoiljs-context@workspace:^, recoiljs-context@workspace:packages/context":
+"recoiljs-component@*, recoiljs-component@workspace:^, recoiljs-component@workspace:packages/component":
   version: 0.0.0-use.local
-  resolution: "recoiljs-context@workspace:packages/context"
+  resolution: "recoiljs-component@workspace:packages/component"
   dependencies:
     rollup: ^2.79.0
     rollup-plugin-exclude-dependencies-from-bundle: ^1.1.22
@@ -6968,29 +6968,29 @@ __metadata:
 
 "shared@file:../shared::locator=recoiljs-atom%40workspace%3Apackages%2Fatom":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=7ddb68&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
-  checksum: 18b1821f33be93ae29c045dee4561c2667234479fcdb5be2644895db18af205d410fb7e48e651aca6e71fbeb77ee0edd1ff2b08979e03cd71c70fc7c6c5d6545
+  resolution: "shared@file:../shared#../shared::hash=4fb285&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
+  checksum: c6f1cda2a6f6c83c3a55b557402ea98af3d1e4f357dae2485bc89226224849991e779b18f1426e10c403fc7818251fa30eeca393fd29d5becb0f3694156e4704
   languageName: node
   linkType: hard
 
-"shared@file:../shared::locator=recoiljs-context%40workspace%3Apackages%2Fcontext":
+"shared@file:../shared::locator=recoiljs-component%40workspace%3Apackages%2Fcomponent":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=7ddb68&locator=recoiljs-context%40workspace%3Apackages%2Fcontext"
-  checksum: 18b1821f33be93ae29c045dee4561c2667234479fcdb5be2644895db18af205d410fb7e48e651aca6e71fbeb77ee0edd1ff2b08979e03cd71c70fc7c6c5d6545
+  resolution: "shared@file:../shared#../shared::hash=4fb285&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
+  checksum: c6f1cda2a6f6c83c3a55b557402ea98af3d1e4f357dae2485bc89226224849991e779b18f1426e10c403fc7818251fa30eeca393fd29d5becb0f3694156e4704
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=7ddb68&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  checksum: 18b1821f33be93ae29c045dee4561c2667234479fcdb5be2644895db18af205d410fb7e48e651aca6e71fbeb77ee0edd1ff2b08979e03cd71c70fc7c6c5d6545
+  resolution: "shared@file:../shared#../shared::hash=4fb285&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
+  checksum: c6f1cda2a6f6c83c3a55b557402ea98af3d1e4f357dae2485bc89226224849991e779b18f1426e10c403fc7818251fa30eeca393fd29d5becb0f3694156e4704
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-dom-jsx%40workspace%3Apackages%2Fdom-jsx":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=7ddb68&locator=recoiljs-dom-jsx%40workspace%3Apackages%2Fdom-jsx"
-  checksum: 18b1821f33be93ae29c045dee4561c2667234479fcdb5be2644895db18af205d410fb7e48e651aca6e71fbeb77ee0edd1ff2b08979e03cd71c70fc7c6c5d6545
+  resolution: "shared@file:../shared#../shared::hash=4fb285&locator=recoiljs-dom-jsx%40workspace%3Apackages%2Fdom-jsx"
+  checksum: c6f1cda2a6f6c83c3a55b557402ea98af3d1e4f357dae2485bc89226224849991e779b18f1426e10c403fc7818251fa30eeca393fd29d5becb0f3694156e4704
   languageName: node
   linkType: hard
 
@@ -7379,7 +7379,7 @@ __metadata:
   dependencies:
     parcel: ^2.6.2
     recoiljs-atom: "*"
-    recoiljs-context: "*"
+    recoiljs-component: "*"
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
@@ -7437,7 +7437,7 @@ __metadata:
   dependencies:
     parcel: ^2.6.2
     recoiljs-atom: "*"
-    recoiljs-context: "*"
+    recoiljs-component: "*"
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"

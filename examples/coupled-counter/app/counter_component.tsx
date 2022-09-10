@@ -3,7 +3,7 @@
 import {WElement, WNode} from "recoiljs-dom";
 import {IAtom, createState, state, runUntracked, IMutableAtom, deriveState} from "recoiljs-atom";
 import {br, button, div, hr, ifElse, t} from "recoiljs-dom-dsl";
-import {withContext, runMountedEffect, onMount, onUnmount, onInitialMount, inject, captureContextState} from "recoiljs-context";
+import {withContext, runMountedEffect, onMount, onUnmount, onInitialMount, inject, captureContextState} from "../../../packages/component";
 import {Log} from "./log_component";
 import {loggerInjectionKey} from "./constant";
 import {jsx, $, If, For} from "recoiljs-dom-jsx";

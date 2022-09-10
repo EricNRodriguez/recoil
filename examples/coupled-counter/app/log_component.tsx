@@ -3,7 +3,7 @@
 import {WElement, WNode} from "recoiljs-dom";
 import {loggerInjectionKey} from "./constant";
 import {jsx, $, For} from "recoiljs-dom-jsx";
-import {inject, runMountedEffect, withContext} from "recoiljs-context";
+import {inject, runMountedEffect, withContext} from "../../../packages/component";
 
 export const Log = withContext((): WElement<HTMLElement> => {
   return (

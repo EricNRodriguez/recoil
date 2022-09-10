@@ -12,7 +12,7 @@ import { BatchingEffectScheduler } from "./effect_scheduler";
 import {DecoratableApiFunctionBuilder} from "shared";
 
 /**
- * A shared tracking context for all atoms created through this api
+ * A shared tracking component for all atoms created through this api
  */
 const globalTrackingContext = new AtomTrackingContext();
 
@@ -235,7 +235,7 @@ export const derivedState = apiFunctionBuilder.build((): string | any => {
  * Executes a callback that is not tracked by external contexts. I.e. reads made within the callback
  * will be made outside any external tracking scopes.
  *
- * @param job The callback to execute in an untracked context
+ * @param job The callback to execute in an untracked component
  */
 export const runUntracked = <T>(job: Producer<T>): T => {
   try {
@@ -247,7 +247,7 @@ export const runUntracked = <T>(job: Producer<T>): T => {
 };
 
 /**
- * Executes a job in a batched context, such that all eager side effects will be run after the job returns.
+ * Executes a job in a batched component, such that all eager side effects will be run after the job returns.
  * This is typically useful if you have an invalid intermediate state that is invalid and should never be used
  * in any effects.
  *

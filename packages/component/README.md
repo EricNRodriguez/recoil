@@ -1,8 +1,8 @@
 # Overview
 
-The context package provides utility hooks that make writing and maintaining complex applications less challenging.
+The component package provides a higher level api to that of the dom package, increasing declarativeness and improving DX.  
 
-The api provides two core DX improvements:
+The api provides two sets of methods:
 1. High level declarative hooks that abstract away the low level methods provided by the `dom` package
     1. `onMount`
     2. `onUnmount`
@@ -13,9 +13,11 @@ The api provides two core DX improvements:
     1. `inject`
     2. `provide`
 
-In order to make a component `contextual`, wrap it with `withContext`.
+In order to make a component, wrap any raw dom builder with `createComponet`.  
 
 > WARNING: In order for DI to work with lazily constructed/reconstructed DOM trees, the callback needs to close over the DI scope at the current time, and hence, is required to be wrapped with a `captureContextState` call.
+
+For application specific extensions, the `createComponent` and `makeLazy` methods provide support for runtime decoration through the `decorateCreateComponent` and `decorateMakeLazy`.
 
 # Example
 

@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "recoiljs-atom": "*",
-    "recoiljs-context": "*",
+    "recoiljs-component": "*",
     "recoiljs-dom": "*",
     "recoiljs-dom-dsl": "*",
     "recoiljs-dom-jsx": "*",

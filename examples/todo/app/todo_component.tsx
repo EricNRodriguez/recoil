@@ -4,7 +4,7 @@ import {TodoItem} from "./todo_model";
 import {WElement} from "recoiljs-dom";
 import {div, h2, br, button, input} from "recoiljs-dom-dsl";
 import {createState, runBatched} from "recoiljs-atom";
-import { inject, withContext, captureContextState } from "recoiljs-context";
+import { inject, withContext, captureContextState } from "../../../packages/component";
 import {todoModelInjectionKey} from "./index";
 import {jsx, For, If, $} from "recoiljs-dom-jsx";
 import {css} from "./util";

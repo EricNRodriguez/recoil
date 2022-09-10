@@ -1,7 +1,7 @@
 import { SymbolKey, ExecutionScopeManager } from "./inject";
-import {Runnable,} from "shared";
+import {DecoratableApiFunctionBuilder, Runnable, F, FDecorator, Producer, Consumer} from "shared";
 import { WElement, WNode } from "recoiljs-dom";
-import { ISideEffectRef } from "recoiljs-atom";
+import {ISideEffectRef} from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import {defer, execute} from "./defer";
 
@@ -31,10 +31,10 @@ export const onUnmount = (fn: Runnable): void => {
 };
 
 /**
- * Runs a side effect against the dom subtree enclosed by this context
+ * Runs a side effect against the dom subtree enclosed by this component
  *
  * The effect will be automatically activated/deactivated with the mounting/unmounting
- * of the context, preventing unnecessary background updates to the dom.
+ * of the component, preventing unnecessary background updates to the dom.
  *
  * @param sideEffect The side effect that will be re-run every time its deps are dirtied.
  */
@@ -67,34 +67,41 @@ export const inject = <T>(key: SymbolKey<T>): T | undefined => {
   return scopeManager.getCurrentScope().get(key);
 };
 
+const apiFunctionBuilder = new DecoratableApiFunctionBuilder();
+
+
 /**
- * Decorates the provided component with a context, allowing the hooks provided by this api
- * to be used.
+ * Creates a higher level component from a raw dom builder. This method decorates the builder with component
+ * specific logic.
  *
- * @param component A context builder
+ * @param component A component builder
  */
-export const withContext = <
-  Args extends unknown[],
-  ReturnNode extends WElement<HTMLElement>
->(
-  component: (...args: [...Args]) => ReturnNode
+export const createComponent = apiFunctionBuilder.build(<Args extends unknown[], ReturnNode extends WNode<Node>>(
+  component: F<Args, ReturnNode>
 ) => {
   return scopeManager.withChildScope((...args: [...Args]) => {
     return execute(() => {
       return component(...args);
     });
-  });
-};
+  })
+});
+
+export type CreateComponentDecorator = FDecorator<Parameters<typeof createComponent>, ReturnType<typeof createComponent>>;
+export const decorateCreateComponent: Consumer<CreateComponentDecorator> = (decorator) =>
+  apiFunctionBuilder.registerDecorator(createComponent, decorator);
+
 
 /**
- * Wraps a callback inside a closure such that the current contexts scope state is captured and restored for each
- * sub-context run inside the callback.
- *
- * At this point in time, the only scoped state contained within the context API is that used by the dependency
- * injection code, however this wrapper fn is intended to be a catch-all single point for wiring in this sort of
- * behaviour for any future behaviour that requires similar hierarchical scope.
- *
- * @param fn The function to close over the current context scope
+ * Wraps a callback inside a closure such that the current component scope is captured and restored for each
+ * sub-component run inside the callback, as if it were executed at the time this function is called.
+ **
+ * @param fn The function to close over the current component scope
  */
-export const captureContextState =
-  scopeManager.withCurrentScope.bind(scopeManager);
+export const makeLazy = (fn: Producer<WNode<Node>>): Producer<WNode<Node>> => {
+  return scopeManager.withCurrentScope(fn)
+}
+
+export type MakeLazyDecorator = FDecorator<Parameters<typeof makeLazy>, ReturnType<typeof makeLazy>>;
+export const decorateMakeLazy: Consumer<MakeLazyDecorator> = (decorator) =>
+  apiFunctionBuilder.registerDecorator(makeLazy, decorator);
+
