@@ -6,9 +6,9 @@ import {
   WElement,
   WNode,
 } from "recoiljs-dom";
-import { IAtom } from "recoiljs-atom";
+import {deriveState, IAtom, isAtom} from "recoiljs-atom";
 import { wrapTextInWNode } from "recoiljs-dom/lib/util";
-import { nullOrUndefined } from "shared";
+import {nullOrUndefined, Supplier} from "shared";
 import {bindProps} from "./binding/dom";
 import {Children, Props} from "recoiljs-dom";
 
@@ -24,6 +24,13 @@ export const createBindedElement = <K extends keyof HTMLElementTagNameMap>(
   const element = createElement(tag as any, {}, children);
   bindProps(element, props);
   return element;
+};
+
+export type TextNodeTypes = string | boolean | number;
+export const createBindedText = (content: TextNodeTypes | IAtom<TextNodeTypes>) => {
+  const node = createTextNode("");
+  bindProps(node, {textContent: content});
+  return node;
 };
 
 // prettier-ignore
@@ -194,9 +201,21 @@ export const frag = (...children: WNode<Node>[]): WNode<Node> =>
 export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
 
-export type TextContent = string | IAtom<string>;
-export const t = (content: TextContent): WNode<Node> => {
-  const node = createTextNode("");
-  bindProps(node, {textContent: content});
-  return node;
-}
+export type TextNodeSource =
+  | TextNodeTypes
+  | Supplier<TextNodeTypes>
+  | IAtom<TextNodeTypes>;
+
+export const t = (data: TextNodeSource): WNode<Node> => {
+  if (isAtom(data)) {
+    return createBindedText(
+      (data as IAtom<TextNodeTypes>).map((v: TextNodeTypes) => v.toString())
+    );
+  } else if (typeof data === "function") {
+    return createBindedText(
+      deriveState(() => (data as Supplier<TextNodeTypes>)().toString())
+    );
+  } else {
+    return createBindedText(data.toString());
+  }
+};
