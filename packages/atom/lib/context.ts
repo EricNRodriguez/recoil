@@ -37,7 +37,7 @@ export class AtomTrackingContext {
   public exitCurrentTrackingContext(): void {
     if (this.scopeStack.length === 1) {
       // TODO(ericr): more clear message and type
-      throw new Error("unable to exit the base context");
+      throw new Error("unable to exit the base component");
     }
     this.scopeStack.pop();
   }

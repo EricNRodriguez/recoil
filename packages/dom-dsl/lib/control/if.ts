@@ -1,6 +1,6 @@
 import { IAtom, isAtom, runEffect } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
-import { Supplier, WDerivationCache } from "shared"
+import { Supplier, WDerivationCache } from "shared";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 

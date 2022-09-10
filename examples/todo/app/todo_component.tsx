@@ -4,16 +4,18 @@ import {TodoItem} from "./todo_model";
 import {WElement} from "recoiljs-dom";
 import {div, h2, br, button, input} from "recoiljs-dom-dsl";
 import {createState, runBatched} from "recoiljs-atom";
-import { inject, withContext, captureContextState } from "recoiljs-context";
+import { inject, createComponent, makeLazy, decorateMakeLazy, decorateCreateComponent } from "recoiljs-component";
 import {todoModelInjectionKey} from "./index";
 import {jsx, For, If, $} from "recoiljs-dom-jsx";
 import {css} from "./util";
 
-export const TodoList = withContext((): WElement<HTMLElement> => {
+export const TodoList = createComponent((): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
 
   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
-  const renderTodoItem = captureContextState((item: TodoItem) => <TodoListItem item={item} />);
+  const renderTodoItem = makeLazy((item: TodoItem) => {
+      return <TodoListItem item={item} />
+  });
 
   return (
       <div>
@@ -37,7 +39,7 @@ export const TodoList = withContext((): WElement<HTMLElement> => {
   );
 });
 
-const TodoItemInput = withContext((): WElement<HTMLElement> => {
+const TodoItemInput = createComponent((): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
 
   const currentEnteredContent = createState<string>("");
@@ -70,7 +72,7 @@ type TodoListItemProps = {
   item: TodoItem;
 }
 
-const TodoListItem = withContext((props: TodoListItemProps): WElement<HTMLElement> => {
+const TodoListItem = createComponent((props: TodoListItemProps): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
 
   const buttonDivStyle = css({

@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "recoiljs-atom": "workspace:^",
-    "recoiljs-context": "workspace:^",
+    "recoiljs-component": "workspace:^",
     "recoiljs-dom": "workspace:^",
     "recoiljs-dom-dsl": "workspace:^",
     "recoiljs-dom-jsx": "workspace:^"

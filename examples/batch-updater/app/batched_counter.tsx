@@ -3,7 +3,7 @@
 import {createState, deriveState, IAtom, IMutableAtom, isAtom, runBatched, runUntracked} from "recoiljs-atom";
 import {button, div, h3, hr} from "recoiljs-dom-dsl";
 import {createTextNode, WElement, WNode} from "recoiljs-dom";
-import {withContext, runMountedEffect} from "recoiljs-context";
+import {createComponent, runMountedEffect} from "recoiljs-component";
 import {jsx, $} from "recoiljs-dom-jsx";
 
 export const BatchedCounter = (): WNode<Node> => {
@@ -26,7 +26,7 @@ type EffectExecutionCounterExampleProps = {
   shouldBatchUpdates: boolean;
 };
 
-const EffectExecutionCounterExample = withContext((props: EffectExecutionCounterExampleProps): WElement<HTMLElement> => {
+const EffectExecutionCounterExample = createComponent((props: EffectExecutionCounterExampleProps): WElement<HTMLElement> => {
   const numberOfTimesEffectHasRun = createState<number>(0);
 
   const a = createState<number>(0);

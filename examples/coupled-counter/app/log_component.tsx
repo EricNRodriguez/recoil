@@ -3,9 +3,9 @@
 import {WElement, WNode} from "recoiljs-dom";
 import {loggerInjectionKey} from "./constant";
 import {jsx, $, For} from "recoiljs-dom-jsx";
-import {inject, runMountedEffect, withContext} from "recoiljs-context";
+import {inject, runMountedEffect, createComponent} from "recoiljs-component";
 
-export const Log = withContext((): WElement<HTMLElement> => {
+export const Log = createComponent((): WElement<HTMLElement> => {
   return (
     <div className={"logs"}>
       <h3>Logs:</h3>
@@ -14,7 +14,7 @@ export const Log = withContext((): WElement<HTMLElement> => {
   );
 });
 
-const LogContent = withContext((): WElement<HTMLElement> => {
+const LogContent = createComponent((): WElement<HTMLElement> => {
   let container: WElement<HTMLDivElement> | undefined = undefined;
   const logger = inject(loggerInjectionKey)!;
 

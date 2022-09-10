@@ -1,6 +1,6 @@
 import { IAtom, runEffect } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
-import { WDerivationCache, Function} from "shared"
+import { WDerivationCache, Function } from "shared";
 
 export type MatchProps<T> = {
   state: IAtom<T>;

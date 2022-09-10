@@ -1,7 +1,4 @@
-import {runApp} from "recoiljs-dom-dsl";
-import {app} from "./app";
+import { runApp } from "recoiljs-dom-dsl";
+import { app } from "./app";
 
-runApp(
-  document.body,
-  app(),
-)
+runApp(document.body, app());

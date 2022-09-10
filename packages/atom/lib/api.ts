@@ -6,12 +6,13 @@ import {
   VirtualDerivedAtom,
 } from "./atom";
 import { IAtom } from "./atom.interface";
-import { Producer, Runnable } from "shared";
+import { F, FDecorator, Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
 import { BatchingEffectScheduler } from "./effect_scheduler";
+import { DecoratableApiFunctionBuilder } from "shared";
 
 /**
- * A shared tracking context for all atoms created through this api
+ * A shared tracking component for all atoms created through this api
  */
 const globalTrackingContext = new AtomTrackingContext();
 
@@ -21,99 +22,10 @@ const globalTrackingContext = new AtomTrackingContext();
 const globalEffectScheduler = new BatchingEffectScheduler();
 
 /**
- * A generic higher order function
+ * A utility that allows runtime decoration of the constructed api functions
  */
-export type FunctionDecorator<F extends Function> = (fn: F) => F;
-
-/**
- * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
- */
-class ApiFunctionBuilder {
-  private decoratorRegistry: Map<Function, FunctionDecorator<any>[]> =
-    new Map();
-  private baseFuncRegistry: Map<Function, Function> = new Map();
-
-  /**
-   * A higher order method that provides runtime decoration support to the injected function
-   *
-   * @param baseFunc The function wrapped by the return function
-   * @returns A wrapper function around the injected function, which may be further decorated at runtime.
-   */
-  public build<F extends Function>(baseFunc: F): F {
-    const externalFunc: F = ((...args: any[]): any => {
-      return this.composeFunction(externalFunc)(...args);
-    }) as unknown as F;
-
-    this.decoratorRegistry.set(externalFunc, []);
-    this.baseFuncRegistry.set(externalFunc, baseFunc);
-
-    return externalFunc;
-  }
-
-  /**
-   * Registers runtime decorators for methods constructed by the build method
-   *
-   * @param apiFn The method _returned_ by the build method (not the injected function!)
-   * @param decorator The higher order function to wrap the apiFn
-   */
-  public registerDecorator<F extends Function>(
-    apiFn: F,
-    decorator: FunctionDecorator<F>
-  ): void {
-    if (!this.decoratorRegistry.has(apiFn)) {
-      // TODO(ericr): more specific error type
-      throw new Error("decorating the provided function is not supported");
-    }
-
-    this.decoratorRegistry.get(apiFn)!.push(decorator);
-  }
-
-  /**
-   * Unregisters any runtime decorators injected via the registerDecorator method
-   *
-   * @param apiFn The method _returned_ by the build method (not the injected function!)
-   * @param decorator The higher order decorator that is to be removed
-   */
-  public deregisterDecorator<F extends Function>(
-    apiFn: F,
-    decorator: FunctionDecorator<F>
-  ): void {
-    this.decoratorRegistry.set(
-      apiFn,
-      (this.decoratorRegistry.get(apiFn) ?? []).filter(
-        (dec) => dec !== decorator
-      )
-    );
-  }
-
-  /**
-   * Takes the external function and applies all registered decorators in FIFO order of registration, returning
-   * the decorated function. This is done lazily at runtime to enable runtime decoration.
-   *
-   * @param externalFunc The method _returned_ by the build method
-   * @returns The composed function, being the registered base function with all of the currently registered decorators
-   *          applied.
-   */
-  private composeFunction<F extends Function>(externalFunc: F): F {
-    if (!this.baseFuncRegistry.has(externalFunc)) {
-      // TODO(ericr): more specific message and type
-      throw new Error("unable to compose unknown function");
-    }
-
-    const baseFunc: F = this.baseFuncRegistry.get(externalFunc) as F;
-    const decorations: FunctionDecorator<F>[] = this.decoratorRegistry.get(
-      externalFunc
-    ) as FunctionDecorator<F>[];
-
-    return decorations.reduceRight(
-      (composedFunc: F, decorator: FunctionDecorator<F>): F =>
-        decorator(composedFunc),
-      baseFunc
-    );
-  }
-}
-
-const apiFunctionBuilder: ApiFunctionBuilder = new ApiFunctionBuilder();
+const apiFunctionBuilder: DecoratableApiFunctionBuilder =
+  new DecoratableApiFunctionBuilder();
 
 /**
  * Registers a runtime decorator against one of the public factory methods exposed by this module.
@@ -121,9 +33,9 @@ const apiFunctionBuilder: ApiFunctionBuilder = new ApiFunctionBuilder();
  * @param apiFn The exposed function
  * @param decorator The higher order decorator to be applied for all subsequent calls of the apiFn
  */
-export const registerDecorator = <F extends Function>(
-  apiFn: F,
-  decorator: FunctionDecorator<F>
+export const registerDecorator = <Args extends unknown[], ReturnType>(
+  apiFn: F<Args, ReturnType>,
+  decorator: FDecorator<Args, ReturnType>
 ): void => {
   return apiFunctionBuilder.registerDecorator(apiFn, decorator);
 };
@@ -134,9 +46,9 @@ export const registerDecorator = <F extends Function>(
  * @param apiFn The exposed function
  * @param decorator The higher order decorator to be removed
  */
-export const deregisterDecorator = <F extends Function>(
-  apiFn: F,
-  decorator: FunctionDecorator<F>
+export const deregisterDecorator = <Args extends unknown[], ReturnType>(
+  apiFn: F<Args, ReturnType>,
+  decorator: FDecorator<Args, ReturnType>
 ): void => {
   return apiFunctionBuilder.deregisterDecorator(apiFn, decorator);
 };
@@ -324,7 +236,7 @@ export const derivedState = apiFunctionBuilder.build((): string | any => {
  * Executes a callback that is not tracked by external contexts. I.e. reads made within the callback
  * will be made outside any external tracking scopes.
  *
- * @param job The callback to execute in an untracked context
+ * @param job The callback to execute in an untracked component
  */
 export const runUntracked = <T>(job: Producer<T>): T => {
   try {
@@ -336,7 +248,7 @@ export const runUntracked = <T>(job: Producer<T>): T => {
 };
 
 /**
- * Executes a job in a batched context, such that all eager side effects will be run after the job returns.
+ * Executes a job in a batched component, such that all eager side effects will be run after the job returns.
  * This is typically useful if you have an invalid intermediate state that is invalid and should never be used
  * in any effects.
  *
