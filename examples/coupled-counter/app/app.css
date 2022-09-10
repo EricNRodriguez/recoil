@@ -1,0 +1,17 @@
+.log {
+    height: 200px;
+    overflow-y: auto;
+}
+
+.block-text.red {
+    background-color: red;
+}
+
+.block-text.green {
+    background-color: green;
+}
+
+.block-text {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}

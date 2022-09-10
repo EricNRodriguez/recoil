@@ -2,7 +2,8 @@
   "name": "recoil-js",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.3.0",
@@ -21,5 +22,12 @@
   },
   "scripts": {
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w"
+  },
+  "dependencies": {
+    "recoiljs-atom": "workspace:^",
+    "recoiljs-context": "workspace:^",
+    "recoiljs-dom": "workspace:^",
+    "recoiljs-dom-dsl": "workspace:^",
+    "recoiljs-dom-jsx": "workspace:^"
   }
 }
