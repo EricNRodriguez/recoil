@@ -32,10 +32,10 @@
   },
   "dependencies": {
     "recoiljs-dom-dsl": "*",
-    "shared": "*"
+    "shared": "*",
+    "recoiljs-dom": "*"
   },
   "peerDependencies": {
-    "recoiljs-atom": "*",
-    "recoiljs-dom": "*"
+    "recoiljs-atom": "*"
   }
 }
