@@ -1,10 +1,11 @@
-
 type F<Args extends unknown[], ReturnType> = (...args: [...Args]) => ReturnType;
 
 /**
  * A generic higher order function
  */
-export type FunctionDecorator<Args extends unknown[], ReturnType> = (fn: F<Args, ReturnType>) => F<Args, ReturnType>;
+export type FunctionDecorator<Args extends unknown[], ReturnType> = (
+  fn: F<Args, ReturnType>
+) => F<Args, ReturnType>;
 
 /**
  * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
@@ -20,7 +21,9 @@ export class DecoratableApiFunctionBuilder {
    * @param baseFunc The function wrapped by the return function
    * @returns A wrapper function around the injected function, which may be further decorated at runtime.
    */
-  public build<Args extends unknown[], ReturnType>(baseFunc: F<Args, ReturnType>): F<Args, ReturnType> {
+  public build<Args extends unknown[], ReturnType>(
+    baseFunc: F<Args, ReturnType>
+  ): F<Args, ReturnType> {
     const externalFunc: F<Args, ReturnType> = ((...args) => {
       return this.composeFunction(externalFunc)(...args);
     }) as F<Args, ReturnType>;
@@ -76,21 +79,29 @@ export class DecoratableApiFunctionBuilder {
    *          applied.
    */
   private composeFunction<Args extends unknown[], ReturnType>(
-    externalFunc: (...args: [...Args]) => ReturnType): (...args: [...Args]) => ReturnType {
-
+    externalFunc: (...args: [...Args]) => ReturnType
+  ): (...args: [...Args]) => ReturnType {
     if (!this.baseFuncRegistry.has(externalFunc)) {
       // TODO(ericr): more specific message and type
       throw new Error("unable to compose unknown function");
     }
 
-    const baseFunc = this.baseFuncRegistry.get(externalFunc) as F<Args, ReturnType>;
-    const decorations: FunctionDecorator<Args, ReturnType>[] = this.decoratorRegistry.get(
-      externalFunc
-    ) as FunctionDecorator<Args, ReturnType>[];
+    const baseFunc = this.baseFuncRegistry.get(externalFunc) as F<
+      Args,
+      ReturnType
+    >;
+    const decorations: FunctionDecorator<Args, ReturnType>[] =
+      this.decoratorRegistry.get(externalFunc) as FunctionDecorator<
+        Args,
+        ReturnType
+      >[];
 
     return decorations.reduceRight(
-      (composedFunc: F<Args, ReturnType>, decorator: FunctionDecorator<Args, ReturnType>) => decorator(composedFunc),
-      baseFunc,
+      (
+        composedFunc: F<Args, ReturnType>,
+        decorator: FunctionDecorator<Args, ReturnType>
+      ) => decorator(composedFunc),
+      baseFunc
     );
   }
 }

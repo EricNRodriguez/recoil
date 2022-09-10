@@ -1,4 +1,4 @@
-export * from "./function.interface"
+export * from "./function.interface";
 export * from "./list";
 export * from "./math";
 export * from "./type";

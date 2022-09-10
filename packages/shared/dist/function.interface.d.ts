@@ -1,31 +1,31 @@
 export interface Supplier<T> {
-    (): T;
+  (): T;
 }
 export interface Function<I, O> {
-    (input: I): O;
+  (input: I): O;
 }
 export interface BiFunction<A, B, O> {
-    (a: A, b: B): O;
+  (a: A, b: B): O;
 }
 export interface Method<T, I, O> {
-    (this: T, input: I): O;
+  (this: T, input: I): O;
 }
 export interface Producer<T> {
-    (): T;
+  (): T;
 }
 export interface AsyncProducer<T> {
-    (): Promise<T>;
+  (): Promise<T>;
 }
 export interface Consumer<T> {
-    (value: T): void;
+  (value: T): void;
 }
 export interface BiConsumer<A, B> {
-    (a: A, b: B): void;
+  (a: A, b: B): void;
 }
 export interface Runnable {
-    (): void;
+  (): void;
 }
 export interface Function<I, O> {
-    (value: I): O;
+  (value: I): O;
 }
 //# sourceMappingURL=function.interface.d.ts.map

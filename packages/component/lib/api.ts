@@ -1,9 +1,16 @@
 import { SymbolKey, ExecutionScopeManager } from "./inject";
-import {DecoratableApiFunctionBuilder, Runnable, F, FDecorator, Producer, Consumer} from "shared";
+import {
+  DecoratableApiFunctionBuilder,
+  Runnable,
+  F,
+  FDecorator,
+  Producer,
+  Consumer,
+} from "shared";
 import { WElement, WNode } from "recoiljs-dom";
-import {ISideEffectRef} from "recoiljs-atom";
+import { ISideEffectRef } from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
-import {defer, execute} from "./defer";
+import { defer, execute } from "./defer";
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
@@ -69,27 +76,31 @@ export const inject = <T>(key: SymbolKey<T>): T | undefined => {
 
 const apiFunctionBuilder = new DecoratableApiFunctionBuilder();
 
-
 /**
  * Creates a higher level component from a raw dom builder. This method decorates the builder with component
  * specific logic.
  *
  * @param component A component builder
  */
-export const createComponent = apiFunctionBuilder.build(<Args extends unknown[], ReturnNode extends WNode<Node>>(
-  component: F<Args, ReturnNode>
-) => {
-  return scopeManager.withChildScope((...args: [...Args]) => {
-    return execute(() => {
-      return component(...args);
+export const createComponent = apiFunctionBuilder.build(
+  <Args extends unknown[], ReturnNode extends WNode<Node>>(
+    component: F<Args, ReturnNode>
+  ) => {
+    return scopeManager.withChildScope((...args: [...Args]) => {
+      return execute(() => {
+        return component(...args);
+      });
     });
-  })
-});
+  }
+);
 
-export type CreateComponentDecorator = FDecorator<Parameters<typeof createComponent>, ReturnType<typeof createComponent>>;
-export const decorateCreateComponent: Consumer<CreateComponentDecorator> = (decorator) =>
-  apiFunctionBuilder.registerDecorator(createComponent, decorator);
-
+export type CreateComponentDecorator = FDecorator<
+  Parameters<typeof createComponent>,
+  ReturnType<typeof createComponent>
+>;
+export const decorateCreateComponent: Consumer<CreateComponentDecorator> = (
+  decorator
+) => apiFunctionBuilder.registerDecorator(createComponent, decorator);
 
 /**
  * Wraps a callback inside a closure such that the current component scope is captured and restored for each
@@ -97,11 +108,15 @@ export const decorateCreateComponent: Consumer<CreateComponentDecorator> = (deco
  **
  * @param fn The function to close over the current component scope
  */
-export const makeLazy = apiFunctionBuilder.build((fn: Producer<WNode<Node>>): Producer<WNode<Node>> => {
-  return scopeManager.withCurrentScope(fn)
-});
+export const makeLazy = apiFunctionBuilder.build(
+  (fn: Producer<WNode<Node>>): Producer<WNode<Node>> => {
+    return scopeManager.withCurrentScope(fn);
+  }
+);
 
-export type MakeLazyDecorator = FDecorator<Parameters<typeof makeLazy>, ReturnType<typeof makeLazy>>;
+export type MakeLazyDecorator = FDecorator<
+  Parameters<typeof makeLazy>,
+  ReturnType<typeof makeLazy>
+>;
 export const decorateMakeLazy: Consumer<MakeLazyDecorator> = (decorator) =>
   apiFunctionBuilder.registerDecorator(makeLazy, decorator);
-

@@ -6,11 +6,11 @@ import {
   WElement,
   WNode,
 } from "recoiljs-dom";
-import {deriveState, IAtom, isAtom} from "recoiljs-atom";
+import { deriveState, IAtom, isAtom } from "recoiljs-atom";
 import { wrapTextInWNode } from "recoiljs-dom/lib/util";
-import {nullOrUndefined, Supplier} from "shared";
-import {bindProps} from "./binding/dom";
-import {Children, Props} from "recoiljs-dom";
+import { nullOrUndefined, Supplier } from "shared";
+import { bindProps } from "./binding/dom";
+import { Children, Props } from "recoiljs-dom";
 
 export type Content = WNode<Node> | string;
 export type RawOrBinded = IAtom<any> | any;
@@ -27,9 +27,11 @@ export const createBindedElement = <K extends keyof HTMLElementTagNameMap>(
 };
 
 export type TextNodeTypes = string | boolean | number;
-export const createBindedText = (content: TextNodeTypes | IAtom<TextNodeTypes>) => {
+export const createBindedText = (
+  content: TextNodeTypes | IAtom<TextNodeTypes>
+) => {
   const node = createTextNode("");
-  bindProps(node, {textContent: content});
+  bindProps(node, { textContent: content });
   return node;
 };
 

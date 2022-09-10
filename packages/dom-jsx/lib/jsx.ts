@@ -1,5 +1,5 @@
-import {createFragment, WNode} from "recoiljs-dom";
-import {createBindedElement} from "recoiljs-dom-dsl/lib";
+import { createFragment, WNode } from "recoiljs-dom";
+import { createBindedElement } from "recoiljs-dom-dsl/lib";
 
 /**
  * A strict definition for all custom jsx components to adhere to.
@@ -33,5 +33,9 @@ export const jsx = (
     throw new Error("tag type not supported");
   }
 
-  return createBindedElement(tag as keyof HTMLElementTagNameMap, props, children);
+  return createBindedElement(
+    tag as keyof HTMLElementTagNameMap,
+    props,
+    children
+  );
 };

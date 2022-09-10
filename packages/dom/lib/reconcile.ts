@@ -1,4 +1,4 @@
-import { nullOrUndefined } from "shared"
+import { nullOrUndefined } from "shared";
 
 export type ReconcileNodeArraysArgs = {
   parent: Node;

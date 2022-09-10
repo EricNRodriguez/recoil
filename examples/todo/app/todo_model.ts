@@ -1,21 +1,18 @@
-import {createState, runBatched, runUntracked, state} from "recoiljs-atom";
+import { createState, runBatched, runUntracked, state } from "recoiljs-atom";
 
 export type TodoItem = {
-  uuid: number,
-  content: string,
+  uuid: number;
+  content: string;
 };
 
 export class TodoModel {
-
   @state()
   private items: TodoItem[] = [];
 
   @state()
   private nextId = 0;
 
-  constructor() {
-
-  }
+  constructor() {}
 
   public appendNewItem(content: string): TodoItem {
     const newItem = {
@@ -23,17 +20,15 @@ export class TodoModel {
       content: content,
     };
 
-    this.items = [
-      ...this.items,
-      newItem,
-    ];
-
+    this.items = [...this.items, newItem];
 
     return newItem;
   }
 
   public removeItem(item: TodoItem): void {
-    this.items = this.items.filter(existingItem => existingItem.uuid !== item.uuid);
+    this.items = this.items.filter(
+      (existingItem) => existingItem.uuid !== item.uuid
+    );
   }
 
   public clearItems(): void {
@@ -42,17 +37,16 @@ export class TodoModel {
 
   public duplicate(): void {
     runBatched(() => {
-      this.items =
-        [
-          ...this.items,
-          ...this.items.map(i => {
-            return {
-              uuid: this.nextId++,
-              content: i.content,
-            }})
-        ];
+      this.items = [
+        ...this.items,
+        ...this.items.map((i) => {
+          return {
+            uuid: this.nextId++,
+            content: i.content,
+          };
+        }),
+      ];
     });
-
   }
 
   public getItems(): TodoItem[] {
