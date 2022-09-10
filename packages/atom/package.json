@@ -27,7 +27,7 @@
     "typescript-monads": "^8.0.0"
   },
   "scripts": {
-    "build": "rollup -c"
+    "build": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
     "rollup": "^2.79.0",

@@ -19,7 +19,7 @@
     "url": "git+https://github.com/EricNRodriguez/recoil.git"
   },
   "scripts": {
-    "build": "rollup -c"
+    "build": "tsc -p tsconfig.build.json"
   },
   "bugs": {
     "url": "https://github.com/EricNRodriguez/recoil/issues"

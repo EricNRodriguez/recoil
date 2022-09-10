@@ -24,10 +24,10 @@
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w"
   },
   "dependencies": {
-    "recoiljs-atom": "workspace:^",
-    "recoiljs-component": "workspace:^",
-    "recoiljs-dom": "workspace:^",
-    "recoiljs-dom-dsl": "workspace:^",
-    "recoiljs-dom-jsx": "workspace:^"
+    "recoiljs-atom": "*",
+    "recoiljs-component": "*",
+    "recoiljs-dom": "*",
+    "recoiljs-dom-dsl": "*",
+    "recoiljs-dom-jsx": "*"
   }
 }
