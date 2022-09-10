@@ -3803,6 +3803,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"event-delegation-example@workspace:examples/event-delegation":
+  version: 0.0.0-use.local
+  resolution: "event-delegation-example@workspace:examples/event-delegation"
+  dependencies:
+    parcel: ^2.6.2
+    recoiljs-atom: "*"
+    recoiljs-context: "*"
+    recoiljs-dom: "*"
+    recoiljs-dom-dsl: "*"
+    recoiljs-dom-jsx: "*"
+    tsc: ^2.0.4
+    typescript: ^4.7.4
+    typescript-monads: ^7.2.0
+  languageName: unknown
+  linkType: soft
+
 "eventemitter3@npm:^4.0.4":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
