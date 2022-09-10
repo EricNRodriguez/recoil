@@ -1,6 +1,7 @@
 import { Supplier } from "shared";
 import { deriveState, IAtom, isAtom } from "recoiljs-atom";
 import { createTextNode, WNode } from "recoiljs-dom";
+import {t} from "recoiljs-dom-dsl";
 
 export type TextNodeTypes = string | boolean | number;
 export type TextNodeSource =
@@ -9,14 +10,14 @@ export type TextNodeSource =
   | IAtom<TextNodeTypes>;
 export const $ = (data: TextNodeSource): WNode<Node> => {
   if (isAtom(data)) {
-    return createTextNode(
+    return t(
       (data as IAtom<TextNodeTypes>).map((v: TextNodeTypes) => v.toString())
     );
   } else if (typeof data === "function") {
-    return createTextNode(
+    return t(
       deriveState(() => (data as Supplier<TextNodeTypes>)().toString())
     );
   } else {
-    return createTextNode(data.toString());
+    return t(data.toString());
   }
 };
