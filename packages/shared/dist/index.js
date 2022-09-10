@@ -53,7 +53,7 @@ const nonEmpty = (col) => {
 }/**
  * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
  */
-class ApiFunctionBuilder {
+class DecoratableApiFunctionBuilder {
     decoratorRegistry = new Map();
     baseFuncRegistry = new Map();
     /**
@@ -109,4 +109,4 @@ class ApiFunctionBuilder {
         const decorations = this.decoratorRegistry.get(externalFunc);
         return decorations.reduceRight((composedFunc, decorator) => decorator(composedFunc), baseFunc);
     }
-}export{ApiFunctionBuilder,WDerivationCache,clamp,firstNonEqualIndex,nonEmpty,notNullOrUndefined,nullOrUndefined,removeNullAndUndefinedItems,wrapStaticContentInProvider};//# sourceMappingURL=index.js.map
+}export{DecoratableApiFunctionBuilder,WDerivationCache,clamp,firstNonEqualIndex,nonEmpty,notNullOrUndefined,nullOrUndefined,removeNullAndUndefinedItems,wrapStaticContentInProvider};//# sourceMappingURL=index.js.map

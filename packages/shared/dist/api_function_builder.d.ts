@@ -5,7 +5,7 @@ export declare type FunctionDecorator<F extends Function> = (fn: F) => F;
 /**
  * A utility class that provides runtime decoration to exported functions, implemented as a singleton.
  */
-export declare class ApiFunctionBuilder {
+export declare class DecoratableApiFunctionBuilder {
     private decoratorRegistry;
     private baseFuncRegistry;
     /**

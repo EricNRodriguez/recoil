@@ -9,7 +9,7 @@ import { IAtom } from "./atom.interface";
 import { Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
 import { BatchingEffectScheduler } from "./effect_scheduler";
-import {ApiFunctionBuilder, FunctionDecorator} from "shared";
+import {DecoratableApiFunctionBuilder, FunctionDecorator} from "shared";
 
 /**
  * A shared tracking context for all atoms created through this api
@@ -24,7 +24,7 @@ const globalEffectScheduler = new BatchingEffectScheduler();
 /**
  * A utility that allows runtime decoration of the constructed api functions
  */
-const apiFunctionBuilder: ApiFunctionBuilder = new ApiFunctionBuilder();
+const apiFunctionBuilder: DecoratableApiFunctionBuilder = new DecoratableApiFunctionBuilder();
 
 /**
  * Registers a runtime decorator against one of the public factory methods exposed by this module.
