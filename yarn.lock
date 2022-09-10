@@ -7398,6 +7398,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"todo-example@workspace:examples/todo":
+  version: 0.0.0-use.local
+  resolution: "todo-example@workspace:examples/todo"
+  dependencies:
+    parcel: ^2.6.2
+    recoiljs-atom: "*"
+    recoiljs-context: "*"
+    recoiljs-dom: "*"
+    recoiljs-dom-dsl: "*"
+    recoiljs-dom-jsx: "*"
+    recoiljs-lazy: "workspace:^"
+    tsc: ^2.0.4
+    typescript: ^4.7.4
+    typescript-monads: ^7.2.0
+  languageName: unknown
+  linkType: soft
+
 "tr46@npm:~0.0.3":
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
