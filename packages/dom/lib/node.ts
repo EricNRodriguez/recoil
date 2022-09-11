@@ -13,6 +13,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
 
   protected constructor(node: A) {
     this.node = node;
+    this.currentlyMounted = node.isConnected;
     this.isDocumentFragment = this.node instanceof DocumentFragment;
   }
 
