@@ -6,3 +6,4 @@ export * from "./type_check";
 export * from "./util";
 export * from "./weak_cache";
 export * from "./api_function_builder";
+export * from "./lazy_import";
