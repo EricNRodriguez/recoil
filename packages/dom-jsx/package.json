@@ -31,11 +31,11 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
+    "recoiljs-dom": "*",
     "recoiljs-dom-dsl": "*",
     "shared": "*"
   },
   "peerDependencies": {
-    "recoiljs-atom": "*",
-    "recoiljs-dom": "*"
+    "recoiljs-atom": "*"
   }
 }
