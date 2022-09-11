@@ -148,6 +148,11 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   public unwrap(): A {
     return this.node;
   }
+
+  public bindScopeToWrappedNode(): B {
+    (this.unwrap() as any).$$$wrapper = this;
+    return this as unknown as B;
+  }
 }
 
 export class WNode<T extends Node> extends BaseWNode<T, WNode<T>> {

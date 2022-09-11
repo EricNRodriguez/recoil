@@ -2909,7 +2909,6 @@ __metadata:
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
-    recoiljs-lazy: "workspace:^"
     tsc: ^2.0.4
     typescript: ^4.7.4
     typescript-monads: ^7.2.0
@@ -4912,7 +4911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lerna@npm:^5.5.0":
+"lerna@npm:^5.5.1":
   version: 5.5.1
   resolution: "lerna@npm:5.5.1"
   dependencies:
@@ -6593,7 +6592,7 @@ __metadata:
     "@rollup/plugin-node-resolve": ^13.3.0
     "@rollup/plugin-typescript": ^8.4.0
     esbuild: ^0.15.6
-    lerna: ^5.5.0
+    lerna: ^5.5.1
     rollup: ^2.79.0
     rollup-plugin-dts: ^4.2.2
     rollup-plugin-esbuild: ^4.10.1
@@ -6664,6 +6663,7 @@ __metadata:
     typescript: ^4.8.2
   peerDependencies:
     recoiljs-atom: "*"
+    recoiljs-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -6675,18 +6675,6 @@ __metadata:
     rollup-plugin-typescript2: ^0.33.0
     shared: "*"
     typescript: ^4.8.2
-  languageName: unknown
-  linkType: soft
-
-"recoiljs-lazy@workspace:^, recoiljs-lazy@workspace:packages/lazy":
-  version: 0.0.0-use.local
-  resolution: "recoiljs-lazy@workspace:packages/lazy"
-  dependencies:
-    recoiljs-dom: "*"
-    rollup: ^2.79.0
-    typescript: ^4.8.2
-  peerDependencies:
-    recoiljs-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -6984,22 +6972,22 @@ __metadata:
 
 "shared@file:../shared::locator=recoiljs-atom%40workspace%3Apackages%2Fatom":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=b64e3a&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
-  checksum: 3f68be52f8e45192b30780ee6f4a0f4c5b409cba643bb26c12ac4f301439e33fb00a3eb44fc6a3a244808617d69f2a904bab1de3840a50ecaedaa3efc50dcecd
+  resolution: "shared@file:../shared#../shared::hash=be870f&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
+  checksum: e23c22053db19bdb50d5b8ef9a1f9c743aee332154e36b3cad46fe16be8d3f249777b548154923b487b413657e550d3d95ffe78266bd25b3b092649a6efc1636
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-component%40workspace%3Apackages%2Fcomponent":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=b64e3a&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
-  checksum: 3f68be52f8e45192b30780ee6f4a0f4c5b409cba643bb26c12ac4f301439e33fb00a3eb44fc6a3a244808617d69f2a904bab1de3840a50ecaedaa3efc50dcecd
+  resolution: "shared@file:../shared#../shared::hash=be870f&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
+  checksum: e23c22053db19bdb50d5b8ef9a1f9c743aee332154e36b3cad46fe16be8d3f249777b548154923b487b413657e550d3d95ffe78266bd25b3b092649a6efc1636
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=b64e3a&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  checksum: 3f68be52f8e45192b30780ee6f4a0f4c5b409cba643bb26c12ac4f301439e33fb00a3eb44fc6a3a244808617d69f2a904bab1de3840a50ecaedaa3efc50dcecd
+  resolution: "shared@file:../shared#../shared::hash=be870f&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
+  checksum: e23c22053db19bdb50d5b8ef9a1f9c743aee332154e36b3cad46fe16be8d3f249777b548154923b487b413657e550d3d95ffe78266bd25b3b092649a6efc1636
   languageName: node
   linkType: hard
 
@@ -7392,7 +7380,6 @@ __metadata:
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
-    recoiljs-lazy: "workspace:^"
     tsc: ^2.0.4
     typescript: ^4.7.4
     typescript-monads: ^7.2.0
@@ -7450,7 +7437,6 @@ __metadata:
     recoiljs-dom: "*"
     recoiljs-dom-dsl: "*"
     recoiljs-dom-jsx: "*"
-    recoiljs-lazy: "workspace:^"
     tsc: ^2.0.4
     typescript: ^4.7.4
     typescript-monads: ^7.2.0
