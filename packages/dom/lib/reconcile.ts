@@ -13,10 +13,10 @@ const frag: DocumentFragment = document.createDocumentFragment();
 // and
 // https://github.com/WebReflection/udomdiff/blob/8923d4fac63a40c72006a46eb0af7bfb5fdef282/index.js
 export const reconcileNodeArrays = ({
-  parent,
-  currentNodes,
-  newNodes,
-}: ReconcileNodeArraysArgs) => {
+                                      parent,
+                                      currentNodes,
+                                      newNodes,
+                                    }: ReconcileNodeArraysArgs) => {
   let curLeft: number = 0;
   let curRight: number = currentNodes.length;
 
@@ -48,9 +48,12 @@ export const reconcileNodeArrays = ({
     parent.insertBefore(frag, nextNodeAnchor);
   };
 
-  const removeRestOfCurrentNodes = () => {
+  const removeRemainingUnmappedCurrentNodes = () => {
     currentNodes.slice(curLeft, curRight).forEach((node: Node): void => {
-      (node as any).remove();
+      // only drop remaining cur nodes that were never mapped.
+      if (!newNodesIndex.get(currentNodes[curLeft])) {
+        (node as any).remove();
+      }
       ++curLeft;
     });
   };
@@ -60,8 +63,8 @@ export const reconcileNodeArrays = ({
       // We have a node that is in both `currentNodes` and `newNodes`, however has changed index
       const curStartIndexInNew = newNodesIndex.get(currentNodes[curLeft])!;
 
-      // SC
-      if (curStartIndexInNew < newLeft || curStartIndexInNew >= newRight) {
+      if (newLeft >= curStartIndexInNew || curStartIndexInNew >= newRight) {
+        curLeft++;
         return;
       }
 
@@ -84,16 +87,19 @@ export const reconcileNodeArrays = ({
       }
 
       if (contigSubsequenceLen > curStartIndexInNew - newLeft) {
+        // the subsequence is longer than the missing prefix, so we just append the prefix,
+        // with the following outer loop clipping the suffix, which results in fewer ops
         const node: Node = currentNodes[curLeft];
         while (newLeft < curStartIndexInNew) {
           parent.insertBefore(newNodes[newLeft], node);
           ++newLeft;
         }
       } else {
-        parent.replaceChild(newNodes[newLeft], currentNodes[curLeft]);
+        parent.replaceChild(newNodes[newLeft], currentNodes[curLeft]); // newchild, oldchild
         ++curLeft;
         ++newLeft;
       }
+
     } else {
       (currentNodes[curLeft] as any).remove();
       ++curLeft;
@@ -105,7 +111,7 @@ export const reconcileNodeArrays = ({
       curLeft < curRight &&
       newLeft < newRight &&
       currentNodes[curLeft] === newNodes[newLeft]
-    ) {
+      ) {
       ++curLeft;
       ++newLeft;
     }
@@ -116,7 +122,7 @@ export const reconcileNodeArrays = ({
       curRight > curLeft &&
       newRight > newLeft &&
       currentNodes[curRight - 1] === newNodes[newRight - 1]
-    ) {
+      ) {
       --curRight;
       --newRight;
     }
@@ -129,7 +135,7 @@ export const reconcileNodeArrays = ({
     if (curLeft === curRight) {
       appendRestOfNewNodes();
     } else if (newLeft === newRight) {
-      removeRestOfCurrentNodes();
+      removeRemainingUnmappedCurrentNodes();
     } else {
       fallbackAndMapContiguousChunk();
     }
