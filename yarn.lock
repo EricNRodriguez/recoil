@@ -6664,7 +6664,6 @@ __metadata:
     typescript: ^4.8.2
   peerDependencies:
     recoiljs-atom: "*"
-    recoiljs-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -6985,22 +6984,22 @@ __metadata:
 
 "shared@file:../shared::locator=recoiljs-atom%40workspace%3Apackages%2Fatom":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=1f8d5d&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
-  checksum: 0f2920e9b43be3914a93623ae700cfb42b3bc882fd3ed5a66dffece3fb8a5ec9e946d1db36f02e2fa93dd54ac10a5e8d49462539b892a68927246fc1a731986f
+  resolution: "shared@file:../shared#../shared::hash=b64e3a&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
+  checksum: 3f68be52f8e45192b30780ee6f4a0f4c5b409cba643bb26c12ac4f301439e33fb00a3eb44fc6a3a244808617d69f2a904bab1de3840a50ecaedaa3efc50dcecd
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-component%40workspace%3Apackages%2Fcomponent":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=1f8d5d&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
-  checksum: 0f2920e9b43be3914a93623ae700cfb42b3bc882fd3ed5a66dffece3fb8a5ec9e946d1db36f02e2fa93dd54ac10a5e8d49462539b892a68927246fc1a731986f
+  resolution: "shared@file:../shared#../shared::hash=b64e3a&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
+  checksum: 3f68be52f8e45192b30780ee6f4a0f4c5b409cba643bb26c12ac4f301439e33fb00a3eb44fc6a3a244808617d69f2a904bab1de3840a50ecaedaa3efc50dcecd
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=1f8d5d&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  checksum: 0f2920e9b43be3914a93623ae700cfb42b3bc882fd3ed5a66dffece3fb8a5ec9e946d1db36f02e2fa93dd54ac10a5e8d49462539b892a68927246fc1a731986f
+  resolution: "shared@file:../shared#../shared::hash=b64e3a&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
+  checksum: 3f68be52f8e45192b30780ee6f4a0f4c5b409cba643bb26c12ac4f301439e33fb00a3eb44fc6a3a244808617d69f2a904bab1de3840a50ecaedaa3efc50dcecd
   languageName: node
   linkType: hard
 
