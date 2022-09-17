@@ -1,6 +1,6 @@
 # Overview
 
-Recoil is a prototype lightweight UI library that requires no compilation and a heavy focus on fine grained reactivity. 
+Recoil is a prototype lightweight UI library that requires no compilation and has a heavy focus on fine grained reactivity. 
 
 The provided packages are all opt-in, allowing as little or as much of the library to be used.
 
