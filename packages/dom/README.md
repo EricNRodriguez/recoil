@@ -1,7 +1,7 @@
 # Overview
 
 The `dom` package provides low level utilities / classes that enable performant dom operations. Specifically, the package provides wrapper classes for dom nodes
-and elements that implement performant reconciliation, event delegation (including simulated event bubbling with correct handling of shadow dom boundaries) and fragment nodes. 
+and elements that implement reconciliation, event delegation (including simulated event bubbling with correct handling of shadow dom boundaries) and fragment nodes. 
 
 # API
 
