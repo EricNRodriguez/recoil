@@ -2,7 +2,7 @@
 
 Recoil is a prototype lightweight UI library that requires no compilation and has a heavy focus on fine grained reactivity. 
 
-The provided packages are all opt-in, allowing as little or as much of the library to be used.
+The provided packages are all opt-in, allowing as little or as much of the library to be used (higher level packages do depend on lower level packages, and may need them to be installed manually to reduce bundle sizes and enable singleton imports to work correctly).
 
 The features that you would expect of any modern web UI library are provided, including:
 - performant dom reconciliation
