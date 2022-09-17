@@ -107,7 +107,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     return this.parent;
   }
 
-  public mount(): B {
+  private mount(): B {
     this.currentlyMounted = true;
     this.children.forEach((child: WNode<Node>): void => {
       child.mount();
@@ -116,7 +116,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     return this as unknown as B;
   }
 
-  public unmount(): B {
+  private unmount(): B {
     this.currentlyMounted = false;
     this.children.forEach((child: WNode<Node>): void => {
       child.unmount();
