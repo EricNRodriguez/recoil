@@ -28,7 +28,7 @@ This library is not intended for production use, or any serious use for that mat
 
 A set of examples are provided in the `examples` directory. An incomplete example has been provided below to illustrate the api.
 
-```ts
+```typescript jsx
 /** @jsx jsx */
 
 import {TodoItem} from "./todo_model";
