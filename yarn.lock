@@ -6646,7 +6646,6 @@ __metadata:
     typescript: ^4.8.2
   peerDependencies:
     recoiljs-atom: "*"
-    recoiljs-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -6663,7 +6662,6 @@ __metadata:
     typescript: ^4.8.2
   peerDependencies:
     recoiljs-atom: "*"
-    recoiljs-dom: "*"
   languageName: unknown
   linkType: soft
 
