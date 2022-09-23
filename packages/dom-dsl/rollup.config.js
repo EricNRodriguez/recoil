@@ -1,4 +1,4 @@
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import excludeDependenciesFromBundle from "rollup-plugin-exclude-dependencies-from-bundle";
 export default [
