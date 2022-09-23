@@ -197,6 +197,11 @@ export const details = createDslElementHelper("details");
 export const dialog = createDslElementHelper("dialog");
 export const summary = createDslElementHelper("summary");
 
+// media
+export const audio = createDslElementHelper("audio");
+export const img = createDslElementHelper("img");
+
+
 export const frag = (...children: WNode<Node>[]): WNode<Node> =>
   createFragment(children);
 
