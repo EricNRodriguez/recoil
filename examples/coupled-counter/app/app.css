@@ -15,3 +15,18 @@
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+}
+
+.controls > * {
+    margin: 0.25em;
+    width: 100%;
+}
+
+h4 {
+    margin: 0.25em;
+}

@@ -45,10 +45,12 @@ export const CoupledCounter = createComponent((): WElement<HTMLElement> => {
 
   return (
       <div>
-        {incAButton}
-        {incBButton}
-        {incCButton}
-        {flipStateButton}
+        <div className={"controls"}>
+          {incAButton}
+          {incBButton}
+          {incCButton}
+          {flipStateButton}
+        </div>
         <br />
         <If
           condition={state}
