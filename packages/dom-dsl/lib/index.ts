@@ -7,3 +7,4 @@ export { suspense } from "./control/suspense";
 export { runApp } from "recoiljs-dom";
 export {lazy} from "shared";
 export {DefaultModuleType} from "shared";
+export {runApp} from "recoiljs-dom";

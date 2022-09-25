@@ -9,6 +9,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private readonly children: WNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
   private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>();
+
   private currentlyMounted: boolean = false;
 
   protected constructor(node: A) {
