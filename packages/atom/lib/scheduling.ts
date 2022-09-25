@@ -9,6 +9,8 @@ enum StateKind {
 
 interface LazyBatchUpdateState {
   kind: StateKind.BATCH;
+  // records the depth of batch calls to enable nesting
+  depth: number;
   scheduledUpdates: Set<Runnable>;
 }
 
@@ -41,11 +43,13 @@ export class BatchingEffectScheduler implements IEffectScheduler {
 
   public enterBatchState(): void {
     if (this.state.kind === StateKind.BATCH) {
+      this.state.depth++;
       return;
     }
 
     this.state = {
       kind: StateKind.BATCH,
+      depth: 1,
       scheduledUpdates: new Set(),
     };
   }
@@ -55,8 +59,12 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       return;
     }
 
-    this.state.scheduledUpdates.forEach((update) => update());
-    this.state = { kind: StateKind.EAGER };
+    this.state.depth--;
+
+    if (this.state.depth === 0) {
+      this.state.scheduledUpdates.forEach((update) => update());
+      this.state = { kind: StateKind.EAGER };
+    }
   }
 
   private scheduleBatchedUpdate(update: Runnable): void {
