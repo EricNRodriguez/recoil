@@ -2,6 +2,8 @@
 
 A runtime dsl that provides a higher level abstraction over the `dom` api. This includes control components that enable dom trees to be specified declaratively, and one way data binding for atomic properties.
 
+> NOTE: At this point in time, the only reactive library that is supported is `atom`. This was a practical decision given the scope of this project, however it should be relatively simple to add bindings at runtime via DI. 
+
 
 # API
 
