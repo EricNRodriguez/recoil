@@ -1,4 +1,4 @@
-import { Runnable } from "shared";
+import {Producer, Runnable} from "shared";
 import { IEffectScheduler, IUpdateExecutor } from "./atom";
 import {MinQueue} from "heapify";
 
@@ -44,10 +44,10 @@ export class BatchingEffectScheduler implements IEffectScheduler {
     }
   }
 
-  public executeAsBatch(job: Runnable): void {
+  public executeAsBatch<ReturnType>(job: Producer<ReturnType>): ReturnType {
     try {
       this.enterBatchState();
-      job();
+      return job();
     } finally {
       this.exitBatchedState();
     }
