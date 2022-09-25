@@ -1,5 +1,5 @@
 import { createFragment, WNode } from "recoiljs-dom";
-import { createBindedElement } from "recoiljs-dom-dsl/lib";
+import { createBindedElement } from "recoiljs-dom-dsl";
 
 /**
  * A strict definition for all custom jsx components to adhere to.
