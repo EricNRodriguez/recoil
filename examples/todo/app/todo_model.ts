@@ -35,6 +35,10 @@ export class TodoModel {
     this.items = [];
   }
 
+  public isNonEmpty(): boolean {
+    return this.items.length !== 0;
+  }
+
   public duplicate(): void {
     runBatched(() => {
       this.items = [

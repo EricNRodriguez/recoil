@@ -1,13 +1,32 @@
 /** @jsx jsx */
 
-import {TodoItem} from "./todo_model";
+import {TodoItem, TodoModel} from "./todo_model";
 import {WElement} from "recoiljs-dom";
 import {div, h2, br, button, input} from "recoiljs-dom-dsl";
-import {createState, runBatched} from "recoiljs-atom";
+import {createState, derivedState, deriveState, runBatched} from "recoiljs-atom";
 import { inject, createComponent, makeLazy, decorateMakeLazy, decorateCreateComponent } from "recoiljs-component";
 import {todoModelInjectionKey} from "./index";
-import {jsx, For, If, $} from "recoiljs-dom-jsx";
+import {jsx, For, If, $, Fragment} from "recoiljs-dom-jsx";
 import {css} from "./util";
+
+
+type TodoListControlsProps = {
+    model: TodoModel;
+};
+const TodoListControls = createComponent((props: TodoListControlsProps) => {
+  const emptyList = deriveState(() => !props.model.isNonEmpty(), false);
+
+  return (
+      <div>
+        <button onclick={() => props.model.duplicate()} disabled={emptyList}>
+          double
+        </button>
+        <button onclick={() => props.model.clearItems()} disabled={emptyList}>
+          clear
+        </button>
+      </div>
+  );
+});
 
 export const TodoList = createComponent((): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
@@ -17,6 +36,7 @@ export const TodoList = createComponent((): WElement<HTMLElement> => {
       return <TodoListItem item={item} />
   });
 
+
   return (
       <div>
         <h2>
@@ -25,12 +45,7 @@ export const TodoList = createComponent((): WElement<HTMLElement> => {
         <p>
           {$(() => model.getItems().length)} items
         </p>
-        <button onclick={() => model.duplicate()}>
-          double
-        </button>
-        <button onclick={() => model.clearItems()}>
-          clear
-        </button>
+        <TodoListControls model={model} />
         <TodoItemInput />
         <If condition={() => model.getItems().length > 0}
             true={br}

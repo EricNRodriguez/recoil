@@ -32,6 +32,7 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
   let currentRenderedState: boolean;
   let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
   const ref = runEffect((): void => {
+    console.log("condition rerunning!");
     const state: boolean = isAtom(condition)
       ? (condition as IAtom<boolean>).get()
       : (condition as Supplier<boolean>)();
