@@ -169,7 +169,15 @@ export const deriveState = apiFunctionBuilder.build(
   }
 );
 
-export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
+export type RunEffectSignature = (effect: Runnable, priority: number) => ISideEffectRef;
+
+export enum EffectPriority {
+  MAJOR=0,
+  HIGH=1,
+  MEDIUM=2,
+  LOW=3,
+  MINOR=4,
+}
 
 /**
  * A factory method for a tracked side effect
@@ -188,7 +196,7 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  * @returns A reference to the side effect (see the above doc)
  */
 export const runEffect: RunEffectSignature = apiFunctionBuilder.build(
-  (effect: Runnable, priority: number = Number.POSITIVE_INFINITY): ISideEffectRef => {
+  (effect: Runnable, priority: EffectPriority = EffectPriority.MINOR): ISideEffectRef => {
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,

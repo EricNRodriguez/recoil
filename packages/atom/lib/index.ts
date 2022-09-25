@@ -5,6 +5,7 @@ export {
   derivedState,
   deriveState,
   createState,
+  EffectPriority,
   runEffect,
   fetchState,
   registerDecorator,

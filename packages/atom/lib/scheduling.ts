@@ -29,7 +29,7 @@ type EffectSchedulerState = LazyBatchUpdateState | EagerUpdateState;
 export class BatchingEffectScheduler implements IEffectScheduler {
   private state: EffectSchedulerState = { kind: StateKind.EAGER };
 
-  public schedule(effect: Runnable, priority: number = Number.POSITIVE_INFINITY): void {
+  public schedule(effect: Runnable, priority: number): void {
     switch (this.state.kind) {
       case StateKind.BATCH:
         this.scheduleBatchedUpdate(effect, priority);
@@ -78,7 +78,8 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       return;
     }
 
-    while (this.state.scheduler.size > 0) {
+    // TODO(ericr): look further into why this is required
+    while (this.state.scheduler !== undefined && this.state.scheduler.size > 0) {
       const key = this.state.scheduler.pop();
       if (key === undefined) {
         throw Error("undefined key returned for nonempty min heap");
@@ -99,7 +100,7 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       throw new Error("batchupdater in invalid state - scheduleBatchedUpdate outside of batch state");
     }
 
-    this.state.nUpdates++;
+    this.state.nUpdates = this.state.nUpdates + 1;
     this.state.updates.set(this.state.nUpdates, effect);
     this.state.scheduler.push(this.state.nUpdates, priority);
   }
