@@ -1,5 +1,6 @@
 import { Runnable } from "shared";
-import { IEffectScheduler } from "./atom";
+import { IEffectScheduler, IUpdateExecutor } from "./atom";
+import { b } from "recoiljs-dom-dsl";
 
 enum StateKind {
   BATCH = "batch",
@@ -64,5 +65,22 @@ export class BatchingEffectScheduler implements IEffectScheduler {
 
   private scheduleEagerUpdate(update: Runnable): void {
     update();
+  }
+}
+
+export class UpdateExecutor implements IUpdateExecutor {
+  private readonly batchingEffectScheduler: BatchingEffectScheduler;
+
+  public constructor(batchingEffectScheduler: BatchingEffectScheduler) {
+    this.batchingEffectScheduler = batchingEffectScheduler;
+  }
+
+  public executeAtomicUpdate(job: Runnable): void {
+    this.batchingEffectScheduler.enterBatchState();
+    try {
+      job();
+    } finally {
+      this.batchingEffectScheduler.exitBatchedState();
+    }
   }
 }
