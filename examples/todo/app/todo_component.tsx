@@ -26,7 +26,10 @@ export const TodoList = createComponent((): WElement<HTMLElement> => {
           {$(() => model.getItems().length)} items
         </p>
         <button onclick={() => model.duplicate()}>
-          double!
+          double
+        </button>
+        <button onclick={() => model.clearItems()}>
+          clear
         </button>
         <TodoItemInput />
         <If condition={() => model.getItems().length > 0}
