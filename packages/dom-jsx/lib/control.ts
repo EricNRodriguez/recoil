@@ -1,28 +1,9 @@
 import { forEach, ifElse, IndexedItem, match } from "recoiljs-dom-dsl";
-import { IAtom, isAtom, runEffect } from "recoiljs-atom";
-import { frag, th } from "recoiljs-dom-dsl";
-import { createFragment, WElement, WNode } from "recoiljs-dom";
-import { Component } from "./jsx";
-import { Producer, Supplier, Function } from "shared";
+import { IAtom } from "recoiljs-atom";
+import { frag } from "recoiljs-dom-dsl";
+import { createFragment, WNode } from "recoiljs-dom";
+import { Supplier, Function } from "shared";
 import { notNullOrUndefined } from "shared";
-
-export type SupplyProps = {
-  getChild: Producer<WNode<Node>>;
-};
-
-export const Supply: Component<SupplyProps, [], WNode<Node>> = (
-  props: SupplyProps
-): WNode<Node> => {
-  const node = frag();
-
-  const ref = runEffect((): void => {
-    node.setChildren([props.getChild()]);
-  });
-  node.registerOnMountHook(() => ref.activate());
-  node.registerOnUnmountHook(() => ref.deactivate());
-
-  return node;
-};
 
 export type ForProps<T> = {
   items: Supplier<IndexedItem<T>[]>;
