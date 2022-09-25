@@ -72,11 +72,15 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     // sync mount status of new children to this dom node
     newChildren.forEach((nc: WNode<Node>): void => {
       nc.setParent(this);
-      this.syncMountStatusOfChild(nc);
     });
+
+    const syncMountStatusOfNewChildren = () => {
+      newChildren.forEach((c) => this.syncMountStatusOfChild(c));
+    };
 
     if (this.isFragment()) {
       this.getParent()?.rebindChildren();
+      syncMountStatusOfNewChildren();
       return this as unknown as B;
     }
 
@@ -86,6 +90,7 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
       newNodes: this.getUnpackedChildren(),
     });
 
+    syncMountStatusOfNewChildren();
     return this as unknown as B;
   }
 

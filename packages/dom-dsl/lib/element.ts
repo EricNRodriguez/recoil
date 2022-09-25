@@ -201,7 +201,6 @@ export const summary = createDslElementHelper("summary");
 export const audio = createDslElementHelper("audio");
 export const img = createDslElementHelper("img");
 
-
 export const frag = (...children: WNode<Node>[]): WNode<Node> =>
   createFragment(children);
 
