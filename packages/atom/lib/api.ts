@@ -10,7 +10,6 @@ import { F, FDecorator, Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
 import { BatchingEffectScheduler, UpdateExecutor } from "./scheduling";
 import { DecoratableApiFunctionBuilder } from "shared";
-import {tr} from "recoiljs-dom-dsl";
 
 /**
  * A shared tracking component for all atoms created through this api

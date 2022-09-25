@@ -8,7 +8,7 @@ import {
   Consumer,
 } from "shared";
 import { WElement, WNode } from "recoiljs-dom";
-import { ISideEffectRef, EffectPriority } from "recoiljs-atom";
+import {ISideEffectRef, EffectPriority, runBatched} from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import { defer, execute } from "./defer";
 
@@ -88,9 +88,14 @@ export const createComponent = apiFunctionBuilder.build(
   <Args extends unknown[], ReturnNode extends WNode<Node>>(
     component: F<Args, ReturnNode>
   ) => {
+    // enter new DI child scope
     return scopeManager.withChildScope((...args: [...Args]) => {
-      return execute(() => {
-        return component(...args);
+      // enter atomic batch, allowing effects to be scheduled during creation
+      return runBatched(() => {
+        // run and apply all deferred callbacks to the return node
+        return execute(() => {
+          return component(...args);
+        });
       });
     });
   }
