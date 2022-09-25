@@ -9,6 +9,8 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
   private readonly children: WNode<Node>[] = [];
   private readonly onMountHooks: Set<Runnable> = new Set<Runnable>();
   private readonly onUnmountHooks: Set<Runnable> = new Set<Runnable>();
+  private readonly onCleanupHooks: Set<Runnable> = new Set<Runnable>();
+
   private currentlyMounted: boolean = false;
 
   protected constructor(node: A) {
@@ -143,6 +145,18 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
     this.onUnmountHooks.add(hook);
 
     return this as unknown as B;
+  }
+
+  public registerOnCleanupHook(hook: Runnable): B {
+    this.onCleanupHooks.add(hook);
+
+    return this as unknown as B;
+  }
+
+  public cleanup(): void {
+    this.onCleanupHooks.forEach((h) => h());
+
+    this.children.forEach((c) => c.cleanup());
   }
 
   public unwrap(): A {
