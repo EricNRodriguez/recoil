@@ -3,6 +3,7 @@ import { Function, Supplier } from "shared";
 import { createFragment } from "recoiljs-dom";
 import { runEffect } from "recoiljs-atom";
 import { notNullOrUndefined } from "shared";
+import {runRenderEffect} from "../binding/dom";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
@@ -25,7 +26,7 @@ export const forEach = <T extends Object>(
 
   let currentItemIndex: Map<string, WNode<Node>> = new Map();
 
-  const ref = runEffect((): void => {
+  const ref = runRenderEffect((): void => {
     const newItems: IndexedItem<T>[] = items();
     const newItemOrder: string[] = newItems.map(getKey);
     const newItemNodesIndex: Map<string, WNode<Node>> = new Map(

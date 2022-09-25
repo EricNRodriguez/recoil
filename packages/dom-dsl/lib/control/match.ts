@@ -1,6 +1,7 @@
 import { IAtom, runEffect } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
 import { WDerivationCache, Function } from "shared";
+import {runRenderEffect} from "../binding/dom";
 
 export type MatchProps<T> = {
   state: IAtom<T>;
@@ -16,7 +17,7 @@ export const match = <T extends Object>(props: MatchProps<T>): WNode<Node> => {
   );
 
   let prevState: T;
-  const ref = runEffect((): void => {
+  const ref = runRenderEffect((): void => {
     if (prevState === state.get()) {
       return;
     }

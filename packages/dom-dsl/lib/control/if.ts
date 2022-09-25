@@ -1,6 +1,7 @@
 import { IAtom, isAtom, runEffect } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
 import { Supplier, WDerivationCache } from "shared";
+import {runRenderEffect} from "../binding/dom";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
@@ -31,7 +32,7 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
 
   let currentRenderedState: boolean;
   let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
-  const ref = runEffect((): void => {
+  const ref = runRenderEffect((): void => {
     const state: boolean = isAtom(condition)
       ? (condition as IAtom<boolean>).get()
       : (condition as Supplier<boolean>)();
