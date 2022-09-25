@@ -1,6 +1,5 @@
 import { Runnable } from "shared";
 import { IEffectScheduler, IUpdateExecutor } from "./atom";
-import { b } from "recoiljs-dom-dsl";
 
 enum StateKind {
   BATCH = "batch",
