@@ -2,7 +2,7 @@
 
 import {createState, deriveState, IAtom, IMutableAtom, isAtom, runBatched, runUntracked} from "recoiljs-atom";
 import {button, div, h3, hr} from "recoiljs-dom-dsl";
-import {createTextNode, WElement, WNode} from "recoiljs-dom";
+import {WElement, WNode} from "recoiljs-dom";
 import {createComponent, runMountedEffect} from "recoiljs-component";
 import {jsx, $} from "recoiljs-dom-jsx";
 
