@@ -40,6 +40,15 @@ export class BatchingEffectScheduler implements IEffectScheduler {
     }
   }
 
+  public executeAsBatch(job: Runnable): void {
+    try {
+      this.enterBatchState();
+      job();
+    } finally {
+      this.exitBatchedState();
+    }
+  }
+
   public enterBatchState(): void {
     if (this.state.kind === StateKind.BATCH) {
       this.state.depth++;
@@ -83,11 +92,6 @@ export class UpdateExecutor implements IUpdateExecutor {
   }
 
   public executeAtomicUpdate(job: Runnable): void {
-    this.batchingEffectScheduler.enterBatchState();
-    try {
-      job();
-    } finally {
-      this.batchingEffectScheduler.exitBatchedState();
-    }
+    this.batchingEffectScheduler.executeAsBatch(job);
   }
 }

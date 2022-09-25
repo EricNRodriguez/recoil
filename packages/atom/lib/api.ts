@@ -281,11 +281,4 @@ export const runUntracked = <T>(job: Producer<T>): T => {
  *
  * @param job The job to be run in a batched state, with all effects running after the job completes.
  */
-export const runBatched = (job: Runnable): void => {
-  try {
-    globalEffectScheduler.enterBatchState();
-    job();
-  } finally {
-    globalEffectScheduler.exitBatchedState();
-  }
-};
+export const runBatched = (job: Runnable): void => globalEffectScheduler.executeAsBatch(job);
