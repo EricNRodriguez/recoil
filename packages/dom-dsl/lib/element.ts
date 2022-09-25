@@ -7,7 +7,7 @@ import {
   WNode,
 } from "recoiljs-dom";
 import { deriveState, IAtom, isAtom } from "recoiljs-atom";
-import { wrapTextInWNode } from "recoiljs-dom/lib/util";
+import { wrapTextInWNode } from "recoiljs-dom";
 import { nullOrUndefined, Supplier } from "shared";
 import { bindProps } from "./binding/dom";
 import { Children, Props } from "recoiljs-dom";
@@ -53,7 +53,7 @@ export type ElementBuilder<K extends keyof HTMLElementTagNameMap> =
     EmptyElementBuilder<K>;
 
 // prettier-ignore
-const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
+const createDslElementHelper = <K extends keyof HTMLElementTagNameMap>(
   tag: K
 ): ElementBuilder<K> => {
   return (
@@ -87,115 +87,120 @@ const createDslElementBuilder = <K extends keyof HTMLElementTagNameMap>(
 };
 
 // main root
-export const html = createDslElementBuilder("html");
+export const html = createDslElementHelper("html");
 
 // document metadata
-export const base = createDslElementBuilder("base");
-export const head = createDslElementBuilder("head");
-export const link = createDslElementBuilder("link");
-export const meta = createDslElementBuilder("meta");
-export const style = createDslElementBuilder("style");
-export const title = createDslElementBuilder("title");
+export const base = createDslElementHelper("base");
+export const head = createDslElementHelper("head");
+export const link = createDslElementHelper("link");
+export const meta = createDslElementHelper("meta");
+export const style = createDslElementHelper("style");
+export const title = createDslElementHelper("title");
 
 // content sectioning
-export const body = createDslElementBuilder("body");
-export const address = createDslElementBuilder("address");
-export const article = createDslElementBuilder("article");
-export const aside = createDslElementBuilder("aside");
-export const footer = createDslElementBuilder("footer");
-export const header = createDslElementBuilder("header");
-export const h1 = createDslElementBuilder("h1");
-export const h2 = createDslElementBuilder("h2");
-export const h3 = createDslElementBuilder("h3");
-export const h4 = createDslElementBuilder("h4");
-export const h5 = createDslElementBuilder("h5");
-export const h6 = createDslElementBuilder("h6");
-export const main = createDslElementBuilder("main");
-export const nav = createDslElementBuilder("nav");
-export const section = createDslElementBuilder("section");
+export const body = createDslElementHelper("body");
+export const address = createDslElementHelper("address");
+export const article = createDslElementHelper("article");
+export const aside = createDslElementHelper("aside");
+export const footer = createDslElementHelper("footer");
+export const header = createDslElementHelper("header");
+export const h1 = createDslElementHelper("h1");
+export const h2 = createDslElementHelper("h2");
+export const h3 = createDslElementHelper("h3");
+export const h4 = createDslElementHelper("h4");
+export const h5 = createDslElementHelper("h5");
+export const h6 = createDslElementHelper("h6");
+export const main = createDslElementHelper("main");
+export const nav = createDslElementHelper("nav");
+export const section = createDslElementHelper("section");
 
 // text content
-export const blockquote = createDslElementBuilder("blockquote");
-export const dd = createDslElementBuilder("dd");
-export const div = createDslElementBuilder("div");
-export const dl = createDslElementBuilder("dl");
-export const dt = createDslElementBuilder("dt");
-export const figcaption = createDslElementBuilder("figcaption");
-export const figure = createDslElementBuilder("figure");
-export const hr = createDslElementBuilder("hr");
-export const li = createDslElementBuilder("li");
-export const menu = createDslElementBuilder("menu");
-export const ol = createDslElementBuilder("ol");
-export const p = createDslElementBuilder("p");
-export const pre = createDslElementBuilder("pre");
-export const ul = createDslElementBuilder("ul");
+export const blockquote = createDslElementHelper("blockquote");
+export const dd = createDslElementHelper("dd");
+export const div = createDslElementHelper("div");
+export const dl = createDslElementHelper("dl");
+export const dt = createDslElementHelper("dt");
+export const figcaption = createDslElementHelper("figcaption");
+export const figure = createDslElementHelper("figure");
+export const hr = createDslElementHelper("hr");
+export const li = createDslElementHelper("li");
+export const menu = createDslElementHelper("menu");
+export const ol = createDslElementHelper("ol");
+export const p = createDslElementHelper("p");
+export const pre = createDslElementHelper("pre");
+export const ul = createDslElementHelper("ul");
 
 // inline text semantics
-export const a = createDslElementBuilder("a");
-export const abbr = createDslElementBuilder("abbr");
-export const b = createDslElementBuilder("b");
-export const bdi = createDslElementBuilder("bdi");
-export const bdo = createDslElementBuilder("bdo");
-export const br = createDslElementBuilder("br");
-export const cite = createDslElementBuilder("cite");
-export const code = createDslElementBuilder("code");
-export const data = createDslElementBuilder("data");
-export const dfn = createDslElementBuilder("dfn");
-export const em = createDslElementBuilder("em");
-export const i = createDslElementBuilder("i");
-export const kbd = createDslElementBuilder("kbd");
-export const mark = createDslElementBuilder("mark");
-export const q = createDslElementBuilder("q");
-export const rp = createDslElementBuilder("rp");
-export const rt = createDslElementBuilder("rt");
-export const ruby = createDslElementBuilder("ruby");
-export const s = createDslElementBuilder("s");
-export const samp = createDslElementBuilder("samp");
-export const small = createDslElementBuilder("small");
-export const span = createDslElementBuilder("span");
-export const string = createDslElementBuilder("strong");
-export const sub = createDslElementBuilder("sub");
-export const sup = createDslElementBuilder("sup");
-export const time = createDslElementBuilder("time");
-export const mvar = createDslElementBuilder("var");
-export const wbr = createDslElementBuilder("wbr");
+export const a = createDslElementHelper("a");
+export const abbr = createDslElementHelper("abbr");
+export const b = createDslElementHelper("b");
+export const bdi = createDslElementHelper("bdi");
+export const bdo = createDslElementHelper("bdo");
+export const br = createDslElementHelper("br");
+export const cite = createDslElementHelper("cite");
+export const code = createDslElementHelper("code");
+export const data = createDslElementHelper("data");
+export const dfn = createDslElementHelper("dfn");
+export const em = createDslElementHelper("em");
+export const i = createDslElementHelper("i");
+export const kbd = createDslElementHelper("kbd");
+export const mark = createDslElementHelper("mark");
+export const q = createDslElementHelper("q");
+export const rp = createDslElementHelper("rp");
+export const rt = createDslElementHelper("rt");
+export const ruby = createDslElementHelper("ruby");
+export const s = createDslElementHelper("s");
+export const samp = createDslElementHelper("samp");
+export const small = createDslElementHelper("small");
+export const span = createDslElementHelper("span");
+export const string = createDslElementHelper("strong");
+export const sub = createDslElementHelper("sub");
+export const sup = createDslElementHelper("sup");
+export const time = createDslElementHelper("time");
+export const mvar = createDslElementHelper("var");
+export const wbr = createDslElementHelper("wbr");
 
 // demarcating edits
-export const del = createDslElementBuilder("del");
-export const ins = createDslElementBuilder("ins");
+export const del = createDslElementHelper("del");
+export const ins = createDslElementHelper("ins");
 
 // table content
-export const caption = createDslElementBuilder("caption");
-export const col = createDslElementBuilder("col");
-export const colgroup = createDslElementBuilder("colgroup");
-export const table = createDslElementBuilder("table");
-export const tbody = createDslElementBuilder("tbody");
-export const td = createDslElementBuilder("td");
-export const tfoot = createDslElementBuilder("tfoot");
-export const th = createDslElementBuilder("th");
-export const thead = createDslElementBuilder("thead");
-export const tr = createDslElementBuilder("tr");
+export const caption = createDslElementHelper("caption");
+export const col = createDslElementHelper("col");
+export const colgroup = createDslElementHelper("colgroup");
+export const table = createDslElementHelper("table");
+export const tbody = createDslElementHelper("tbody");
+export const td = createDslElementHelper("td");
+export const tfoot = createDslElementHelper("tfoot");
+export const th = createDslElementHelper("th");
+export const thead = createDslElementHelper("thead");
+export const tr = createDslElementHelper("tr");
 
 // forms
-export const button = createDslElementBuilder("button");
-export const datalist = createDslElementBuilder("datalist");
-export const fieldset = createDslElementBuilder("fieldset");
-export const form = createDslElementBuilder("form");
-export const input = createDslElementBuilder("input");
-export const label = createDslElementBuilder("label");
-export const legend = createDslElementBuilder("legend");
-export const meter = createDslElementBuilder("meter");
-export const optgroup = createDslElementBuilder("optgroup");
-export const option = createDslElementBuilder("option");
-export const output = createDslElementBuilder("output");
-export const progress = createDslElementBuilder("progress");
-export const select = createDslElementBuilder("select");
-export const textarea = createDslElementBuilder("textarea");
+export const button = createDslElementHelper("button");
+export const datalist = createDslElementHelper("datalist");
+export const fieldset = createDslElementHelper("fieldset");
+export const form = createDslElementHelper("form");
+export const input = createDslElementHelper("input");
+export const label = createDslElementHelper("label");
+export const legend = createDslElementHelper("legend");
+export const meter = createDslElementHelper("meter");
+export const optgroup = createDslElementHelper("optgroup");
+export const option = createDslElementHelper("option");
+export const output = createDslElementHelper("output");
+export const progress = createDslElementHelper("progress");
+export const select = createDslElementHelper("select");
+export const textarea = createDslElementHelper("textarea");
 
 // interactive
-export const details = createDslElementBuilder("details");
-export const dialog = createDslElementBuilder("dialog");
-export const summary = createDslElementBuilder("summary");
+export const details = createDslElementHelper("details");
+export const dialog = createDslElementHelper("dialog");
+export const summary = createDslElementHelper("summary");
+
+// media
+export const audio = createDslElementHelper("audio");
+export const img = createDslElementHelper("img");
+
 
 export const frag = (...children: WNode<Node>[]): WNode<Node> =>
   createFragment(children);

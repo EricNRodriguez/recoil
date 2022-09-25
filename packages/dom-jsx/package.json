@@ -36,7 +36,6 @@
     "shared": "*"
   },
   "peerDependencies": {
-    "recoiljs-atom": "*",
-    "recoiljs-dom": "*"
+    "recoiljs-atom": "*"
   }
 }

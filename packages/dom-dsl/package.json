@@ -26,8 +26,7 @@
     "shared": "../shared"
   },
   "peerDependencies": {
-    "recoiljs-atom": "*",
-    "recoiljs-dom": "*"
+    "recoiljs-atom": "*"
   },
   "devDependencies": {
     "recoiljs-atom": "*",
