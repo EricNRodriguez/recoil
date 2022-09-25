@@ -1,6 +1,5 @@
 import { nullOrUndefined } from "shared";
 
-
 /**
  * ISC License
  *
@@ -32,10 +31,10 @@ const frag: DocumentFragment = document.createDocumentFragment();
 // and
 // https://github.com/WebReflection/udomdiff/blob/8923d4fac63a40c72006a46eb0af7bfb5fdef282/index.js
 export const reconcileNodeArrays = ({
-                                      parent,
-                                      currentNodes,
-                                      newNodes,
-                                    }: ReconcileNodeArraysArgs) => {
+  parent,
+  currentNodes,
+  newNodes,
+}: ReconcileNodeArraysArgs) => {
   let curLeft: number = 0;
   let curRight: number = currentNodes.length;
 
@@ -118,7 +117,6 @@ export const reconcileNodeArrays = ({
         ++curLeft;
         ++newLeft;
       }
-
     } else {
       (currentNodes[curLeft] as any).remove();
       ++curLeft;
@@ -130,7 +128,7 @@ export const reconcileNodeArrays = ({
       curLeft < curRight &&
       newLeft < newRight &&
       currentNodes[curLeft] === newNodes[newLeft]
-      ) {
+    ) {
       ++curLeft;
       ++newLeft;
     }
@@ -141,7 +139,7 @@ export const reconcileNodeArrays = ({
       curRight > curLeft &&
       newRight > newLeft &&
       currentNodes[curRight - 1] === newNodes[newRight - 1]
-      ) {
+    ) {
       --curRight;
       --newRight;
     }

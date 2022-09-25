@@ -90,7 +90,6 @@ export abstract class BaseWNode<A extends Node, B extends BaseWNode<A, B>> {
       newNodes: this.getUnpackedChildren(),
     });
 
-
     syncMountStatusOfNewChildren();
     return this as unknown as B;
   }
