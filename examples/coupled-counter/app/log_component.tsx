@@ -4,6 +4,7 @@ import {WElement, WNode} from "recoiljs-dom";
 import {loggerInjectionKey} from "./constant";
 import {jsx, $, For} from "recoiljs-dom-jsx";
 import {inject, runMountedEffect, createComponent} from "recoiljs-component";
+import {EffectPriority} from "recoiljs-atom";
 
 export const Log = createComponent((): WElement<HTMLElement> => {
   return (
@@ -18,14 +19,12 @@ const LogContent = createComponent((): WElement<HTMLElement> => {
   let container: WElement<HTMLDivElement> | undefined = undefined;
   const logger = inject(loggerInjectionKey)!;
 
+  // explicitly running below the priority of render effects (HIGH)
   runMountedEffect((): void => {
     logger.getLogs();
 
-    // run as a low priority job - i.e. after all the other updates...
-    queueMicrotask((): void => {
-      container!.unwrap().scrollTop = container!.unwrap().scrollHeight;
-    });
-  });
+    container!.unwrap().scrollTop = container!.unwrap().scrollHeight;
+  }, EffectPriority.MINOR);
 
 
   container = (
