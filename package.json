@@ -22,5 +22,8 @@
   },
   "scripts": {
     "format": "prettier '{,!(node_modules)/**/}*.ts' -w"
+  },
+  "dependencies": {
+    "heapify": "^0.6.0"
   }
 }

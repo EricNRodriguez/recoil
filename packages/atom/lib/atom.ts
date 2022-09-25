@@ -69,7 +69,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
 }
 
 export interface IEffectScheduler {
-  schedule(effect: Runnable): void;
+  schedule(effect: Runnable, priority: number): void;
 }
 
 export interface IUpdateExecutor {
@@ -273,6 +273,7 @@ type SideEffectState =
 
 export class SideEffect {
   private readonly effect: Runnable;
+  private readonly priority: number;
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
@@ -281,15 +282,17 @@ export class SideEffect {
   constructor(
     effect: Runnable,
     context: AtomTrackingContext,
-    effectScheduler: IEffectScheduler
+    effectScheduler: IEffectScheduler,
+    priority: number,
   ) {
     this.effect = effect;
     this.context = context;
     this.effectScheduler = effectScheduler;
+    this.priority = priority;
   }
 
   public run() {
-    this.effectScheduler.schedule(this.runScoped);
+    this.effectScheduler.schedule(this.runScoped, this.priority);
   }
 
   private runScoped = (): void => {

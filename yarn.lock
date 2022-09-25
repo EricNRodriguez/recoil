@@ -4285,6 +4285,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"heapify@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "heapify@npm:0.6.0"
+  checksum: 68c5b411850dff7381c60ab69fb4ae4f175b80c64d35b9d2bb70af01a8bcc6aecb0d9ac92971eefc330904c11ad40bb9e4c99e32776f0c1d79da2cdbb13150f6
+  languageName: node
+  linkType: hard
+
 "hosted-git-info@npm:^2.1.4":
   version: 2.8.9
   resolution: "hosted-git-info@npm:2.8.9"
@@ -6592,6 +6599,7 @@ __metadata:
     "@rollup/plugin-node-resolve": ^13.3.0
     "@rollup/plugin-typescript": ^8.4.0
     esbuild: ^0.15.6
+    heapify: ^0.6.0
     lerna: ^5.5.1
     rollup: ^2.79.0
     rollup-plugin-dts: ^4.2.2
@@ -6970,22 +6978,22 @@ __metadata:
 
 "shared@file:../shared::locator=recoiljs-atom%40workspace%3Apackages%2Fatom":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=e7c4a7&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
-  checksum: 8a4923264f692382ca1939a3729fa1118f52fa674ef4230a2b884ad779d62b9910d4687d558f8a2f928e2235c63cf7e5ef65c3b40e6595483ee748674c644639
+  resolution: "shared@file:../shared#../shared::hash=330b64&locator=recoiljs-atom%40workspace%3Apackages%2Fatom"
+  checksum: 1f60fc99f70c606c368b03ab682565d616e92df8d4ac8e1dd00a127e9a275233fe96342d552f23b926277bedf06ee19c93556d3731abeba46d685928869f6795
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-component%40workspace%3Apackages%2Fcomponent":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=e7c4a7&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
-  checksum: 8a4923264f692382ca1939a3729fa1118f52fa674ef4230a2b884ad779d62b9910d4687d558f8a2f928e2235c63cf7e5ef65c3b40e6595483ee748674c644639
+  resolution: "shared@file:../shared#../shared::hash=330b64&locator=recoiljs-component%40workspace%3Apackages%2Fcomponent"
+  checksum: 1f60fc99f70c606c368b03ab682565d616e92df8d4ac8e1dd00a127e9a275233fe96342d552f23b926277bedf06ee19c93556d3731abeba46d685928869f6795
   languageName: node
   linkType: hard
 
 "shared@file:../shared::locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl":
   version: 0.0.0
-  resolution: "shared@file:../shared#../shared::hash=e7c4a7&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
-  checksum: 8a4923264f692382ca1939a3729fa1118f52fa674ef4230a2b884ad779d62b9910d4687d558f8a2f928e2235c63cf7e5ef65c3b40e6595483ee748674c644639
+  resolution: "shared@file:../shared#../shared::hash=330b64&locator=recoiljs-dom-dsl%40workspace%3Apackages%2Fdom-dsl"
+  checksum: 1f60fc99f70c606c368b03ab682565d616e92df8d4ac8e1dd00a127e9a275233fe96342d552f23b926277bedf06ee19c93556d3731abeba46d685928869f6795
   languageName: node
   linkType: hard
 

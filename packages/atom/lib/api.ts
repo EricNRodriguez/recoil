@@ -108,7 +108,8 @@ export const fetchState = apiFunctionBuilder.build(
     const ref = new SideEffect(
       sideEffectRunnable,
       globalTrackingContext,
-      globalEffectScheduler
+      globalEffectScheduler,
+      Number.POSITIVE_INFINITY
     );
     ref.run();
 
@@ -187,11 +188,12 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  * @returns A reference to the side effect (see the above doc)
  */
 export const runEffect: RunEffectSignature = apiFunctionBuilder.build(
-  (effect: Runnable): ISideEffectRef => {
+  (effect: Runnable, priority: number = Number.POSITIVE_INFINITY): ISideEffectRef => {
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,
-      globalEffectScheduler
+      globalEffectScheduler,
+      priority,
     );
 
     sideEffect.run();
