@@ -49,3 +49,9 @@ export const createTextNode = (text: string): WNode<Text> => {
   node.setProperty("textContent", text);
   return node;
 };
+
+export const runApp = (anchor: HTMLElement, app: WNode<Node>): void => {
+  wrapElement(anchor)
+    .bindScopeToWrappedNode()
+    .setChildren([app]);
+};

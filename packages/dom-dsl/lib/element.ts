@@ -7,7 +7,7 @@ import {
   WNode,
 } from "recoiljs-dom";
 import { deriveState, IAtom, isAtom } from "recoiljs-atom";
-import { wrapTextInWNode } from "recoiljs-dom/lib/util";
+import { wrapTextInWNode } from "recoiljs-dom";
 import { nullOrUndefined, Supplier } from "shared";
 import { bindProps } from "./binding/dom";
 import { Children, Props } from "recoiljs-dom";
