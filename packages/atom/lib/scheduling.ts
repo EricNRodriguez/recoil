@@ -78,8 +78,8 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       return;
     }
 
-    // TODO(ericr): look further into why this is required
-    while (this.state.scheduler !== undefined && this.state.scheduler.size > 0) {
+    const effects: Runnable[] = [];
+    while (this.state.scheduler.size > 0) {
       const key = this.state.scheduler.pop();
       if (key === undefined) {
         throw Error("undefined key returned for nonempty min heap");
@@ -89,10 +89,12 @@ export class BatchingEffectScheduler implements IEffectScheduler {
         throw Error("unknown key returned from effect scheduler");
       }
 
-      this.state.updates.get(key)!();
+      effects.push(this.state.updates.get(key)!)
     }
 
     this.state = { kind: StateKind.EAGER };
+
+    effects.forEach((e) => e());
   }
 
   private scheduleBatchedUpdate(effect: Runnable, priority: number): void {
