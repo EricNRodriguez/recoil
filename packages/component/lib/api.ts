@@ -37,6 +37,10 @@ export const onUnmount = (fn: Runnable): void => {
   defer((node) => node.registerOnUnmountHook(fn));
 };
 
+export const onCleanup = (fn: Runnable): void => {
+    defer((node) => node.registerOnCleanupHook(fn));
+};
+
 /**
  * Runs a side effect against the dom subtree enclosed by this component
  *
