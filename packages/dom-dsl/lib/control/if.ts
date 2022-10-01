@@ -36,6 +36,7 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
     }
 
     currentRenderedState = state;
+    currentRenderedSubtree.cleanup();
     currentRenderedSubtree = state ? ifTrue() : ifFalse!();
 
     anchor.setChildren([

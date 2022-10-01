@@ -15,7 +15,10 @@ export const suspense = (
     anchor.setChildren([props.fallback]);
   }
 
-  child.then((c) => anchor.setChildren([c]));
+  child.then((c) => {
+    anchor.setChildren([c]);
+    props.fallback?.cleanup();
+  });
 
   return anchor;
 };

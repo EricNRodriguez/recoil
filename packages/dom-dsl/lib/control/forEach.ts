@@ -46,6 +46,7 @@ export const forEach = <T extends Object>(
     for (const [key, value] of currentItemIndex) {
       if (!newItemKeys.has(key)) {
         currentItemIndex.delete(key);
+        value.cleanup();
       }
     }
 
