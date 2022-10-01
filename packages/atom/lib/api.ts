@@ -109,7 +109,7 @@ export const fetchState = apiFunctionBuilder.build(
       sideEffectRunnable,
       globalTrackingContext,
       globalEffectScheduler,
-      Number.POSITIVE_INFINITY
+      EffectPriority.MAJOR,
     );
     ref.run();
 
@@ -169,7 +169,7 @@ export const deriveState = apiFunctionBuilder.build(
   }
 );
 
-export type RunEffectSignature = (effect: Runnable, priority: number) => ISideEffectRef;
+export type RunEffectSignature = (effect: Runnable, priority: EffectPriority) => ISideEffectRef;
 
 export enum EffectPriority {
   MAJOR=0,
