@@ -67,7 +67,6 @@ export type dComponentProps = {
 }
 
 const DComponent = createComponent((props: dComponentProps): WElement<HTMLElement> => {
-  console.log("D component running!");
   const logger = inject(loggerInjectionKey)!;
   const {a, b} = props;
 
@@ -83,18 +82,12 @@ const DComponent = createComponent((props: dComponentProps): WElement<HTMLElemen
   onMount(() => runUntracked(() => logger.logMessage("dComponent mounted")));
   onUnmount(() => runUntracked(() => logger.logMessage("dComponent unmounted")));
 
-  const dom = (
+  return (
     <div>
       <h4>d content</h4>
       {$(() => a.get() + b.get())}
     </div>
   );
-
-  dom.registerOnCleanupHook(() => {
-    console.log("d cleaning up");
-  })
-
-  return dom;
 });
 
 export type eComponentProps = {
