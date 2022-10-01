@@ -11,10 +11,7 @@ interface LazyBatchUpdateState {
   kind: StateKind.BATCH;
   // records the depth of batch calls to enable nesting
   depth: number;
-
   nUpdates: number;
-  updates: Map<number, Runnable>;
-  scheduler: MinQueue;
 }
 
 interface EagerUpdateState {
@@ -28,6 +25,12 @@ type EffectSchedulerState = LazyBatchUpdateState | EagerUpdateState;
  */
 export class BatchingEffectScheduler implements IEffectScheduler {
   private state: EffectSchedulerState = { kind: StateKind.EAGER };
+
+  /*
+    The following fields have been pulled out of the batch state object to avoid recreation, making state transitions cheap.
+   */
+  private readonly updates: Map<number, Runnable> = new Map();
+  private readonly scheduler: MinQueue = new MinQueue();
 
   public schedule(effect: Runnable, priority: number): void {
     switch (this.state.kind) {
@@ -63,9 +66,12 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       kind: StateKind.BATCH,
       depth: 1,
       nUpdates: 0,
-      updates: new Map(),
-      scheduler: new MinQueue(),
     };
+
+    if (this.updates.size > 0 || this.scheduler.size > 0) {
+      throw new Error("BatchingEffectScheduler in invalid state : updates map and scheduler objects should be empty when entering a batch state");
+    }
+
   }
 
   public exitBatchedState(): void {
@@ -79,20 +85,23 @@ export class BatchingEffectScheduler implements IEffectScheduler {
     }
 
     const effects: Runnable[] = [];
-    while (this.state.scheduler.size > 0) {
-      const key = this.state.scheduler.pop();
+    while (this.scheduler.size > 0) {
+      const key = this.scheduler.pop();
       if (key === undefined) {
         throw Error("undefined key returned for nonempty min heap");
       }
 
-      if (!this.state.updates.has(key)) {
+      if (!this.updates.has(key)) {
         throw Error("unknown key returned from effect scheduler");
       }
 
-      effects.push(this.state.updates.get(key)!)
+      effects.push(this.updates.get(key)!)
     }
 
     this.state = { kind: StateKind.EAGER };
+
+    this.updates.clear();
+    this.scheduler.clear();
 
     effects.forEach((e) => e());
   }
@@ -103,8 +112,8 @@ export class BatchingEffectScheduler implements IEffectScheduler {
     }
 
     this.state.nUpdates = this.state.nUpdates + 1;
-    this.state.updates.set(this.state.nUpdates, effect);
-    this.state.scheduler.push(this.state.nUpdates, priority);
+    this.updates.set(this.state.nUpdates, effect);
+    this.scheduler.push(this.state.nUpdates, priority);
   }
 
   private scheduleEagerUpdate(effect: Runnable): void {
