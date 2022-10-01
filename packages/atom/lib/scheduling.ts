@@ -110,7 +110,7 @@ export class BatchingEffectScheduler implements IEffectScheduler {
   }
 }
 
-export class UpdateExecutor implements IUpdateExecutor {
+export class BatchingUpdateExecutor implements IUpdateExecutor {
   private readonly batchingEffectScheduler: BatchingEffectScheduler;
 
   public constructor(batchingEffectScheduler: BatchingEffectScheduler) {
