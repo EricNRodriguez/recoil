@@ -3,7 +3,7 @@
 import {WElement, WNode} from "recoiljs-dom";
 import {loggerInjectionKey} from "./constant";
 import {jsx, $, For} from "recoiljs-dom-jsx";
-import {inject, runMountedEffect, createComponent, onInitialMount} from "recoiljs-component";
+import {inject, runMountedEffect, createComponent} from "recoiljs-component";
 import {EffectPriority} from "recoiljs-atom";
 
 export const Log = createComponent((): WElement<HTMLElement> => {
@@ -16,30 +16,27 @@ export const Log = createComponent((): WElement<HTMLElement> => {
 });
 
 const LogContent = createComponent((): WElement<HTMLElement> => {
+  let container: WElement<HTMLDivElement> | undefined = undefined;
   const logger = inject(loggerInjectionKey)!;
 
   // explicitly running below the priority of render effects (HIGH)
-  let container = undefined;
-  onInitialMount(() => {
-    container = document.getElementById("logcontentcontainer")!;
-    console.log(container);
-  })
   runMountedEffect((): void => {
     logger.getLogs();
 
-    const container = document.getElementById("logcontentcontainer")!;
-    container.scrollTop = container.scrollHeight;
+    container!.unwrap().scrollTop = container!.unwrap().scrollHeight;
   }, EffectPriority.MINOR);
 
 
-  return (
-    <div className={"log"} onscroll={() => console.log("scrolling!")} id={"logcontentcontainer"}>
+  container = (
+    <div className={"log"} onscroll={() => console.log("scrolling!")}>
       <For
         items={() => logger.getLogs().map((log, idx) => [idx.toString(), [idx, log]])}
         render={([index, content]: [number, string]) => <BlockText content={content} index={index} />}
       />
     </div>
   );
+
+  return container!;
 });
 
 type BlockTextProps = {

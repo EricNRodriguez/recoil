@@ -8,7 +8,7 @@ import {
 import { IAtom } from "./atom.interface";
 import { F, FDecorator, Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
-import { BatchingEffectScheduler, BatchingUpdateExecutor } from "./scheduling";
+import { BatchingEffectScheduler, UpdateExecutor } from "./scheduling";
 import { DecoratableApiFunctionBuilder } from "shared";
 
 /**
@@ -30,7 +30,7 @@ const globalEffectScheduler = new BatchingEffectScheduler();
  * and allows us to use the same logic for priority scheduling of effects for both unit updates
  * and batch updates.
  */
-const globalUpdateExecutor = new BatchingUpdateExecutor(globalEffectScheduler);
+const globalUpdateExecutor = new UpdateExecutor(globalEffectScheduler);
 
 /**
  * A utility that allows runtime decoration of the constructed api functions
