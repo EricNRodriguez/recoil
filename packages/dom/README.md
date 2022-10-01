@@ -47,6 +47,7 @@ const createTextNode = (text: string): WNode<Text>;
 # WElement/WNode Interface
 
 ```ts
+import {Runnable} from "shared";
 
 interface WNode<T extends Node> {
   /**
@@ -65,7 +66,7 @@ interface WNode<T extends Node> {
   registerOnMountHook(hook: Runnable): WNode<T>;
 
   /**
-   * Binds the scope of the wrapper to the internal node such that if the wrapped node is in scope, 
+   * Binds the scope of the wrapper to the internal node such that if the wrapped node is in scope,
    * so is this wrapper.
    */
   bindScopeToWrappedNode(): WNode<T>;
@@ -76,14 +77,27 @@ interface WNode<T extends Node> {
   getParent(): WNode<Node> | null;
 
   /**
-   * Sets the children nodes. This includes performant dom reconciliation. 
+   * Sets the children nodes. This includes performant dom reconciliation.
    */
   setChildren(children: (WNode<Node> | Node | null | undefined)[]): WNode<T>;
 
   /**
-   * Sets the property of the wrapped dom node to the given value. 
+   * Sets the property of the wrapped dom node to the given value.
    */
   setProperty<V>(prop: string, value: V): WNode<T>;
+
+  /**
+   * Registers a hook to run when the node is no longer in use.
+   */
+  registerOnCleanupHook(hook: Runnable): B;
+
+  /**
+   * Recursively runs cleanup hooks on the subtree.
+   * 
+   * This method is to be called a single time before the node is disposed of. 
+   * After this call, the node is in an invalid state.
+   */
+  cleanup();
 };
 
 
