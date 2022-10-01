@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {WElement, WNode} from "recoiljs-dom";
-import {IAtom, createState, state, runUntracked, IMutableAtom, deriveState} from "recoiljs-atom";
+import {IAtom, createState, state, runUntracked, IMutableAtom, deriveState, runBatched} from "recoiljs-atom";
 import {br, button, div, hr, ifElse, t} from "recoiljs-dom-dsl";
 import {createComponent, runMountedEffect, onMount, onUnmount, onInitialMount, inject, makeLazy} from "recoiljs-component";
 import {Log} from "./log_component";

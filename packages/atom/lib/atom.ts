@@ -20,9 +20,14 @@ abstract class BaseAtom<T> implements IAtom<T> {
   private readonly parents: WeakCollection<ParentAtom> = new WeakCollection<
     DerivedAtom<Object>
   >();
+  protected readonly updateExecutor: IUpdateExecutor;
 
-  protected constructor(context: AtomTrackingContext) {
+  protected constructor(
+    context: AtomTrackingContext,
+    updateExecutor: IUpdateExecutor
+  ) {
     this.context = context;
+    this.updateExecutor = updateExecutor;
   }
 
   abstract get(): T;
@@ -55,19 +60,31 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public map<R>(mutation: Function<T, R>): IAtom<R> {
-    return new VirtualDerivedAtom(this.context, () => mutation(this.get()));
+    return new VirtualDerivedAtom(
+      this.context,
+      () => mutation(this.get()),
+      this.updateExecutor
+    );
   }
 }
 
 export interface IEffectScheduler {
-  schedule(effect: Runnable): void;
+  schedule(effect: Runnable, priority: number): void;
+}
+
+export interface IUpdateExecutor {
+  executeAtomicUpdate(job: Runnable): void;
 }
 
 export class MutableAtom<T> extends BaseAtom<T> implements IMutableAtom<T> {
   private value: T;
 
-  constructor(value: T, context: AtomTrackingContext) {
-    super(context);
+  constructor(
+    value: T,
+    context: AtomTrackingContext,
+    updateExecutor: IUpdateExecutor
+  ) {
+    super(context, updateExecutor);
     this.value = value;
   }
 
@@ -87,11 +104,15 @@ export class MutableAtom<T> extends BaseAtom<T> implements IMutableAtom<T> {
       return;
     }
 
-    this.value = value;
+    // wrapping the update in a callback allows us to
+    // delegate all effect-related logic to the executor
+    this.updateExecutor.executeAtomicUpdate(() => {
+      this.value = value;
 
-    // intentionally kicking AFTER setting, since
-    // we want our effects to run with the new values
-    this.dirty();
+      // intentionally kicking AFTER setting, since
+      // we want our effects to run with the new values
+      this.dirty();
+    });
   }
 
   public update(fn: (val: T) => T): void {
@@ -125,11 +146,17 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
   private readonly derivation: Supplier<T>;
   private readonly tracker: IMutableAtom<boolean>;
+  private readonly updateExecutor: IUpdateExecutor;
 
-  constructor(context: AtomTrackingContext, derivation: Supplier<T>) {
+  constructor(
+    context: AtomTrackingContext,
+    derivation: Supplier<T>,
+    updateExecutor: IUpdateExecutor
+  ) {
     this.context = context;
     this.derivation = derivation;
-    this.tracker = new MutableAtom(false, context);
+    this.tracker = new MutableAtom(false, context, updateExecutor);
+    this.updateExecutor = updateExecutor;
   }
 
   public get(): T {
@@ -151,7 +178,11 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
   }
 
   public map<R>(transform: Function<T, R>): IAtom<R> {
-    return new VirtualDerivedAtom(this.context, () => transform(this.get()));
+    return new VirtualDerivedAtom(
+      this.context,
+      () => transform(this.get()),
+      this.updateExecutor
+    );
   }
 }
 
@@ -161,8 +192,12 @@ export class DerivedAtom<T> extends BaseAtom<T> {
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
 
-  constructor(deriveValue: Producer<T>, context: AtomTrackingContext) {
-    super(context);
+  constructor(
+    deriveValue: Producer<T>,
+    context: AtomTrackingContext,
+    updateExecutor: IUpdateExecutor
+  ) {
+    super(context, updateExecutor);
     this.deriveValue = deriveValue;
   }
 
@@ -238,6 +273,7 @@ type SideEffectState =
 
 export class SideEffect {
   private readonly effect: Runnable;
+  private readonly priority: number;
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
@@ -246,15 +282,17 @@ export class SideEffect {
   constructor(
     effect: Runnable,
     context: AtomTrackingContext,
-    effectScheduler: IEffectScheduler
+    effectScheduler: IEffectScheduler,
+    priority: number,
   ) {
     this.effect = effect;
     this.context = context;
     this.effectScheduler = effectScheduler;
+    this.priority = priority;
   }
 
   public run() {
-    this.effectScheduler.schedule(this.runScoped);
+    this.effectScheduler.schedule(this.runScoped, this.priority);
   }
 
   private runScoped = (): void => {

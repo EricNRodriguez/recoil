@@ -8,7 +8,7 @@ import {
 import { IAtom } from "./atom.interface";
 import { F, FDecorator, Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
-import { BatchingEffectScheduler } from "./effect_scheduler";
+import { BatchingEffectScheduler, BatchingUpdateExecutor } from "./scheduling";
 import { DecoratableApiFunctionBuilder } from "shared";
 
 /**
@@ -20,6 +20,17 @@ const globalTrackingContext = new AtomTrackingContext();
  * A shared side effect scheduler that provides support for batching updates
  */
 const globalEffectScheduler = new BatchingEffectScheduler();
+
+/**
+ * A shared update executor that is used by all mutable atoms in the DAG. Internally
+ * this allows us to inject all effect scheduling logic into atoms and couple them, through
+ * DI alone.
+ *
+ * This implementation will simply execute the update as a batch. The overhead to this is low
+ * and allows us to use the same logic for priority scheduling of effects for both unit updates
+ * and batch updates.
+ */
+const globalUpdateExecutor = new BatchingUpdateExecutor(globalEffectScheduler);
 
 /**
  * A utility that allows runtime decoration of the constructed api functions
@@ -75,7 +86,8 @@ export const fetchState = apiFunctionBuilder.build(
 
     const atom = new MutableAtom<T | undefined>(
       undefined,
-      globalTrackingContext
+      globalTrackingContext,
+      globalUpdateExecutor
     );
 
     const sideEffectRunnable = (): void => {
@@ -96,7 +108,8 @@ export const fetchState = apiFunctionBuilder.build(
     const ref = new SideEffect(
       sideEffectRunnable,
       globalTrackingContext,
-      globalEffectScheduler
+      globalEffectScheduler,
+      EffectPriority.MAJOR,
     );
     ref.run();
 
@@ -116,7 +129,7 @@ export type CreateStateSignature<T> = (value: T) => IMutableAtom<T>;
  */
 export const createState = apiFunctionBuilder.build(
   <T>(value: T): IMutableAtom<T> => {
-    return new MutableAtom(value, globalTrackingContext);
+    return new MutableAtom(value, globalTrackingContext, globalUpdateExecutor);
   }
 );
 
@@ -141,14 +154,30 @@ export type DeriveStateSignature<T> = (derivation: () => T) => IAtom<T>;
 export const deriveState = apiFunctionBuilder.build(
   <T>(deriveValue: Producer<T>, cache: boolean = true): IAtom<T> => {
     if (cache) {
-      return new DerivedAtom(deriveValue, globalTrackingContext);
+      return new DerivedAtom(
+        deriveValue,
+        globalTrackingContext,
+        globalUpdateExecutor
+      );
     } else {
-      return new VirtualDerivedAtom(globalTrackingContext, deriveValue);
+      return new VirtualDerivedAtom(
+        globalTrackingContext,
+        deriveValue,
+        globalUpdateExecutor
+      );
     }
   }
 );
 
-export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
+export type RunEffectSignature = (effect: Runnable, priority: EffectPriority) => ISideEffectRef;
+
+export enum EffectPriority {
+  MAJOR=0,
+  HIGH=1,
+  MEDIUM=2,
+  LOW=3,
+  MINOR=4,
+}
 
 /**
  * A factory method for a tracked side effect
@@ -167,11 +196,12 @@ export type RunEffectSignature = (effect: Runnable) => ISideEffectRef;
  * @returns A reference to the side effect (see the above doc)
  */
 export const runEffect: RunEffectSignature = apiFunctionBuilder.build(
-  (effect: Runnable): ISideEffectRef => {
+  (effect: Runnable, priority: EffectPriority = EffectPriority.MINOR): ISideEffectRef => {
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,
-      globalEffectScheduler
+      globalEffectScheduler,
+      priority,
     );
 
     sideEffect.run();
@@ -194,7 +224,10 @@ export const state = apiFunctionBuilder.build((): void | any => {
     Object.defineProperty(target, propertyKey, {
       set: function (this, newVal: any) {
         if (!registry.has(this)) {
-          registry.set(this, new MutableAtom(newVal, globalTrackingContext));
+          registry.set(
+            this,
+            new MutableAtom(newVal, globalTrackingContext, globalUpdateExecutor)
+          );
         } else {
           registry.get(this)!.set(newVal);
         }
@@ -222,9 +255,13 @@ export const derivedState = apiFunctionBuilder.build((): string | any => {
       if (!registry.has(this)) {
         registry.set(
           this,
-          new DerivedAtom(() => {
-            return originalFn.apply(this, args);
-          }, globalTrackingContext)
+          new DerivedAtom(
+            () => {
+              return originalFn.apply(this, args);
+            },
+            globalTrackingContext,
+            globalUpdateExecutor
+          )
         );
       }
       return registry.get(this)!.get();
@@ -254,11 +291,4 @@ export const runUntracked = <T>(job: Producer<T>): T => {
  *
  * @param job The job to be run in a batched state, with all effects running after the job completes.
  */
-export const runBatched = (job: Runnable): void => {
-  try {
-    globalEffectScheduler.enterBatchState();
-    job();
-  } finally {
-    globalEffectScheduler.exitBatchedState();
-  }
-};
+export const runBatched = <ReturnType>(job: Producer<ReturnType>): ReturnType => globalEffectScheduler.executeAsBatch(job);

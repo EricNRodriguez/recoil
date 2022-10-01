@@ -8,7 +8,7 @@ import {
   Consumer,
 } from "shared";
 import { WElement, WNode } from "recoiljs-dom";
-import { ISideEffectRef } from "recoiljs-atom";
+import {ISideEffectRef, EffectPriority, runBatched} from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import { defer, execute } from "./defer";
 
@@ -44,9 +44,11 @@ export const onUnmount = (fn: Runnable): void => {
  * of the component, preventing unnecessary background updates to the dom.
  *
  * @param sideEffect The side effect that will be re-run every time its deps are dirtied.
+ * @param priority The priority of the effect relative to other effects triggered by the dag update.
+ *                 Effect with lower priority values will be run earlier.
  */
-export const runMountedEffect = (sideEffect: Runnable): void => {
-  const ref: ISideEffectRef = runEffect(sideEffect);
+export const runMountedEffect = (sideEffect: Runnable, priority: EffectPriority = EffectPriority.MINOR): void => {
+  const ref: ISideEffectRef = runEffect(sideEffect, priority);
   defer((node) => node.registerOnMountHook(ref.activate.bind(ref)));
   defer((node) => node.registerOnUnmountHook(ref.deactivate.bind(ref)));
 };
@@ -86,9 +88,14 @@ export const createComponent = apiFunctionBuilder.build(
   <Args extends unknown[], ReturnNode extends WNode<Node>>(
     component: F<Args, ReturnNode>
   ) => {
+    // enter new DI child scope
     return scopeManager.withChildScope((...args: [...Args]) => {
-      return execute(() => {
-        return component(...args);
+      // enter atomic batch, allowing effects to be scheduled during creation
+      return runBatched(() => {
+        // run and apply all deferred callbacks to the return node
+        return execute(() => {
+          return component(...args);
+        });
       });
     });
   }
