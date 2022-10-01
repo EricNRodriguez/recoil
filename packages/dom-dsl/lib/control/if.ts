@@ -1,6 +1,6 @@
-import { IAtom, isAtom, runEffect } from "recoiljs-atom";
+import { IAtom, isAtom } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
-import { Supplier, WDerivationCache } from "shared";
+import { Supplier } from "shared";
 import {runRenderEffect} from "../binding/dom";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
@@ -22,12 +22,6 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
   if (typeof condition === "boolean") {
     return staticIfElse(condition, ifTrue, ifFalse);
   }
-
-  const cache: WDerivationCache<boolean, WNode<Node>> = new WDerivationCache<
-    boolean,
-    WNode<Node>
-  >((value: boolean) => (value ? ifTrue() : ifFalse!()));
-
   const anchor = createFragment([]);
 
   let currentRenderedState: boolean;
@@ -42,7 +36,7 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
     }
 
     currentRenderedState = state;
-    currentRenderedSubtree = cache.get(state);
+    currentRenderedSubtree = state ? ifTrue() : ifFalse!();
 
     anchor.setChildren([
       currentRenderedSubtree === nullOrUndefinedNode
