@@ -50,9 +50,14 @@ export const createTextNode = (text: string): WNode<Text> => {
   return node;
 };
 
+const roots: Set<WNode<Node>> = new Set();
+window.onbeforeunload = () => {
+  roots.forEach((r) => {
+    r.cleanup();
+  });
+};
+
 export const runApp = (anchor: HTMLElement, app: WNode<Node>): void => {
   const root = wrapElement(anchor).bindScopeToWrappedNode().setChildren([app]);
-  window.onbeforeunload = () => {
-    root.cleanup();
-  };
+  roots.add(root);
 };
