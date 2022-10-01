@@ -29,20 +29,27 @@ export const forEach = <T extends Object>(
   const ref = runRenderEffect((): void => {
     const newItems: IndexedItem<T>[] = items();
     const newItemOrder: string[] = newItems.map(getKey);
-    const newItemNodesIndex: Map<string, WNode<Node>> = new Map(
-      newItems.map((item: IndexedItem<T>): [string, WNode<Node>] => [
-        getKey(item),
-        currentItemIndex.get(getKey(item)) ?? render(getItem(item)),
-      ])
-    );
+    const newItemKeys: Set<string> = new Set<string>(newItemOrder);
+
+    newItems.forEach((indexedItem: IndexedItem<T>) => {
+      if (!currentItemIndex.has(getKey(indexedItem))) {
+        currentItemIndex.set(getKey(indexedItem), render(getItem(indexedItem)));
+      }
+    });
 
     const newChildren: WNode<Node>[] = newItemOrder
-      .map((key) => newItemNodesIndex.get(key))
+      .map((key) => currentItemIndex.get(key))
       .filter(notNullOrUndefined) as WNode<Node>[];
 
     anchor.setChildren(newChildren);
 
-    currentItemIndex = newItemNodesIndex;
+    for (const [key, value] of currentItemIndex) {
+      if (!newItemKeys.has(key)) {
+        currentItemIndex.delete(key);
+        value.cleanup();
+      }
+    }
+
   });
   anchor.registerOnMountHook(() => ref.activate());
   anchor.registerOnUnmountHook(() => ref.deactivate());

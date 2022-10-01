@@ -63,7 +63,9 @@ export const Suspense = (
   }
 
   Promise.all(children).then((syncChildren: WNode<Node>[]) => {
+    const prevChildren: WNode<Node>[] = anchor.getChildren();
     anchor.setChildren(syncChildren);
+    prevChildren.forEach((c) => c.cleanup());
   });
 
   return anchor;

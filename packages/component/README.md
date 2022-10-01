@@ -8,7 +8,8 @@ The api provides two sets of methods:
     2. `onUnmount`
     3. `onInitialMount`
     4. `runMountedEffect`
-    5. `defer`: An exposed implementation detail enabling custom application-specific hooks to be built.
+    5. `onCleanup`
+    6. `defer`: An exposed implementation detail enabling custom application-specific hooks to be built.
 2. A type-safe (tracked) dependency injection API, analogous to that provided by the vue composition API.
     1. `inject`
     2. `provide`
@@ -22,33 +23,46 @@ For application specific extensions, the `createComponent` and `makeLazy` method
 # Example
 
 ```tsx
+import {onMount, onUnmount} from "recoiljs-component";
 
 export const TodoList = createComponent((): WElement<HTMLElement> => {
-  const model = inject(todoModelInjectionKey)!;
+   const model = inject(todoModelInjectionKey)!;
 
-  const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
-  const renderTodoItem = makeLazy((item: TodoItem) => <TodoListItem item={item} />);
+   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
+   const renderTodoItem = makeLazy((item: TodoItem) => <TodoListItem item={item}/>);
 
-  return (
-      <div>
-        <h2>
-          Todo List:
-        </h2>
-        <p>
-          {$(() => model.getItems().length)} items
-        </p>
-        <button onclick={() => model.duplicate()}>
-          double!
-        </button>
-        <TodoItemInput />
-        <If condition={() => model.getItems().length > 0}
-            true={br}
-        />
-        <For items={() => model.getItems().map(withUuidKey)}
-             render={renderTodoItem}
-       />
-      </div>
-  );
+   onMount(() => {
+      console.log("TodoList mounted");
+   });
+
+   onUnmount(() => {
+      console.log("TodoList unmounted");
+   });
+
+   onCleanup(() => {
+      console.log("cleanup running");
+   });
+
+   return (
+           <div>
+              <h2>
+                 Todo List:
+              </h2>
+              <p>
+                 {$(() => model.getItems().length)} items
+              </p>
+              <button onclick={() => model.duplicate()}>
+                 double!
+              </button>
+              <TodoItemInput/>
+              <If condition={() => model.getItems().length > 0}
+                  true={br}
+              />
+              <For items={() => model.getItems().map(withUuidKey)}
+                   render={renderTodoItem}
+              />
+           </div>
+   );
 });
 
 ```

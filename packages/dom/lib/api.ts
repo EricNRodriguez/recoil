@@ -51,5 +51,8 @@ export const createTextNode = (text: string): WNode<Text> => {
 };
 
 export const runApp = (anchor: HTMLElement, app: WNode<Node>): void => {
-  wrapElement(anchor).bindScopeToWrappedNode().setChildren([app]);
+  const root = wrapElement(anchor).bindScopeToWrappedNode().setChildren([app]);
+  window.onbeforeunload = () => {
+    root.cleanup();
+  };
 };

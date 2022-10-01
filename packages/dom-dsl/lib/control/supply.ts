@@ -11,8 +11,12 @@ export type SupplyProps = {
 export const supply = (props: SupplyProps): WNode<Node> => {
   const node = frag();
 
+  let content: WNode<Node> | null = null;
   const ref = runRenderEffect((): void => {
-    node.setChildren([props.get()]);
+    const prevContent = content;
+    content = props.get();
+    node.setChildren([content]);
+    prevContent?.cleanup();
   });
   node.registerOnMountHook(() => ref.activate());
   node.registerOnUnmountHook(() => ref.deactivate());
