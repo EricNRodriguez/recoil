@@ -16,7 +16,8 @@ export const isAtom = (obj: any): boolean => {
 
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
-  private readonly parents: Set<ParentAtom> = new Set();
+  protected readonly parents: Set<ParentAtom> = new Set();
+  protected readonly children: Set<IAtom<any>> = new Set();
   protected readonly updateExecutor: IUpdateExecutor;
 
   protected constructor(
@@ -31,11 +32,24 @@ abstract class BaseAtom<T> implements IAtom<T> {
 
   abstract getUntracked(): T;
 
+  public registerChild(child: IAtom<any>): void {
+    this.children.add(child);
+  }
+
+  protected forgetChild(child: IAtom<any>): void {
+    this.children.delete(child);
+  }
+
+  public forgetParent(parent: ParentAtom): void {
+    this.parents.delete(parent);
+  }
+
   protected getParents(): ParentAtom[] {
     return Array.from(this.parents);
   }
 
   protected forgetParents(): void {
+    this.parents.forEach((p) => p.forgetChild(this));
     this.parents.clear();
   }
 
@@ -51,9 +65,15 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public latchToCurrentDerivation(): void {
+    // this -> context
     this.getContext()
       .getCurrentParent()
       .tapSome(this.parents.add.bind(this.parents));
+
+    // context -> this
+    this.getContext()
+      .getCurrentParent()
+      .tapSome((parent: ParentAtom) => parent.registerChild(this));
   }
 
   public map<R>(mutation: Function<T, R>): IAtom<R> {
@@ -212,6 +232,20 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     }
   }
 
+  public forgetParent(parent: ParentAtom) {
+    super.forgetParent(parent);
+    if (this.getParents().length === 0) {
+      this.parents.forEach((p) => p.forgetChild(this));
+      this.children.forEach((c) => (c as BaseAtom<any>).forgetParent(this));
+      this.parents.clear();
+      this.children.clear();
+    }
+  }
+
+  public forgetChild(child: IAtom<any>): void {
+    this.children.delete(child);
+  }
+
   public getUntracked(): T {
     this.getContext().enterNewTrackingContext();
     try {
@@ -265,8 +299,8 @@ enum SideEffectStatus {
 }
 
 type SideEffectState =
-  | { status: SideEffectStatus.ACTIVE }
-  | { status: SideEffectStatus.INACTIVE; dirty: boolean };
+  | { status: SideEffectStatus.ACTIVE, children: Set<BaseAtom<any>> }
+  | { status: SideEffectStatus.INACTIVE };
 
 export class SideEffect {
   private readonly effect: Runnable;
@@ -274,7 +308,7 @@ export class SideEffect {
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
-  private state: SideEffectState = { status: SideEffectStatus.ACTIVE };
+  private state: SideEffectState = { status: SideEffectStatus.ACTIVE, children: new Set() };
 
   constructor(
     effect: Runnable,
@@ -288,11 +322,34 @@ export class SideEffect {
     this.priority = priority;
   }
 
+  public forgetChild(child: IAtom<any>): void {
+    if (this.state.status === SideEffectStatus.ACTIVE) {
+      this.state.children.delete(child as BaseAtom<any>);
+    }
+  }
+
+  public registerChild(child: IAtom<any>): void {
+    if (this.state.status === SideEffectStatus.INACTIVE) {
+      throw new Error("SideEffect in a bad state : registerChild called on inactive side effect");
+    }
+
+    this.state.children.add(child as BaseAtom<any>);
+  }
+
   public run() {
     this.effectScheduler.schedule(this.runScoped, this.priority);
   }
 
   private runScoped = (): void => {
+    /*
+      Effects may have been scheduled before becoming inactive, but run after another effect that renders them inactive,
+      so this sc needs to exist at this level as a last resort, since re-executing will re-track dependencies and
+      introduce memory leaks.
+     */
+    if (this.state.status === SideEffectStatus.INACTIVE) {
+      return;
+    }
+
     try {
       this.context.pushParent(this);
       this.effect();
@@ -310,8 +367,7 @@ export class SideEffect {
           this.run();
           return;
         case SideEffectStatus.INACTIVE:
-          this.state.dirty = true;
-          return;
+          throw new Error("SideEffect in a bad state : inactive effects should be dangling");
         default:
           throw new Error("invalid state");
       }
@@ -327,14 +383,20 @@ export class SideEffect {
       return;
     }
 
-    if (this.state.dirty) {
-      this.run();
-    }
+    this.state = { status: SideEffectStatus.ACTIVE, children: new Set() };
 
-    this.state = { status: SideEffectStatus.ACTIVE };
+    console.log("running!");
+    this.run();
   }
 
   public deactivate() {
-    this.state = { status: SideEffectStatus.INACTIVE, dirty: false };
+    if (this.state.status === SideEffectStatus.INACTIVE) {
+      return;
+    }
+
+
+    this.state.children.forEach((c) => c.forgetParent(this));
+    this.state.children.clear();
+    this.state = { status: SideEffectStatus.INACTIVE};
   }
 }

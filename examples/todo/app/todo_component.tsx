@@ -4,7 +4,14 @@ import {TodoItem, TodoModel} from "./todo_model";
 import {WElement} from "recoiljs-dom";
 import {div, h2, br, button, input} from "recoiljs-dom-dsl";
 import {createState, derivedState, deriveState, runBatched} from "recoiljs-atom";
-import { inject, createComponent, makeLazy, decorateMakeLazy, decorateCreateComponent } from "recoiljs-component";
+import {
+  inject,
+  createComponent,
+  makeLazy,
+  decorateMakeLazy,
+  decorateCreateComponent,
+  runMountedEffect, onUnmount
+} from "recoiljs-component";
 import {todoModelInjectionKey} from "./index";
 import {jsx, For, If, $, Fragment} from "recoiljs-dom-jsx";
 import {css} from "./util";
@@ -92,6 +99,15 @@ type TodoListItemProps = {
 
 const TodoListItem = createComponent((props: TodoListItemProps): WElement<HTMLElement> => {
   const model = inject(todoModelInjectionKey)!;
+
+  runMountedEffect(() => {
+      console.log("running effect as model items changed");
+      model.getItems();
+  });
+
+  onUnmount(() => {
+      console.log("unmounting todo item component");
+  });
 
   const buttonDivStyle = css({
     "margin-right": "10px",
