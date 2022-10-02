@@ -239,6 +239,15 @@ export class DerivedAtom<T> extends BaseAtom<T> {
       this.children.forEach((c) => (c as BaseAtom<any>).forgetParent(this));
       this.parents.clear();
       this.children.clear();
+
+      /*
+       * We need to throw away the value since we are now disconnected from the DAG, with no way of being told if
+       * it is dirty or not.
+       *
+       * This may be problematic for particularly expensive derivations, so more involved caching strategies
+       * might be appropriate - not sure just yet.
+       */
+      this.discardCachedValue();
     }
   }
 
@@ -384,8 +393,6 @@ export class SideEffect {
     }
 
     this.state = { status: SideEffectStatus.ACTIVE, children: new Set() };
-
-    console.log("running!");
     this.run();
   }
 
