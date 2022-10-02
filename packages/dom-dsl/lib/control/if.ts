@@ -1,7 +1,7 @@
 import { IAtom, isAtom } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
 import { Supplier } from "shared";
-import {runRenderEffect} from "../binding/dom";
+import { runRenderEffect } from "../binding/dom";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 

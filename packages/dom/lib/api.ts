@@ -50,7 +50,6 @@ export const createTextNode = (text: string): WNode<Text> => {
   return node;
 };
 
-
 export const runApp = (anchor: HTMLElement, app: WNode<Node>): void => {
   wrapElement(anchor).bindScopeToWrappedNode().setChildren([app]);
 };

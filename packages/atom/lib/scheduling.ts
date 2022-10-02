@@ -1,10 +1,17 @@
-import {Producer, Runnable} from "shared";
+import { Producer, Runnable } from "shared";
 import { IEffectScheduler, IUpdateExecutor } from "./atom";
-import {MinQueue} from "heapify";
 
 enum StateKind {
   BATCH = "batch",
   EAGER = "eager",
+}
+
+export enum EffectPriority {
+  MAJOR = 0,
+  HIGH = 1,
+  MEDIUM = 2,
+  LOW = 3,
+  MINOR = 4,
 }
 
 interface LazyBatchUpdateState {
@@ -29,8 +36,11 @@ export class BatchingEffectScheduler implements IEffectScheduler {
   /*
     The following fields have been pulled out of the batch state object to avoid recreation, making state transitions cheap.
    */
-  private readonly updates: Map<number, Runnable> = new Map();
-  private readonly scheduler: MinQueue = new MinQueue();
+  private readonly queue: Map<number, Runnable[]> = new Map(
+    Object.values(EffectPriority)
+      .filter((pri) => Number.isInteger(pri))
+      .map((pri) => [pri as number, []])
+  );
 
   public schedule(effect: Runnable, priority: number): void {
     switch (this.state.kind) {
@@ -67,11 +77,6 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       depth: 1,
       nUpdates: 0,
     };
-
-    if (this.updates.size > 0 || this.scheduler.size > 0) {
-      throw new Error("BatchingEffectScheduler in invalid state : updates map and scheduler objects should be empty when entering a batch state");
-    }
-
   }
 
   public exitBatchedState(): void {
@@ -84,36 +89,33 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       return;
     }
 
+    const priorities: number[] = Object.values(EffectPriority).filter((v) =>
+      Number.isInteger(v)
+    ) as number[];
+
     const effects: Runnable[] = [];
-    while (this.scheduler.size > 0) {
-      const key = this.scheduler.pop();
-      if (key === undefined) {
-        throw Error("undefined key returned for nonempty min heap");
-      }
-
-      if (!this.updates.has(key)) {
-        throw Error("unknown key returned from effect scheduler");
-      }
-
-      effects.push(this.updates.get(key)!)
+    for (let pri of priorities) {
+      effects.push(...this.queue.get(pri)!);
+      this.queue.get(pri)!.length = 0;
     }
 
     this.state = { kind: StateKind.EAGER };
 
-    this.updates.clear();
-    this.scheduler.clear();
-
     effects.forEach((e) => e());
   }
 
-  private scheduleBatchedUpdate(effect: Runnable, priority: number): void {
+  private scheduleBatchedUpdate(
+    effect: Runnable,
+    priority: EffectPriority
+  ): void {
     if (this.state.kind !== StateKind.BATCH) {
-      throw new Error("batchupdater in invalid state - scheduleBatchedUpdate outside of batch state");
+      throw new Error(
+        "batchupdater in invalid state - scheduleBatchedUpdate outside of batch state"
+      );
     }
 
     this.state.nUpdates = this.state.nUpdates + 1;
-    this.updates.set(this.state.nUpdates, effect);
-    this.scheduler.push(this.state.nUpdates, priority);
+    this.queue.get(priority)?.push(effect);
   }
 
   private scheduleEagerUpdate(effect: Runnable): void {

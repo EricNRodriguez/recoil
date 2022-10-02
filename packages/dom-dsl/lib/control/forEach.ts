@@ -3,7 +3,7 @@ import { Function, Supplier } from "shared";
 import { createFragment } from "recoiljs-dom";
 import { runEffect } from "recoiljs-atom";
 import { notNullOrUndefined } from "shared";
-import {runRenderEffect} from "../binding/dom";
+import { runRenderEffect } from "../binding/dom";
 
 // key value pair used for efficient indexing of existing built elements
 export type IndexedItem<T> = [string, T];
@@ -49,7 +49,6 @@ export const forEach = <T extends Object>(
         value.cleanup();
       }
     }
-
   });
   anchor.registerOnMountHook(() => ref.activate());
   anchor.registerOnUnmountHook(() => ref.deactivate());
