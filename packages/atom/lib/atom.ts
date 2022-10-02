@@ -2,7 +2,6 @@ import { Maybe, IMaybe } from "typescript-monads";
 import { IAtom, IMutableAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
-import { WeakCollection } from "./weak_collection";
 import { Producer, Runnable, Function, Supplier } from "shared";
 
 export const isAtom = (obj: any): boolean => {
@@ -17,9 +16,7 @@ export const isAtom = (obj: any): boolean => {
 
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
-  private readonly parents: WeakCollection<ParentAtom> = new WeakCollection<
-    DerivedAtom<Object>
-  >();
+  private readonly parents: Set<ParentAtom> = new Set();
   protected readonly updateExecutor: IUpdateExecutor;
 
   protected constructor(
@@ -35,11 +32,11 @@ abstract class BaseAtom<T> implements IAtom<T> {
   abstract getUntracked(): T;
 
   protected getParents(): ParentAtom[] {
-    return this.parents.getItems();
+    return Array.from(this.parents);
   }
 
   protected forgetParents(): void {
-    this.parents.reset();
+    this.parents.clear();
   }
 
   public invalidate(): void {
@@ -56,7 +53,7 @@ abstract class BaseAtom<T> implements IAtom<T> {
   public latchToCurrentDerivation(): void {
     this.getContext()
       .getCurrentParent()
-      .tapSome(this.parents.register.bind(this.parents));
+      .tapSome(this.parents.add.bind(this.parents));
   }
 
   public map<R>(mutation: Function<T, R>): IAtom<R> {
