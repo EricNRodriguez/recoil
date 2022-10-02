@@ -8,7 +8,11 @@ import {
 import { IAtom } from "./atom.interface";
 import { F, FDecorator, Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
-import {BatchingEffectScheduler, BatchingUpdateExecutor, EffectPriority} from "./scheduling";
+import {
+  BatchingEffectScheduler,
+  BatchingUpdateExecutor,
+  EffectPriority,
+} from "./scheduling";
 import { DecoratableApiFunctionBuilder } from "shared";
 
 /**
@@ -109,7 +113,7 @@ export const fetchState = apiFunctionBuilder.build(
       sideEffectRunnable,
       globalTrackingContext,
       globalEffectScheduler,
-      EffectPriority.MAJOR,
+      EffectPriority.MAJOR
     );
     ref.run();
 
@@ -169,7 +173,10 @@ export const deriveState = apiFunctionBuilder.build(
   }
 );
 
-export type RunEffectSignature = (effect: Runnable, priority: EffectPriority) => ISideEffectRef;
+export type RunEffectSignature = (
+  effect: Runnable,
+  priority: EffectPriority
+) => ISideEffectRef;
 
 /**
  * A factory method for a tracked side effect
@@ -188,12 +195,15 @@ export type RunEffectSignature = (effect: Runnable, priority: EffectPriority) =>
  * @returns A reference to the side effect (see the above doc)
  */
 export const runEffect: RunEffectSignature = apiFunctionBuilder.build(
-  (effect: Runnable, priority: EffectPriority = EffectPriority.MINOR): ISideEffectRef => {
+  (
+    effect: Runnable,
+    priority: EffectPriority = EffectPriority.MINOR
+  ): ISideEffectRef => {
     const sideEffect: SideEffect = new SideEffect(
       effect,
       globalTrackingContext,
       globalEffectScheduler,
-      priority,
+      priority
     );
 
     sideEffect.run();
@@ -283,4 +293,5 @@ export const runUntracked = <T>(job: Producer<T>): T => {
  *
  * @param job The job to be run in a batched state, with all effects running after the job completes.
  */
-export const runBatched = <ReturnType>(job: Producer<ReturnType>): ReturnType => globalEffectScheduler.executeAsBatch(job);
+export const runBatched = <ReturnType>(job: Producer<ReturnType>): ReturnType =>
+  globalEffectScheduler.executeAsBatch(job);

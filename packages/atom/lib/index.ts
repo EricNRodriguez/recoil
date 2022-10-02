@@ -18,4 +18,4 @@ export {
 } from "./api";
 export { IAtom, IMutableAtom, ISideEffectRef } from "./atom.interface";
 export { isAtom } from "./atom";
-export {EffectPriority} from "./scheduling";
+export { EffectPriority } from "./scheduling";

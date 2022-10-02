@@ -8,7 +8,7 @@ import {
   Consumer,
 } from "shared";
 import { WElement, WNode } from "recoiljs-dom";
-import {ISideEffectRef, EffectPriority, runBatched} from "recoiljs-atom";
+import { ISideEffectRef, EffectPriority, runBatched } from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import { defer, execute } from "./defer";
 
@@ -38,7 +38,7 @@ export const onUnmount = (fn: Runnable): void => {
 };
 
 export const onCleanup = (fn: Runnable): void => {
-    defer((node) => node.registerOnCleanupHook(fn));
+  defer((node) => node.registerOnCleanupHook(fn));
 };
 
 /**
@@ -51,7 +51,10 @@ export const onCleanup = (fn: Runnable): void => {
  * @param priority The priority of the effect relative to other effects triggered by the dag update.
  *                 Effect with lower priority values will be run earlier.
  */
-export const runMountedEffect = (sideEffect: Runnable, priority: EffectPriority = EffectPriority.MINOR): void => {
+export const runMountedEffect = (
+  sideEffect: Runnable,
+  priority: EffectPriority = EffectPriority.MINOR
+): void => {
   const ref: ISideEffectRef = runEffect(sideEffect, priority);
   defer((node) => node.registerOnMountHook(ref.activate.bind(ref)));
   defer((node) => node.registerOnUnmountHook(ref.deactivate.bind(ref)));

@@ -283,7 +283,7 @@ export class SideEffect {
     effect: Runnable,
     context: AtomTrackingContext,
     effectScheduler: IEffectScheduler,
-    priority: number,
+    priority: number
   ) {
     this.effect = effect;
     this.context = context;

@@ -1,4 +1,4 @@
-import {Producer, Runnable} from "shared";
+import { Producer, Runnable } from "shared";
 import { IEffectScheduler, IUpdateExecutor } from "./atom";
 
 enum StateKind {
@@ -7,11 +7,11 @@ enum StateKind {
 }
 
 export enum EffectPriority {
-  MAJOR=0,
-  HIGH=1,
-  MEDIUM=2,
-  LOW=3,
-  MINOR=4,
+  MAJOR = 0,
+  HIGH = 1,
+  MEDIUM = 2,
+  LOW = 3,
+  MINOR = 4,
 }
 
 interface LazyBatchUpdateState {
@@ -89,14 +89,13 @@ export class BatchingEffectScheduler implements IEffectScheduler {
       return;
     }
 
-    const priorities: number[] = Object.values(EffectPriority)
-      .filter((v) => Number.isInteger(v)) as number[];
+    const priorities: number[] = Object.values(EffectPriority).filter((v) =>
+      Number.isInteger(v)
+    ) as number[];
 
     const effects: Runnable[] = [];
     for (let pri of priorities) {
-      effects.push(
-        ...this.queue.get(pri)!
-      );
+      effects.push(...this.queue.get(pri)!);
       this.queue.get(pri)!.length = 0;
     }
 
@@ -105,9 +104,14 @@ export class BatchingEffectScheduler implements IEffectScheduler {
     effects.forEach((e) => e());
   }
 
-  private scheduleBatchedUpdate(effect: Runnable, priority: EffectPriority): void {
+  private scheduleBatchedUpdate(
+    effect: Runnable,
+    priority: EffectPriority
+  ): void {
     if (this.state.kind !== StateKind.BATCH) {
-      throw new Error("batchupdater in invalid state - scheduleBatchedUpdate outside of batch state");
+      throw new Error(
+        "batchupdater in invalid state - scheduleBatchedUpdate outside of batch state"
+      );
     }
 
     this.state.nUpdates = this.state.nUpdates + 1;

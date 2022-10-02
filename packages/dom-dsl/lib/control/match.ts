@@ -1,7 +1,7 @@
 import { IAtom } from "recoiljs-atom";
 import { WNode, createFragment } from "recoiljs-dom";
 import { Function } from "shared";
-import {runRenderEffect} from "../binding/dom";
+import { runRenderEffect } from "../binding/dom";
 
 export type MatchProps<T> = {
   state: IAtom<T>;
