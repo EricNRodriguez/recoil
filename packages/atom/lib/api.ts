@@ -8,7 +8,7 @@ import {
 import { IAtom } from "./atom.interface";
 import { F, FDecorator, Producer, Runnable } from "shared";
 import { AtomTrackingContext } from "./context";
-import { BatchingEffectScheduler, BatchingUpdateExecutor } from "./scheduling";
+import {BatchingEffectScheduler, BatchingUpdateExecutor, EffectPriority} from "./scheduling";
 import { DecoratableApiFunctionBuilder } from "shared";
 
 /**
@@ -170,14 +170,6 @@ export const deriveState = apiFunctionBuilder.build(
 );
 
 export type RunEffectSignature = (effect: Runnable, priority: EffectPriority) => ISideEffectRef;
-
-export enum EffectPriority {
-  MAJOR=0,
-  HIGH=1,
-  MEDIUM=2,
-  LOW=3,
-  MINOR=4,
-}
 
 /**
  * A factory method for a tracked side effect
