@@ -304,7 +304,7 @@ enum SideEffectStatus {
 }
 
 type SideEffectState =
-  | { status: SideEffectStatus.ACTIVE, children: Set<BaseAtom<any>> }
+  | { status: SideEffectStatus.ACTIVE; children: Set<BaseAtom<any>> }
   | { status: SideEffectStatus.INACTIVE };
 
 export class SideEffect {
@@ -313,7 +313,10 @@ export class SideEffect {
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
-  private state: SideEffectState = { status: SideEffectStatus.ACTIVE, children: new Set() };
+  private state: SideEffectState = {
+    status: SideEffectStatus.ACTIVE,
+    children: new Set(),
+  };
 
   constructor(
     effect: Runnable,
@@ -335,7 +338,9 @@ export class SideEffect {
 
   public registerChild(child: IAtom<any>): void {
     if (this.state.status === SideEffectStatus.INACTIVE) {
-      throw new Error("SideEffect in a bad state : registerChild called on inactive side effect");
+      throw new Error(
+        "SideEffect in a bad state : registerChild called on inactive side effect"
+      );
     }
 
     this.state.children.add(child as BaseAtom<any>);
@@ -372,7 +377,9 @@ export class SideEffect {
           this.run();
           return;
         case SideEffectStatus.INACTIVE:
-          throw new Error("SideEffect in a bad state : inactive effects should be dangling");
+          throw new Error(
+            "SideEffect in a bad state : inactive effects should be dangling"
+          );
         default:
           throw new Error("invalid state");
       }
@@ -388,7 +395,11 @@ export class SideEffect {
       return;
     }
 
-    this.state = { status: SideEffectStatus.ACTIVE, children: new Set() };
+    this.state = {
+      status: SideEffectStatus.ACTIVE,
+      children: new Set(),
+    };
+
     this.run();
   }
 
@@ -399,6 +410,6 @@ export class SideEffect {
 
     this.state.children.forEach((c) => c.forgetParent(this));
     this.state.children.clear();
-    this.state = { status: SideEffectStatus.INACTIVE};
+    this.state = { status: SideEffectStatus.INACTIVE };
   }
 }

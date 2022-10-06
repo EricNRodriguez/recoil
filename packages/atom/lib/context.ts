@@ -1,5 +1,5 @@
 import { Maybe, IMaybe } from "typescript-monads";
-import {IAtom} from "./atom.interface";
+import { IAtom } from "./atom.interface";
 
 export type ParentAtom = {
   childDirty(): void;
