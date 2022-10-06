@@ -17,7 +17,6 @@ export const isAtom = (obj: any): boolean => {
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
   protected readonly parents: Set<ParentAtom> = new Set();
-  protected readonly children: Set<IAtom<any>> = new Set();
   protected readonly updateExecutor: IUpdateExecutor;
 
   protected constructor(
@@ -31,14 +30,6 @@ abstract class BaseAtom<T> implements IAtom<T> {
   abstract get(): T;
 
   abstract getUntracked(): T;
-
-  public registerChild(child: IAtom<any>): void {
-    this.children.add(child);
-  }
-
-  protected forgetChild(child: IAtom<any>): void {
-    this.children.delete(child);
-  }
 
   public forgetParent(parent: ParentAtom): void {
     this.parents.delete(parent);
@@ -205,6 +196,7 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
 
 export class DerivedAtom<T> extends BaseAtom<T> {
   private readonly deriveValue: Producer<T>;
+  private readonly children: Set<IAtom<any>> = new Set();
 
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
@@ -232,6 +224,14 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     }
   }
 
+  public registerChild(child: IAtom<any>): void {
+    this.children.add(child);
+  }
+
+  public forgetChild(child: IAtom<any>): void {
+    this.children.delete(child);
+  }
+
   public forgetParent(parent: ParentAtom) {
     super.forgetParent(parent);
     if (this.getParents().length === 0) {
@@ -249,10 +249,6 @@ export class DerivedAtom<T> extends BaseAtom<T> {
        */
       this.discardCachedValue();
     }
-  }
-
-  public forgetChild(child: IAtom<any>): void {
-    this.children.delete(child);
   }
 
   public getUntracked(): T {
@@ -400,7 +396,6 @@ export class SideEffect {
     if (this.state.status === SideEffectStatus.INACTIVE) {
       return;
     }
-
 
     this.state.children.forEach((c) => c.forgetParent(this));
     this.state.children.clear();
