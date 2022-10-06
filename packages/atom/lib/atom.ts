@@ -56,12 +56,12 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public latchToCurrentDerivation(): void {
-    // this -> context
+    // this -> parent
     this.getContext()
       .getCurrentParent()
       .tapSome(this.parents.add.bind(this.parents));
 
-    // context -> this
+    // parent -> this
     this.getContext()
       .getCurrentParent()
       .tapSome((parent: ParentAtom) => parent.registerChild(this));
