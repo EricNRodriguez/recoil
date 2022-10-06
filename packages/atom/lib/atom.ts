@@ -2,7 +2,6 @@ import { Maybe, IMaybe } from "typescript-monads";
 import { IAtom, IMutableAtom } from "./atom.interface";
 import { AtomTrackingContext, ParentAtom } from "./context";
 import { StatefulSideEffectError } from "./error";
-import { WeakCollection } from "./weak_collection";
 import { Producer, Runnable, Function, Supplier } from "shared";
 
 export const isAtom = (obj: any): boolean => {
@@ -17,9 +16,7 @@ export const isAtom = (obj: any): boolean => {
 
 abstract class BaseAtom<T> implements IAtom<T> {
   private readonly context: AtomTrackingContext;
-  private readonly parents: WeakCollection<ParentAtom> = new WeakCollection<
-    DerivedAtom<Object>
-  >();
+  protected readonly parents: Set<ParentAtom> = new Set();
   protected readonly updateExecutor: IUpdateExecutor;
 
   protected constructor(
@@ -34,12 +31,17 @@ abstract class BaseAtom<T> implements IAtom<T> {
 
   abstract getUntracked(): T;
 
+  public forgetParent(parent: ParentAtom): void {
+    this.parents.delete(parent);
+  }
+
   protected getParents(): ParentAtom[] {
-    return this.parents.getItems();
+    return Array.from(this.parents);
   }
 
   protected forgetParents(): void {
-    this.parents.reset();
+    this.parents.forEach((p) => p.forgetChild(this));
+    this.parents.clear();
   }
 
   public invalidate(): void {
@@ -54,9 +56,15 @@ abstract class BaseAtom<T> implements IAtom<T> {
   }
 
   public latchToCurrentDerivation(): void {
+    // this -> parent
     this.getContext()
       .getCurrentParent()
-      .tapSome(this.parents.register.bind(this.parents));
+      .tapSome(this.parents.add.bind(this.parents));
+
+    // parent -> this
+    this.getContext()
+      .getCurrentParent()
+      .tapSome((parent: ParentAtom) => parent.registerChild(this));
   }
 
   public map<R>(mutation: Function<T, R>): IAtom<R> {
@@ -188,6 +196,7 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
 
 export class DerivedAtom<T> extends BaseAtom<T> {
   private readonly deriveValue: Producer<T>;
+  private readonly children: Set<IAtom<any>> = new Set();
 
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
@@ -212,6 +221,33 @@ export class DerivedAtom<T> extends BaseAtom<T> {
       return this.getValue();
     } finally {
       this.getContext().popParent();
+    }
+  }
+
+  public registerChild(child: IAtom<any>): void {
+    this.children.add(child);
+  }
+
+  public forgetChild(child: IAtom<any>): void {
+    this.children.delete(child);
+  }
+
+  public forgetParent(parent: ParentAtom) {
+    super.forgetParent(parent);
+    if (this.getParents().length === 0) {
+      this.parents.forEach((p) => p.forgetChild(this));
+      this.children.forEach((c) => (c as BaseAtom<any>).forgetParent(this));
+      this.parents.clear();
+      this.children.clear();
+
+      /*
+       * We need to throw away the value since we are now disconnected from the DAG, with no way of being told if
+       * it is dirty or not.
+       *
+       * This may be problematic for particularly expensive derivations, so more involved caching strategies
+       * might be appropriate - not sure just yet.
+       */
+      this.discardCachedValue();
     }
   }
 
@@ -268,8 +304,8 @@ enum SideEffectStatus {
 }
 
 type SideEffectState =
-  | { status: SideEffectStatus.ACTIVE }
-  | { status: SideEffectStatus.INACTIVE; dirty: boolean };
+  | { status: SideEffectStatus.ACTIVE; children: Set<BaseAtom<any>> }
+  | { status: SideEffectStatus.INACTIVE };
 
 export class SideEffect {
   private readonly effect: Runnable;
@@ -277,7 +313,10 @@ export class SideEffect {
   private readonly effectScheduler: IEffectScheduler;
   private readonly context: AtomTrackingContext;
   private numChildrenNotReady: number = 0;
-  private state: SideEffectState = { status: SideEffectStatus.ACTIVE };
+  private state: SideEffectState = {
+    status: SideEffectStatus.ACTIVE,
+    children: new Set(),
+  };
 
   constructor(
     effect: Runnable,
@@ -291,11 +330,36 @@ export class SideEffect {
     this.priority = priority;
   }
 
+  public forgetChild(child: IAtom<any>): void {
+    if (this.state.status === SideEffectStatus.ACTIVE) {
+      this.state.children.delete(child as BaseAtom<any>);
+    }
+  }
+
+  public registerChild(child: IAtom<any>): void {
+    if (this.state.status === SideEffectStatus.INACTIVE) {
+      throw new Error(
+        "SideEffect in a bad state : registerChild called on inactive side effect"
+      );
+    }
+
+    this.state.children.add(child as BaseAtom<any>);
+  }
+
   public run() {
     this.effectScheduler.schedule(this.runScoped, this.priority);
   }
 
   private runScoped = (): void => {
+    /*
+      Effects may have been scheduled before becoming inactive, but run after another effect that renders them inactive,
+      so this sc needs to exist at this level as a last resort, since re-executing will re-track dependencies and
+      introduce memory leaks.
+     */
+    if (this.state.status === SideEffectStatus.INACTIVE) {
+      return;
+    }
+
     try {
       this.context.pushParent(this);
       this.effect();
@@ -313,8 +377,9 @@ export class SideEffect {
           this.run();
           return;
         case SideEffectStatus.INACTIVE:
-          this.state.dirty = true;
-          return;
+          throw new Error(
+            "SideEffect in a bad state : inactive effects should be dangling"
+          );
         default:
           throw new Error("invalid state");
       }
@@ -330,14 +395,21 @@ export class SideEffect {
       return;
     }
 
-    if (this.state.dirty) {
-      this.run();
-    }
+    this.state = {
+      status: SideEffectStatus.ACTIVE,
+      children: new Set(),
+    };
 
-    this.state = { status: SideEffectStatus.ACTIVE };
+    this.run();
   }
 
   public deactivate() {
-    this.state = { status: SideEffectStatus.INACTIVE, dirty: false };
+    if (this.state.status === SideEffectStatus.INACTIVE) {
+      return;
+    }
+
+    this.state.children.forEach((c) => c.forgetParent(this));
+    this.state.children.clear();
+    this.state = { status: SideEffectStatus.INACTIVE };
   }
 }

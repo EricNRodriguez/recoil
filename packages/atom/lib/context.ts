@@ -1,8 +1,11 @@
 import { Maybe, IMaybe } from "typescript-monads";
+import { IAtom } from "./atom.interface";
 
 export type ParentAtom = {
   childDirty(): void;
   childReady(): void;
+  registerChild(child: IAtom<any>): void;
+  forgetChild(child: IAtom<any>): void;
 };
 
 export class AtomTrackingContext {
