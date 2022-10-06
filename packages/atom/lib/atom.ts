@@ -196,7 +196,7 @@ export class VirtualDerivedAtom<T> implements IAtom<T> {
 
 export class DerivedAtom<T> extends BaseAtom<T> {
   private readonly deriveValue: Producer<T>;
-  private readonly children: Set<IAtom<any>> = new Set();
+  private readonly children: Set<BaseAtom<any>> = new Set();
 
   private value: IMaybe<T> = Maybe.none();
   private numChildrenNotReady: number = 0;
@@ -224,11 +224,11 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     }
   }
 
-  public registerChild(child: IAtom<any>): void {
+  public registerChild(child: BaseAtom<any>): void {
     this.children.add(child);
   }
 
-  public forgetChild(child: IAtom<any>): void {
+  public forgetChild(child: BaseAtom<any>): void {
     this.children.delete(child);
   }
 
@@ -236,7 +236,7 @@ export class DerivedAtom<T> extends BaseAtom<T> {
     super.forgetParent(parent);
     if (this.getParents().length === 0) {
       this.parents.forEach((p) => p.forgetChild(this));
-      this.children.forEach((c) => (c as BaseAtom<any>).forgetParent(this));
+      this.children.forEach((c) => c.forgetParent(this));
       this.parents.clear();
       this.children.clear();
 
@@ -330,20 +330,20 @@ export class SideEffect {
     this.priority = priority;
   }
 
-  public forgetChild(child: IAtom<any>): void {
+  public forgetChild(child: BaseAtom<any>): void {
     if (this.state.status === SideEffectStatus.ACTIVE) {
-      this.state.children.delete(child as BaseAtom<any>);
+      this.state.children.delete(child);
     }
   }
 
-  public registerChild(child: IAtom<any>): void {
+  public registerChild(child: BaseAtom<any>): void {
     if (this.state.status === SideEffectStatus.INACTIVE) {
       throw new Error(
         "SideEffect in a bad state : registerChild called on inactive side effect"
       );
     }
 
-    this.state.children.add(child as BaseAtom<any>);
+    this.state.children.add(child);
   }
 
   public run() {
