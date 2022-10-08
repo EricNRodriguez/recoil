@@ -20,7 +20,7 @@ export class Logger {
     }
 }
 
-export const CoupledCounter = createComponent((): WElement<HTMLElement> => {
+export const CoupledCounter = createComponent(() => {
   const a = createState<number>(0);
   const b = createState<number>(0);
   const c = createState<number>(0);
@@ -31,17 +31,21 @@ export const CoupledCounter = createComponent((): WElement<HTMLElement> => {
       console.log(`state value is: ${state.get()}`);
   });
 
-  const incAButton = button("a++")
-    .setEventHandler("click", () => a.update(v => v+1));
+  const incAButton = button({onclick: () => a.update(v => v+1)},
+    "a++",
+  );
 
-  const incBButton = button("b++")
-    .setEventHandler("click", (event: MouseEvent) => b.update(v => v+1));
+  const incBButton = button({onclick: () => b.update(v => v+1)},
+    "b++",
+  );
 
-  const incCButton = button("c++")
-    .setEventHandler("click", () => c.update(v => v+1));
+  const incCButton = button({onclick: () => c.update(v => v+1)},
+    "c++",
+  );
 
-  const flipStateButton = button("flip state")
-    .setEventHandler("click", () => state.update(v => !v));
+  const flipStateButton = button({onclick: () => state.update(v => !v)},
+    "flip state",
+  );
 
   return (
       <div>
@@ -66,13 +70,15 @@ export type dComponentProps = {
   b: IAtom<number>;
 }
 
-const DComponent = createComponent((props: dComponentProps): WElement<HTMLElement> => {
+const DComponent = createComponent((props: dComponentProps) => {
   const logger = inject(loggerInjectionKey)!;
   const {a, b} = props;
 
   runMountedEffect((): void => {
     a.get();
     b.get();
+
+    console.log("DComponent updated!!");
 
     runUntracked(() => {
       logger.logMessage("dComponent was updated");
@@ -97,7 +103,7 @@ export type eComponentProps = {
 };
 const toString = (v: any) => v.toString();
 
-const EComponent = createComponent((props: eComponentProps,): WElement<HTMLElement> => {
+const EComponent = createComponent((props: eComponentProps,) => {
   const logger = inject(loggerInjectionKey)!;
   const {a, b, c} = props;
 
@@ -105,6 +111,8 @@ const EComponent = createComponent((props: eComponentProps,): WElement<HTMLEleme
     a.get();
     b.get();
     c.get();
+
+    console.log("EComponent updated!!");
 
     runUntracked(() => logger.logMessage("EComponent was updated"));
   });

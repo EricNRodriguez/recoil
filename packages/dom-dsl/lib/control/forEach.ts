@@ -1,7 +1,5 @@
-import { WNode } from "recoiljs-dom";
 import { Function, Supplier } from "shared";
-import { createFragment } from "recoiljs-dom";
-import { runEffect } from "recoiljs-atom";
+import {cleanup, createFragment, registerOnMountHook, registerOnUnmountHook, setChildren} from "recoiljs-dom";
 import { notNullOrUndefined } from "shared";
 import { runRenderEffect } from "../binding/dom";
 
@@ -14,17 +12,17 @@ export const getItem = <T>(item: IndexedItem<T>): T => item[1];
 
 export type ForEachProps<T> = {
   items: Supplier<IndexedItem<T>[]>;
-  render: Function<T, WNode<Node>>;
+  render: Function<T, Node>;
 };
 
 export const forEach = <T extends Object>(
   props: ForEachProps<T>
-): WNode<Node> => {
+): Node => {
   let { items, render } = props;
 
   const anchor = createFragment([]);
 
-  let currentItemIndex: Map<string, WNode<Node>> = new Map();
+  let currentItemIndex: Map<string, Node> = new Map();
 
   const ref = runRenderEffect((): void => {
     const newItems: IndexedItem<T>[] = items();
@@ -37,21 +35,26 @@ export const forEach = <T extends Object>(
       }
     });
 
-    const newChildren: WNode<Node>[] = newItemOrder
+    const newChildren: Node[] = newItemOrder
       .map((key) => currentItemIndex.get(key))
-      .filter(notNullOrUndefined) as WNode<Node>[];
+      .filter(notNullOrUndefined) as Node[];
 
-    anchor.setChildren(newChildren);
+    setChildren(anchor, newChildren);
 
     for (const [key, value] of currentItemIndex) {
       if (!newItemKeys.has(key)) {
         currentItemIndex.delete(key);
-        value.cleanup();
+        cleanup(value);
       }
     }
   });
-  anchor.registerOnMountHook(() => ref.activate());
-  anchor.registerOnUnmountHook(() => ref.deactivate());
+
+  registerOnMountHook(anchor, () => {
+    ref.activate();
+  });
+  registerOnUnmountHook(anchor, () => {
+    ref.deactivate();
+  });
 
   return anchor;
 };

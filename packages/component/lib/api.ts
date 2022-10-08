@@ -7,15 +7,15 @@ import {
   Producer,
   Consumer,
 } from "shared";
-import { WElement, WNode } from "recoiljs-dom";
 import { ISideEffectRef, EffectPriority, runBatched } from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import { defer, execute } from "./defer";
+import {registerOnCleanupHook, registerOnMountHook, registerOnUnmountHook} from "recoiljs-dom";
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;
   defer((node) =>
-    node.registerOnMountHook(() => {
+    registerOnMountHook(node, () => {
       if (called) {
         return;
       }
@@ -30,15 +30,15 @@ export const onInitialMount = (fn: Runnable): void => {
 };
 
 export const onMount = (fn: Runnable): void => {
-  defer((node) => node.registerOnMountHook(fn));
+  defer((node) => registerOnMountHook(node, fn));
 };
 
 export const onUnmount = (fn: Runnable): void => {
-  defer((node) => node.registerOnUnmountHook(fn));
+  defer((node) => registerOnUnmountHook(node, fn));
 };
 
 export const onCleanup = (fn: Runnable): void => {
-  defer((node) => node.registerOnCleanupHook(fn));
+  defer((node) => registerOnCleanupHook(node, fn));
 };
 
 /**
@@ -56,8 +56,8 @@ export const runMountedEffect = (
   priority: EffectPriority = EffectPriority.MINOR
 ): void => {
   const ref: ISideEffectRef = runEffect(sideEffect, priority);
-  defer((node) => node.registerOnMountHook(ref.activate.bind(ref)));
-  defer((node) => node.registerOnUnmountHook(ref.deactivate.bind(ref)));
+  defer((node) => registerOnMountHook(node, ref.activate.bind(ref)));
+  defer((node) => registerOnUnmountHook(node, ref.deactivate.bind(ref)));
 };
 
 const scopeManager = new ExecutionScopeManager();
@@ -92,7 +92,7 @@ const apiFunctionBuilder = new DecoratableApiFunctionBuilder();
  * @param component A component builder
  */
 export const createComponent = apiFunctionBuilder.build(
-  <Args extends unknown[], ReturnNode extends WNode<Node>>(
+  <Args extends unknown[], ReturnNode extends Node>(
     component: F<Args, ReturnNode>
   ) => {
     // enter new DI child scope
@@ -123,7 +123,7 @@ export const decorateCreateComponent: Consumer<CreateComponentDecorator> = (
  * @param fn The function to close over the current component scope
  */
 export const makeLazy = apiFunctionBuilder.build(
-  (fn: Producer<WNode<Node>>): Producer<WNode<Node>> => {
+  (fn: Producer<Node>): Producer<Node> => {
     return scopeManager.withCurrentScope(fn);
   }
 );

@@ -1,4 +1,4 @@
-import { createFragment, WNode } from "recoiljs-dom";
+import { createFragment } from "recoiljs-dom";
 import { createBindedElement } from "recoiljs-dom-dsl";
 
 /**
@@ -6,23 +6,23 @@ import { createBindedElement } from "recoiljs-dom-dsl";
  */
 export type Component<
   Props extends Object,
-  Children extends WNode<Node>[],
-  ReturnNode extends WNode<Node>
+  Children extends Node[],
+  ReturnNode extends Node
 > = (props: Props, ...children: [...Children]) => ReturnNode;
 
 export const Fragment = Symbol();
 
 export const jsx = (
-  tag: string | Component<Object, WNode<Node>[], WNode<Node>> | Symbol,
+  tag: string | Component<Object, Node[], Node> | Symbol,
   props: Object,
-  ...children: WNode<Node>[]
-): WNode<Node> => {
+  ...children: Node[]
+): Node => {
   if (tag === Fragment) {
     return createFragment(children);
   }
 
   if (typeof tag === "function") {
-    return (tag as Component<Object, WNode<Node>[], WNode<Node>>)(
+    return (tag as Component<Object, Node[], Node>)(
       props,
       ...children
     );
