@@ -63,7 +63,7 @@ const getHookRegistry = (
   return registry;
 };
 
-export const unmount = (node: Node): void => {
+const unmount = (node: Node): void => {
   getChildren(node).forEach(unmount);
 
   getHookRegistry(node, false)?.onUnmount.forEach((h) => h());
@@ -73,7 +73,7 @@ export const registerOnUnmountHook = (node: Node, hook: Runnable): void => {
   getHookRegistry(node, true)?.onUnmount.push(hook);
 };
 
-export const mount = (node: Node): void => {
+const mount = (node: Node): void => {
   getChildren(node).forEach(mount);
 
   getHookRegistry(node, false)?.onMount.forEach((h) => h());
