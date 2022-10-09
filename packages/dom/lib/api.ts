@@ -3,6 +3,9 @@ import { Method, Runnable } from "shared";
 import { wrapText } from "./util";
 import { GlobalEventCoordinator } from "./event";
 
+const metaNodeRegistry = new WeakMap<Node, MetaNode>();
+const nodeHookRegistryStore = new WeakMap<Node, HookRegistry>();
+
 /**
  * An override to the information stored in the DOM
  *
@@ -23,8 +26,6 @@ class MetaNode {
   }
 }
 
-const metaNodeRegistry = new WeakMap<Node, MetaNode>();
-
 /**
  * A lazily instantiated registry for lifecycle hooks, registered against a dom node.
  */
@@ -34,7 +35,6 @@ class HookRegistry {
   readonly onCleanup: Runnable[] = [];
 }
 
-const nodeHookRegistryStore = new WeakMap<Node, HookRegistry>();
 
 const RECOIL_FRAG_NODE_TAG = "RECOIL-FRAGMENT";
 export const createFragment = (children: Node[]): Node => {
