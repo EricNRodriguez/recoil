@@ -1,5 +1,11 @@
 import { IAtom } from "recoiljs-atom";
-import {cleanup, createFragment, registerOnMountHook, registerOnUnmountHook, setChildren} from "recoiljs-dom";
+import {
+  cleanup,
+  createFragment,
+  registerOnMountHook,
+  registerOnUnmountHook,
+  setChildren,
+} from "recoiljs-dom";
 import { Function } from "shared";
 import { runRenderEffect } from "../binding/dom";
 

@@ -1,7 +1,7 @@
 import { forEach, ifElse, IndexedItem, match } from "recoiljs-dom-dsl";
 import { IAtom } from "recoiljs-atom";
 import { frag } from "recoiljs-dom-dsl";
-import {cleanup, createFragment, setChildren} from "recoiljs-dom";
+import { cleanup, createFragment, setChildren } from "recoiljs-dom";
 import { Supplier, Function } from "shared";
 import { notNullOrUndefined } from "shared";
 
@@ -34,9 +34,7 @@ export type SwitchProps<T> = {
   default?: Supplier<Node>;
 };
 
-export const Switch = <T extends Object>(
-  props: SwitchProps<T>
-): Node => {
+export const Switch = <T extends Object>(props: SwitchProps<T>): Node => {
   const caseMatchMap = new Map(props.cases);
   return match({
     state: props.value,

@@ -1,7 +1,8 @@
 import {
   createElement,
   createFragment,
-  createTextNode, wrapText,
+  createTextNode,
+  wrapText,
 } from "recoiljs-dom";
 import { deriveState, IAtom, isAtom } from "recoiljs-atom";
 import { nullOrUndefined, Supplier } from "shared";
@@ -197,8 +198,7 @@ export const summary = createDslElementHelper("summary");
 export const audio = createDslElementHelper("audio");
 export const img = createDslElementHelper("img");
 
-export const frag = (...children: Children): Node =>
-  createFragment(children);
+export const frag = (...children: Children): Node => createFragment(children);
 
 export type MaybeNode = Node | undefined | null;
 export type MaybeNodeOrVNode = MaybeNode | Node;

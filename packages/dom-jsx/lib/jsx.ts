@@ -19,9 +19,9 @@ interface ReactProps {
 }
 
 const filterMetadataProps = (props: ReactProps): Object => {
-  const {__source, __self, ...rest} = props;
+  const { __source, __self, ...rest } = props;
   return rest;
-}
+};
 
 export const jsx = (
   tag: string | Component<Object, Node[], Node> | Symbol,
@@ -35,10 +35,7 @@ export const jsx = (
   const domProps = filterMetadataProps(props);
 
   if (typeof tag === "function") {
-    return (tag as Component<Object, Node[], Node>)(
-      domProps,
-      ...children
-    );
+    return (tag as Component<Object, Node[], Node>)(domProps, ...children);
   }
 
   if (typeof tag !== "string") {

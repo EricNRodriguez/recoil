@@ -1,5 +1,11 @@
 import { Function, Supplier } from "shared";
-import {cleanup, createFragment, registerOnMountHook, registerOnUnmountHook, setChildren} from "recoiljs-dom";
+import {
+  cleanup,
+  createFragment,
+  registerOnMountHook,
+  registerOnUnmountHook,
+  setChildren,
+} from "recoiljs-dom";
 import { notNullOrUndefined } from "shared";
 import { runRenderEffect } from "../binding/dom";
 
@@ -15,9 +21,7 @@ export type ForEachProps<T> = {
   render: Function<T, Node>;
 };
 
-export const forEach = <T extends Object>(
-  props: ForEachProps<T>
-): Node => {
+export const forEach = <T extends Object>(props: ForEachProps<T>): Node => {
   let { items, render } = props;
 
   const anchor = createFragment([]);

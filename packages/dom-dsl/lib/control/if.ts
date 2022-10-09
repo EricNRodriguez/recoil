@@ -1,5 +1,11 @@
 import { IAtom, isAtom } from "recoiljs-atom";
-import {cleanup, createFragment, registerOnMountHook, registerOnUnmountHook, setChildren} from "recoiljs-dom";
+import {
+  cleanup,
+  createFragment,
+  registerOnMountHook,
+  registerOnUnmountHook,
+  setChildren,
+} from "recoiljs-dom";
 import { Supplier } from "shared";
 import { runRenderEffect } from "../binding/dom";
 
@@ -40,9 +46,11 @@ export const ifElse = (props: IfElseProps): Node => {
     currentRenderedSubtree = state ? ifTrue() : ifFalse!();
 
     setChildren(
-      anchor, currentRenderedSubtree === nullOrUndefinedNode ? [] : [currentRenderedSubtree],
+      anchor,
+      currentRenderedSubtree === nullOrUndefinedNode
+        ? []
+        : [currentRenderedSubtree]
     );
-
   });
   registerOnMountHook(anchor, () => ref.activate());
   registerOnUnmountHook(anchor, () => ref.deactivate());

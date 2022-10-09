@@ -10,7 +10,11 @@ import {
 import { ISideEffectRef, EffectPriority, runBatched } from "recoiljs-atom";
 import { runEffect } from "recoiljs-atom";
 import { defer, execute } from "./defer";
-import {registerOnCleanupHook, registerOnMountHook, registerOnUnmountHook} from "recoiljs-dom";
+import {
+  registerOnCleanupHook,
+  registerOnMountHook,
+  registerOnUnmountHook,
+} from "recoiljs-dom";
 
 export const onInitialMount = (fn: Runnable): void => {
   let called: boolean = false;

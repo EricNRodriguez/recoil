@@ -1,7 +1,12 @@
 import { Producer } from "shared";
 import { frag } from "../element";
-import {runRenderEffect} from "../binding/dom";
-import {cleanup, registerOnMountHook, registerOnUnmountHook, setChildren} from "recoiljs-dom";
+import { runRenderEffect } from "../binding/dom";
+import {
+  cleanup,
+  registerOnMountHook,
+  registerOnUnmountHook,
+  setChildren,
+} from "recoiljs-dom";
 
 export type SupplyProps = {
   get: Producer<Node>;
