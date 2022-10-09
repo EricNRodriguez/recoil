@@ -1,5 +1,4 @@
 import { div, suspense, lazy, button, ifElse } from "recoiljs-dom-dsl";
-import { WNode } from "recoiljs-dom";
 import { createState } from "recoiljs-atom";
 
 const someArbitrarilyLargeComponent = lazy(async () => {
@@ -7,7 +6,7 @@ const someArbitrarilyLargeComponent = lazy(async () => {
   return import("./split_component");
 });
 
-export const app = (): WNode<Node> => {
+export const app = () => {
   const isLargeComponentVisible = createState(false);
 
   const handleButtonClick = (e: Event) => {

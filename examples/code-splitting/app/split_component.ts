@@ -1,8 +1,7 @@
-import { WElement } from "recoiljs-dom";
 import { createComponent, onMount } from "recoiljs-component";
 import { div } from "recoiljs-dom-dsl";
 
-export default createComponent((): WElement<HTMLElement> => {
+export default createComponent(() => {
   onMount((): void => {
     console.log("someArbitrarilyLargeComponent mounted!");
   });
