@@ -21,7 +21,7 @@
     "url": "https://github.com/EricNRodriguez/recoil/issues"
   },
   "dependencies": {
-    "shared": "../shared"
+    "shared": "*"
   },
   "peerDependencies": {
     "typescript-monads": "^8.0.0"

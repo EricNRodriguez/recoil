@@ -23,7 +23,7 @@
     "url": "https://github.com/EricNRodriguez/recoil/issues"
   },
   "dependencies": {
-    "shared": "../shared"
+    "shared": "*"
   },
   "peerDependencies": {
     "recoiljs-atom": "*"
