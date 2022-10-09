@@ -12,20 +12,22 @@ export type Component<
 
 export const Fragment = Symbol();
 
-interface ReactProps {
-  __source: any;
-  __self: any;
+interface JsxProps {
+  __source?: any;
+  __self?: any;
   [key: string]: string | number;
 }
 
-const filterMetadataProps = (props: ReactProps): Object => {
-  const { __source, __self, ...rest } = props;
-  return rest;
+const filterMetadataProps = (props:  JsxProps): Object => {
+  const filteredProps = {...props};
+  delete filteredProps.__self;
+  delete filteredProps.__source;
+  return filteredProps;
 };
 
 export const jsx = (
   tag: string | Component<Object, Node[], Node> | Symbol,
-  props: ReactProps,
+  props:  JsxProps,
   ...children: Node[]
 ): Node => {
   if (tag === Fragment) {
