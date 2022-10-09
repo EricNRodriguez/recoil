@@ -13,8 +13,8 @@ Unlike `dom-dsl`, components that return jsx must adhere to a strict type.
 ```ts
 type Component<
   Props extends Object,
-  Children extends WNode<Node>[],
-  ReturnNode extends WNode<Node>
+  Children extends Node[],
+  ReturnNode extends Node
 > = (props: Props, ...children: [...Children]) => ReturnNode;
 ```
 
@@ -29,7 +29,7 @@ Provides performant and memory-efficient dom rendering of a collection of indexe
 ``` ts
 type ForProps<T> = {
     items: Supplier<IndexedItem<T>[]>;
-    render: Function<T, WNode<Node>>;
+    render: Function<T, Node>;
 };
 ```
 
@@ -40,8 +40,8 @@ Provides a performant and memory-efficient `if` node.
 ```ts
 type IfProps = {
   condition: boolean | IAtom<boolean>;
-  true: Supplier<WNode<Node>>;
-  false?: Supplier<WNode<Node>>;
+  true: Supplier<Node>;
+  false?: Supplier<Node>;
 }
 ```
 
@@ -51,7 +51,7 @@ Provides a standard implementation of a `Suspense` component - analogous to Susp
 
 ```ts
 type SuspenseProps = {
-  default?: WNode<Node>;
+  default?: Node;
 };
 ```
 
@@ -61,7 +61,7 @@ A lower-level leaf node that simply runs the provided render function whenever i
 
 ```ts
 type SupplyProps = {
-  getChild: Producer<WNode<Node>>;
+  getChild: Producer<Node>;
 }
 ```
 
@@ -72,8 +72,8 @@ Similar to `If`, except that it works with state-case pairs, along with supporti
 ```ts
 type SwitchProps<T> = {
   value: IAtom<T>;
-  cases: [T, Supplier<WNode<Node>>][];
-  default?: Supplier<WNode<Node>>;
+  cases: [T, Supplier<Node>][];
+  default?: Supplier<Node>;
 }
 
 ```
@@ -89,7 +89,6 @@ type SwitchProps<T> = {
 /** @jsx jsx */
 
 import {TodoItem} from "./todo_model";
-import {WElement} from "recoil/packages/dom";
 import {div, h2, br, button, input} from "recoil/packages/dom-dsl";
 import {createState, runBatched} from "recoil/packages/atom";
 import { inject, withContext, captureContextState } from "recoil/packages/context";
@@ -97,7 +96,7 @@ import {todoModelInjectionKey} from "./index";
 import {jsx, For, If, $} from "recoil/packages/dom-jsx";
 import {css} from "./util";
 
-export const TodoList = withContext((): WElement<HTMLElement> => {
+export const TodoList = withContext(() => {
   const model = inject(todoModelInjectionKey)!;
 
   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
@@ -127,7 +126,7 @@ export const TodoList = withContext((): WElement<HTMLElement> => {
   );
 });
 
-const TodoItemInput = withContext((): WElement<HTMLElement> => {
+const TodoItemInput = withContext(() => {
   const model = inject(todoModelInjectionKey)!;
 
   const currentEnteredContent = createState<string>("");
@@ -160,7 +159,7 @@ type TodoListItemProps = {
   item: TodoItem;
 }
 
-const TodoListItem = withContext((props: TodoListItemProps): WElement<HTMLElement> => {
+const TodoListItem = withContext((props: TodoListItemProps) => {
   const model = inject(todoModelInjectionKey)!;
 
   const buttonDivStyle = css({
