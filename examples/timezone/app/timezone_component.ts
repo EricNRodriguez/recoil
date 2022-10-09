@@ -36,7 +36,7 @@ export const time = () => {
 const formTextInput = (name: string, atom: IMutableAtom<String>) => {
   const textInputElem = input({
     type: "text",
-    oninput: (e: Event) => atom.set(textInputElem.unwrap().value),
+    oninput: (e: Event) => atom.set(textInputElem.value),
   });
 
   return div(`${name}:`, textInputElem);
