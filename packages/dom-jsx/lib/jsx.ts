@@ -12,18 +12,31 @@ export type Component<
 
 export const Fragment = Symbol();
 
+interface ReactProps {
+  __source: any;
+  __self: any;
+  [key: string]: string | number;
+}
+
+const filterMetadataProps = (props: ReactProps): Object => {
+  const {__source, __self, ...rest} = props;
+  return rest;
+}
+
 export const jsx = (
   tag: string | Component<Object, Node[], Node> | Symbol,
-  props: Object,
+  props: ReactProps,
   ...children: Node[]
 ): Node => {
   if (tag === Fragment) {
     return createFragment(children);
   }
 
+  const domProps = filterMetadataProps(props);
+
   if (typeof tag === "function") {
     return (tag as Component<Object, Node[], Node>)(
-      props,
+      domProps,
       ...children
     );
   }
@@ -35,7 +48,7 @@ export const jsx = (
 
   return createBindedElement(
     tag as keyof HTMLElementTagNameMap,
-    props,
+    domProps,
     children
   );
 };

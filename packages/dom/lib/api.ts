@@ -115,7 +115,7 @@ const getChildren = (node: Node): Node[] => {
 
 export const setProperty = (node: Node, key: string, val: any): void => {
     if (!(key in node)) {
-      console.log(`unable to set property that doesnt exist, ${key} on ${node}`);
+      throw new Error(`unable to set property that doesnt exist, ${key} on ${node}`);
     }
 
     (node as any)[key] = val;
