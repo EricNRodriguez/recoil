@@ -14,8 +14,13 @@ export const runRenderEffect = (effect: Runnable): ISideEffectRef => {
 export const bindProps = (element: Node, props: Props): void => {
   Object.entries(props).forEach(([key, val]) => {
     if (isAtom(val)) {
+      let prevVal: any = undefined;
       const ref = runRenderEffect(() => {
-        setProperty(element, key, val.get());
+        const newVal = val.get();
+        if (prevVal !== newVal) {
+          setProperty(element, key, val.get());
+        }
+        prevVal = newVal;
       });
       registerOnMountHook(element, () => ref.activate());
       registerOnUnmountHook(element, () => ref.deactivate());
