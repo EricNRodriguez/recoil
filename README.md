@@ -32,7 +32,6 @@ A set of examples are provided in the `examples` directory. An incomplete exampl
 /** @jsx jsx */
 
 import {TodoItem} from "./todo_model";
-import {WElement} from "recoiljs-dom";
 import {div, h2, br, button, input} from "recoiljs-dom-dsl";
 import {createState, runBatched} from "recoiljs-atom";
 import { inject, createComponent, makeLazy, decorateMakeLazy, decorateCreateComponent } from "recoiljs-component";
@@ -40,7 +39,7 @@ import {todoModelInjectionKey} from "./index";
 import {jsx, For, If, $} from "recoiljs-dom-jsx";
 import {css} from "./util";
 
-export const TodoList = createComponent((): WElement<HTMLElement> => {
+export const TodoList = createComponent(() => {
   const model = inject(todoModelInjectionKey)!;
 
   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
@@ -70,7 +69,7 @@ export const TodoList = createComponent((): WElement<HTMLElement> => {
   );
 });
 
-const TodoItemInput = createComponent((): WElement<HTMLElement> => {
+const TodoItemInput = createComponent(() => {
   const model = inject(todoModelInjectionKey)!;
 
   const currentEnteredContent = createState<string>("");
@@ -103,7 +102,7 @@ type TodoListItemProps = {
   item: TodoItem;
 }
 
-const TodoListItem = createComponent((props: TodoListItemProps): WElement<HTMLElement> => {
+const TodoListItem = createComponent((props: TodoListItemProps) => {
   const model = inject(todoModelInjectionKey)!;
 
   const buttonDivStyle = css({

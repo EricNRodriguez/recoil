@@ -1,7 +1,7 @@
 {
   "name": "shared",
+  "version": "0.0.0-development",
   "private": true,
-  "version": "0.0.0",
   "description": "private shared utils package",
   "author": "eric <eric@g.com>",
   "homepage": "https://github.com/EricNRodriguez/recoil#readme",

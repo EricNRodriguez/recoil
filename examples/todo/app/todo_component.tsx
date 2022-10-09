@@ -1,21 +1,17 @@
 /** @jsx jsx */
 
 import {TodoItem, TodoModel} from "./todo_model";
-import {WElement} from "recoiljs-dom";
-import {div, h2, br, button, input} from "recoiljs-dom-dsl";
+import {div, h2, br, button, input, forEach} from "recoiljs-dom-dsl";
 import {createState, derivedState, deriveState, runBatched} from "recoiljs-atom";
 import {
   inject,
   createComponent,
   makeLazy,
-  decorateMakeLazy,
-  decorateCreateComponent,
-  runMountedEffect, onUnmount
+  runMountedEffect, onUnmount, onMount, onCleanup
 } from "recoiljs-component";
 import {todoModelInjectionKey} from "./index";
 import {jsx, For, If, $, Fragment} from "recoiljs-dom-jsx";
 import {css} from "./util";
-
 
 type TodoListControlsProps = {
     model: TodoModel;
@@ -35,7 +31,7 @@ const TodoListControls = createComponent((props: TodoListControlsProps) => {
   );
 });
 
-export const TodoList = createComponent((): WElement<HTMLElement> => {
+export const TodoList = createComponent(() => {
   const model = inject(todoModelInjectionKey)!;
 
   const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];
@@ -64,7 +60,7 @@ export const TodoList = createComponent((): WElement<HTMLElement> => {
   );
 });
 
-const TodoItemInput = createComponent((): WElement<HTMLElement> => {
+const TodoItemInput = createComponent(() => {
   const model = inject(todoModelInjectionKey)!;
 
   const currentEnteredContent = createState<string>("");
@@ -97,16 +93,19 @@ type TodoListItemProps = {
   item: TodoItem;
 }
 
-const TodoListItem = createComponent((props: TodoListItemProps): WElement<HTMLElement> => {
+const TodoListItem = createComponent((props: TodoListItemProps) => {
   const model = inject(todoModelInjectionKey)!;
 
-  runMountedEffect(() => {
-      console.log("running effect as model items changed");
-      model.getItems();
+  onUnmount(() => {
+    console.log(`unmounting todo item component: ${props.item.content.toString()}`);
   });
 
-  onUnmount(() => {
-      console.log("unmounting todo item component");
+  onMount(() => {
+      console.log(`mounting todo item component: ${props.item.content.toString()}`);
+  });
+
+  onCleanup(() => {
+    console.log(`cleaning up todo item component: ${props.item.content.toString()}`);
   });
 
   const buttonDivStyle = css({
@@ -123,7 +122,7 @@ const TodoListItem = createComponent((props: TodoListItemProps): WElement<HTMLEl
       <button onclick={() => model.removeItem(props.item)} style={buttonDivStyle}>
         -
       </button>
-      {props.item.content}
+      {props.item.content.toString()}
     </div>
   );
 });

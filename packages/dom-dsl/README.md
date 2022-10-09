@@ -10,7 +10,7 @@ A runtime dsl that provides a higher level abstraction over the `dom` api. This 
 #### Mounting An Application
 
 ```ts
-const runApp = (anchor: HTMLElement, app: WNode<Node>): void;
+const runApp = (anchor: HTMLElement, app: Node): void;
 ```
 
 #### Creating Elements
@@ -30,7 +30,7 @@ A set of control components based around the `atom` library enable declerative U
 ```ts
 import {deriveState} from "recoiljs-atom";
 
-export const coupledCounter = createComponent((): HtmlVElement => {
+export const coupledCounter = createComponent(() => {
   const logger = new Logger();
 
   const a = createState<number>(0);
@@ -71,7 +71,7 @@ export const coupledCounter = createComponent((): HtmlVElement => {
   );
 });
 
-const dComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<number>): HtmlVNode => {
+const dComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<number>) => {
   const content = deriveState(() => a.get() + b.get());
 
   runMountedEffect((): void => {
@@ -95,7 +95,7 @@ s
   return elem;
 });
 
-const eComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<number>, c: Atom<number>): HtmlVNode => {
+const eComponent = createComponent((logger: Logger, a: Atom<number>, b: Atom<number>, c: Atom<number>) => {
   const content = deriveState(() => a.get() + b.get() + c.get());
   
   runMountedEffect((): void => {

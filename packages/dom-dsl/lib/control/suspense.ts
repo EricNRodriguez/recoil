@@ -1,23 +1,21 @@
-import { WNode, createFragment } from "recoiljs-dom";
-import { notNullOrUndefined } from "shared";
+import { cleanup, createFragment, setChildren } from "recoiljs-dom";
 
 export type SuspenseProps = {
-  fallback?: WNode<Node>;
+  fallback?: Node;
 };
 
-export const suspense = (
-  props: SuspenseProps,
-  child: Promise<WNode<Node>>
-): WNode<Node> => {
+export const suspense = (props: SuspenseProps, child: Promise<Node>): Node => {
   const anchor = createFragment([]);
 
-  if (notNullOrUndefined(props.fallback)) {
-    anchor.setChildren([props.fallback]);
+  if (props.fallback != null) {
+    setChildren(anchor, [props.fallback]);
   }
 
   child.then((c) => {
-    anchor.setChildren([c]);
-    props.fallback?.cleanup();
+    setChildren(anchor, [c]);
+    if (props.fallback != null) {
+      cleanup(props.fallback);
+    }
   });
 
   return anchor;

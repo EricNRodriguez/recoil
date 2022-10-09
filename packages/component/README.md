@@ -25,7 +25,7 @@ For application specific extensions, the `createComponent` and `makeLazy` method
 ```tsx
 import {onMount, onUnmount} from "recoiljs-component";
 
-export const TodoList = createComponent((): WElement<HTMLElement> => {
+export const TodoList = createComponent(() => {
    const model = inject(todoModelInjectionKey)!;
 
    const withUuidKey = (item: TodoItem) => [item.uuid.toString(), item];

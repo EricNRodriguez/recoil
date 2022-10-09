@@ -1,12 +1,11 @@
 /** @jsx jsx */
 
-import {createState, deriveState, IAtom, IMutableAtom, isAtom, runBatched, runUntracked} from "recoiljs-atom";
+import {createState, deriveState, IMutableAtom, runBatched, runUntracked} from "recoiljs-atom";
 import {button, div, h3, hr} from "recoiljs-dom-dsl";
-import {WElement, WNode} from "recoiljs-dom";
 import {createComponent, runMountedEffect} from "recoiljs-component";
 import {jsx, $} from "recoiljs-dom-jsx";
 
-export const BatchedCounter = (): WNode<Node> => {
+export const BatchedCounter = () => {
   return (
     <div>
       <h3>
@@ -26,7 +25,7 @@ type EffectExecutionCounterExampleProps = {
   shouldBatchUpdates: boolean;
 };
 
-const EffectExecutionCounterExample = createComponent((props: EffectExecutionCounterExampleProps): WElement<HTMLElement> => {
+const EffectExecutionCounterExample = createComponent((props: EffectExecutionCounterExampleProps) => {
   const numberOfTimesEffectHasRun = createState<number>(0);
 
   const a = createState<number>(0);
@@ -69,7 +68,7 @@ type ValueDisplayProps = {
     value: IMutableAtom<number>;
 };
 
-const ValueDisplay = (props: ValueDisplayProps): WNode<Node> => {
+const ValueDisplay = (props: ValueDisplayProps) => {
   const strValue = deriveState(() => props.value.get().toString());
 
   return (

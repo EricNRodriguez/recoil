@@ -25,17 +25,16 @@
   },
   "devDependencies": {
     "recoiljs-atom": "*",
-    "recoiljs-dom": "*",
     "rollup": "^2.79.0",
     "rollup-plugin-typescript2": "^0.33.0",
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "recoiljs-dom": "*",
     "recoiljs-dom-dsl": "*",
-    "shared": "*"
+    "shared": "0.0.0-development"
   },
   "peerDependencies": {
-    "recoiljs-atom": "*"
+    "recoiljs-atom": "*",
+    "recoiljs-dom": "*"
   }
 }

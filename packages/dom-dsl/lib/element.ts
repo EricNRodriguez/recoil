@@ -2,17 +2,14 @@ import {
   createElement,
   createFragment,
   createTextNode,
-  isWNode,
-  WElement,
-  WNode,
+  wrapText,
 } from "recoiljs-dom";
 import { deriveState, IAtom, isAtom } from "recoiljs-atom";
-import { wrapTextInWNode } from "recoiljs-dom";
 import { nullOrUndefined, Supplier } from "shared";
 import { bindProps } from "./binding/dom";
 import { Children, Props } from "recoiljs-dom";
 
-export type Content = WNode<Node> | string;
+export type Content = Node | string;
 export type RawOrBinded = IAtom<any> | any;
 export type Properties = { [key: string]: RawOrBinded };
 
@@ -20,7 +17,7 @@ export const createBindedElement = <K extends keyof HTMLElementTagNameMap>(
   tag: K | HTMLElementTagNameMap[K],
   props: Props,
   children: Children
-): WElement<HTMLElementTagNameMap[K]> => {
+): HTMLElementTagNameMap[K] => {
   const element = createElement(tag as any, {}, children);
   bindProps(element, props);
   return element;
@@ -37,15 +34,15 @@ export const createBindedText = (
 
 // prettier-ignore
 export type ChildrenOnlyElementBuilder<K extends keyof HTMLElementTagNameMap> =
-  (...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
+  (...children: Content[]) => HTMLElementTagNameMap[K];
 
 // prettier-ignore
 export type PropertiesAndChildrenElementBuilder<K extends keyof HTMLElementTagNameMap> =
-  (properties: Properties, ...children: Content[]) => WElement<HTMLElementTagNameMap[K]>;
+  (properties: Properties, ...children: Content[]) => HTMLElementTagNameMap[K];
 
 // prettier-ignore
 export type EmptyElementBuilder<K extends keyof HTMLElementTagNameMap> =
-  () => WElement<HTMLElementTagNameMap[K]>;
+  () => HTMLElementTagNameMap[K];
 
 export type ElementBuilder<K extends keyof HTMLElementTagNameMap> =
   ChildrenOnlyElementBuilder<K> &
@@ -59,9 +56,9 @@ const createDslElementHelper = <K extends keyof HTMLElementTagNameMap>(
   return (
     firstArg?: Content | Properties,
     ...remainingChildren: Content[]
-  ): WElement<HTMLElementTagNameMap[K]> => {
-    const adaptedFirstArg = wrapTextInWNode(firstArg);
-    const adaptedRemainingChildren = remainingChildren.map(wrapTextInWNode) as WNode<Node>[];
+  ): HTMLElementTagNameMap[K] => {
+    const adaptedFirstArg = wrapText(firstArg);
+    const adaptedRemainingChildren = remainingChildren.map(wrapText) as Node[];
 
     if (nullOrUndefined(adaptedFirstArg)) {
       return createBindedElement(
@@ -69,11 +66,11 @@ const createDslElementHelper = <K extends keyof HTMLElementTagNameMap>(
         {},
         [],
       );
-    } else if (isWNode(adaptedFirstArg)) {
+    } else if (adaptedFirstArg instanceof Node) { // TODO(ericr): check if this works in IE, since their dom isnt actually a js impl, just exposed bindings
       return createBindedElement(
         tag,
         {},
-        [adaptedFirstArg as WNode<any>, ...adaptedRemainingChildren],
+        [adaptedFirstArg, ...adaptedRemainingChildren],
       );
     } else {
       const element = createBindedElement(
@@ -201,18 +198,17 @@ export const summary = createDslElementHelper("summary");
 export const audio = createDslElementHelper("audio");
 export const img = createDslElementHelper("img");
 
-export const frag = (...children: WNode<Node>[]): WNode<Node> =>
-  createFragment(children);
+export const frag = (...children: Children): Node => createFragment(children);
 
 export type MaybeNode = Node | undefined | null;
-export type MaybeNodeOrVNode = MaybeNode | WNode<Node>;
+export type MaybeNodeOrVNode = MaybeNode | Node;
 
 export type TextNodeSource =
   | TextNodeTypes
   | Supplier<TextNodeTypes>
   | IAtom<TextNodeTypes>;
 
-export const t = (data: TextNodeSource): WNode<Node> => {
+export const t = (data: TextNodeSource): Node => {
   if (isAtom(data)) {
     return createBindedText(
       (data as IAtom<TextNodeTypes>).map((v: TextNodeTypes) => v.toString())

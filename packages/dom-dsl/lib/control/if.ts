@@ -1,11 +1,17 @@
 import { IAtom, isAtom } from "recoiljs-atom";
-import { WNode, createFragment } from "recoiljs-dom";
+import {
+  cleanup,
+  createFragment,
+  registerOnMountHook,
+  registerOnUnmountHook,
+  setChildren,
+} from "recoiljs-dom";
 import { Supplier } from "shared";
 import { runRenderEffect } from "../binding/dom";
 
 export type IfElseCondition = IAtom<boolean> | Supplier<boolean> | boolean;
 
-export type IfElseContent = Supplier<WNode<Node>>;
+export type IfElseContent = Supplier<Node>;
 
 export type IfElseProps = {
   condition: IfElseCondition;
@@ -13,8 +19,8 @@ export type IfElseProps = {
   ifFalse?: IfElseContent;
 };
 
-const nullOrUndefinedNode = new WNode(document.createComment("null"));
-export const ifElse = (props: IfElseProps): WNode<Node> => {
+const nullOrUndefinedNode = document.createComment("null");
+export const ifElse = (props: IfElseProps): Node => {
   let { condition, ifTrue, ifFalse } = props;
 
   ifFalse ??= () => nullOrUndefinedNode;
@@ -25,7 +31,7 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
   const anchor = createFragment([]);
 
   let currentRenderedState: boolean;
-  let currentRenderedSubtree: WNode<Node> = nullOrUndefinedNode;
+  let currentRenderedSubtree: Node = nullOrUndefinedNode;
   const ref = runRenderEffect((): void => {
     const state: boolean = isAtom(condition)
       ? (condition as IAtom<boolean>).get()
@@ -36,28 +42,30 @@ export const ifElse = (props: IfElseProps): WNode<Node> => {
     }
 
     currentRenderedState = state;
-    currentRenderedSubtree.cleanup();
+    cleanup(currentRenderedSubtree);
     currentRenderedSubtree = state ? ifTrue() : ifFalse!();
 
-    anchor.setChildren([
+    setChildren(
+      anchor,
       currentRenderedSubtree === nullOrUndefinedNode
-        ? null
-        : currentRenderedSubtree,
-    ]);
+        ? []
+        : [currentRenderedSubtree]
+    );
   });
-  anchor.registerOnUnmountHook(() => ref.deactivate());
-  anchor.registerOnMountHook(() => ref.activate());
+  registerOnMountHook(anchor, () => ref.activate());
+  registerOnUnmountHook(anchor, () => ref.deactivate());
 
   return anchor;
 };
 const staticIfElse = (
   condition: boolean,
-  ifTrue: Supplier<WNode<Node>>,
-  ifFalse: Supplier<WNode<Node>>
-): WNode<Node> => {
+  ifTrue: Supplier<Node>,
+  ifFalse: Supplier<Node>
+): Node => {
   const anchor = createFragment([]);
 
-  anchor.setChildren(
+  setChildren(
+    anchor,
     [condition ? ifTrue() : ifFalse()].filter((c) => c !== nullOrUndefinedNode)
   );
 

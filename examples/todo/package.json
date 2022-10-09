@@ -24,10 +24,9 @@
     "tsc": "^2.0.4",
     "typescript": "^4.7.4"
   },
-  "dependencies": {
+  "peerDependencies": {
     "recoiljs-atom": "*",
     "recoiljs-component": "*",
-    "recoiljs-dom": "*",
     "recoiljs-dom-dsl": "*",
     "recoiljs-dom-jsx": "*",
     "typescript-monads": "^7.2.0"

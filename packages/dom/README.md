@@ -1,125 +1,105 @@
 # Overview
 
-The `dom` package provides low level utilities / classes that enable performant dom operations. Specifically, the package provides wrapper classes for dom nodes
-and elements that implement reconciliation, event delegation (including simulated event bubbling with correct handling of shadow dom boundaries) and fragment nodes. 
+The `dom` package provides low level utilities that enable performant dom operations. Specifically, the package provides 
+imperative utilities for managing lifecycles, performant reconciliation, event delegation (including simulated event bubbling with correct handling of shadow dom boundaries) 
+and fragment nodes. 
 
 # API
 
-### Wrapping Dom Nodes/Elements
-``` ts
+### Instantiating Nodes
+
+```typescript 
 /**
-* Wraps a raw dom element in a WElement
-*/
-const wrapElement = <K extends keyof HTMLElementTagNameMap>(
-  rawElement: HTMLElementTagNameMap[K]
-): WElement<HTMLElementTagNameMap[K]>;
-
-
-/**
-* Wraps a raw dom node in a WNode
-*/
-const wrapNode = <T extends Node>(rawNode: T): WNode<T>;
-```
-
-### Factory Methods 
-
-```ts
-/**
- * Creates a fragment node. This node will be expanded when inserted as a child of any other WNode. 
- */
-const createFragment = (children: WNode<Node>[]): WNode<DocumentFragment>;
-
-/**
- * Creates a WElement. Props and children will be set on the raw dom node.
- */
-const createElement = <K extends keyof HTMLElementTagNameMap>(
+ * Utility factory for creating DOM elements. 
+ */ 
+createElement = <K extends keyof HTMLElementTagNameMap>(
   tag: K,
-  props: Record<string, any>,
-  children:  WNode<Node>[]
-): WElement<HTMLElementTagNameMap[K]>;
+  props: Props,
+  children: Node[]
+): HTMLElementTagNameMap[K];
+
+```
+```typescript 
+/**
+ * Utility factory for creating DOM text nodes. 
+ */ 
+ createTextNode = (text: string): Text;
+```
+
+```typescript
+/**
+ * Factory method for fragment nodes. 
+ * 
+ * The returned node should be treated as a stub - it is a logical
+ * node that is never inserted into the dom itself. 
+ * 
+ * NEVER attempt to mutate the children of the returned node itself, rather
+ * opt for the `setChildren` method provided by this package.
+ */
+createFragment = (children: Node[]): Node;
+
+```
+# Lifecycle Methods
+
+```typescript
+registerOnUnmountHook = (node: Node, hook: Runnable): void;
+```
+
+```typescript
+registerOnMountHook = (node: Node, hook: Runnable): void;
+```
+
+```typescript 
+registerOnCleanupHook = (node: Node, hook: Runnable): void;
+```
+
+# Delegated Event Handling 
+
+```typescript
+
+registerEventHandler = <K extends keyof HTMLElementEventMap>(
+  element: HTMLElement,
+  type: K,
+  listener: Method<HTMLElement, HTMLElementEventMap[K], void>
+): void;
+
+
+deregisterDelegatedEventHandler = <
+  K extends keyof HTMLElementEventMap
+  >(
+  element: HTMLElement,
+  type: K,
+  listener: Method<HTMLElement, HTMLElementEventMap[K], void>
+): void;
+```
+
+# Updating the DOM
+
+It is generally safe to mutate properties/attributes through the raw nodes/elements returned from the factory
+methods. It is, however, not safe to explicitly modify a nodes children manually, rather you should opt for the `setChildren`
+utility. This is required for lifecycle management and the implementation of fragments/portals, and should always be used.
+
+If authoring a higher order component that abstracts away the `setChildren` method, be aware that `cleanup` needs to be executed manually
+before any nodes are disposed. This has been left as a manual operation to allow more advanced caching strategies to be used
+in dsl helpers. Unlike `cleanup`, mounting/unmounting is handled internally.
+
+```typescript
 
 /**
- * Creates a text node WNode
+ * Reconciles the parents current children with the children provided to this method.
+ * 
+ * New children will have their onMount hooks run, and discarded children will have their onUnmount hooks run.
+ * 
+ * Fragment nodes will be unwrapped/flattened as you would logically expect.
  */
-const createTextNode = (text: string): WNode<Text>;
-```
+setChildren = (
+  parent: Node,
+  children: (Node | string)[]
+): void;
 
-# WElement/WNode Interface
-
-```ts
-import {Runnable} from "shared";
-
-interface WNode<T extends Node> {
-  /**
-   * Returns the raw DOM node
-   */
-  unwrap(): T;
-
-  /**
-   * Registers a callback to run everytime the WNode is taken out of the dom
-   */
-  registerOnUnmountHook(hook: Runnable): WNode<T>;
-
-  /**
-   * Registers a callback to run everytime the WNode is inserted into the dom
-   */
-  registerOnMountHook(hook: Runnable): WNode<T>;
-
-  /**
-   * Binds the scope of the wrapper to the internal node such that if the wrapped node is in scope,
-   * so is this wrapper.
-   */
-  bindScopeToWrappedNode(): WNode<T>;
-
-  /**
-   * Returns the parent node, if it exists.
-   */
-  getParent(): WNode<Node> | null;
-
-  /**
-   * Sets the children nodes. This includes performant dom reconciliation.
-   */
-  setChildren(children: (WNode<Node> | Node | null | undefined)[]): WNode<T>;
-
-  /**
-   * Sets the property of the wrapped dom node to the given value.
-   */
-  setProperty<V>(prop: string, value: V): WNode<T>;
-
-  /**
-   * Registers a hook to run when the node is no longer in use.
-   */
-  registerOnCleanupHook(hook: Runnable): B;
-
-  /**
-   * Recursively runs cleanup hooks on the subtree.
-   * 
-   * This method is to be called a single time before the node is disposed of. 
-   * After this call, the node is in an invalid state.
-   */
-  cleanup();
-};
-
-
-interface WElement<T extends HTMLElement> extends WNode<T> {
-  /**
-   * Registers an event handler to the element.
-   *
-   * @param type The event type
-   * @param listener The event handler
-   * @param delegate A boolean specifying if the handler should be attached to the document (with simulated bubbling) or the raw element.
-   */
-  setEventHandler<K extends keyof HTMLElementEventMap>(
-    type: K,
-    listener: Method<HTMLElement, HTMLElementEventMap[K], void>,
-    delegate: boolean,
-  ): IWElement<T>;
-
-  /**
-   * Sets the attribute of the wrapped dom element.
-   */
-  setAttribute(attribute: string, value: string): IWElement<T>;
-};
+/**
+ * Executes any registered cleanup hooks for the respective dom node. 
+ */
+cleanup = (node: Node): void;
 
 ```
-

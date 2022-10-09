@@ -1,4 +1,8 @@
-import { WNode } from "recoiljs-dom";
+import {
+  registerOnMountHook,
+  registerOnUnmountHook,
+  setProperty,
+} from "recoiljs-dom";
 import {
   EffectPriority,
   IAtom,
@@ -17,17 +21,21 @@ export const runRenderEffect = (effect: Runnable): ISideEffectRef => {
   return runEffect(effect, RenderEffectPriority);
 };
 
-export const bindProps = (element: WNode<Node>, props: Props): void => {
+export const bindProps = (element: Node, props: Props): void => {
   Object.entries(props).forEach(([key, val]) => {
-    element.setProperty(key, val);
     if (isAtom(val)) {
-      const ref: ISideEffectRef = runRenderEffect(() =>
-        element.setProperty(key, val.get())
-      );
-      element.registerOnMountHook(() => ref.activate());
-      element.registerOnUnmountHook(() => ref.deactivate());
+      let prevVal: any = undefined;
+      const ref = runRenderEffect(() => {
+        const newVal = val.get();
+        if (prevVal !== newVal) {
+          setProperty(element, key, val.get());
+        }
+        prevVal = newVal;
+      });
+      registerOnMountHook(element, () => ref.activate());
+      registerOnUnmountHook(element, () => ref.deactivate());
     } else {
-      element.setProperty(key, val);
+      setProperty(element, key, val);
     }
   });
 };

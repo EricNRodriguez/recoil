@@ -1,4 +1,4 @@
-import { createFragment, WNode } from "recoiljs-dom";
+import { createFragment } from "recoiljs-dom";
 import { createBindedElement } from "recoiljs-dom-dsl";
 
 /**
@@ -6,26 +6,38 @@ import { createBindedElement } from "recoiljs-dom-dsl";
  */
 export type Component<
   Props extends Object,
-  Children extends WNode<Node>[],
-  ReturnNode extends WNode<Node>
+  Children extends Node[],
+  ReturnNode extends Node
 > = (props: Props, ...children: [...Children]) => ReturnNode;
 
 export const Fragment = Symbol();
 
+interface JsxProps {
+  __source?: any;
+  __self?: any;
+  [key: string]: string | number;
+}
+
+const filterMetadataProps = (props:  JsxProps): Object => {
+  const filteredProps = {...props};
+  delete filteredProps.__self;
+  delete filteredProps.__source;
+  return filteredProps;
+};
+
 export const jsx = (
-  tag: string | Component<Object, WNode<Node>[], WNode<Node>> | Symbol,
-  props: Object,
-  ...children: WNode<Node>[]
-): WNode<Node> => {
+  tag: string | Component<Object, Node[], Node> | Symbol,
+  props:  JsxProps,
+  ...children: Node[]
+): Node => {
   if (tag === Fragment) {
     return createFragment(children);
   }
 
+  const domProps = filterMetadataProps(props);
+
   if (typeof tag === "function") {
-    return (tag as Component<Object, WNode<Node>[], WNode<Node>>)(
-      props,
-      ...children
-    );
+    return (tag as Component<Object, Node[], Node>)(domProps, ...children);
   }
 
   if (typeof tag !== "string") {
@@ -35,7 +47,7 @@ export const jsx = (
 
   return createBindedElement(
     tag as keyof HTMLElementTagNameMap,
-    props,
+    domProps,
     children
   );
 };
