@@ -110,6 +110,7 @@ const getChildren = (node: Node): Node[] => {
 
 export const setProperty = (node: Node, key: string, val: any): void => {
   if (!(key in node)) {
+    // TODO(ericr): more specific type and message
     throw new Error(
       `unable to set property that doesnt exist, ${key} on ${node}`
     );
